@@ -1,0 +1,59 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <parent>
+    <groupId>edu.trafficsim</groupId>
+    <artifactId>simparent</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <relativePath>.../simparent/pom.xml</relativePath>
+  </parent>
+  
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>simframework</artifactId>
+  <packaging>war</packaging>
+  <name>simframework</name>
+  
+  <build>
+    <sourceDirectory>src/main/java</sourceDirectory>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>false</filtering>
+      </resource>
+    </resources>
+    <testResources>
+      <testResource>
+        <directory>src/test/resources</directory>
+        <filtering>false</filtering>
+      </testResource>
+    </testResources>
+    <plugins>
+    </plugins>
+    <finalName>simframework</finalName>
+  </build>
+  
+  <dependencies>
+    <dependency>
+	  <groupId>javax.servlet</groupId>
+	  <artifactId>servlet-api</artifactId>
+	  <version>3.0-alpha-1</version>
+    </dependency>
+    <dependency>
+	  <groupId>javax</groupId>
+	  <artifactId>javaee-web-api</artifactId>
+	  <version>6.0</version>
+    </dependency>
+    
+    <!-- trafficsim dependencies -->
+    <dependency>
+	  <groupId>edu.trafficsim</groupId>
+	  <artifactId>simmodel</artifactId>
+	  <version>0.0.1-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+	  <groupId>edu.trafficsim</groupId>
+	  <artifactId>simengine</artifactId>
+	  <version>0.0.1-SNAPSHOT</version>
+    </dependency>
+  </dependencies>
+  
+</project>
