@@ -5,8 +5,6 @@ import java.util.Date;
 import edu.trafficsim.model.DataContainer;
 import edu.trafficsim.model.core.User;
 
-
-@SuppressWarnings("unused")
 public abstract class BaseEntity<T> implements DataContainer {
 
 	/**
@@ -27,4 +25,41 @@ public abstract class BaseEntity<T> implements DataContainer {
 	private String name;
 	
 	private String description;
+
+	
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public Date getCreated() {
+		return created;
+	}
+
+	public Date getModified() {
+		return modified;
+	}
+
+	public User getCreatedBy() {
+		return createdBy;
+	}
+
+	public User getModifiedBy() {
+		return modifiedBy;
+	}
 }
