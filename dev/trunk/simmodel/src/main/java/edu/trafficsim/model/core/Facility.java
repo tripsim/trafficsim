@@ -1,8 +1,6 @@
 package edu.trafficsim.model.core;
 
-import edu.trafficsim.model.DataContainer;
-
-public interface Facility  extends DataContainer {
+public interface Facility extends Location {
 
 
 }
