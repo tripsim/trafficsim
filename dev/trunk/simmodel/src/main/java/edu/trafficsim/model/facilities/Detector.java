@@ -1,6 +1,6 @@
 package edu.trafficsim.model.facilities;
 
-import edu.trafficsim.model.core.Position;
+import edu.trafficsim.model.core.Coord;
 
 public class Detector extends Device<Detector> {
 
@@ -10,8 +10,8 @@ public class Detector extends Device<Detector> {
 	private static final long serialVersionUID = 1L;
 	
 
-	public Detector(Position position) {
-		super(position);
+	public Detector(Coord coord) {
+		super(coord);
 	}
 
 }

@@ -2,7 +2,7 @@ package edu.trafficsim.model.core;
 
 import edu.trafficsim.model.DataContainer;
 
-public class Position implements DataContainer {
+public class Coord implements DataContainer {
 	
 	/**
 	 * 
@@ -15,7 +15,7 @@ public class Position implements DataContainer {
 	// TODO: add support for multiple coord system
 	//private String name;
 	
-	public Position(double x, double y) {
+	public Coord(double x, double y) {
 		this.x = x;
 		this.y = y;
 	}

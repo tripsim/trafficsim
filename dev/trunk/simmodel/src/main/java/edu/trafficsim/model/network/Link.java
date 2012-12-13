@@ -12,12 +12,14 @@ public class Link extends AbstractSegment<Link> {
 	 */
 	private static final long serialVersionUID = 1L;
 	
+	private LinkType type;
 	private List<Lane> lanes;
 	
-	public Link(String name, Node fromNode, Node toNode) {
+	public Link(LinkType type, String name, Node fromNode, Node toNode) {
 		super(fromNode, toNode);
 		lanes = new ArrayList<Lane>();
 		setName(name);
+		this.type = type;
 	}
 	
 	
@@ -32,6 +34,16 @@ public class Link extends AbstractSegment<Link> {
 	
 	public List<Lane> getLanes() {
 		return lanes;
+	}
+
+
+	public LinkType getType() {
+		return type;
+	}
+
+
+	public void setType(LinkType type) {
+		this.type = type;
 	}
 
 }

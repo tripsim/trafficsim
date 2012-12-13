@@ -7,25 +7,25 @@ public abstract class AbstractLocation<T> extends BaseEntity<T> implements Locat
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	private Position position;
+	private Coord coord;
 	
-	public AbstractLocation(Position position) {
-		this.position = position;
+	public AbstractLocation(Coord coord) {
+		this.coord = coord;
 	}
 
 	@Override
-	public Position getPosition() {
-		return position;
+	public Coord getCoord() {
+		return coord;
 	}
 	
 	@Override
-	public void setPosition(Position position) {
-		this.position = position;
+	public void setCoord(Coord coord) {
+		this.coord = coord;
 	}
 
 	@Override
-	public void setPosition(double x, double y) {
-		setPosition(new Position(x, y));
+	public void setCoord(double x, double y) {
+		setCoord(new Coord(x, y));
 	}
 	
 
