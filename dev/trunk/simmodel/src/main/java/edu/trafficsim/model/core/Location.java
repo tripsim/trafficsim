@@ -4,11 +4,11 @@ import edu.trafficsim.model.DataContainer;
 
 public interface Location extends DataContainer {
 
-	public Position getPosition();
+	public Coord getCoord();
 	
-	public void setPosition(Position position);
+	public void setCoord(Coord coord);
 	
-	public void setPosition(double x, double y);
+	public void setCoord(double x, double y);
 	
 	public String getName();
 }

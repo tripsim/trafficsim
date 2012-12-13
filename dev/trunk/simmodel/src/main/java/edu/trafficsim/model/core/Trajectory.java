@@ -14,15 +14,16 @@ public class Trajectory implements DataContainer {
 	
 	public static final short DEFAULT_RESOLUTION = 1;
 	
-	private List<Position> positions;
+	private List<Coord> coords;
 	private short resolution;
 
-	public Trajectory() {
-		this(DEFAULT_RESOLUTION);
+	public Trajectory(Coord coord) {
+		this(coord, DEFAULT_RESOLUTION);
 	}
 	
-	public Trajectory(short resolution) {
-		positions = new ArrayList<Position>();
+	public Trajectory(Coord coord, short resolution) {
+		coords = new ArrayList<Coord>();
+		coords.add(coord);
 		this.resolution = resolution;
 	}
 	
@@ -30,21 +31,21 @@ public class Trajectory implements DataContainer {
 		return resolution;
 	}
 	
-	public Position[] getPositions() {
-		return positions.toArray(new Position[positions.size()]);
+	public Coord[] getCoords() {
+		return coords.toArray(new Coord[coords.size()]);
 	}
 	
-	public Position[] getPositions(int resolution) {
+	public Coord[] getCoords(int resolution) {
 		// TODO: implement the return method
 		return null; 
 	}
 	
-	public Position getLastPosition() {
-		return positions.get(positions.size() - 1);
+	public Coord getLastCoord() {
+		return coords.get(coords.size() - 1);
 	}
 	
-	public void add(Position position) {
-		positions.add(position);
+	public void add(Coord coord) {
+		coords.add(coord);
 	}
 	
 
