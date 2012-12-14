@@ -1,7 +1,10 @@
 package edu.trafficsim.model.roadusers;
 
+import edu.trafficsim.model.behaviors.CarFollowingBehavior;
+import edu.trafficsim.model.behaviors.LaneChangingBehavior;
 import edu.trafficsim.model.network.Lane;
 import edu.trafficsim.model.network.Link;
+import edu.trafficsim.plugin.IVehicle;
 
 public class Vehicle extends RoadUser<Vehicle> {
 
@@ -10,8 +13,13 @@ public class Vehicle extends RoadUser<Vehicle> {
 	 */
 	private static final long serialVersionUID = 1L;
 	
+	private IVehicle impl;
+	
 	private VehicleType vehicleType;
 	private DriverType driverType;
+	
+	private CarFollowingBehavior carFollowingBehavior;
+	private LaneChangingBehavior laneChangingBehavior;
 	
 	private double position;
 	private Lane lane;
@@ -66,6 +74,22 @@ public class Vehicle extends RoadUser<Vehicle> {
 		return lane.getPrecedingVehicle(this);
 	}
 	
+	public CarFollowingBehavior getCarFollowingBehavior() {
+		return carFollowingBehavior;
+	}
+
+	public void setCarFollowingBehavior(CarFollowingBehavior carFollowingBehavior) {
+		this.carFollowingBehavior = carFollowingBehavior;
+	}
+
+	public LaneChangingBehavior getLaneChangingBehavior() {
+		return laneChangingBehavior;
+	}
+
+	public void setLaneChangingBehavior(LaneChangingBehavior laneChangingBehavior) {
+		this.laneChangingBehavior = laneChangingBehavior;
+	}
+
 	@Override
 	public int compareTo(Vehicle vehicle) {
 		if (!vehicle.getLane().equals(lane))
