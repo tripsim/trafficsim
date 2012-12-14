@@ -1,7 +1,9 @@
 package edu.trafficsim.model.network;
 
-import java.util.HashSet;
+import java.util.Map;
+import java.util.NavigableSet;
 import java.util.Set;
+import java.util.TreeSet;
 
 import edu.trafficsim.model.core.Location;
 import edu.trafficsim.model.core.Segment;
@@ -16,20 +18,47 @@ public class Lane implements Segment {
 	
 	private Link link;
 	private short laneNumber;
-	private Set<Vehicle> vehicles;
+	private Vehicle head;
+	private Vehicle tail;
+	private NavigableSet<Vehicle> vehicles;
+	private Map<Integer, Set<Vehicle>> neighborhoods;
 	
 	public Lane(Link link, short laneNumber) {
 		this.link = link;
 		this.laneNumber = laneNumber;
-		this.vehicles = new HashSet<Vehicle>();
+		this.vehicles = new TreeSet<Vehicle>();
 	}
 	
 	public short getLaneNumber() {
 		return laneNumber;
 	}
 	
-	public Set<Vehicle> getVehicles() {
+	public NavigableSet<Vehicle> getVehicles() {
 		return vehicles;
+	}
+	
+	public Vehicle getHeadVehicle() {
+		return head;
+	}
+	
+	public Vehicle getTailVehicle() {
+		return tail;
+	}
+	
+	public Vehicle getLeadingVehicle(Vehicle v) {
+		return vehicles.higher(v);
+	}
+	
+	public Vehicle getPrecedingVehicle(Vehicle v) {
+		return vehicles.lower(v);
+	}
+	
+	public Set<Vehicle> getNeighborhood(Integer i) {
+		return neighborhoods.get(i);
+	}
+	
+	public Link getLink() {
+		return link;
 	}
 
 	@Override
