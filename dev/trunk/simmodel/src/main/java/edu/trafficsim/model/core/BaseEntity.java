@@ -5,7 +5,7 @@ import java.util.Date;
 import edu.trafficsim.model.DataContainer;
 import edu.trafficsim.model.core.User;
 
-public abstract class BaseEntity<T> implements DataContainer {
+public abstract class BaseEntity<T> implements DataContainer, Comparable<T> {
 
 	/**
 	 * 
@@ -62,4 +62,11 @@ public abstract class BaseEntity<T> implements DataContainer {
 	public User getModifiedBy() {
 		return modifiedBy;
 	}
+
+	@Override
+	public int compareTo(T o) {
+		return 0;
+	}
+	
+	
 }

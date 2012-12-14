@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.trafficsim.model.core.AbstractSegment;
+import edu.trafficsim.model.roadusers.VehicleQueues;
 
 public class Link extends AbstractSegment<Link> {
 
@@ -14,12 +15,14 @@ public class Link extends AbstractSegment<Link> {
 	
 	private LinkType type;
 	private List<Lane> lanes;
+	private VehicleQueues queues;
 	
 	public Link(LinkType type, String name, Node fromNode, Node toNode) {
 		super(fromNode, toNode);
 		lanes = new ArrayList<Lane>();
 		setName(name);
 		this.type = type;
+		this.queues = new VehicleQueues();
 	}
 	
 	
@@ -44,6 +47,10 @@ public class Link extends AbstractSegment<Link> {
 
 	public void setType(LinkType type) {
 		this.type = type;
+	}
+	
+	public VehicleQueues getVehicleQueues() {
+		return queues;
 	}
 
 }

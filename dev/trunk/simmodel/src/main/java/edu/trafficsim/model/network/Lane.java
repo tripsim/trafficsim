@@ -1,7 +1,7 @@
 package edu.trafficsim.model.network;
 
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.HashSet;
+import java.util.Set;
 
 import edu.trafficsim.model.core.Location;
 import edu.trafficsim.model.core.Segment;
@@ -16,20 +16,20 @@ public class Lane implements Segment {
 	
 	private Link link;
 	private short laneNumber;
-	private Queue<Vehicle> queue;
+	private Set<Vehicle> vehicles;
 	
 	public Lane(Link link, short laneNumber) {
 		this.link = link;
 		this.laneNumber = laneNumber;
-		this.queue = new LinkedList<Vehicle>();
+		this.vehicles = new HashSet<Vehicle>();
 	}
 	
 	public short getLaneNumber() {
 		return laneNumber;
 	}
 	
-	public Queue<Vehicle> getQueue() {
-		return queue;
+	public Set<Vehicle> getVehicles() {
+		return vehicles;
 	}
 
 	@Override
