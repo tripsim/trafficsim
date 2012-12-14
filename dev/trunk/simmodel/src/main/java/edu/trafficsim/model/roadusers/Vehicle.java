@@ -13,9 +13,10 @@ public class Vehicle extends RoadUser<Vehicle> {
 	private double position;
 	private Lane lane;
 
-	public Vehicle(Lane lane) {
+	public Vehicle(VehicleType type, Lane lane) {
 		super(lane.getFromLocation().getCoord());
 		this.lane = lane;
+		this.type = type;
 		// TODO: position
 	}
 
@@ -45,5 +46,13 @@ public class Vehicle extends RoadUser<Vehicle> {
 	
 	public Vehicle getPrecedingVehicle() {
 		return null;
+	}
+	
+	@Override
+	public int compareTo(Vehicle vehicle) {
+		if (vehicle.getLane().equals(lane))
+			return super.compareTo(vehicle);
+		return position - vehicle.getPosition() > 0 ?
+				1 : -1;
 	}
 }
