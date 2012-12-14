@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.trafficsim.model.core.AbstractSegment;
+import edu.trafficsim.plugin.ILink;
 
 public class Link extends AbstractSegment<Link> {
 
@@ -14,6 +15,8 @@ public class Link extends AbstractSegment<Link> {
 	
 	// make variable in the future
 	public static final double NEIBOUR_SIZE = 100.0;
+	
+	private ILink impl;
 	
 	private LinkType linkType;
 	private List<Lane> lanes;
