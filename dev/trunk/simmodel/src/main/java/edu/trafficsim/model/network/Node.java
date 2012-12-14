@@ -10,20 +10,20 @@ public class Node extends AbstractLocation<Node> {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private NodeType type;
+	private NodeType nodeType;
 	
-	public Node(NodeType type, String name, Coord coord) {
+	public Node(NodeType nodeType, String name, Coord coord) {
 		super(coord);
 		setName(name);
-		this.type = type;
+		this.nodeType = nodeType;
 	}
 
-	public NodeType getType() {
-		return type;
+	public NodeType getNodeType() {
+		return nodeType;
 	}
 	
-	public void getNodeType(NodeType type) {
-		this.type = type;
+	public void setNodeType(NodeType nodeType) {
+		this.nodeType = nodeType;
 	}
 
 }

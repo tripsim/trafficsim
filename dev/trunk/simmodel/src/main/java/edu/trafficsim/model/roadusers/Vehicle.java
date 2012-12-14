@@ -1,6 +1,7 @@
 package edu.trafficsim.model.roadusers;
 
 import edu.trafficsim.model.network.Lane;
+import edu.trafficsim.model.network.Link;
 
 public class Vehicle extends RoadUser<Vehicle> {
 
@@ -9,14 +10,17 @@ public class Vehicle extends RoadUser<Vehicle> {
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	private VehicleType type;
+	private VehicleType vehicleType;
+	private DriverType driverType;
+	
 	private double position;
 	private Lane lane;
 
-	public Vehicle(VehicleType type, Lane lane) {
+	public Vehicle(VehicleType vehicleType, DriverType driverType, Lane lane) {
 		super(lane.getFromLocation().getCoord());
 		this.lane = lane;
-		this.type = type;
+		this.vehicleType = vehicleType;
+		this.driverType = driverType;
 		// TODO: position
 	}
 
@@ -24,12 +28,21 @@ public class Vehicle extends RoadUser<Vehicle> {
 		return position;
 	}
 	
-	public VehicleType getType() {
-		return type;
+
+	public VehicleType getVehicleType() {
+		return vehicleType;
 	}
 	
-	public void setType(VehicleType type) {
-		this.type = type;
+	public void setType(VehicleType vehicleType) {
+		this.vehicleType = vehicleType;
+	}
+	
+	public DriverType getDriverType() {
+		return driverType;
+	}
+
+	public void setDriverType(DriverType driverType) {
+		this.driverType = driverType;
 	}
 
 	public Lane getLane() {
@@ -40,19 +53,24 @@ public class Vehicle extends RoadUser<Vehicle> {
 		this.lane = lane;
 	}
 	
+	public Integer getNeighborhoodIndex() {
+		lane.getLink();
+		return new Integer((int) (position / Link.NEIBOUR_SIZE));
+	}
+	
 	public Vehicle getLeadingVehicle() {
-		return null;
+		return lane.getLeadingVehicle(this);
 	}
 	
 	public Vehicle getPrecedingVehicle() {
-		return null;
+		return lane.getPrecedingVehicle(this);
 	}
 	
 	@Override
 	public int compareTo(Vehicle vehicle) {
-		if (vehicle.getLane().equals(lane))
+		if (!vehicle.getLane().equals(lane))
 			return super.compareTo(vehicle);
-		return position - vehicle.getPosition() > 0 ?
-				1 : -1;
+		return position - vehicle.getPosition() > 0 ? 1 : 
+			position - vehicle.getPosition() < 0 ? -1 : 0;
 	}
 }

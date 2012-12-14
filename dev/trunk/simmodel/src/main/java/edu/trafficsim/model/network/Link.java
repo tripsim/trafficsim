@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.trafficsim.model.core.AbstractSegment;
-import edu.trafficsim.model.roadusers.VehicleQueues;
 
 public class Link extends AbstractSegment<Link> {
 
@@ -13,16 +12,17 @@ public class Link extends AbstractSegment<Link> {
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	private LinkType type;
-	private List<Lane> lanes;
-	private VehicleQueues queues;
+	// make variable in the future
+	public static final double NEIBOUR_SIZE = 100.0;
 	
-	public Link(LinkType type, String name, Node fromNode, Node toNode) {
+	private LinkType linkType;
+	private List<Lane> lanes;
+	
+	public Link(LinkType linkType, String name, Node fromNode, Node toNode) {
 		super(fromNode, toNode);
 		lanes = new ArrayList<Lane>();
 		setName(name);
-		this.type = type;
-		this.queues = new VehicleQueues();
+		this.linkType = linkType;
 	}
 	
 	
@@ -40,17 +40,12 @@ public class Link extends AbstractSegment<Link> {
 	}
 
 
-	public LinkType getType() {
-		return type;
+	public LinkType getLinkType() {
+		return linkType;
 	}
 
-
-	public void setType(LinkType type) {
-		this.type = type;
-	}
-	
-	public VehicleQueues getVehicleQueues() {
-		return queues;
+	public void setLinkType(LinkType linkType) {
+		this.linkType = linkType;
 	}
 
 }
