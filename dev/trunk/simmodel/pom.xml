@@ -44,10 +44,16 @@
       <artifactId>gt-opengis</artifactId>
       <version>${geotools.version}</version>
     </dependency>
+    <dependency>
+      <groupId>com.vividsolutions</groupId>
+      <artifactId>jts</artifactId>
+      <version>${jts.version}</version>
+    </dependency>
   </dependencies>
   
   <properties>
     <geotools.version>8.4</geotools.version>
+    <jts.version>1.13</jts.version>
   </properties>
   
 </project>
