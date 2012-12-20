@@ -1,8 +1,9 @@
 package edu.trafficsim.plugin.impl;
 
-import edu.trafficsim.plugin.IVehicle;
+import edu.trafficsim.plugin.IEvent;
 
-public class DefaultEventImpl  extends AbstractPluginImpl implements IVehicle {
+
+public class DefaultEventImpl  extends AbstractPluginImpl implements IEvent {
 
 	/**
 	 * 

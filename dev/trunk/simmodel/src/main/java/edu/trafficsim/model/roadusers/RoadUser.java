@@ -1,9 +1,9 @@
 package edu.trafficsim.model.roadusers;
 
+import com.vividsolutions.jts.geom.Coordinate;
+
 import edu.trafficsim.model.core.BaseEntity;
-import edu.trafficsim.model.core.Coord;
 import edu.trafficsim.model.core.Movable;
-import edu.trafficsim.model.core.Trajectory;
 
 public abstract class RoadUser<T> extends BaseEntity<T> implements Movable {
 
@@ -14,13 +14,17 @@ public abstract class RoadUser<T> extends BaseEntity<T> implements Movable {
 
 	private Trajectory trajectory;
 
-	public RoadUser(Coord coord) {
+	public RoadUser() {
+		
+	}
+	
+	public RoadUser(Coordinate coord) {
 		trajectory = new Trajectory(coord);
 	}
 	
 	@Override
-	public Coord getCoord() {
-		return trajectory.getLastCoord();
+	public Coordinate getCoord() {
+		return trajectory == null ? null : trajectory.getLastCoord();
 	}
 	
 	@Override

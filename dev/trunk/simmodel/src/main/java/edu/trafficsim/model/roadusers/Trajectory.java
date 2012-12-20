@@ -1,7 +1,9 @@
-package edu.trafficsim.model.core;
+package edu.trafficsim.model.roadusers;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.vividsolutions.jts.geom.Coordinate;
 
 import edu.trafficsim.model.DataContainer;
 
@@ -14,15 +16,15 @@ public class Trajectory implements DataContainer {
 	
 	public static final short DEFAULT_RESOLUTION = 1;
 	
-	private List<Coord> coords;
+	private List<Coordinate> coords;
 	private short resolution;
 
-	public Trajectory(Coord coord) {
+	public Trajectory(Coordinate coord) {
 		this(coord, DEFAULT_RESOLUTION);
 	}
 	
-	public Trajectory(Coord coord, short resolution) {
-		coords = new ArrayList<Coord>();
+	public Trajectory(Coordinate coord, short resolution) {
+		coords = new ArrayList<Coordinate>();
 		coords.add(coord);
 		this.resolution = resolution;
 	}
@@ -31,20 +33,20 @@ public class Trajectory implements DataContainer {
 		return resolution;
 	}
 	
-	public Coord[] getCoords() {
-		return coords.toArray(new Coord[coords.size()]);
+	public Coordinate[] getCoords() {
+		return coords.toArray(new Coordinate[coords.size()]);
 	}
 	
-	public Coord[] getCoords(int resolution) {
+	public Coordinate[] getCoords(int resolution) {
 		// TODO: implement the return method
 		return null; 
 	}
 	
-	public Coord getLastCoord() {
+	public Coordinate getLastCoord() {
 		return coords.get(coords.size() - 1);
 	}
 	
-	public void add(Coord coord) {
+	public void add(Coordinate coord) {
 		coords.add(coord);
 	}
 	
