@@ -4,7 +4,7 @@
     <groupId>edu.trafficsim</groupId>
     <artifactId>trafficsim</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <relativePath>.../simparent/pom.xml</relativePath>
+    <relativePath>.../trafficsim/pom.xml</relativePath>
   </parent>
   
   <modelVersion>4.0.0</modelVersion>
