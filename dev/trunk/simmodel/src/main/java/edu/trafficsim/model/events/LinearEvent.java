@@ -1,6 +1,9 @@
 package edu.trafficsim.model.events;
 
-public abstract class LinearEvent extends Event<LinearEvent> {
+import edu.trafficsim.model.core.AbstractSegment;
+import edu.trafficsim.model.core.Location;
+
+public abstract class LinearEvent<T> extends AbstractSegment<T> {
 
 	/**
 	 * 
@@ -8,7 +11,7 @@ public abstract class LinearEvent extends Event<LinearEvent> {
 	private static final long serialVersionUID = 1L;
 
 
-	public LinearEvent(EventType eventType) {
-		super(eventType);
+	public LinearEvent(Location fromLocation, Location toLocation) {
+		super(fromLocation, toLocation);
 	}
 }

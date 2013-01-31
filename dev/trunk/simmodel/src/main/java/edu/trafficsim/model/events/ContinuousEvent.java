@@ -1,6 +1,8 @@
 package edu.trafficsim.model.events;
 
-public abstract class ContinuousEvent extends Event<ContinuousEvent> {
+import edu.trafficsim.model.roadusers.RoadUser;
+
+public abstract class ContinuousEvent<T> extends RoadUser<T> {
 
 	/**
 	 * 
@@ -8,8 +10,8 @@ public abstract class ContinuousEvent extends Event<ContinuousEvent> {
 	private static final long serialVersionUID = 1L;
 	
 	
-	public ContinuousEvent(EventType eventType) {
-		super(eventType);
+	public ContinuousEvent() {
+		
 	}
 
 }
