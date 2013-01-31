@@ -19,9 +19,9 @@ public class Link extends AbstractSegment<Link> {
 	public static final double NEIBOUR_SIZE = 100.0;
 	
 	private ILink impl;
-	
 	private LinkType linkType;
-	private List<Lane> lanes;
+	
+	private final List<Lane> lanes;
 	private LineString leftEdge;
 	private LineString rightEdge;
 	

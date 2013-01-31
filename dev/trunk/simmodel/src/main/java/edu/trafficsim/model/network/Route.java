@@ -1,13 +1,28 @@
 package edu.trafficsim.model.network;
 
-import edu.trafficsim.model.core.BaseEntity;
 import edu.trafficsim.model.core.Navigable;
 
-public class Route<T> extends BaseEntity<T> implements Navigable<Link, Node> {
+public class Route extends AbstractNetwork<Route> implements Navigable {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	
+	private Node start;
+	private Node end;
+	
+	public Route(Node start, Node end) {
+		this.start = start;
+		this.end = end;
+	}
+	
+	public Node getStartNode() {
+		return start;
+	}
+	
+	public Node getEndNode() {
+		return end;
+	}
 
 }

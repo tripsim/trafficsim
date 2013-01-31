@@ -17,9 +17,9 @@ public class Lane implements Segment {
 	private static final long serialVersionUID = 1L;
 	
 	private Link link;
-	private double start;
-	private double end;
-	private double portion; // how much portion of width it occupies comparing to even distribution
+//	private double start;
+//	private double end;
+//	private double portion; // how much portion of width it occupies comparing to even distribution
 	private short laneNumber;
 	private Vehicle head;
 	private Vehicle tail;
@@ -30,9 +30,9 @@ public class Lane implements Segment {
 		this.link = link;
 		this.laneNumber = laneNumber;
 		this.vehicles = new TreeSet<Vehicle>();
-		this.start = 0;
-		this.end = link.getLength();
-		this.portion = 1.0;
+//		this.start = 0;
+//		this.end = link.getLength();
+//		this.portion = 1.0;
 	}
 	
 	public short getLaneNumber() {

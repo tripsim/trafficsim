@@ -1,9 +1,13 @@
 package edu.trafficsim.model.network;
 
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import edu.trafficsim.model.core.AbstractLocation;
+import edu.trafficsim.plugin.INode;
 
 public class Node extends AbstractLocation<Node> {
 
@@ -18,10 +22,14 @@ public class Node extends AbstractLocation<Node> {
 	public static final short MOVEMENT_LEFT = 3;
 	public static final short MOVEMENT_UTURN = 4;
 
-	private Map<Link, Map<Link, Integer>> turnTable;
+	private NodeType nodeType;
+	private INode nodeImpl;
 	
-	public Node(String name) {
+	private final Map<Link, Map<Link, Integer>> turnTable;
+	
+	public Node(NodeType nodeType, String name) {
 		setName(name);
+		this.nodeType = nodeType;
 		turnTable = new HashMap<Link, Map<Link,  Integer>>();
 	}
 	
@@ -29,4 +37,19 @@ public class Node extends AbstractLocation<Node> {
 		return turnTable.get(fromLink).get(toLink).shortValue();
 	}
 	
+	public Set<Link> getOutLinks() {
+		return Collections.unmodifiableSet(new HashSet<Link>());
+	}
+	
+	public Set<Link> getInLinks() {
+		return Collections.unmodifiableSet(new HashSet<Link>());
+	}
+	
+	public NodeType getNodeType() {
+		return nodeType;
+	}
+	
+	public void setNodeType(NodeType nodeType) {
+		this.nodeType = nodeType;
+	}
 }
