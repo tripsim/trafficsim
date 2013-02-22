@@ -24,7 +24,7 @@ public class Lane implements Segment {
 	private Vehicle head;
 	private Vehicle tail;
 	private NavigableSet<Vehicle> vehicles;
-	private Map<Integer, Set<Vehicle>> neighborhoods;
+	private Map<Integer, Set<Vehicle>> laneFragements;
 	
 	public Lane(Link link, short laneNumber) {
 		this.link = link;
@@ -59,8 +59,8 @@ public class Lane implements Segment {
 		return vehicles.lower(v);
 	}
 	
-	public Set<Vehicle> getNeighborhood(Integer i) {
-		return neighborhoods.get(i);
+	public Set<Vehicle> getFragment(Integer i) {
+		return laneFragements.get(i);
 	}
 	
 	public Link getLink() {

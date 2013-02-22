@@ -25,7 +25,7 @@ public class Vehicle extends RoadUser<Vehicle> {
 	private Lane lane;
 
 	public Vehicle(VehicleType vehicleType, DriverType driverType, Lane lane) {
-		super(lane.getFromLocation().getCoord());
+		super(lane.getFromLocation().getPoint().getCoordinate());
 		this.lane = lane;
 		this.vehicleType = vehicleType;
 		this.driverType = driverType;
@@ -90,6 +90,8 @@ public class Vehicle extends RoadUser<Vehicle> {
 		this.laneChangingBehavior = laneChangingBehavior;
 	}
 
+	// Determine the order of the vehicles in the NavigableSet of the lane
+	// Vehicle Queue
 	@Override
 	public int compareTo(Vehicle vehicle) {
 		if (!vehicle.getLane().equals(lane))
