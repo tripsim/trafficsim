@@ -6,6 +6,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import com.vividsolutions.jts.geom.LineString;
+
 import edu.trafficsim.model.core.AbstractLocation;
 import edu.trafficsim.plugin.INode;
 
@@ -25,16 +27,20 @@ public class Node extends AbstractLocation<Node> {
 	private NodeType nodeType;
 	private INode nodeImpl;
 	
-	private final Map<Link, Map<Link, Integer>> turnTable;
+	// First key is the upstream Link, and the second key is the downstream link
+	private final Map<Link, Map<Link, Integer>> turnImpediment;
+	
+	// Store the geometry for the link edge
+	private Set<LineString> edges;
 	
 	public Node(NodeType nodeType, String name) {
 		setName(name);
 		this.nodeType = nodeType;
-		turnTable = new HashMap<Link, Map<Link,  Integer>>();
+		turnImpediment = new HashMap<Link, Map<Link,  Integer>>();
 	}
 	
 	public short getMovement(Link fromLink, Link toLink) {
-		return turnTable.get(fromLink).get(toLink).shortValue();
+		return turnImpediment.get(fromLink).get(toLink).shortValue();
 	}
 	
 	public Set<Link> getOutLinks() {

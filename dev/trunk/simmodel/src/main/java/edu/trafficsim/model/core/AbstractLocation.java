@@ -1,6 +1,6 @@
 package edu.trafficsim.model.core;
 
-import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Point;
 
 public abstract class AbstractLocation<T> extends BaseEntity<T> implements Location {
 
@@ -9,30 +9,24 @@ public abstract class AbstractLocation<T> extends BaseEntity<T> implements Locat
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	private Coordinate coord;
+	private Point point;
 	
 	public AbstractLocation() {
 		this(null);
 	}
 	
-	public AbstractLocation(Coordinate coord) {
-		this.coord = coord;
+	public AbstractLocation(Point coord) {
+		this.point = coord;
 	}
 
 	@Override
-	public Coordinate getCoord() {
-		return coord;
+	public Point getPoint() {
+		return point;
 	}
 	
 	@Override
-	public void setCoord(Coordinate coord) {
-		this.coord = coord;
+	public void setPoint(Point point) {
+		this.point = point;
 	}
-
-	@Override
-	public void setCoord(double x, double y) {
-		setCoord(new Coordinate(x, y));
-	}
-	
 
 }

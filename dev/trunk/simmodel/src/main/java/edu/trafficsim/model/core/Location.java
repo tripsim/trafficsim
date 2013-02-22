@@ -1,16 +1,14 @@
 package edu.trafficsim.model.core;
 
-import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Point;
 
 import edu.trafficsim.model.DataContainer;
 
 public interface Location extends DataContainer {
 
-	public Coordinate getCoord();
+	public Point getPoint();
 	
-	public void setCoord(Coordinate coord);
-	
-	public void setCoord(double x, double y);
+	public void setPoint(Point coord);
 	
 	public String getName();
 }
