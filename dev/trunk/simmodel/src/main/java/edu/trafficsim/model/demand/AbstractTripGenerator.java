@@ -7,7 +7,7 @@ import java.util.Set;
 import edu.trafficsim.model.core.BaseEntity;
 import edu.trafficsim.model.core.Demand;
 import edu.trafficsim.model.network.Node;
-import edu.trafficsim.model.roadusers.VehicleClass;
+import edu.trafficsim.model.roadusers.VehicleType.VehicleClass;
 
 public abstract class AbstractTripGenerator<T> extends BaseEntity<T> implements Demand {
 

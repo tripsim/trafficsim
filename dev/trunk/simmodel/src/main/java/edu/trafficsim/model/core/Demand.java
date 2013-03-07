@@ -4,7 +4,7 @@ import java.util.Set;
 
 import edu.trafficsim.model.DataContainer;
 import edu.trafficsim.model.network.Node;
-import edu.trafficsim.model.roadusers.VehicleClass;
+import edu.trafficsim.model.roadusers.VehicleType.VehicleClass;
 
 public interface Demand extends DataContainer {
 

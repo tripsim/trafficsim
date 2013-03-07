@@ -5,38 +5,66 @@ import java.util.NavigableSet;
 import java.util.Set;
 import java.util.TreeSet;
 
+import edu.trafficsim.model.core.AbstractSegment;
 import edu.trafficsim.model.core.Location;
-import edu.trafficsim.model.core.Segment;
 import edu.trafficsim.model.roadusers.Vehicle;
 
-public class Lane implements Segment {
+public class Lane extends AbstractSegment<Lane> {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 	
+	private final static double DEFAULT_WIDTH = 4.0d;
+	
 	private Link link;
-//	private double start;
-//	private double end;
-//	private double portion; // how much portion of width it occupies comparing to even distribution
-	private short laneNumber;
-	private Vehicle head;
-	private Vehicle tail;
-	private NavigableSet<Vehicle> vehicles;
+	
+	private double width;
+	// the distance in the link where the lane starts and ends
+	private double start;
+	private double end;
+	
+	private byte laneId;
+	private final NavigableSet<Vehicle> vehicles;
 	private Map<Integer, Set<Vehicle>> laneFragements;
 	
-	public Lane(Link link, short laneNumber) {
+	public Lane(Link link, byte laneId) {
 		this.link = link;
-		this.laneNumber = laneNumber;
+		this.laneId = laneId;
 		this.vehicles = new TreeSet<Vehicle>();
-//		this.start = 0;
-//		this.end = link.getLength();
-//		this.portion = 1.0;
+		
+		this.width = DEFAULT_WIDTH;
+		this.start = 0;
+		this.end = link.getLength();
 	}
 	
-	public short getLaneNumber() {
-		return laneNumber;
+	public byte getLaneId() {
+		return laneId;
+	}
+	
+	public double getWidth() {
+		return width;
+	}
+	
+	public void setWidth(double width) {
+		this.width = width;
+	}
+	
+	public double getStart() {
+		return start;
+	}
+	
+	public void setStart(double start) {
+		this.start = start;
+	}
+	
+	public double getEnd() {
+		return end;
+	}
+	
+	public void setEnd(double end) {
+		this.end = end;
 	}
 	
 	public NavigableSet<Vehicle> getVehicles() {
@@ -44,19 +72,19 @@ public class Lane implements Segment {
 	}
 	
 	public Vehicle getHeadVehicle() {
-		return head;
+		return vehicles.first();
 	}
 	
 	public Vehicle getTailVehicle() {
-		return tail;
+		return vehicles.last();
 	}
 	
 	public Vehicle getLeadingVehicle(Vehicle v) {
-		return vehicles.higher(v);
+		return vehicles.ceiling(v);
 	}
 	
 	public Vehicle getPrecedingVehicle(Vehicle v) {
-		return vehicles.lower(v);
+		return vehicles.floor(v);
 	}
 	
 	public Set<Vehicle> getFragment(Integer i) {
@@ -79,7 +107,7 @@ public class Lane implements Segment {
 
 	@Override
 	public String getName() {
-		return link.getName() + laneNumber;
+		return link.getName() + laneId;
 	}
 
 	@Override

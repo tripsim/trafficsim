@@ -1,5 +1,6 @@
 package edu.trafficsim.model.network;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -14,8 +15,8 @@ public abstract class AbstractNetwork<T> extends BaseEntity<T> implements
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private final Set<Node> nodes;
-	private final Set<Link> links;
+	protected final Set<Node> nodes;
+	protected final Set<Link> links;
 	
 	public AbstractNetwork() {
 		nodes = new HashSet<Node>();
@@ -24,12 +25,12 @@ public abstract class AbstractNetwork<T> extends BaseEntity<T> implements
 	
 	@Override
 	public Set<Node> getAllNodes() {
-		return nodes;
+		return Collections.unmodifiableSet(nodes);
 	}
 
 	@Override
 	public Set<Link> getAllLinks() {
-		return links;
+		return Collections.unmodifiableSet(links);
 	}
 
 	@Override
@@ -40,6 +41,28 @@ public abstract class AbstractNetwork<T> extends BaseEntity<T> implements
 	@Override
 	public boolean contains(Link link) {
 		return links.contains(link);
+	}
+	
+	@Override
+	public void addNode(Node node) {
+		nodes.add(node);
+	}
+
+	@Override
+	public void addLink(Link link) {
+		links.add(link);
+	}
+
+	@Override
+	public void addNodes(Node... nodes) {
+		for (Node node : nodes)
+			addNode(node);
+	}
+
+	@Override
+	public void addLinks(Link... links) {
+		for (Link link : links)
+			addLink(link);
 	}
 
 	@Override

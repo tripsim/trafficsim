@@ -1,5 +1,6 @@
 package edu.trafficsim.model.behaviors;
 
+import edu.trafficsim.model.roadusers.Vehicle;
 import edu.trafficsim.plugin.ILaneChanging;
 
 
@@ -23,4 +24,8 @@ public class LaneChangingBehavior extends AbstractBehavior<LaneChangingBehavior>
 		
 	}
 
+	@Override
+	public void update(Vehicle vehicle) {
+		
+	}
 }

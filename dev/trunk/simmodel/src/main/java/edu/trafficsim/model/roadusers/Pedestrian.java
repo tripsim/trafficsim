@@ -14,4 +14,10 @@ public class Pedestrian extends RoadUser<Pedestrian> {
 	public Pedestrian() {
 	}
 
+	@Override
+	public void stepForward() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

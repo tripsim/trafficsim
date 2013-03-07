@@ -12,7 +12,15 @@ public interface Navigable extends DataContainer {
 	public boolean contains(Node node);
 	
 	public boolean contains(Link link);
+	
+	public void addNode(Node node);
+	
+	public void addLink(Link link);
+	
+	public void addNodes(Node... nodes);
 
+	public void addLinks(Link... links);
+	
 	public Set<Node> getAllNodes();
 	
 	public Set<Link> getAllLinks();
