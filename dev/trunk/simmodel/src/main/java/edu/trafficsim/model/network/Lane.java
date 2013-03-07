@@ -18,29 +18,48 @@ public class Lane extends AbstractSegment<Lane> {
 	
 	private final static double DEFAULT_WIDTH = 4.0d;
 	
+	public static enum Direction {
+		Forward,
+		Backward
+	}
+	
 	private Link link;
+	private Direction direction;
 	
 	private double width;
 	// the distance in the link where the lane starts and ends
 	private double start;
 	private double end;
 	
-	private byte laneId;
 	private final NavigableSet<Vehicle> vehicles;
 	private Map<Integer, Set<Vehicle>> laneFragements;
 	
-	public Lane(Link link, byte laneId) {
+	public Lane(Link link) {
+		this(link, Direction.Forward);
+	}
+	
+	public Lane(Link link, Direction direction) {
 		this.link = link;
-		this.laneId = laneId;
-		this.vehicles = new TreeSet<Vehicle>();
+		this.direction = direction;
+		if(direction == Direction.Forward)
+			link.addForwardLane(this);
+		else
+			link.addBackwardLane(this);
 		
+		this.vehicles = new TreeSet<Vehicle>();
 		this.width = DEFAULT_WIDTH;
 		this.start = 0;
 		this.end = link.getLength();
 	}
 	
-	public byte getLaneId() {
-		return laneId;
+	public int getLaneId() {
+		return direction == Direction.Forward ? 
+				link.getForwardLanes().indexOf(this) :
+					link.getBackwardLanes().indexOf(this);
+	}
+	
+	public Direction getDirection() {
+		return direction;
 	}
 	
 	public double getWidth() {
@@ -107,7 +126,7 @@ public class Lane extends AbstractSegment<Lane> {
 
 	@Override
 	public String getName() {
-		return link.getName() + laneId;
+		return link.getName() + "-" + getLaneId() + " "+ super.getName();
 	}
 
 	@Override

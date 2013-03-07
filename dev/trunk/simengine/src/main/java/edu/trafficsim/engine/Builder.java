@@ -57,10 +57,19 @@ public class Builder {
 		Link link1 = networkFactory.createLink("Johson1", node1, node2, coords1);
 		Link link2 = networkFactory.createLink("Johson2", node2, node3, coords2);
 		
+		// node topo
 		node1.addOutLink(link1);
 		node2.addInLink(link1);
 		node2.addOutLink(link2);
 		node3.addInLink(link2);
+		
+		// create three forward lanes for each link
+		networkFactory.createLane(link1);
+		networkFactory.createLane(link1);
+		networkFactory.createLane(link1);
+		networkFactory.createLane(link2);
+		networkFactory.createLane(link2);
+		networkFactory.createLane(link2);
 		
 		network.addNodes(node1, node2, node3);
 		network.addLinks(link1, link2);

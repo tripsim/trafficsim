@@ -60,9 +60,11 @@ public class NetworkFactory extends AbstractFactory {
 		return new Link(name, linkType, nodeFrom, nodeTo, lineString);
 	}
 	
-	public Lane createLane(Link link, byte laneId) {
-		Lane lane = new Lane(link, laneId);
-		link.addLane(lane);
-		return lane;
+	public Lane createLane(Link link) {
+		return createLane(link, Lane.Direction.Forward);
+	}
+	
+	public Lane createLane(Link link, Lane.Direction direction) {
+		return new Lane(link, direction);
 	}
 }

@@ -3,30 +3,23 @@ package edu.trafficsim.engine;
 import java.util.Set;
 
 import edu.trafficsim.factory.RoadUserFactory;
-import edu.trafficsim.factory.SimulatorFactory;
 import edu.trafficsim.model.core.Agent;
-import edu.trafficsim.model.core.Environment;
+import edu.trafficsim.model.network.Network;
 import edu.trafficsim.model.simulator.Simulator;
 
 public class Simulation {
-	
-	private SimulatorFactory simulatorFactory;
 	private RoadUserFactory roadUserFactory;
 
 	private Simulator simulator;
 	private Set<Agent> agents;
-	private Set<Environment> environments;
+	
 
 	
 	
-	public Simulation(Set<Agent> agents, Set<Environment> environments) {
-		simulatorFactory = SimulatorFactory.getInstance();
+	public Simulation(Simulator simulator, Network network) {
 		roadUserFactory = RoadUserFactory.getInstance();
 		
-		this.agents = agents;
-		this.environments = environments;
-		
-		// hack
+		this.simulator = simulator = simulator;
 	}
 	
 	public void run() {
