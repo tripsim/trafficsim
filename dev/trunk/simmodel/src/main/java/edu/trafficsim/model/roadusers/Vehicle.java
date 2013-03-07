@@ -4,7 +4,6 @@ import edu.trafficsim.model.behaviors.CarFollowingBehavior;
 import edu.trafficsim.model.behaviors.LaneChangingBehavior;
 import edu.trafficsim.model.network.Lane;
 import edu.trafficsim.model.network.Link;
-import edu.trafficsim.plugin.IVehicle;
 
 public class Vehicle extends RoadUser<Vehicle> {
 
@@ -12,8 +11,9 @@ public class Vehicle extends RoadUser<Vehicle> {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	
-	private IVehicle impl;
+
+// TODO introduce implementation
+//	private IVehicle impl;
 	
 	private VehicleType vehicleType;
 	private DriverType driverType;
@@ -21,21 +21,30 @@ public class Vehicle extends RoadUser<Vehicle> {
 	private CarFollowingBehavior carFollowingBehavior;
 	private LaneChangingBehavior laneChangingBehavior;
 	
-	private double position;
 	private Lane lane;
+
+// TODO incorporate those properties
+//	private double width;
+//	private double length;
+//	private double height;
+	private double position;
+//	private double accer;
 
 	public Vehicle(VehicleType vehicleType, DriverType driverType, Lane lane) {
 		super(lane.getFromLocation().getPoint().getCoordinate());
 		this.lane = lane;
 		this.vehicleType = vehicleType;
 		this.driverType = driverType;
-		// TODO: position
+		this.position = 0d;
 	}
 
 	public double getPosition() {
 		return position;
 	}
 	
+	public void setPosition(double position) {
+		this.position = position;
+	}
 
 	public VehicleType getVehicleType() {
 		return vehicleType;
@@ -63,7 +72,7 @@ public class Vehicle extends RoadUser<Vehicle> {
 	
 	public Integer getNeighborhoodIndex() {
 		lane.getLink();
-		return new Integer((int) (position / Link.NEIBOUR_SIZE));
+		return new Integer((int) (position / Link.FRAGMENT_SIZE));
 	}
 	
 	public Vehicle getLeadingVehicle() {
@@ -98,5 +107,10 @@ public class Vehicle extends RoadUser<Vehicle> {
 			return super.compareTo(vehicle);
 		return position - vehicle.getPosition() > 0 ? 1 : 
 			position - vehicle.getPosition() < 0 ? -1 : 0;
+	}
+
+	@Override
+	public void stepForward() {
+		carFollowingBehavior.update(this);
 	}
 }

@@ -10,6 +10,10 @@ public abstract class AbstractSegment<T> extends BaseEntity<T> implements Segmen
 	private Location fromLocation;
 	private Location toLocation;
 	
+	public AbstractSegment() {
+		this(null, null);
+	}
+	
 	public AbstractSegment(Location fromLocation, Location toLocation) {
 		this.fromLocation = fromLocation;
 		this.toLocation = toLocation;

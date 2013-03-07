@@ -15,8 +15,8 @@ public abstract class AbstractLocation<T> extends BaseEntity<T> implements Locat
 		this(null);
 	}
 	
-	public AbstractLocation(Point coord) {
-		this.point = coord;
+	public AbstractLocation(Point point) {
+		this.point = point;
 	}
 
 	@Override

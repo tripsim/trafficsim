@@ -1,6 +1,8 @@
 package edu.trafficsim.model.behaviors;
 
+import edu.trafficsim.model.roadusers.Vehicle;
 import edu.trafficsim.plugin.ICarFollowing;
+import edu.trafficsim.plugin.impl.DefaultCarFollowingImpl;
 
 
 public class CarFollowingBehavior extends AbstractBehavior<CarFollowingBehavior> {
@@ -21,6 +23,14 @@ public class CarFollowingBehavior extends AbstractBehavior<CarFollowingBehavior>
 	public CarFollowingBehavior(String name) {
 		setName(name);
 		// Get the proper impl....
+		
+		// HACK
+		impl = new DefaultCarFollowingImpl();
+	}
+	
+	@Override
+	public void update(Vehicle vehicle) {
+		impl.update(vehicle);
 	}
 
 }

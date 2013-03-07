@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.LineString;
 
 import edu.trafficsim.model.DataContainer;
 
@@ -40,6 +41,11 @@ public class Trajectory implements DataContainer {
 	public Coordinate[] getCoords(int resolution) {
 		// TODO: implement the return method
 		return null; 
+	}
+	
+	public LineString toLineString() {
+		// TODO implement
+		return null;
 	}
 	
 	public Coordinate getLastCoord() {

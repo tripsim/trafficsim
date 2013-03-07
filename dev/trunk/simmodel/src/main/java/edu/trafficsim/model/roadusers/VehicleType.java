@@ -8,28 +8,42 @@ public class VehicleType extends Type<VehicleType> {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	
+	public static enum VehicleClass {
+		Motocycle,
+		Car,
+		Truck,
+		Bus,
+		RV
+	}
+	
+	public static enum TechnolgyType {
+		ConnectedVehicle,
+		CrusieControl,
+		AdaptiveCruiseControl
+	}
 
-	private String width;
-	private String length;
+//	private double minWidth;
+//	private double maxWidth;
+//	private double minLength;
+//	private double maxLength;
+//	private double minHeight;
+//	private double maxHeight;
+//	
+//	private double maxAcceleration;
+//	private double maxDeceleration;
+//	private double maxSpeed;
+//	
+//	private double frictions;
+//	private double horsePower;
+//	private double mpg;
+//	
+//	private double emission;
+	
 	
 	public VehicleType() {
 		// TODO
 	}
 
-	public String getWidth() {
-		return width;
-	}
-
-	public void setWidth(String width) {
-		this.width = width;
-	}
-
-	public String getLength() {
-		return length;
-	}
-
-	public void setLength(String length) {
-		this.length = length;
-	}
 	
 }

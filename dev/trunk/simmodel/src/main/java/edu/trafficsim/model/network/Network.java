@@ -27,5 +27,14 @@ public class Network extends AbstractNetwork<Network> implements Navigable {
 	public Set<Node> getAllSinks() {
 		return sinks;
 	}
+	
+	public void discover() {
+		for (Node node : nodes) {
+			if (node.getOutLinks().isEmpty())
+				sources.add(node);
+			if (node.getInLinks().isEmpty())
+				sinks.add(node);
+		}
+	}
 
 }
