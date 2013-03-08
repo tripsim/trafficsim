@@ -12,7 +12,16 @@ public interface Demand extends DataContainer {
 	
 	public Set<Node> getDestinationNodes();
 	
-	public int getDemand(VehicleClass vehicleClass);
+	public Set<VehicleClass> getVehicleClasses();
 	
-	public int getDemandByDestination(Node destination, VehicleClass vehicleClass);
+	public int getVph(VehicleClass vehicleClass, double timestamp);
+
+	public void setVph(VehicleClass vehicleClass, double timestamp, int vph);
+	
+	public int getVph(Node destination, VehicleClass vehicleClass, double timestamp);
+	
+	public double getRatio(Node destination, VehicleClass vehicleClass, double timestamp);
+	
+	public void setRatio(Node destination, VehicleClass vehicleClass, double timestamp, double ratio);
+	
 }

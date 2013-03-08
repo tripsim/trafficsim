@@ -30,12 +30,10 @@ public class Vehicle extends RoadUser<Vehicle> {
 	private double position;
 //	private double accer;
 
-	public Vehicle(VehicleType vehicleType, DriverType driverType, Lane lane) {
-		super(lane.getFromLocation().getPoint().getCoordinate());
-		this.lane = lane;
+	public Vehicle(VehicleType vehicleType, DriverType driverType, double trajectoryResolution) {
+		super(trajectoryResolution);
 		this.vehicleType = vehicleType;
 		this.driverType = driverType;
-		this.position = 0d;
 	}
 
 	public double getPosition() {
@@ -70,7 +68,7 @@ public class Vehicle extends RoadUser<Vehicle> {
 		this.lane = lane;
 	}
 	
-	public Integer getNeighborhoodIndex() {
+	public Integer getFragmentIndex() {
 		lane.getLink();
 		return new Integer((int) (position / Link.FRAGMENT_SIZE));
 	}

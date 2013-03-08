@@ -15,12 +15,12 @@ public abstract class RoadUser<T> extends BaseEntity<T> implements Movable, Agen
 
 	private Trajectory trajectory;
 
-	public RoadUser() {
-		
+	public RoadUser(Trajectory trajectory) {
+		this.trajectory = trajectory;
 	}
 	
-	public RoadUser(Coordinate coord) {
-		trajectory = new Trajectory(coord);
+	public RoadUser(double trajectoryResolution) {
+		this(new Trajectory(trajectoryResolution));
 	}
 	
 	@Override

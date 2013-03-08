@@ -1,8 +1,10 @@
 package edu.trafficsim.model.network;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -27,12 +29,12 @@ public class Node extends AbstractLocation<Node> {
 	// TODO introduce implementation
 //	private INode nodeImpl;
 	
-	private Set<Link> outLinks;
-	private Set<Link> inLinks;
+	private Set<Link> links;
 	
 	// First key is the upstream Link, and the second key is the downstream link
 	// TODO revisit and reconsider movement info
 	private final Map<Link, Map<Link, Integer>> turnImpediment;
+	// TODO lane connection information
 	
 	// TODO Store the geometry for the link edge
 //	private Set<LineString> edges;
@@ -42,8 +44,7 @@ public class Node extends AbstractLocation<Node> {
 		setName(name);
 		this.nodeType = nodeType;
 		
-		outLinks = new HashSet<Link>();
-		inLinks = new HashSet<Link>();
+		links = new HashSet<Link>();
 		
 		turnImpediment = new HashMap<Link, Map<Link,  Integer>>();
 	}
@@ -52,32 +53,39 @@ public class Node extends AbstractLocation<Node> {
 		return turnImpediment.get(fromLink).get(toLink).shortValue();
 	}
 	
-	public void addOutLink(Link link) {
-		if (link.getFromNode() == this)
-			outLinks.add(link);
-		// TODO exception
+	public void addLink(Link link) {
+		if (link.getFromNode() == this || link.getToNode() == this)
+			links.add(link);
 	}
 	
-	public void addInLink(Link link) {
-		if (link.getToNode() == this)
-			inLinks.add(link);
-		// TODO exception
+	public void Link(Link link) {
+		links.remove(link);
 	}
 	
-	public void removeOutLink(Link link) {
-		outLinks.remove(link);
+	public Set<Link> getLinks() {
+		return Collections.unmodifiableSet(links);
 	}
 	
-	public void removeInLink(Link link) {
-		inLinks.remove(link);
-	}
-
-	public Set<Link> getOutLinks() {
-		return Collections.unmodifiableSet(outLinks);
+	public List<Lane> getOutLanes() {
+		List<Lane> lanes = new ArrayList<Lane>();
+		for (Link link : links) {
+			if (link.getFromNode() == this)
+				lanes.addAll(link.getForwardLanes());
+			else
+				lanes.addAll(link.getBackwardLanes());
+		}
+		return lanes;
 	}
 	
-	public Set<Link> getInLinks() {
-		return Collections.unmodifiableSet(inLinks);
+	public List<Lane> getInLanes() {
+		List<Lane> lanes = new ArrayList<Lane>();
+		for (Link link : links) {
+			if (link.getFromNode() == this)
+				lanes.addAll(link.getBackwardLanes());
+			else
+				lanes.addAll(link.getForwardLanes());
+		}
+		return lanes;
 	}
 	
 	public NodeType getNodeType() {
