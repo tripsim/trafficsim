@@ -11,7 +11,8 @@ public class Pedestrian extends RoadUser<Pedestrian> {
 	
 	IPedestrian impl;
 	
-	public Pedestrian() {
+	public Pedestrian(double trajectoryResolution) {
+		super(trajectoryResolution);
 	}
 
 	@Override

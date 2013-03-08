@@ -11,7 +11,7 @@ public abstract class ContinuousEvent<T> extends RoadUser<T> {
 	
 	
 	public ContinuousEvent() {
-		
+		super(null);
 	}
 
 }

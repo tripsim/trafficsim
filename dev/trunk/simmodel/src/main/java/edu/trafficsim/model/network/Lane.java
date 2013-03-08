@@ -113,6 +113,12 @@ public class Lane extends AbstractSegment<Lane> {
 	public Link getLink() {
 		return link;
 	}
+	
+	public void addVehicle(Vehicle vehicle) {
+		vehicle.setLane(this);
+		vehicle.setPosition(0);
+		vehicles.add(vehicle);
+	}
 
 	@Override
 	public Location getFromLocation() {

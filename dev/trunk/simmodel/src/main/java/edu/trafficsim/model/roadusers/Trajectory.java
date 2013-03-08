@@ -15,22 +15,15 @@ public class Trajectory implements DataContainer {
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	public static final short DEFAULT_RESOLUTION = 1;
-	
 	private List<Coordinate> coords;
-	private short resolution;
-
-	public Trajectory(Coordinate coord) {
-		this(coord, DEFAULT_RESOLUTION);
-	}
+	private double resolution;
 	
-	public Trajectory(Coordinate coord, short resolution) {
+	public Trajectory(double resolution) {
 		coords = new ArrayList<Coordinate>();
-		coords.add(coord);
 		this.resolution = resolution;
 	}
 	
-	public short getResolution() {
+	public double getResolution() {
 		return resolution;
 	}
 	
