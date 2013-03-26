@@ -6,11 +6,12 @@ import java.util.NavigableMap;
 import java.util.Set;
 import java.util.TreeMap;
 
-import edu.trafficsim.model.core.Demand;
+import edu.trafficsim.model.core.Destination;
+import edu.trafficsim.model.core.Origin;
 import edu.trafficsim.model.network.Node;
 import edu.trafficsim.model.roadusers.VehicleType.VehicleClass;
 
-public abstract class AbstractTripVolume<T> extends AbstractVolumeRatios<T, Node> implements Demand {
+public abstract class AbstractTripGenerator<T> extends AbstractTripProportion<T, Destination> implements Origin {
 
 	/**
 	 * 
@@ -20,14 +21,9 @@ public abstract class AbstractTripVolume<T> extends AbstractVolumeRatios<T, Node
 	// VehicleClass -> TimeStamp -> vph
 	protected Map<VehicleClass, NavigableMap<Double, Integer>> vphsByClass;
 	
-	public AbstractTripVolume(Node origin) {
+	public AbstractTripGenerator(Node origin) {
 		super(origin);
 		vphsByClass = new HashMap<VehicleClass, NavigableMap<Double, Integer>>();
-	}
-	
-	@Override
-	public Node getOriginNode() {
-		return getNode();
 	}
 	
 	@Override
@@ -55,9 +51,9 @@ public abstract class AbstractTripVolume<T> extends AbstractVolumeRatios<T, Node
 	}
 	
 	@Override
-	public int getVph(Node destination, VehicleClass vehicleClass, double timestamp) {
-		double ratio = getRatio(destination, vehicleClass, timestamp);
+	public int getVph(Destination destination, VehicleClass vehicleClass, double timestamp) {
+		double proportion = getProportion(destination, vehicleClass, timestamp);
 		int vph = getVph(vehicleClass, timestamp);
-		return (int) Math.round(((double) vph) * ratio);
+		return (int) Math.round(((double) vph) * proportion);
 	}
 }

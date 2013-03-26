@@ -4,7 +4,7 @@ import edu.trafficsim.model.network.Link;
 import edu.trafficsim.model.network.Node;
 
 
-public class NodeTurnRatios extends AbstractVolumeRatios<NodeTurnRatios, Link> {
+public class FreeTripRouter extends AbstractTripProportion<FreeTripRouter, Link> {
 
 	/**
 	 * 
@@ -12,7 +12,7 @@ public class NodeTurnRatios extends AbstractVolumeRatios<NodeTurnRatios, Link> {
 	private static final long serialVersionUID = 1L;
 	
 
-	public NodeTurnRatios(Node node) {
+	public FreeTripRouter(Node node) {
 		super(node);
 	}
 	
