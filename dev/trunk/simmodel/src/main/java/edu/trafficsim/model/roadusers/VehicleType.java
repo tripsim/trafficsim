@@ -40,10 +40,14 @@ public class VehicleType extends Type<VehicleType> {
 //	
 //	private double emission;
 	
+	private final VehicleClass vehicleClass;
 	
-	public VehicleType() {
-		// TODO
+	public VehicleType(VehicleClass vehicleClass) {
+		this.vehicleClass = vehicleClass;
 	}
 
+	public VehicleClass getVehicleClass() {
+		return vehicleClass;
+	}
 	
 }

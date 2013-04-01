@@ -4,6 +4,8 @@ import edu.trafficsim.model.DataContainer;
 
 public interface Agent extends DataContainer {
 	
+	public boolean isActive();
+	
 	public void stepForward ();	
 	
 }

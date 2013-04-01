@@ -3,8 +3,8 @@ package edu.trafficsim.engine;
 import java.util.List;
 
 import edu.trafficsim.factory.SimulatorFactory;
-import edu.trafficsim.model.core.Demand;
-import edu.trafficsim.model.network.Network;
+import edu.trafficsim.model.core.Origin;
+import edu.trafficsim.model.demand.VehicleGenerator;
 import edu.trafficsim.model.simulator.Simulator;
 
 public class Application {
@@ -13,9 +13,9 @@ public class Application {
 
 		Simulator simulator = SimulatorFactory.getInstance().createSimulator(100, 5);
 		Builder builder = new Builder();
-		Network network = builder.getNetwork();
-		List<Demand> demands = builder.getDemands();
-		Simulation simulation = new Simulation(simulator, network, demands);
+		List<Origin> origins = builder.getOrigins();
+		VehicleGenerator vehicleGenerator = builder.getVehicleGenerator();
+		Simulation simulation = new Simulation(simulator, origins, vehicleGenerator);
 		
 		simulation.run();
 	}

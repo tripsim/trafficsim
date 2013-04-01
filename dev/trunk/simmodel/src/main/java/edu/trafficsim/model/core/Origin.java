@@ -11,17 +11,15 @@ public interface Origin extends DataContainer {
 	public Node getNode();
 	
 	public Set<Destination> getDestinations();
-	
-	public Set<VehicleClass> getVehicleClasses();
-	
-	public int getVph(VehicleClass vehicleClass, double timestamp);
 
-	public void setVph(VehicleClass vehicleClass, double timestamp, int vph);
+	public int getVph(double time);
+
+	public int getVph(Destination destination, double time);
 	
-	public int getVph(Destination destination, VehicleClass vehicleClass, double timestamp);
+	public void setVph(Destination destination, double time, int vph) ;
 	
-	public double getProportion(Destination destination, VehicleClass vehicleClass, double timestamp);
+	public double getVehicleClassRate(Destination destination, double time, VehicleClass vehicleClass);
 	
-	public void setProportion(Destination destination, VehicleClass vehicleClass, double timestamp, double ratio);
+	public void setVehicleClassProportion(Destination destination, double time, VehicleClass vehicleClass, double value);
 	
 }

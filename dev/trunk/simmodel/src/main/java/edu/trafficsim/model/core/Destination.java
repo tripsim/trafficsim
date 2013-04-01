@@ -7,4 +7,5 @@ public interface Destination extends DataContainer{
 
 	public Node getNode();
 	
+	public boolean isFree();
 }

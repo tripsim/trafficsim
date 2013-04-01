@@ -1,6 +1,7 @@
 package edu.trafficsim.model.simulator;
 
 import java.util.Date;
+import java.util.Random;
 
 import edu.trafficsim.model.core.BaseEntity;
 
@@ -12,16 +13,19 @@ public abstract class AbstractSimulator<T> extends BaseEntity<T> {
 	private static final long serialVersionUID = 1L;
 	
 	private Date startTime;
-	
 	private double warmup; // in seconds
-	private double duration; // in seconds
-	private double stepSize; // in seconds
 	
+	protected double duration; // in seconds
+	protected double stepSize; // in seconds
 	
-	public AbstractSimulator (double duration, double stepSize) {
+	private long seed;
+	
+	public AbstractSimulator (double duration, double stepSize, long seed) {
+		this.warmup = 0;
 		this.duration = duration;
 		this.stepSize = stepSize;
-		this.warmup = 0;
+		
+		this.seed = seed;
 	}
 
 	public Date getStartTime() {
@@ -55,6 +59,17 @@ public abstract class AbstractSimulator<T> extends BaseEntity<T> {
 	public void setStepSize(double stepSize) {
 		this.stepSize = stepSize;
 	}
+	
+	public long getSeed() {
+		return seed;
+	}
+	
+	public void setSeed(long seed) {
+		this.seed = seed;
+	}
 
+	public Random getRand() {
+		return new Random(seed);
+	}
 	
 }
