@@ -21,27 +21,20 @@ public class Vehicle extends RoadUser<Vehicle> {
 	private CarFollowingBehavior carFollowingBehavior;
 	private LaneChangingBehavior laneChangingBehavior;
 	
+	private boolean active;
+	
 	private Lane lane;
 
 // TODO incorporate those properties
 //	private double width;
 //	private double length;
 //	private double height;
-	private double position;
-//	private double accer;
 
-	public Vehicle(VehicleType vehicleType, DriverType driverType, double trajectoryResolution) {
-		super(trajectoryResolution);
+	public Vehicle(VehicleType vehicleType, DriverType driverType, double startTime, double stepSize) {
+		super(startTime, stepSize);
 		this.vehicleType = vehicleType;
 		this.driverType = driverType;
-	}
-
-	public double getPosition() {
-		return position;
-	}
-	
-	public void setPosition(double position) {
-		this.position = position;
+		this.active = false;
 	}
 
 	public VehicleType getVehicleType() {
@@ -110,5 +103,10 @@ public class Vehicle extends RoadUser<Vehicle> {
 	@Override
 	public void stepForward() {
 		carFollowingBehavior.update(this);
+	}
+	
+	@Override
+	public boolean isActive() {
+		return active;
 	}
 }

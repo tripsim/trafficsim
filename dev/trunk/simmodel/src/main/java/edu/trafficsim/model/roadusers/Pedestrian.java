@@ -11,14 +11,20 @@ public class Pedestrian extends RoadUser<Pedestrian> {
 	
 	IPedestrian impl;
 	
-	public Pedestrian(double trajectoryResolution) {
-		super(trajectoryResolution);
+	public Pedestrian(double startTime, double stepSize) {
+		super(startTime, stepSize);
 	}
 
 	@Override
 	public void stepForward() {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public boolean isActive() {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

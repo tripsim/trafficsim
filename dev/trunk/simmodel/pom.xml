@@ -52,19 +52,19 @@
 			<artifactId>gt-api</artifactId>
 			<version>${geotools.version}</version>
 		</dependency>
-		<!--
-		<dependency>
-			<groupId>org.geotools</groupId>
-			<artifactId>gt-opengis</artifactId>
-			<version>${geotools.version}</version>
-		</dependency>
-		-->
+		<!-- <dependency> <groupId>org.geotools</groupId> <artifactId>gt-opengis</artifactId> 
+			<version>${geotools.version}</version> </dependency> -->
 		<dependency>
 			<groupId>com.vividsolutions</groupId>
 			<artifactId>jts</artifactId>
 			<version>${jts.version}</version>
 		</dependency>
-		
+
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-math3</artifactId>
+			<version>3.1.1</version>
+		</dependency>
 	</dependencies>
 
 </project>

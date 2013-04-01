@@ -14,14 +14,22 @@ public class DriverType extends Type<DriverType> {
 		aggressive,
 	}
 
-//	private double perceptionTime;
-//	private double reactionTime;
+	private double minHeadway;
+	private double perceptionTime;
+	private double reactionTime;
 //	
 //	private Aggressiveness drivingAggressiveness;
 //	private Aggressiveness routeAggressiveness;
 	
 	public DriverType() {
-		
+	}
+	
+	public double getMinHeadway(double minHeadway) {
+		return minHeadway;
+	}
+	
+	public void setMinHeadway(double minHeadway) {
+		this.minHeadway = minHeadway;
 	}
 	
 }

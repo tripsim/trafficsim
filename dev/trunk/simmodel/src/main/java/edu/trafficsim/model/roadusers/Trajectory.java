@@ -16,22 +16,31 @@ public class Trajectory implements DataContainer {
 	private static final long serialVersionUID = 1L;
 	
 	private List<Coordinate> coords;
-	private double resolution;
 	
-	public Trajectory(double resolution) {
+	// start time, and step size, in seconds
+	private final double startTime;
+	private final double stepSize;
+	
+	public Trajectory(double startTime, double stepSize) {
 		coords = new ArrayList<Coordinate>();
-		this.resolution = resolution;
+		
+		this.startTime = startTime;
+		this.stepSize = stepSize;
 	}
 	
-	public double getResolution() {
-		return resolution;
+	public double getStartTime() {
+		return startTime;
+	}
+	
+	public double getStepSize() {
+		return stepSize;
 	}
 	
 	public Coordinate[] getCoords() {
 		return coords.toArray(new Coordinate[coords.size()]);
 	}
 	
-	public Coordinate[] getCoords(int resolution) {
+	public Coordinate[] getCoords(int stepSize) {
 		// TODO: implement the return method
 		return null; 
 	}

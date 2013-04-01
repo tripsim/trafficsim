@@ -7,8 +7,12 @@ import com.vividsolutions.jts.geom.Coordinate;
 
 import edu.trafficsim.factory.NetworkFactory;
 import edu.trafficsim.factory.RoadUserFactory;
-import edu.trafficsim.model.core.Demand;
-import edu.trafficsim.model.demand.FreeTripVolume;
+import edu.trafficsim.model.core.Destination;
+import edu.trafficsim.model.core.ModelInputException;
+import edu.trafficsim.model.core.Origin;
+import edu.trafficsim.model.demand.Originator;
+import edu.trafficsim.model.demand.Terminator;
+import edu.trafficsim.model.demand.VehicleGenerator;
 import edu.trafficsim.model.network.Link;
 import edu.trafficsim.model.network.Network;
 import edu.trafficsim.model.network.Node;
@@ -20,14 +24,16 @@ public class Builder {
 
 	private NetworkFactory networkFactory;
 	private Network network;
-	private List<Demand> demands;
+	private List<Origin> origins;
 	private RoadUserFactory roadUserFactory;
+	private VehicleGenerator vehicleGenerator;
 	
 	public Builder() {
 		networkFactory = NetworkFactory.getInstance();
 		network = new Network();
-		demands = new ArrayList<Demand>();
+		origins = new ArrayList<Origin>();
 		roadUserFactory = RoadUserFactory.getInstance();
+		vehicleGenerator = new VehicleGenerator();
 		
 		build();
 	}
@@ -88,22 +94,48 @@ public class Builder {
 		network.addLinks(link1, link2);
 		network.discover();
 	
-		// demand
-		Demand demand = new FreeTripVolume(node1);
-		demand.setVph(VehicleClass.Car, 100, 1000);
-		demands.add(demand);
+		// origin destination
+		Origin origin = new Originator(node1);
+		Destination destination1 = new Terminator(node3);
+		// destination1 0s ~ 100s 1000vph
+		origin.setVph(destination1, 100, 1000);
+		// destination1 100s~200s 800vph
+		origin.setVph(destination1, 200, 800);
+		// vehicle composition 0s ~ 200s Car 0.9
+		origin.setVehicleClassProportion(destination1, 200, VehicleClass.Car, 0.9);
+		// vehicle composition 0s ~ 200s Truck 0.1
+		origin.setVehicleClassProportion(destination1, 200, VehicleClass.Truck, 0.1);
+		origins.add(origin);
 		
-		// vehicle type
-		VehicleType vehicleType = new VehicleType();
-		roadUserFactory.addVehiclType(VehicleClass.Car, vehicleType);
+		// vehicle generator
+		VehicleType carType1 = new VehicleType(VehicleType.VehicleClass.Car);
+		VehicleType carType2 = new VehicleType(VehicleType.VehicleClass.Car);
+		VehicleType truckType1 = new VehicleType(VehicleType.VehicleClass.Truck);
+		VehicleType truckType2 = new VehicleType(VehicleType.VehicleClass.Truck);
+		try {
+			vehicleGenerator.addVehicleType(carType1, 0.2);
+			vehicleGenerator.addVehicleType(carType2, 0.8);
+			vehicleGenerator.addVehicleType(truckType1, 0.5);
+			vehicleGenerator.addVehicleType(truckType2, 0.5);
+		} catch (ModelInputException e) {
+			System.out.print(e.getMessage());
+		}
 	}
 	
 	public Network getNetwork() {
 		return network;
 	}
 	
-	public List<Demand> getDemands() {
-		return demands;
+	public List<Origin> getOrigins() {
+		return origins;
+	}
+	
+	public RoadUserFactory getRoadUserFactory() {
+		return roadUserFactory;
+	}
+	
+	public VehicleGenerator getVehicleGenerator() {
+		return vehicleGenerator;
 	}
 	
 }

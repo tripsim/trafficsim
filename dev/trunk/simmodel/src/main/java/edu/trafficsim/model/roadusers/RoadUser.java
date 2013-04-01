@@ -14,15 +14,44 @@ public abstract class RoadUser<T> extends BaseEntity<T> implements Movable, Agen
 	private static final long serialVersionUID = 1L;
 
 	private Trajectory trajectory;
+	
+
+	protected double position;
+	protected double speed;
+	protected double acceleration;
 
 	public RoadUser(Trajectory trajectory) {
 		this.trajectory = trajectory;
 	}
 	
-	public RoadUser(double trajectoryResolution) {
-		this(new Trajectory(trajectoryResolution));
+	public RoadUser(double startTime, double stepSize) {
+		this(new Trajectory(startTime, stepSize));
 	}
 	
+	public double getPosition() {
+		return position;
+	}
+
+	public void setPosition(double position) {
+		this.position = position;
+	}
+
+	public double getSpeed() {
+		return speed;
+	}
+
+	public void setSpeed(double speed) {
+		this.speed = speed;
+	}
+
+	public double getAcceleration() {
+		return acceleration;
+	}
+
+	public void setAcceleration(double acceleration) {
+		this.acceleration = acceleration;
+	}
+
 	@Override
 	public Coordinate getCoord() {
 		return trajectory == null ? null : trajectory.getLastCoord();
@@ -33,5 +62,4 @@ public abstract class RoadUser<T> extends BaseEntity<T> implements Movable, Agen
 		return trajectory;
 	}
 
-	
 }
