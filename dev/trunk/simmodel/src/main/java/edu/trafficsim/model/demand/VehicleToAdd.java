@@ -5,7 +5,7 @@ import edu.trafficsim.model.network.Lane;
 import edu.trafficsim.model.roadusers.DriverType;
 import edu.trafficsim.model.roadusers.VehicleType;
 
-public class VehicleToBuild implements DataContainer {
+public class VehicleToAdd implements DataContainer {
 
 	/**
 	 * 
@@ -19,7 +19,7 @@ public class VehicleToBuild implements DataContainer {
 	private final double initSpeed;
 	private final double initAccel;
 	
-	public VehicleToBuild (VehicleType vehicleType, DriverType driverType, Lane lane, double initSpeed, double initAccel) {
+	public VehicleToAdd (VehicleType vehicleType, DriverType driverType, Lane lane, double initSpeed, double initAccel) {
 		this.vehicleType = vehicleType;
 		this.driverType = driverType;
 		this.lane = lane;

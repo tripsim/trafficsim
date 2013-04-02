@@ -61,10 +61,6 @@ public class NetworkFactory extends AbstractFactory {
 	}
 	
 	public Lane createLane(Link link) {
-		return createLane(link, Lane.Direction.Forward);
-	}
-	
-	public Lane createLane(Link link, Lane.Direction direction) {
-		return new Lane(link, direction);
+		return new Lane(link);
 	}
 }

@@ -3,7 +3,7 @@ package edu.trafficsim.engine;
 import java.util.List;
 
 import edu.trafficsim.factory.SimulatorFactory;
-import edu.trafficsim.model.core.Origin;
+import edu.trafficsim.model.demand.Origin;
 import edu.trafficsim.model.demand.VehicleGenerator;
 import edu.trafficsim.model.simulator.Simulator;
 

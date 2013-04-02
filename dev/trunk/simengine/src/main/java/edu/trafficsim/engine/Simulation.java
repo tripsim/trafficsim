@@ -7,9 +7,10 @@ import java.util.Set;
 
 import edu.trafficsim.factory.RoadUserFactory;
 import edu.trafficsim.model.core.Agent;
-import edu.trafficsim.model.core.Origin;
+import edu.trafficsim.model.demand.Origin;
 import edu.trafficsim.model.demand.VehicleGenerator;
-import edu.trafficsim.model.demand.VehicleToBuild;
+import edu.trafficsim.model.demand.VehicleToAdd;
+import edu.trafficsim.model.roadusers.Vehicle;
 import edu.trafficsim.model.simulator.Simulator;
 
 public class Simulation {
@@ -42,8 +43,10 @@ public class Simulation {
 					agents.remove(agent);
 			}
 			for (Origin origin : origins) {
-				VehicleToBuild vehicleToBuild = vehicleGenerator.getVehicleToBuild(origin, time, rand);
-				roadUserFactory.createVehicle(vehicleToBuild, time, simulator.getStepSize());
+				for (VehicleToAdd vehicleToAdd : vehicleGenerator.getVehicleToAdd(origin, time, simulator.getStepSize(), rand)) {
+					Vehicle vehicle = roadUserFactory.createVehicle(vehicleToAdd, time, simulator.getStepSize());
+					agents.add(vehicle);
+				}
 			}
 			ttl--;
 		}

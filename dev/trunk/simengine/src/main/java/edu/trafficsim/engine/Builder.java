@@ -7,15 +7,16 @@ import com.vividsolutions.jts.geom.Coordinate;
 
 import edu.trafficsim.factory.NetworkFactory;
 import edu.trafficsim.factory.RoadUserFactory;
-import edu.trafficsim.model.core.Destination;
 import edu.trafficsim.model.core.ModelInputException;
-import edu.trafficsim.model.core.Origin;
+import edu.trafficsim.model.demand.Destination;
+import edu.trafficsim.model.demand.Origin;
 import edu.trafficsim.model.demand.Originator;
 import edu.trafficsim.model.demand.Terminator;
 import edu.trafficsim.model.demand.VehicleGenerator;
 import edu.trafficsim.model.network.Link;
 import edu.trafficsim.model.network.Network;
 import edu.trafficsim.model.network.Node;
+import edu.trafficsim.model.roadusers.DriverType;
 import edu.trafficsim.model.roadusers.VehicleType;
 import edu.trafficsim.model.roadusers.VehicleType.VehicleClass;
 
@@ -76,10 +77,15 @@ public class Builder {
 		Link link2 = networkFactory.createLink("Johson2", node2, node3, coords2);
 		
 		// node topo
-		node1.addLink(link1);
-		node2.addLink(link1);
-		node2.addLink(link2);
-		node3.addLink(link2);
+		try {
+			node1.addLink(link1);
+			node2.addLink(link1);
+			node2.addLink(link2);
+			node3.addLink(link2);
+			
+		} catch (ModelInputException e) {
+			e.printStackTrace();
+		}
 		
 		// create three forward lanes for each link
 		networkFactory.createLane(link1);
@@ -118,8 +124,12 @@ public class Builder {
 			vehicleGenerator.addVehicleType(truckType1, 0.5);
 			vehicleGenerator.addVehicleType(truckType2, 0.5);
 		} catch (ModelInputException e) {
-			System.out.print(e.getMessage());
+			e.printStackTrace();
 		}
+		DriverType driverType1 = new DriverType();
+		DriverType driverType2 = new DriverType();
+		vehicleGenerator.addDriverType(driverType1, 0.5);
+		vehicleGenerator.addDriverType(driverType2, 0.5);
 	}
 	
 	public Network getNetwork() {

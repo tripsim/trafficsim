@@ -1,7 +1,6 @@
 package edu.trafficsim.model.demand;
 
 import edu.trafficsim.model.core.BaseEntity;
-import edu.trafficsim.model.core.Destination;
 import edu.trafficsim.model.network.Node;
 
 public class Terminator extends BaseEntity<Terminator> implements Destination {

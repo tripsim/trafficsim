@@ -1,6 +1,6 @@
 package edu.trafficsim.factory;
 
-import edu.trafficsim.model.demand.VehicleToBuild;
+import edu.trafficsim.model.demand.VehicleToAdd;
 import edu.trafficsim.model.roadusers.Vehicle;
 
 public class RoadUserFactory extends AbstractFactory {
@@ -17,10 +17,11 @@ public class RoadUserFactory extends AbstractFactory {
 	}
 	
 	// TODO complete the creation
-	public Vehicle createVehicle(VehicleToBuild vehicleToBuild, double startTime, double stepSize) {
-		Vehicle vehicle = new Vehicle(vehicleToBuild.getVehicleType(), vehicleToBuild.getDriverType(), startTime, stepSize);
-		vehicle.setSpeed(vehicleToBuild.getInitSpeed());
-		vehicle.setAcceleration(vehicleToBuild.getInitAcceleration());
+	public Vehicle createVehicle(VehicleToAdd vehicleToAdd, double startTime, double stepSize) {
+		Vehicle vehicle = new Vehicle(vehicleToAdd.getVehicleType(), vehicleToAdd.getDriverType(), startTime, stepSize);
+		vehicle.setSpeed(vehicleToAdd.getInitSpeed());
+		vehicle.setAcceleration(vehicleToAdd.getInitAcceleration());
+		vehicleToAdd.getLane().addVehicle(vehicle);
 		return vehicle;
 	}
 	

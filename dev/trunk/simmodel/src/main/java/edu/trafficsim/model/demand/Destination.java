@@ -1,4 +1,4 @@
-package edu.trafficsim.model.core;
+package edu.trafficsim.model.demand;
 
 import edu.trafficsim.model.DataContainer;
 import edu.trafficsim.model.network.Node;
