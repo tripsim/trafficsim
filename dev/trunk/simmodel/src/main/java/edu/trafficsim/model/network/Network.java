@@ -30,10 +30,10 @@ public class Network extends AbstractNetwork<Network> implements Navigable {
 	
 	public void discover() {
 		for (Node node : nodes) {
-			if (node.getOutLanes().isEmpty())
-				sources.add(node);
-			if (node.getInLanes().isEmpty())
+			if (node.getOutLinks().isEmpty())
 				sinks.add(node);
+			if (node.getInLinks().isEmpty())
+				sources.add(node);
 		}
 	}
 

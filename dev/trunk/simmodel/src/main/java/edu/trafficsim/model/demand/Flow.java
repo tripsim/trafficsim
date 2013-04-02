@@ -4,7 +4,6 @@ import java.util.Collections;
 import java.util.Set;
 
 import edu.trafficsim.model.core.AbstractDynamicMap;
-import edu.trafficsim.model.core.Destination;
 
 class Flow extends AbstractDynamicMap<Destination, Integer> {
 

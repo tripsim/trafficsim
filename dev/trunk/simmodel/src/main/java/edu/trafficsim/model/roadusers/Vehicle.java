@@ -3,7 +3,6 @@ package edu.trafficsim.model.roadusers;
 import edu.trafficsim.model.behaviors.CarFollowingBehavior;
 import edu.trafficsim.model.behaviors.LaneChangingBehavior;
 import edu.trafficsim.model.network.Lane;
-import edu.trafficsim.model.network.Link;
 
 public class Vehicle extends RoadUser<Vehicle> {
 
@@ -59,11 +58,6 @@ public class Vehicle extends RoadUser<Vehicle> {
 	
 	public void setLane(Lane lane) {
 		this.lane = lane;
-	}
-	
-	public Integer getFragmentIndex() {
-		lane.getLink();
-		return new Integer((int) (position / Link.FRAGMENT_SIZE));
 	}
 	
 	public Vehicle getLeadingVehicle() {

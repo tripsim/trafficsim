@@ -1,5 +1,6 @@
 package edu.trafficsim.model.network;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -15,16 +16,15 @@ public class Link extends AbstractSegment<Link> {
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	// TODO make variable in the future
-	public static final double FRAGMENT_SIZE = 100.0;
-	
 	// TODO introduce implementation
 //	private ILink impl;
 	private LinkType linkType;
 	
-	private final List<Lane> forwardLanes;
-	private final List<Lane> backwardLanes;
+	private final List<Lane> lanes =  new LinkedList<Lane>();
 	
+	private Link reverseLink;
+	// If reverse link is null it is the cernter line of the link
+	// otherwise it is the center line of the 
 	private LineString centerLine;
 	// TODO use edge representation to fit in the map exactly
 //	private LineString leftEdge;
@@ -36,11 +36,14 @@ public class Link extends AbstractSegment<Link> {
 		setName(name);
 		this.centerLine = centerLine;
 		this.linkType = linkType;
-		
-		forwardLanes = new LinkedList<Lane>();
-		backwardLanes = new LinkedList<Lane>();
 	}
 	
+	public static final Link createReverseLink (Link link, String name) {
+		Link newLink = new Link(name, link.getLinkType(), link.getToNode(), link.getFromNode(), (LineString) link.getCenterLine().reverse());
+		newLink.reverseLink = link;
+		link.reverseLink = newLink;
+		return newLink;
+	}
 	
 	public Node getFromNode() {
 		return (Node) getFromLocation();
@@ -51,36 +54,26 @@ public class Link extends AbstractSegment<Link> {
 		return (Node) getToLocation();
 	}
 
-	public void addForwardLane(int index, Lane lane) {
-		forwardLanes.add(index, lane);
+	public void addLane(int index, Lane lane) {
+		lanes.add(index, lane);
 	}
 	
-	public void addBackwardLane(int index, Lane lane) {
-		backwardLanes.add(index, lane);
+	public void addLane(Lane lane) {
+		lanes.add(lane);
 	}
 	
-	public void addForwardLane(Lane lane) {
-		forwardLanes.add(lane);
+	public void addLanes(Collection<Lane> lanes) {
+		lanes.addAll(lanes);
 	}
 	
-	public void addBackwardLane(Lane lane) {
-		backwardLanes.add(lane);
+	
+	public Lane getLane(int laneId) {
+		return lanes.get(laneId);
 	}
 	
-	public Lane getForwardLane(int laneId) {
-		return forwardLanes.get(laneId);
-	}
-	
-	public Lane getBackwardLane(int laneId) {
-		return backwardLanes.get(laneId);
-	}
-	
-	public List<Lane> getForwardLanes() {
-		return Collections.unmodifiableList(forwardLanes);
-	}
-	
-	public List<Lane> getBackwardLanes() {
-		return Collections.unmodifiableList(backwardLanes);
+	// make it sorted when loading
+	public List<Lane> getLanes() {
+		return Collections.unmodifiableList(lanes);
 	}
 
 	public LinkType getLinkType() {
@@ -101,11 +94,18 @@ public class Link extends AbstractSegment<Link> {
 	
 	public double getWidth() {
 		double width = 0;
-		for (Lane lane : forwardLanes)
-			width += lane.getWidth();
-		for (Lane lane : backwardLanes)
+		for (Lane lane : lanes)
 			width += lane.getWidth();
 		return width;
+	}
+	
+	public Link getReverseLink() {
+		return reverseLink;
+	}
+	
+	public void removeReverseLink() {
+		reverseLink.reverseLink = null;
+		reverseLink = null;
 	}
 	
 //	public LineString getLeftEdge() {

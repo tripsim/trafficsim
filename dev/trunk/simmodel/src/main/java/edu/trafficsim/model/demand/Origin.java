@@ -1,4 +1,4 @@
-package edu.trafficsim.model.core;
+package edu.trafficsim.model.demand;
 
 import java.util.Set;
 
@@ -18,8 +18,14 @@ public interface Origin extends DataContainer {
 	
 	public void setVph(Destination destination, double time, int vph) ;
 	
+	public Set<VehicleClass> getVehicleClasses(Destination destination, double time);
+	
 	public double getVehicleClassRate(Destination destination, double time, VehicleClass vehicleClass);
 	
 	public void setVehicleClassProportion(Destination destination, double time, VehicleClass vehicleClass, double value);
+
+	public Flow getFlow();
 	
+	public VehicleClassProportion getVehicleClassProportion(Destination destination, double time);
+
 }
