@@ -115,9 +115,13 @@ public class Builder {
 		
 		// vehicle generator
 		VehicleType carType1 = new VehicleType(VehicleType.VehicleClass.Car);
+		carType1.setName("carType1");
 		VehicleType carType2 = new VehicleType(VehicleType.VehicleClass.Car);
+		carType2.setName("carType2");
 		VehicleType truckType1 = new VehicleType(VehicleType.VehicleClass.Truck);
+		truckType1.setName("truckType1");
 		VehicleType truckType2 = new VehicleType(VehicleType.VehicleClass.Truck);
+		truckType2.setName("truckType2");
 		try {
 			vehicleGenerator.addVehicleType(carType1, 0.2);
 			vehicleGenerator.addVehicleType(carType2, 0.8);
@@ -127,7 +131,9 @@ public class Builder {
 			e.printStackTrace();
 		}
 		DriverType driverType1 = new DriverType();
+		driverType1.setName("driverType1");
 		DriverType driverType2 = new DriverType();
+		driverType2.setName("driverType2");
 		vehicleGenerator.addDriverType(driverType1, 0.5);
 		vehicleGenerator.addDriverType(driverType2, 0.5);
 	}

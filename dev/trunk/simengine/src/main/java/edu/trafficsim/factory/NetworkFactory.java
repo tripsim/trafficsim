@@ -61,6 +61,8 @@ public class NetworkFactory extends AbstractFactory {
 	}
 	
 	public Lane createLane(Link link) {
-		return new Lane(link);
+		Lane lane = new Lane(link);
+		link.addLane(lane);
+		return lane;
 	}
 }

@@ -13,8 +13,7 @@ abstract class VehicleComposition<T> extends AbstractDynamicMap<T, VehicleClassP
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	public VehicleComposition() {
-	}
+	public VehicleComposition() { }
 	
 	double getVehicleClassProportion(T key, double time, VehicleClass vehicleClass) {
 		VehicleClassProportion proportion = getProperty(key, time);
