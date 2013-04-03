@@ -1,5 +1,6 @@
 package edu.trafficsim.engine;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
@@ -30,18 +31,23 @@ public class Simulation {
 	
 	public void run() {
 		Set<Agent> agents = new HashSet<Agent>();
+		List<Agent> agentsToRemove = new ArrayList<Agent>();
 		Random rand = simulator.getRand();
 		
 		// time to live, indicates the remaining simulation steps
 		int ttl = (int) Math.round(simulator.getDuration() / simulator.getStepSize());
 		while (ttl > 0) {
 			double time = simulator.getStepSize() * (double) ttl;
+			System.out.println(time);
 			for (Agent agent : agents) {
 				if (agent.isActive())
 					agent.stepForward();
 				else
-					agents.remove(agent);
+					agentsToRemove.add(agent);
 			}
+			agents.removeAll(agentsToRemove);
+			agentsToRemove.clear();
+				
 			for (Origin origin : origins) {
 				for (VehicleToAdd vehicleToAdd : vehicleGenerator.getVehicleToAdd(origin, time, simulator.getStepSize(), rand)) {
 					Vehicle vehicle = roadUserFactory.createVehicle(vehicleToAdd, time, simulator.getStepSize());

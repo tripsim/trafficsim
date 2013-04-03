@@ -72,36 +72,53 @@ public class VehicleGenerator extends BaseEntity<VehicleGenerator> {
 			List<Link> links = new ArrayList<Link>(origin.getNode().getOutLinks());
 			Link link = links.get(rand.nextInt(links.size()));
 			List<Lane> lanes = new ArrayList<Lane>(link.getLanes());
-			Lane lane = lanes.get(rand.nextInt(links.size()));
+			Lane lane = lanes.get(rand.nextInt(lanes.size()));
 			
 			VehicleToAdd vehicle = new VehicleToAdd(vtypeToBuild, dtypeToBuild, lane, speed, accel);
 			vehicles.add(vehicle);
+			
+			// Test
+			StringBuffer sb = new StringBuffer();
+			sb.append("Destination -> ");
+			sb.append(destToGo.getNode().getName());
+			sb.append(" || ");
+			sb.append("VehicleClass -> ");
+			sb.append(vclassToBuild);
+			sb.append(" || ");
+			sb.append("VehicleType -> ");
+			sb.append(vtypeToBuild.getName());
+			sb.append(" || ");
+			sb.append("DriverType -> ");
+			sb.append(dtypeToBuild.getName());
+			System.out.println(sb.toString());
 		}
 		
 		return vehicles;
 	}
 	
+	
+	// TODO the random
 	public static <T> T randomElement(AbstractProportion<T> proportion, double threshold) {
 		T key = null;
+		double sum = 0;
 		for (T otherkey : proportion.keys()) {
-			threshold -= proportion.getProportion(otherkey);
-			if (threshold <= 0 )
+			key = otherkey;
+			sum += proportion.getProportion(otherkey);
+			if (threshold <= sum)
 				break;
-			else
-				key = otherkey;
 		}
 		return key;
 	}
 	
 	public static Destination randomElement(Flow flow, double time, double threshold) {
 		Destination destToGo = null;
+		double sum = 0;
 		int vph = flow.getVph(time);
 		for (Destination destination : flow.getDestinations()) {
-			threshold -= flow.getVph(destination, time) / vph;
-			if (threshold < 0)
+			destToGo = destination;
+			sum += flow.getVph(destination, time) / vph;
+			if (threshold <= sum)
 				break;
-			else
-				destToGo = destination;
 		}
 		return destToGo;
 	}

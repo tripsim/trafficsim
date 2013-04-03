@@ -93,6 +93,7 @@ public class Lane extends AbstractSegment<Lane> {
 		return link;
 	}
 	
+	// TODO enforce minimum headway
 	public void addVehicle(Vehicle vehicle) {
 		vehicle.setLane(this);
 		vehicle.setPosition(0);
