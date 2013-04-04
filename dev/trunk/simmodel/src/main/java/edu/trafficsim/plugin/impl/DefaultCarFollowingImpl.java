@@ -12,7 +12,7 @@ public class DefaultCarFollowingImpl extends AbstractPluginImpl implements ICarF
 
 	@Override
 	public void update(Vehicle vehicle) {
-		vehicle.setPosition(vehicle.getPosition() + 1.0);
+		// TODO on vehicle
 	}
 
 }

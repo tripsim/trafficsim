@@ -6,6 +6,6 @@ public interface Agent extends DataContainer {
 	
 	public boolean isActive();
 	
-	public void stepForward ();	
+	public void stepForward(double stepSize);	
 	
 }
