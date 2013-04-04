@@ -79,7 +79,7 @@ public class VehicleGenerator extends BaseEntity<VehicleGenerator> {
 			
 			// Test
 			StringBuffer sb = new StringBuffer();
-			sb.append("Destination -> ");
+			sb.append("Time: " + time + "s -- " +  "New Vehicle: Destination -> ");
 			sb.append(destToGo.getNode().getName());
 			sb.append(" || ");
 			sb.append("VehicleClass -> ");

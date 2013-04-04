@@ -3,6 +3,12 @@ package edu.trafficsim.engine;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.geotools.referencing.CRS;
+import org.opengis.geometry.MismatchedDimensionException;
+import org.opengis.referencing.FactoryException;
+import org.opengis.referencing.NoSuchAuthorityCodeException;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
+
 import com.vividsolutions.jts.geom.Coordinate;
 
 import edu.trafficsim.factory.NetworkFactory;
@@ -76,6 +82,10 @@ public class Builder {
 		Link link1 = networkFactory.createLink("Johson1", node1, node2, coords1);
 		Link link2 = networkFactory.createLink("Johson2", node2, node3, coords2);
 		
+		// Link length
+		System.out.println(link1.getLength());
+		System.out.println(link2.getLength());
+		
 		// node topo
 		try {
 			node1.addLink(link1);
@@ -99,6 +109,27 @@ public class Builder {
 		network.addNodes(node1, node2, node3);
 		network.addLinks(link1, link2);
 		network.discover();
+		
+		// Transform coordinates
+		// TODO generalize it
+		TransformCoordinateFilter filter = null;
+		try {
+			CoordinateReferenceSystem sourceCRS = CRS.decode("EPSG:4326");
+			CoordinateReferenceSystem targetCRS = CRS.decode("EPSG:900913");
+			filter = new TransformCoordinateFilter(sourceCRS, targetCRS);
+		} catch (MismatchedDimensionException e) {
+			e.printStackTrace();
+		} catch (NoSuchAuthorityCodeException e) {
+			e.printStackTrace();
+		} catch (FactoryException e) {
+			e.printStackTrace();
+		}
+		
+		for (Link link : network.getAllLinks()) {
+			link.getCenterLine().apply(filter);
+		}
+		System.out.println(link1.getLength());
+		System.out.println(link2.getLength());
 	
 		// origin destination
 		Origin origin = new Originator(node1);

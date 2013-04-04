@@ -40,14 +40,23 @@ public class VehicleType extends Type<VehicleType> {
 //	
 //	private double emission;
 	
+	// in seconds
+	private double minHeadway;
+	
 	private final VehicleClass vehicleClass;
 	
 	public VehicleType(VehicleClass vehicleClass) {
 		this.vehicleClass = vehicleClass;
+		// Hack
+		minHeadway = 2;
 	}
 
 	public VehicleClass getVehicleClass() {
 		return vehicleClass;
+	}
+	
+	public double getMinHeadway() {
+		return minHeadway;
 	}
 	
 }

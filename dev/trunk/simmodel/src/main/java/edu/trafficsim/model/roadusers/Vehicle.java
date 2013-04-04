@@ -1,5 +1,8 @@
 package edu.trafficsim.model.roadusers;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import edu.trafficsim.model.behaviors.CarFollowingBehavior;
 import edu.trafficsim.model.behaviors.LaneChangingBehavior;
 import edu.trafficsim.model.network.Lane;
@@ -20,7 +23,9 @@ public class Vehicle extends RoadUser<Vehicle> {
 	private CarFollowingBehavior carFollowingBehavior;
 	private LaneChangingBehavior laneChangingBehavior;
 	
-	private boolean active;
+	private Lane nextLane = null;
+	
+	private boolean active = true;
 	
 	private Lane lane;
 
@@ -33,7 +38,6 @@ public class Vehicle extends RoadUser<Vehicle> {
 		super(startTime, stepSize);
 		this.vehicleType = vehicleType;
 		this.driverType = driverType;
-		this.active = false;
 	}
 
 	public VehicleType getVehicleType() {
@@ -95,12 +99,29 @@ public class Vehicle extends RoadUser<Vehicle> {
 	}
 
 	@Override
-	public void stepForward() {
-		carFollowingBehavior.update(this);
+	public void stepForward(double stepSize) {
+//		carFollowingBehavior.update(this);
+		position = position + stepSize * speed;
+		
+		positions.add(position);
+		// TODO transfer vehicle from one link to another
+		if (reachEnd())
+			active = false;
 	}
 	
 	@Override
 	public boolean isActive() {
 		return active;
+	}
+	
+	protected boolean reachEnd() {
+		return lane.getLink().getLength() - position > 0 ?
+				false : true;
+	}
+
+	// HACK demo the movement
+	private List<Double> positions = new ArrayList<Double>();
+	public List<Double> getPositions() {
+		return positions;
 	}
 }

@@ -1,8 +1,6 @@
 package edu.trafficsim.model.network;
 
-import java.util.Map;
 import java.util.NavigableSet;
-import java.util.Set;
 import java.util.TreeSet;
 
 import edu.trafficsim.model.core.AbstractSegment;
@@ -26,7 +24,6 @@ public class Lane extends AbstractSegment<Lane> {
 	private double end;
 	
 	private final NavigableSet<Vehicle> vehicles;
-	private Map<Integer, Set<Vehicle>> laneFragements;
 	
 	public Lane(Link link) {
 		this.link = link;
@@ -85,21 +82,21 @@ public class Lane extends AbstractSegment<Lane> {
 		return vehicles.floor(v);
 	}
 	
-	public Set<Vehicle> getFragment(Integer i) {
-		return laneFragements.get(i);
-	}
-	
 	public Link getLink() {
 		return link;
 	}
 	
-	// TODO enforce minimum headway
 	public void addVehicle(Vehicle vehicle) {
 		vehicle.setLane(this);
-		vehicle.setPosition(0);
 		vehicles.add(vehicle);
 	}
-
+	
+	// Hack
+	public void removeVehicle(Vehicle vehicle) {
+		vehicle.setLane(null);
+		vehicles.remove(vehicle);
+	}
+	
 	@Override
 	public Location getFromLocation() {
 		return link.getFromLocation();

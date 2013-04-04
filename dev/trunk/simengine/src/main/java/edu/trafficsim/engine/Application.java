@@ -11,7 +11,7 @@ public class Application {
 
 	public static void main(String[] args) {
 
-		Simulator simulator = SimulatorFactory.getInstance().createSimulator(100, 5);
+		Simulator simulator = SimulatorFactory.getInstance().createSimulator(100, 1);
 		Builder builder = new Builder();
 		List<Origin> origins = builder.getOrigins();
 		VehicleGenerator vehicleGenerator = builder.getVehicleGenerator();
