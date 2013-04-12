@@ -15,11 +15,12 @@ public class VehicleToAdd implements DataContainer {
 	private final VehicleType vehicleType;
 	private final DriverType driverType;
 	private final Lane lane;
-	
+
 	private final double initSpeed;
 	private final double initAccel;
-	
-	public VehicleToAdd (VehicleType vehicleType, DriverType driverType, Lane lane, double initSpeed, double initAccel) {
+
+	public VehicleToAdd(VehicleType vehicleType, DriverType driverType,
+			Lane lane, double initSpeed, double initAccel) {
 		this.vehicleType = vehicleType;
 		this.driverType = driverType;
 		this.lane = lane;
@@ -27,24 +28,24 @@ public class VehicleToAdd implements DataContainer {
 		this.initAccel = initAccel;
 	}
 
-	public VehicleType getVehicleType() {
+	public final VehicleType getVehicleType() {
 		return vehicleType;
 	}
 
-	public DriverType getDriverType() {
+	public final DriverType getDriverType() {
 		return driverType;
 	}
 
-	public Lane getLane() {
+	public final Lane getLane() {
 		return lane;
 	}
 
-	public double getInitSpeed() {
+	public final double getInitSpeed() {
 		return initSpeed;
 	}
 
-	public double getInitAcceleration() {
+	public final double getInitAcceleration() {
 		return initAccel;
 	}
-	
+
 }

@@ -13,20 +13,19 @@ public abstract class BaseEntity<T> implements DataContainer, Comparable<T> {
 	private static final long serialVersionUID = 1L;
 
 	private Long id;
-	
+
 	private Date created;
-	
+
 	private Date modified;
-	
+
 	private User createdBy;
-	
+
 	private User modifiedBy;
-	
+
 	private String name;
-	
+
 	private String description;
 
-	
 	public String getName() {
 		return name;
 	}
@@ -67,6 +66,5 @@ public abstract class BaseEntity<T> implements DataContainer, Comparable<T> {
 	public int compareTo(T o) {
 		return 0;
 	}
-	
-	
+
 }

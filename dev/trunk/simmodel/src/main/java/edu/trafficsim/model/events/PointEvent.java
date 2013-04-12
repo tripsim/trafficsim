@@ -4,16 +4,31 @@ import com.vividsolutions.jts.geom.Point;
 
 import edu.trafficsim.model.core.AbstractLocation;
 
-public abstract class PointEvent<T> extends AbstractLocation<T> {
+public abstract class PointEvent<T> extends AbstractEvent<T> {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public PointEvent(Point point) {
-		super(point);
+	public static class EventLocation extends AbstractLocation<EventLocation> {
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+
+		public EventLocation(Point point) {
+			super(point);
+		}
+
 	}
-	
-	// TODO add timewindow to accomodate common features of events
+
+	private EventLocation location;
+
+	public PointEvent(double startTime, double endTime, Point point) {
+		super(startTime, endTime);
+		location = new EventLocation(point);
+	}
+
 }

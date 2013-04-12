@@ -12,9 +12,10 @@ class DriverTypeProportion extends AbstractProportion<DriverType> {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	DriverTypeProportion() { }
+	DriverTypeProportion() {
+	}
 
-	Set<DriverType> getDriverTypes() {
+	final Set<DriverType> getDriverTypes() {
 		return keys();
 	}
 }

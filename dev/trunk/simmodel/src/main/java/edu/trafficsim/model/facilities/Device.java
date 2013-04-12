@@ -1,5 +1,6 @@
 package edu.trafficsim.model.facilities;
 
+import com.vividsolutions.jts.geom.Point;
 
 public abstract class Device<T> extends AbstractFacility<T> {
 
@@ -7,9 +8,9 @@ public abstract class Device<T> extends AbstractFacility<T> {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	
 
-	public Device() {
+	public Device(Point point) {
+		super(point);
 	}
 
 }

@@ -7,8 +7,6 @@ import edu.trafficsim.model.DataContainer;
 public interface Location extends DataContainer {
 
 	public Point getPoint();
-	
-	public void setPoint(Point coord);
-	
-	public String getName();
+
+	public double getRadius();
 }

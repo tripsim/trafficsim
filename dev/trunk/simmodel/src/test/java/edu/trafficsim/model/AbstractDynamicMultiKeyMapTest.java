@@ -8,6 +8,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import edu.trafficsim.model.core.AbstractDynamicMultiKeyMap;
+import edu.trafficsim.model.core.MultiKey;
 
 public class AbstractDynamicMultiKeyMapTest {
 
