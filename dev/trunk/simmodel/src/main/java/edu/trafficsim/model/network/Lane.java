@@ -3,123 +3,94 @@ package edu.trafficsim.model.network;
 import java.util.NavigableSet;
 import java.util.TreeSet;
 
-import edu.trafficsim.model.core.AbstractSegment;
-import edu.trafficsim.model.core.Location;
+import edu.trafficsim.model.core.AbstractSegmentElement;
+import edu.trafficsim.model.core.BaseEntity;
+import edu.trafficsim.model.core.ModelInputException;
 import edu.trafficsim.model.roadusers.Vehicle;
 
-public class Lane extends AbstractSegment<Lane> {
+public class Lane extends AbstractSegmentElement<Lane> implements Path {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	
-	private final static double DEFAULT_WIDTH = 4.0d;
-	
-	private Link link;
-	
-	private double width;
-	// the distance in the link where the lane starts and ends
-	private double start;
-	private double end;
-	
-	private final NavigableSet<Vehicle> vehicles;
-	
-	public Lane(Link link) {
-		this.link = link;
-		
-		this.vehicles = new TreeSet<Vehicle>();
-		this.width = DEFAULT_WIDTH;
-		this.start = 0;
-		this.end = link.getLength();
+
+	private int laneId;
+
+	private final NavigableSet<Vehicle> vehicles = new TreeSet<Vehicle>();
+
+	public Lane(int laneId, Link link, double width, double shift)
+			throws ModelInputException {
+		this(laneId, link, 0, 1, width, shift);
 	}
-	
-	public int getLaneId() {
-		return link.getLanes().indexOf(this);
+
+	public Lane(int laneId, Link link, double start, double end, double width,
+			double shift) throws ModelInputException {
+		super(link, start, end, width, shift);
+		this.laneId = laneId;
 	}
-	
-	public double getWidth() {
-		return width;
-	}
-	
-	public void setWidth(double width) {
-		this.width = width;
-	}
-	
-	public double getStart() {
-		return start;
-	}
-	
-	public void setStart(double start) {
-		this.start = start;
-	}
-	
-	public double getEnd() {
-		return end;
-	}
-	
-	public void setEnd(double end) {
-		this.end = end;
-	}
-	
-	public NavigableSet<Vehicle> getVehicles() {
-		return vehicles;
-	}
-	
-	public Vehicle getHeadVehicle() {
-		return vehicles.first();
-	}
-	
-	public Vehicle getTailVehicle() {
-		return vehicles.last();
-	}
-	
-	public Vehicle getLeadingVehicle(Vehicle v) {
-		return vehicles.ceiling(v);
-	}
-	
-	public Vehicle getPrecedingVehicle(Vehicle v) {
-		return vehicles.floor(v);
-	}
-	
-	public Link getLink() {
-		return link;
-	}
-	
-	public void addVehicle(Vehicle vehicle) {
-		vehicle.setLane(this);
-		vehicles.add(vehicle);
-	}
-	
-	// Hack
-	public void removeVehicle(Vehicle vehicle) {
-		vehicle.setLane(null);
-		vehicles.remove(vehicle);
-	}
-	
-	@Override
-	public Location getFromLocation() {
-		return link.getFromLocation();
+
+	public Lane(Connector connector, double width) throws ModelInputException {
+		super(connector, 0, 1, width, 0);
+		this.laneId = -1;
 	}
 
 	@Override
-	public Location getToLocation() {
-		return link.getToLocation();
+	public final Link getNavigable() {
+		return (Link) segment;
+	}
+
+	public final int getLaneId() {
+		return laneId;
 	}
 
 	@Override
 	public String getName() {
-		return link.getName() + "-" + getLaneId() + " "+ super.getName();
+		return ((BaseEntity<?>) segment).getName() + "-" + getLaneId() + " "
+				+ super.getName();
 	}
 
 	@Override
-	public void setFromLocation(Location fromLocation) {
-		return;
+	public final Vehicle getHeadVehicle() {
+		return vehicles.last();
 	}
 
 	@Override
-	public void setToLocation(Location toLocation) {
-		return;
+	public final Vehicle getTailVehicle() {
+		return vehicles.first();
+	}
+
+	@Override
+	public final Vehicle getLeadingVehicle(Vehicle v) {
+		return vehicles.ceiling(v);
+	}
+
+	@Override
+	public final Vehicle getPrecedingVehicle(Vehicle v) {
+		return vehicles.floor(v);
+	}
+
+	@Override
+	public final void add(Vehicle vehicle) {
+		vehicle.setPath(this);
+		vehicles.add(vehicle);
+	}
+
+	@Override
+	public final void remove(Vehicle vehicle) {
+		vehicles.remove(vehicle);
+		vehicle.setPath(null);
+	}
+
+	@Override
+	public final void refresh(Vehicle vehicle) {
+		vehicles.remove(vehicle);
+		vehicles.add(vehicle);
+	}
+	
+	@Override
+	public final Vehicle[] getVehicles() {
+		return vehicles.toArray(new Vehicle[0]);
 	}
 
 }

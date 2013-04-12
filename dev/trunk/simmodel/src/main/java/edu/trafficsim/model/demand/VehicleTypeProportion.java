@@ -12,18 +12,18 @@ class VehicleTypeProportion extends AbstractProportion<VehicleType> {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	
+
 	private final VehicleClass vehicleClass;
 
 	VehicleTypeProportion(VehicleClass vehicleClass) {
 		this.vehicleClass = vehicleClass;
 	}
 
-	Set<VehicleType> getVehicleTypes() {
+	final Set<VehicleType> getVehicleTypes() {
 		return keys();
 	}
-	
-	VehicleClass getVehicleClass() {
+
+	final VehicleClass getVehicleClass() {
 		return vehicleClass;
 	}
 }

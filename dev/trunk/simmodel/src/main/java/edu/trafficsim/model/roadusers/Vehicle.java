@@ -1,90 +1,91 @@
 package edu.trafficsim.model.roadusers;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import edu.trafficsim.model.behaviors.CarFollowingBehavior;
 import edu.trafficsim.model.behaviors.LaneChangingBehavior;
-import edu.trafficsim.model.network.Lane;
+import edu.trafficsim.model.core.MovingObject;
+import edu.trafficsim.model.core.Visitor;
+import edu.trafficsim.model.network.Path;
 
-public class Vehicle extends RoadUser<Vehicle> {
+public class Vehicle extends MovingObject<Vehicle> {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
-// TODO introduce implementation
-//	private IVehicle impl;
-	
+	// TODO introduce implementation
+	// private IVehicle impl;
+
 	private VehicleType vehicleType;
 	private DriverType driverType;
-	
+
 	private CarFollowingBehavior carFollowingBehavior;
 	private LaneChangingBehavior laneChangingBehavior;
-	
-	private Lane nextLane = null;
-	
-	private boolean active = true;
-	
-	private Lane lane;
 
-// TODO incorporate those properties
-//	private double width;
-//	private double length;
-//	private double height;
+	// private Lane desiredLane = null;
+	// private double desiredSpeed = 0;
 
-	public Vehicle(VehicleType vehicleType, DriverType driverType, double startTime, double stepSize) {
-		super(startTime, stepSize);
+	private Path path;
+
+	// TODO incorporate those properties
+	// private double width;
+	// private double length;
+	// private double height;
+
+	public Vehicle(VehicleType vehicleType, DriverType driverType,
+			double startTime) {
+		super(startTime);
 		this.vehicleType = vehicleType;
 		this.driverType = driverType;
 	}
 
-	public VehicleType getVehicleType() {
+	public final VehicleType getVehicleType() {
 		return vehicleType;
 	}
-	
-	public void setType(VehicleType vehicleType) {
+
+	public final void setType(VehicleType vehicleType) {
 		this.vehicleType = vehicleType;
 	}
-	
-	public DriverType getDriverType() {
+
+	public final DriverType getDriverType() {
 		return driverType;
 	}
 
-	public void setDriverType(DriverType driverType) {
+	public final void setDriverType(DriverType driverType) {
 		this.driverType = driverType;
 	}
 
-	public Lane getLane() {
-		return lane;
+	public final Path getPath() {
+		return path;
 	}
-	
-	public void setLane(Lane lane) {
-		this.lane = lane;
+
+	public final void setPath(Path path) {
+		this.path = path;
 	}
-	
-	public Vehicle getLeadingVehicle() {
-		return lane.getLeadingVehicle(this);
+
+	public final Vehicle getLeadingVehicle() {
+		return path.getLeadingVehicle(this);
 	}
-	
-	public Vehicle getPrecedingVehicle() {
-		return lane.getPrecedingVehicle(this);
+
+	public final Vehicle getPrecedingVehicle() {
+		return path.getPrecedingVehicle(this);
 	}
-	
-	public CarFollowingBehavior getCarFollowingBehavior() {
+
+	public final CarFollowingBehavior getCarFollowingBehavior() {
 		return carFollowingBehavior;
 	}
 
-	public void setCarFollowingBehavior(CarFollowingBehavior carFollowingBehavior) {
+	public final void setCarFollowingBehavior(
+			CarFollowingBehavior carFollowingBehavior) {
 		this.carFollowingBehavior = carFollowingBehavior;
 	}
 
-	public LaneChangingBehavior getLaneChangingBehavior() {
+	public final LaneChangingBehavior getLaneChangingBehavior() {
 		return laneChangingBehavior;
 	}
 
-	public void setLaneChangingBehavior(LaneChangingBehavior laneChangingBehavior) {
+	public final void setLaneChangingBehavior(
+			LaneChangingBehavior laneChangingBehavior) {
 		this.laneChangingBehavior = laneChangingBehavior;
 	}
 
@@ -92,36 +93,42 @@ public class Vehicle extends RoadUser<Vehicle> {
 	// Vehicle Queue
 	@Override
 	public int compareTo(Vehicle vehicle) {
-		if (!vehicle.getLane().equals(lane))
+		if (!vehicle.getPath().equals(path))
 			return super.compareTo(vehicle);
-		return position - vehicle.getPosition() > 0 ? 1 : 
-			position - vehicle.getPosition() < 0 ? -1 : 0;
+		return position - vehicle.position() > 0 ? 1 : position
+				- vehicle.position() < 0 ? -1 : 0;
 	}
 
 	@Override
-	public void stepForward(double stepSize) {
-//		carFollowingBehavior.update(this);
-		position = position + stepSize * speed;
-		
-		positions.add(position);
-		// TODO transfer vehicle from one link to another
-		if (reachEnd())
-			active = false;
+	public void update() {
+		// carFollowingBehavior.update(this);
+		// laneChangingBehavior.update(this);
+	}
+
+	@Override
+	public boolean beyondEnd() {
+		return path.getLength() - position > 0 ? false : true;
+	}
+
+	@Override
+	protected void before() {
+		coords.add(path.getNavigable().getCoordinate(position,
+				lateralOffset + path.getShift()));
+	}
+
+	@Override
+	protected void after() {
+		path.refresh(this);
+	}
+	
+	
+	@Override
+	public void apply(Visitor visitor) {
+		visitor.visit(this);
 	}
 	
 	@Override
-	public boolean isActive() {
-		return active;
-	}
-	
-	protected boolean reachEnd() {
-		return lane.getLink().getLength() - position > 0 ?
-				false : true;
-	}
-
-	// HACK demo the movement
-	private List<Double> positions = new ArrayList<Double>();
-	public List<Double> getPositions() {
-		return positions;
+	public String toString() {
+		return getName();
 	}
 }

@@ -6,25 +6,29 @@ import java.util.Set;
 import edu.trafficsim.model.core.AbstractDynamicMap;
 import edu.trafficsim.model.roadusers.VehicleType.VehicleClass;
 
-abstract class VehicleComposition<T> extends AbstractDynamicMap<T, VehicleClassProportion> {
+abstract class VehicleComposition<T> extends
+		AbstractDynamicMap<T, VehicleClassProportion> {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	
-	public VehicleComposition() { }
-	
-	double getVehicleClassProportion(T key, double time, VehicleClass vehicleClass) {
+
+	public VehicleComposition() {
+	}
+
+	final double getVehicleClassProportion(T key, double time,
+			VehicleClass vehicleClass) {
 		VehicleClassProportion proportion = getProperty(key, time);
 		return proportion == null ? 0 : proportion.get(vehicleClass);
 	}
-	
-	VehicleClassProportion getVehicleClassProportion(T key, double time) {
+
+	final VehicleClassProportion getVehicleClassProportion(T key, double time) {
 		return getProperty(key, time);
 	}
-	
-	void setVehicleClassProportion(T key, double time, VehicleClass vehicleClass, double value) {
+
+	final void setVehicleClassProportion(T key, double time,
+			VehicleClass vehicleClass, double value) {
 		VehicleClassProportion proportion = getProperty(key, time);
 		if (proportion == null) {
 			proportion = new VehicleClassProportion();
@@ -32,8 +36,8 @@ abstract class VehicleComposition<T> extends AbstractDynamicMap<T, VehicleClassP
 		}
 		proportion.put(vehicleClass, value);
 	}
-	
-	Set<VehicleClass> getVehicleClasses(T key, double time) {
+
+	final Set<VehicleClass> getVehicleClasses(T key, double time) {
 		VehicleClassProportion proportion = getProperty(key, time);
 		if (proportion == null)
 			return Collections.emptySet();
