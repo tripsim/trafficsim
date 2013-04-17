@@ -1,6 +1,6 @@
 package edu.trafficsim.model.events;
 
-import edu.trafficsim.model.core.Agent;
+import edu.trafficsim.model.Agent;
 import edu.trafficsim.model.core.Event;
 import edu.trafficsim.model.core.ImpactingObject;
 

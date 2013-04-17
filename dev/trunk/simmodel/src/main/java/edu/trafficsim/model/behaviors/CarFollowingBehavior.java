@@ -1,6 +1,6 @@
 package edu.trafficsim.model.behaviors;
 
-import edu.trafficsim.model.roadusers.Vehicle;
+import edu.trafficsim.model.Vehicle;
 import edu.trafficsim.plugin.ICarFollowing;
 import edu.trafficsim.plugin.impl.DefaultCarFollowingImpl;
 

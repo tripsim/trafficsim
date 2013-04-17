@@ -1,7 +1,7 @@
 package edu.trafficsim.model.events;
 
+import edu.trafficsim.model.Simulator;
 import edu.trafficsim.model.core.MovingObject;
-import edu.trafficsim.model.network.Path;
 
 public abstract class ContinuousEvent<T> extends AbstractEvent<T> {
 
@@ -29,7 +29,7 @@ public abstract class ContinuousEvent<T> extends AbstractEvent<T> {
 		}
 
 		@Override
-		protected void after() {
+		protected void after(Simulator simulator) {
 			// TODO Auto-generated method stub
 
 		}
@@ -38,18 +38,6 @@ public abstract class ContinuousEvent<T> extends AbstractEvent<T> {
 		protected void update() {
 			// TODO Auto-generated method stub
 
-		}
-
-		@Override
-		public boolean beyondEnd() {
-			// TODO Auto-generated method stub
-			return false;
-		}
-
-		@Override
-		public Path getPath() {
-			// TODO Auto-generated method stub
-			return null;
 		}
 
 	}

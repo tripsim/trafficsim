@@ -62,9 +62,12 @@ public abstract class BaseEntity<T> implements DataContainer, Comparable<T> {
 		return modifiedBy;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public int compareTo(T o) {
-		return 0;
+		if (o instanceof BaseEntity)
+			return equals(o) ? 0 : (id > ((BaseEntity<?>) o).getId() ? 1 : -1);
+		return  -1;
 	}
 
 }

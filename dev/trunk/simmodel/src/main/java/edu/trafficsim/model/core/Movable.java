@@ -3,7 +3,6 @@ package edu.trafficsim.model.core;
 import com.vividsolutions.jts.geom.Coordinate;
 
 import edu.trafficsim.model.DataContainer;
-import edu.trafficsim.model.network.Path;
 
 public interface Movable extends DataContainer {
 
@@ -16,7 +15,5 @@ public interface Movable extends DataContainer {
 	public Coordinate coord();
 
 	public Coordinate[] trajectory();
-
-	public Path getPath();
 
 }

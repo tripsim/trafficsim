@@ -5,6 +5,9 @@ import java.util.List;
 
 import com.vividsolutions.jts.geom.Coordinate;
 
+import edu.trafficsim.model.Agent;
+import edu.trafficsim.model.Simulator;
+
 public abstract class MovingObject<T> extends BaseEntity<T> implements Movable,
 		Agent {
 
@@ -74,11 +77,14 @@ public abstract class MovingObject<T> extends BaseEntity<T> implements Movable,
 		return coords.toArray(new Coordinate[0]);
 	}
 
-	public void stepForward(double stepSize) {
+	@Override
+	public void stepForward(Simulator simulator) {
+		double stepSize = simulator.getStepSize();
 		before();
 		update();
-		position = position + stepSize * speed;
-		after();
+		speed += stepSize * acceleration;
+		position += stepSize * speed;
+		after(simulator);
 	}
 
 	@Override
@@ -88,15 +94,8 @@ public abstract class MovingObject<T> extends BaseEntity<T> implements Movable,
 
 	protected abstract void before();
 
-	protected abstract void after();
+	protected abstract void after(Simulator simulator);
 
 	protected abstract void update();
 
-	public abstract boolean beyondEnd();
-
-	
-	@Override
-	public void apply(Visitor visitor) {
-		visitor.visit(this);
-	}
 }

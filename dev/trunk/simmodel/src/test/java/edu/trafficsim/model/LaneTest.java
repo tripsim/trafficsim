@@ -3,15 +3,15 @@ package edu.trafficsim.model;
 import org.junit.Test;
 
 import edu.trafficsim.model.core.ModelInputException;
-import edu.trafficsim.model.network.Lane;
-import edu.trafficsim.model.network.Link;
-import edu.trafficsim.model.roadusers.Vehicle;
+import edu.trafficsim.model.network.DefaultLane;
+import edu.trafficsim.model.network.DefaultLink;
+import edu.trafficsim.model.roadusers.DefaultVehicle;
 
 public class LaneTest {
 
 	@Test
 	public void testNavigable() throws ModelInputException {
-		Link link = new Link(null, null, null, null, null) {
+		DefaultLink link = new DefaultLink(null, null, null, null, null) {
 			/**
 			 * 
 			 */
@@ -22,11 +22,11 @@ public class LaneTest {
 			}
 		};
 
-		Lane lane = new Lane(0, link, 4, 0);
-		Vehicle vehicle1 = new Vehicle(null, null, 0);
+		Lane lane = new DefaultLane(link, 4, 0, 0);
+		DefaultVehicle vehicle1 = new DefaultVehicle(null, null, 0);
 		vehicle1.setName("first");
 		vehicle1.position(10);
-		Vehicle vehicle2 = new Vehicle(null, null, 0);
+		DefaultVehicle vehicle2 = new DefaultVehicle(null, null, 0);
 		vehicle2.setName("second");
 		vehicle2.position(2);
 
