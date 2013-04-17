@@ -1,6 +1,6 @@
 package edu.trafficsim.plugin;
 
-import edu.trafficsim.model.roadusers.Vehicle;
+import edu.trafficsim.model.Vehicle;
 
 public interface ICarFollowing extends IPlugin {
 

@@ -1,6 +1,9 @@
 package edu.trafficsim.model.core;
 
+import com.vividsolutions.jts.geom.CoordinateFilter;
 import com.vividsolutions.jts.geom.Point;
+
+import edu.trafficsim.model.Location;
 
 public abstract class AbstractLocation<T> extends BaseEntity<T> implements
 		Location {
@@ -39,5 +42,10 @@ public abstract class AbstractLocation<T> extends BaseEntity<T> implements
 
 	protected final void setRadius(double radius) {
 		this.radius = radius;
+	}
+	
+	@Override
+	public void transform(CoordinateFilter filter) {
+		point.apply(filter);
 	}
 }

@@ -1,16 +1,18 @@
 package edu.trafficsim.model.network;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import edu.trafficsim.model.Link;
+import edu.trafficsim.model.Network;
+import edu.trafficsim.model.Node;
 import edu.trafficsim.model.core.BaseEntity;
 
-public abstract class AbstractNetwork<T> extends BaseEntity<T> {
+public abstract class AbstractNetwork<T> extends BaseEntity<T> implements
+		Network {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	protected final Set<Node> nodes = new HashSet<Node>();
@@ -19,12 +21,14 @@ public abstract class AbstractNetwork<T> extends BaseEntity<T> {
 	public AbstractNetwork() {
 	}
 
-	public Set<Node> getAllNodes() {
-		return Collections.unmodifiableSet(nodes);
+	@Override
+	public Collection<Node> getNodes() {
+		return Collections.unmodifiableCollection(nodes);
 	}
 
-	public Set<Link> getAllLinks() {
-		return Collections.unmodifiableSet(links);
+	@Override
+	public Collection<Link> getLinks() {
+		return Collections.unmodifiableCollection(links);
 	}
 
 	public boolean contains(Node node) {
@@ -35,22 +39,22 @@ public abstract class AbstractNetwork<T> extends BaseEntity<T> {
 		return links.contains(link);
 	}
 
-	public void addNode(Node node) {
+	public void add(Node node) {
 		nodes.add(node);
 	}
 
-	public void addLink(Link link) {
+	public void add(Link link) {
 		links.add(link);
 	}
 
-	public void addNodes(Node... nodes) {
+	public void add(Node... nodes) {
 		for (Node node : nodes)
-			addNode(node);
+			add(node);
 	}
 
-	public void addLinks(Link... links) {
+	public void add(Link... links) {
 		for (Link link : links)
-			addLink(link);
+			add(link);
 	}
-	
+
 }

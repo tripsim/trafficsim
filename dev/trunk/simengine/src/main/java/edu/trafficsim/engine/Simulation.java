@@ -2,36 +2,28 @@ package edu.trafficsim.engine;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import com.vividsolutions.jts.geom.Coordinate;
 
-import edu.trafficsim.factory.VehicleFactory;
-import edu.trafficsim.model.core.Agent;
-import edu.trafficsim.model.demand.Origin;
-import edu.trafficsim.model.demand.VehicleGenerator;
-import edu.trafficsim.model.demand.VehicleToAdd;
-import edu.trafficsim.model.network.Navigable;
-import edu.trafficsim.model.network.Network;
-import edu.trafficsim.model.network.Path;
-import edu.trafficsim.model.roadusers.Vehicle;
-import edu.trafficsim.model.simulator.Simulator;
-import edu.trafficsim.model.visitor.AgentVisitor;
+import edu.trafficsim.engine.generator.VehicleToAdd;
+import edu.trafficsim.model.Agent;
+import edu.trafficsim.model.Network;
+import edu.trafficsim.model.Od;
+import edu.trafficsim.model.Simulator;
+import edu.trafficsim.model.Vehicle;
 
 public class Simulation {
-	private VehicleFactory roadUserFactory;
-
 	private Simulator simulator;
 	private Network network;
 	private VehicleGenerator vehicleGenerator;
+	private VehicleFactory vehicleFactory;
 
 	public Simulation(Simulator simulator, Network network,
-			VehicleGenerator vehicleGenerator) {
-		roadUserFactory = VehicleFactory.getInstance();
-
+			VehicleGenerator vehicleGenerator, VehicleFactory vehicleFactory) {
 		this.network = network;
 		this.simulator = simulator;
 		this.vehicleGenerator = vehicleGenerator;
+		this.vehicleFactory = vehicleFactory;
 	}
 
 	public void run() {
@@ -41,38 +33,34 @@ public class Simulation {
 		System.out.println("Step Size: " + simulator.getStepSize());
 		System.out.println("Duration: " + simulator.getDuration());
 
-		AgentVisitor visitor = new AgentVisitor(network, simulator);
-
 		List<Vehicle> vehicles = new ArrayList<Vehicle>();
-		Random rand = simulator.getRand();
 
 		// time to live, indicates the remaining simulation steps
 		System.out.println("---- Simulation ----");
 
-		int ttl = (int) Math.round(simulator.getDuration()
-				/ simulator.getStepSize());
-		while (ttl > 0) {
-			double time = simulator.getDuration() - simulator.getStepSize()
-					* (double) ttl;
-			for (Navigable n : network.getAllLinks()) {
-				for (Path p : n.getPaths()) {
-					for (Vehicle v : p.getVehicles()) {
-						v.apply(visitor);
-						System.out.println("Time: " + time + "s: "
-								+ v.getName() + " " + v.position());
-					}
-				}
+		while (!simulator.isFinished()) {
+			double time = simulator.getForwarded();
+			// for (Link link : network.getLinks()) {
+			// for (Lane lane : link.getLanes()) {
+			// for (Vehicle v : lane.getVehicles()) {
+			// every lane a new thread for performance
+			// }
+			// }
+			// }
+			for (Vehicle v : vehicles) {
+				v.stepForward(simulator);
+				System.out.println("Time: " + time + "s: " + v.getName() + " "
+						+ v.position());
 			}
-			for (Origin origin : network.getOrigins()) {
+			for (Od od : network.getOds()) {
 				for (VehicleToAdd vehicleToAdd : vehicleGenerator
-						.getVehicleToAdd(origin, time, simulator.getStepSize(),
-								rand)) {
-					Vehicle vehicle = roadUserFactory.createVehicle(
-							vehicleToAdd, time, simulator.getStepSize());
+						.getVehicleToAdd(od, simulator)) {
+					Vehicle vehicle = vehicleFactory.createVehicle(
+							vehicleToAdd, simulator);
 					vehicles.add(vehicle);
 				}
 			}
-			ttl--;
+			simulator.stepForward();
 		}
 
 		System.out.println("---- Output ----");

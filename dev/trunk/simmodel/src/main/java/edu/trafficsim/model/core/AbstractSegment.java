@@ -1,10 +1,9 @@
 package edu.trafficsim.model.core;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.CoordinateFilter;
+
+import edu.trafficsim.model.Segment;
 
 public abstract class AbstractSegment<T> extends BaseEntity<T> implements
 		Segment {
@@ -18,8 +17,6 @@ public abstract class AbstractSegment<T> extends BaseEntity<T> implements
 	// polygon representation
 	// private LineString leftEdge;
 	// private LineString rightEdge;
-
-	protected final List<SegmentElement> elements = new ArrayList<SegmentElement>();
 
 	public AbstractSegment() {
 	}
@@ -41,21 +38,13 @@ public abstract class AbstractSegment<T> extends BaseEntity<T> implements
 	}
 
 	@Override
-	public List<SegmentElement> getElements() {
-		return Collections.unmodifiableList(elements);
+	public double getLength() {
+		return getLinearGeom().getLength();
 	}
 	
 	@Override
-	public double getWidth() {
-		double width = 0;
-		for (SegmentElement element : elements)
-			width += element.getWidth();
-		return width;
-	}
-
-	@Override
-	public double getLength() {
-		return getLinearGeom().getLength();
+	public void transform(CoordinateFilter filter) {
+		getLinearGeom().apply(filter);
 	}
 
 }

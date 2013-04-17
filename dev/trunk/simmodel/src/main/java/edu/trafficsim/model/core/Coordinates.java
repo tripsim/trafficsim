@@ -16,18 +16,24 @@ import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.linearref.LengthLocationMap;
 import com.vividsolutions.jts.linearref.LinearLocation;
 
+import edu.trafficsim.model.Node;
+
+/**
+ * @author Xuan
+ * 
+ */
 public class Coordinates {
 
 	private Coordinates() {
 	}
 
 	public static Coordinate transformFromLocal(LineString linearGeom,
-			double x, double y) {
+			double position, double lateralOffset) {
 		LinearLocation linearLocation = LengthLocationMap.getLocation(
-				linearGeom, x);
+				linearGeom, position);
 		LineSegment lineSegment = linearLocation.getSegment(linearGeom);
 		Coordinate coord = lineSegment.pointAlongOffset(
-				linearLocation.getSegmentFraction(), y);
+				linearLocation.getSegmentFraction(), lateralOffset);
 		return coord;
 	}
 
@@ -35,6 +41,10 @@ public class Coordinates {
 
 	public static final String CRS_900913 = "EPSG:900913";
 
+	/**
+	 * @return default filter to transform the coordinates from degrees
+	 *         (EPSG:4326) to meters (EPSG:900913)
+	 */
 	public final static TransformCoordinateFilter getDefaultTransformFilter() {
 		return getTransformFilter(CRS_4326, CRS_900913);
 	}
@@ -74,6 +84,14 @@ public class Coordinates {
 				e.printStackTrace();
 			}
 		}
+	}
 
+	public static final void transformCoordinate(Coordinate[] coords, TransformCoordinateFilter filter) {
+		// TODO
+	}
+
+	public static void trimLinearGeom(Node startNode, Node endNode,
+			LineString linearGeom) {
+		// TODO cut the part of linearGeom within the node' radius
 	}
 }
