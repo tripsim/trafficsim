@@ -19,7 +19,6 @@
 		configure as beans -->
 	<!-- @Controller, @Service, @Configuration, etc. -->
 
-	<context:component-scan base-package="edu.trafficsim.web" />
 
 	<!-- Resolve logical view names to .jsp resources in the /WEB-INF/views 
 		directory -->
@@ -31,5 +30,12 @@
 
 	<!-- Enables the Spring MVC @Controller programming model -->
 	<mvc:annotation-driven />
+
+	<mvc:view-controller path="/" view-name="home" />
+
+	<context:component-scan base-package="edu.trafficsim.web" />
+
+	<!-- Resources mapping -->
+	<mvc:resources mapping="/resources/**" location="/" />
 
 </beans>
