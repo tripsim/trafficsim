@@ -26,7 +26,7 @@ public class Simulation {
 		this.vehicleFactory = vehicleFactory;
 	}
 
-	public void run() {
+	public List<Vehicle> run() {
 		System.out.println("******** Simulation Demo ********");
 		System.out.println("---- Parameters ----");
 		System.out.println("Random Seed: " + simulator.getSeed());
@@ -72,5 +72,6 @@ public class Simulation {
 			}
 			System.out.println();
 		}
+		return vehicles;
 	}
 }

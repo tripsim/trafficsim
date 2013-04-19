@@ -4,7 +4,7 @@ package edu.trafficsim.model;
 
 public interface Agent extends DataContainer {
 
-	public double getStartTime();
+	public int getStartFrame();
 
 	public boolean isActive();
 	

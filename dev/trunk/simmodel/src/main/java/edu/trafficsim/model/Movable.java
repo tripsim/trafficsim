@@ -1,8 +1,7 @@
-package edu.trafficsim.model.core;
+package edu.trafficsim.model;
 
 import com.vividsolutions.jts.geom.Coordinate;
 
-import edu.trafficsim.model.DataContainer;
 
 public interface Movable extends DataContainer {
 

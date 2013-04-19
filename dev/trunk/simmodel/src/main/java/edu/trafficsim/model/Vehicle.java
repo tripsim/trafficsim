@@ -2,7 +2,6 @@ package edu.trafficsim.model;
 
 import edu.trafficsim.model.behaviors.CarFollowingBehavior;
 import edu.trafficsim.model.behaviors.LaneChangingBehavior;
-import edu.trafficsim.model.core.Movable;
 import edu.trafficsim.model.roadusers.DriverType;
 import edu.trafficsim.model.roadusers.VehicleType;
 

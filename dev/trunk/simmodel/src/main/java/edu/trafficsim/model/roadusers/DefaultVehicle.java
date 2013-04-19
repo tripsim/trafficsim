@@ -38,8 +38,8 @@ public class DefaultVehicle extends MovingObject<DefaultVehicle> implements
 	// private double height;
 
 	public DefaultVehicle(VehicleType vehicleType, DriverType driverType,
-			double startTime) {
-		super(startTime);
+			int startFrame) {
+		super(startFrame);
 		this.vehicleType = vehicleType;
 		this.driverType = driverType;
 	}

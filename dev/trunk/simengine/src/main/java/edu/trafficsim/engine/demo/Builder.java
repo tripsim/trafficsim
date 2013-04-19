@@ -1,9 +1,11 @@
-package edu.trafficsim.engine;
+package edu.trafficsim.engine.demo;
 
 import java.util.List;
 
 import com.vividsolutions.jts.geom.Coordinate;
 
+import edu.trafficsim.engine.VehicleFactory;
+import edu.trafficsim.engine.VehicleGenerator;
 import edu.trafficsim.engine.factory.DefaultNetworkFactory;
 import edu.trafficsim.engine.factory.DefaultVehicleFactory;
 import edu.trafficsim.engine.generator.DefaultVehicleGenerator;
@@ -137,8 +139,8 @@ public class Builder {
 		// Origin Destination
 		// no destination 0s ~ 100s 1000vph
 		// no destination 100s~200s 800vph
-		double[] times = new double[] { 100, 200 };
-		Integer[] vphs = new Integer[] { 1000, 800 };
+		double[] times = new double[] { 300, 500 };
+		Integer[] vphs = new Integer[] { 1600, 1000 };
 		Od od = new DefaultOd(node1, null, vehicleTypeComposition,
 				driverTypeComposition, times, vphs);
 		network.add(od);

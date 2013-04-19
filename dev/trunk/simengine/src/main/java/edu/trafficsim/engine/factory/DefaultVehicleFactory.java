@@ -30,10 +30,12 @@ public class DefaultVehicleFactory extends AbstractFactory implements
 		count++;
 
 		double startTime = simulator.getForwarded();
+		double stepSize = simulator.getStepSize();
+		int initFrameId = (int) Math.round(startTime / stepSize);
 
 		DefaultVehicle vehicle = new DefaultVehicle(
 				vehicleToAdd.getVehicleType(), vehicleToAdd.getDriverType(),
-				startTime);
+				initFrameId);
 		vehicle.speed(vehicleToAdd.getInitSpeed());
 		vehicle.acceleration(vehicleToAdd.getInitAcceleration());
 		double position = 0;
