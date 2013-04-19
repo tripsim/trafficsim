@@ -23,11 +23,12 @@ html,body,#map {
 
 <script src="http://maps.google.com/maps/api/js?v=3.6&sensor=false"></script>
 <script src="<c:url value="/resources/scripts/proj4js-compressed.js"/>"></script>
-<script src="<c:url value="/resources/scripts/openlayers/lib/OpenLayers.js"/>"></script>
+<script
+	src="<c:url value="/resources/scripts/openlayers/lib/OpenLayers.js"/>"></script>
 <script src="<c:url value="/resources/scripts/simulation.js"/>"></script>
 </head>
 
-<body onload="init()">
+<body onload="init();">
 	<div id="map"></div>
 	<div id="text">
 		<div id="proj-1"></div>
@@ -35,7 +36,7 @@ html,body,#map {
 		<div id="proj-3"></div>
 		<div id="proj-4"></div>
 		<div>
-			<button onclick="/simulation">Replay</button>
+			<button onclick="rerun();">rerun</button>
 		</div>
 	</div>
 </body>

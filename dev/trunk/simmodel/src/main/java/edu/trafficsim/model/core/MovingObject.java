@@ -6,6 +6,7 @@ import java.util.List;
 import com.vividsolutions.jts.geom.Coordinate;
 
 import edu.trafficsim.model.Agent;
+import edu.trafficsim.model.Movable;
 import edu.trafficsim.model.Simulator;
 
 public abstract class MovingObject<T> extends BaseEntity<T> implements Movable,
@@ -18,7 +19,7 @@ public abstract class MovingObject<T> extends BaseEntity<T> implements Movable,
 
 	protected final List<Coordinate> coords = new ArrayList<Coordinate>();
 
-	private final double startTime;
+	private final int startFrame;
 
 	protected double position = 0;
 	protected double lateralOffset = 0;
@@ -31,13 +32,13 @@ public abstract class MovingObject<T> extends BaseEntity<T> implements Movable,
 	// public MovingObject() {
 	// }
 
-	public MovingObject(double startTime) {
-		this.startTime = startTime;
+	public MovingObject(int startFrame) {
+		this.startFrame = startFrame;
 	}
 
 	@Override
-	public final double getStartTime() {
-		return startTime;
+	public final int getStartFrame() {
+		return startFrame;
 	}
 
 	@Override
