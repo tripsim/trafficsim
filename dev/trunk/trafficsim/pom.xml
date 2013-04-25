@@ -59,4 +59,10 @@
 		<geotools.version>8.4</geotools.version>
 		<jts.version>1.13</jts.version>
 	</properties>
+
+	<modules>
+		<module>../simmodel</module>
+		<module>../simengine</module>
+		<module>../simframework</module>
+	</modules>
 </project>
