@@ -18,7 +18,7 @@ public interface Network {
 	public Collection<Od> getOds();
 
 	/**
-	 * refresh its sources and sinks
+	 * discover its sources and sinks
 	 */
 	public void discover();
 

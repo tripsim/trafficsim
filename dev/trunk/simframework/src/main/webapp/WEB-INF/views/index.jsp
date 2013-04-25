@@ -3,23 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <title>TRIPS</title>
-<style type="text/css">
-html,body,#map {
-	margin: 0;
-	width: 100%;
-	height: 100%;
-}
-
-#text {
-	position: absolute;
-	bottom: 1em;
-	left: 1em;
-	width: 800px;
-	z-index: 20000;
-	background-color: white;
-	padding: 0 0.5em 0.5em 0.5em;
-}
-</style>
+<link rel="stylesheet" href="<c:url value="/resources/styles/style.css"/>"></link>
 
 <script src="http://maps.google.com/maps/api/js?v=3.6&sensor=false"></script>
 <script src="<c:url value="/resources/scripts/proj4js-compressed.js"/>"></script>
@@ -28,16 +12,16 @@ html,body,#map {
 <script src="<c:url value="/resources/scripts/simulation.js"/>"></script>
 </head>
 
-<body onload="init();">
+<body onload="simulation.initMap();">
 	<div id="map"></div>
-	<div id="text">
-		<div id="proj-1"></div>
-		<div id="proj-2"></div>
-		<div id="proj-3"></div>
-		<div id="proj-4"></div>
-		<div>
-			<button onclick="rerun();">rerun</button>
-		</div>
+	<div id ="control">
+		<button onclick="simulation.load();">run</button>
+		<button onclick="simulation.animate();">animate</button>
+	</div>
+	<div id="dev">
+		<div id="proj-900913"></div>
+		<div id="proj-4326"></div>
+		<div id="Text"></div>
 	</div>
 </body>
 </html>

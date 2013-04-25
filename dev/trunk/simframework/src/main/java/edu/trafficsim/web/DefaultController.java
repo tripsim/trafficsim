@@ -22,9 +22,15 @@ public class DefaultController {
 
 	@RequestMapping(value = "/loaddemo", method = RequestMethod.GET)
 	public @ResponseBody
-	String demo() {
+	String demoSimulation() {
 		String str = demoSimulationService.runSimulation();
-		System.out.print(str);
+		return str;
+	}
+	
+	@RequestMapping(value = "/loadnetwork", method = RequestMethod.GET)
+	public @ResponseBody
+	String demoNetwork() {
+		String str = demoSimulationService.getNetwork();
 		return str;
 	}
 }

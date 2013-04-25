@@ -1,40 +1,49 @@
-var map;
-var vehicles = {}; // key: vid value: vehicle
-var timeframes = {}; // key: fid values: {vid: record}
-var f = 0;
-var vehicle = function(vid, type) {
+var simulation = {}; // attach simulation to somewhere for navigation
+simulation.defaultCenterX = -9952964.247717002;
+simulation.defaultCenterY = 5323065.604899759;
+simulation.defaultRefreshInterval = 400;
+
+simulation.map = {};
+simulation.network = {}; // links : [], nodes: [], connectors: []
+simulation.vehicles = {}; // key: vid value: vehicle
+simulation.frames = {}; // key: fid values: {vid: record}
+simulation.totalF = 0;
+simulation.f = 0; // current frame id
+simulation.vehicle = function(vid, width, length) {
 	this.vid = vid;
-	this.type = type;
+	this.width = width;
+	this.length = length;
 };
-var record = function(fid, x, y, vehicle) {
+simulation.element = function(fid, vehicle, x, y, angle, color) {
 	this.fid = fid;
 	this.x = x;
 	this.y = y;
+	this.angle = angle;
+	this.color = color;
 	this.vehicle = vehicle;
 };
+simulation.refreshStrategy = null;
 
-Proj4js.defs["ESRI:102643"] = "+proj=lcc +lat_1=37.06666666666667 +lat_2=38.43333333333333 +lat_0=36.5 +lon_0=-120.5 +x_0=2000000 +y_0=500000.0000000002 +ellps=GRS80 +datum=NAD83 +to_meter=0.3048006096012192 +no_defs";
-Proj4js.defs["ESRI:102645"] = "+proj=lcc +lat_1=34.03333333333333 +lat_2=35.46666666666667 +lat_0=33.5 +lon_0=-118 +x_0=2000000 +y_0=500000.0000000002 +ellps=GRS80 +datum=NAD83 +to_meter=0.3048006096012192 +no_defs";
-Proj4js.defs["ESRI:102243"] = "+proj=lcc +lat_1=37.06666666666667 +lat_2=38.43333333333333 +lat_0=36.5 +lon_0=-120.5 +x_0=2000000 +y_0=500000 +ellps=GRS80 +units=m +no_defs";
+simulation.initMap = function() {
+	var proj900913 = new OpenLayers.Projection('EPSG:900913');
+	var proj4326 = new OpenLayers.Projection('EPSG:4326');
 
-function init() {
-	load();
-	
-	var projM = new OpenLayers.Projection("EPSG:900913");
-	var projN = new OpenLayers.Projection('ESRI:102645');
-	var projE = new OpenLayers.Projection('EPSG:4326');
+	// load();
+	var that = this;
 
-	map = new OpenLayers.Map('map', {
-		projection : projM,
-		allOverlays : false
+	var map = this.map = new OpenLayers.Map('map', {
+		projection : proj900913,
+		allOverlays : true
 	});
 	var osm = new OpenLayers.Layer.OSM();
 	var gmap = new OpenLayers.Layer.Google('Google Streets', {
-		numZoomLevels : 20
+		numZoomLevels : 20,
+		visibility : false
 	});
 	var gsat = new OpenLayers.Layer.Google("Google Satellite", {
 		type : google.maps.MapTypeId.SATELLITE,
-		numZoomLevels : 22
+		numZoomLevels : 22,
+		visibility : false
 	});
 	var ghyb = new OpenLayers.Layer.Google("Google Hybrid", {
 		type : google.maps.MapTypeId.HYBRID,
@@ -43,100 +52,151 @@ function init() {
 	});
 	map.addLayers([ osm, gmap, gsat, ghyb ]);
 
-	map.addControl(new OpenLayers.Control.LayerSwitcher());
-	var mp = new OpenLayers.Control.MousePosition({
-		div : $('proj-1'),
+	var mp900913 = new OpenLayers.Control.MousePosition({
+		div : $('proj-900913'),
 		prefix : 'Coordinates: ',
 		suffix : ' (in ' + map.getProjectionObject() + ')'
 	});
-	var mp1 = new OpenLayers.Control.MousePosition({
-		div : $('proj-2'),
-		displayProjection : projN,
+	var mp4326 = new OpenLayers.Control.MousePosition({
+		div : $('proj-4326'),
+		displayProjection : proj4326,
 		prefix : 'Coordinates: ',
-		suffix : ' (in ' + projN + ')'
+		suffix : ' (in ' + proj4326 + ')'
 	});
-	var mp2 = new OpenLayers.Control.MousePosition({
-		div : $('proj-3'),
-		displayProjection : projE,
-		prefix : 'Coordinates: ',
-		suffix : ' (in ' + projE + ')'
-	});
+	map.addControls([ mp900913, mp4326 ]);
 
-	map.addControls([ mp, mp1, mp2 ]);
-
-	var center = new OpenLayers.LonLat(-9952964.247717002, 5323065.604899759);
+	var center = new OpenLayers.LonLat(this.defaultCenterX, this.defaultCenterY);
 	map.setCenter(center, map.numZoomLevels);
 
-	var context = {
-		getColor : function(feature) {
-			return feature.attributes["type"] == 'TestCar' ? 'Aquamarine'
-					: feature.attributes["type"] == 'TestTruck' ? 'Darkorange'
-							: 'LawnGreen';
-		},
-		getSize : function(feature) {
-			return feature.attributes["temp"] / map.getResolution() * .703125;
-		}
-	};
-	var template = {
+	var vehicleTemplate = {
 		strokeOpacity : 0.8,
 		strokeWidth : 0.1,
-		strokeColor : 'red',
-		pointRadius : "${getSize}", // using context.getSize(feature)
-		fillColor : "${getColor}" // using context.getColor(feature)
+		strokeColor : '${strokeColor}',
+		fillColor : '${getColor}' // using context.getColor(feature)
 	};
-	var style = new OpenLayers.Style(template, {
-		context : context
+	var vehicleContext = {
+		strokeColor : function(feature) {
+			return feature.attributes['color'];
+		},
+		getColor : function(feature) {
+			return feature.attributes['color'];
+		}
+	};
+	this.refreshStrategy = new OpenLayers.Strategy.Refresh({
+		interval : that.defaultRefreshInterval
 	});
-	var polygonLayer = new OpenLayers.Layer.Vector("Polygon Layer", {
-		projection : projM,
-		styleMap : new OpenLayers.StyleMap(style),
+	var vehicleLayer = new OpenLayers.Layer.Vector('Vehicles', {
+		projection : proj900913,
+		styleMap : new OpenLayers.StyleMap(new OpenLayers.Style(
+				vehicleTemplate, {
+					context : vehicleContext
+				})),
 		rendererOptions : {
 			zIndexing : true
 		},
-		strategies : [ new OpenLayers.Strategy.Refresh({
-			interval : 400
-		}) ]
+		strategies : [ that.refreshStrategy ]
 	});
-	polygonLayer.events.register('refresh', polygonLayer, function() {
-		var frame = timeframes[++f];
+	vehicleLayer.events.register('refresh', vehicleLayer, function() {
+		if (that.totalF == that.f) {
+			that.refreshStrategy.deactivate();
+		}
+		var frame = that.frames[that.f++];
 		var features = [];
-		polygonLayer.removeAllFeatures();
-		for (var i in frame) {
-			var point = new OpenLayers.Geometry.Point(frame[i].x, frame[i].y);
-			var feature = new OpenLayers.Feature.Vector(point, {
-				temp : 4,
-				type : frame[i].vehicle.type
+		vehicleLayer.removeAllFeatures();
+		for ( var i in frame) {
+			var length = frame[i].vehicle.length;
+			var width = frame[i].vehicle.width;
+			var x = frame[i].x;
+			var y = frame[i].y;
+			var geom = new OpenLayers.Bounds(x - length / 2, y - width / 2, x
+					+ length / 2, y + width / 2).toGeometry();
+			var center = new OpenLayers.Geometry.Point(x, y);
+			geom.rotate(frame[i].angle, center);
+			var feature = new OpenLayers.Feature.Vector(geom, {
+				color : frame[i].color
 			});
 			features.push(feature);
 		}
-		polygonLayer.addFeatures(features);
+		vehicleLayer.addFeatures(features);
 	});
-	map.addLayer(polygonLayer);
-}
+	map.addLayer(vehicleLayer);
 
-function load() {
-	var url = 'loaddemo';
-	var request = OpenLayers.Request.GET({
-		url : url,
+	var networkTemplate = {
+		strokeColor : '${strokeColor}'
+	};
+	var networkContext = {
+		strokeColor : function(feature) {
+			return 'black';
+		}
+	};
+	var networkLayer = new OpenLayers.Layer.Vector('Network', {
+		projection : proj900913,
+		styleMap : new OpenLayers.StyleMap(new OpenLayers.Style(
+				networkTemplate, {
+					context : networkContext
+				})),
+		rendererOptions : {
+			zIndexing : true
+		}
+	});
+	// draw network
+	this.loadnetwork();
+	var features = [];
+	for ( var i in this.network['links']) {
+		var geom = OpenLayers.Geometry.fromWKT(this.network['links'][i]);
+		var feature = new OpenLayers.Feature.Vector(geom);
+		features.push(feature);
+	}
+	networkLayer.addFeatures(features);
+	map.addLayer(networkLayer);
+
+	map.addControl(new OpenLayers.Control.LayerSwitcher());
+};
+
+simulation.load = function() {
+	var that = this;
+	that.totalF = 0;
+	that.vehicles = {};
+	that.frames = {};
+	OpenLayers.Request.GET({
+		url : 'loaddemo',
 		callback : function(request) {
-			var rstrings = request.responseText.split('\n');
-			for ( var i in rstrings) {
-				var rstring = rstrings[i].split(',');
-				var v = vehicles[rstring[0]];
-				if (!v) {
-					v = new vehicle(rstring[0], rstring[3]);
-					vehicles[v.vid] = v;
+			var obj = eval('(' + request.responseText + ')');
+			for ( var i in obj['vehicles']) {
+				var vs = obj.vehicles[i].split(',');
+				var v = new that.vehicle(vs[0], vs[1], vs[2]);
+				that.vehicles[v.vid] = v;
+			}
+			for ( var i in obj['elements']) {
+				var es = obj.elements[i].split(',');
+				var v = that.vehicles[es[1]];
+				if (!v)
+					continue;
+				var e = new that.element(es[0], v, es[2], es[3], es[4], es[5]);
+				var frame = that.frames[es[0]];
+				if (!frame) {
+					that.frames[es[0]] = frame = [];
+					that.totalF++;
 				}
-				var f = timeframes[rstring[4]];
-				if (!f) {
-					timeframes[rstring[4]] = f = {};
-				}
-				f[v.vid] = new record(rstring[4], rstring[1], rstring[2], v);
+				frame.push(e);
 			}
 		}
 	});
-}
+};
 
-function rerun() {
-	f = 0;
-}
+simulation.loadnetwork = function() {
+	var that = this;
+	OpenLayers.Request.GET({
+		url : 'loadnetwork',
+		callback : function(request) {
+			var obj = eval('(' + request.responseText + ')');
+			that.network.links = obj["links"];
+		},
+		async : false
+	});
+};
+
+simulation.animate = function() {
+	this.f = 0;
+	this.refreshStrategy.activate();
+};

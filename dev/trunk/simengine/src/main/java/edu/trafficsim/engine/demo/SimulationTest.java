@@ -14,20 +14,43 @@ import edu.trafficsim.model.core.ModelInputException;
 public class SimulationTest {
 
 	public static void main(String[] args) throws ModelInputException {
-		run();
+		getInstance().run();
 	}
 
-	public static List<Vehicle> run() throws ModelInputException {
+	private static SimulationTest test = null;
+
+	private Builder builder;
+
+	private SimulationTest() {
+		try {
+			builder = new Builder();
+		} catch (ModelInputException e) {
+			builder = null;
+			e.printStackTrace();
+		}
+	}
+
+	public static SimulationTest getInstance() {
+		if (test == null)
+			test = new SimulationTest();
+		return test;
+	}
+
+	public List<Vehicle> run() throws ModelInputException {
 		Simulator simulator = DefaultSimulatorFactory.getInstance()
 				.createSimulator(500, 1);
-		Builder builder = new Builder();
+
 		Network network = builder.getNetwork();
 		VehicleGenerator vehicleGenerator = builder.getVehicleGenerator();
 		VehicleFactory vehicleFactory = builder.getVehicleFactory();
+
 		Simulation simulation = new Simulation(simulator, network,
 				vehicleGenerator, vehicleFactory);
 
 		return simulation.run();
 	}
 
+	public Network getNetwork() {
+		return builder.getNetwork();
+	}
 }

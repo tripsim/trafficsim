@@ -9,6 +9,7 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.TransformException;
 
+import com.vividsolutions.jts.algorithm.Angle;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.CoordinateFilter;
 import com.vividsolutions.jts.geom.LineSegment;
@@ -35,6 +36,17 @@ public class Coordinates {
 		Coordinate coord = lineSegment.pointAlongOffset(
 				linearLocation.getSegmentFraction(), lateralOffset);
 		return coord;
+	}
+
+	public static double angleRadians(LineString linearGeom, double position) {
+		LinearLocation linearLocation = LengthLocationMap.getLocation(
+				linearGeom, position);
+		LineSegment lineSegment = linearLocation.getSegment(linearGeom);
+		return lineSegment.angle();
+	}
+	
+	public static double angleDegrees(LineString linearGeom, double position) {
+		return Angle.toDegrees(angleRadians(linearGeom, position));
 	}
 
 	public static final String CRS_4326 = "EPSG:4326";
@@ -86,7 +98,8 @@ public class Coordinates {
 		}
 	}
 
-	public static final void transformCoordinate(Coordinate[] coords, TransformCoordinateFilter filter) {
+	public static final void transformCoordinate(Coordinate[] coords,
+			TransformCoordinateFilter filter) {
 		// TODO
 	}
 

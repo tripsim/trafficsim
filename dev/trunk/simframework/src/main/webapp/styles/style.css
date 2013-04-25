@@ -1,0 +1,22 @@
+html,body,#map {
+	margin: 0;
+	width: 100%;
+	height: 100%;
+}
+#control {
+	position: absolute;
+	bottom: 4em;
+	left: 4em;
+	z-index: 20000;
+	background-color: white;
+}
+#dev {
+	position: absolute;
+	bottom: 1em;
+	left: 1em;
+	width: 800px;
+	z-index: 20000;
+	background-color: white;
+	padding: 0 0.5em 0.5em 0.5em;
+	display: none
+}
