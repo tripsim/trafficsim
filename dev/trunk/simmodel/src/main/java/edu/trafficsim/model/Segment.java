@@ -16,8 +16,21 @@ public interface Segment extends DataContainer {
 
 	public LineString getLinearGeom();
 
-	// transfer local coordinate to global coordinate
+	/**
+	 * transfer local coordinate to global coordinate
+	 * @param x position on the segment
+	 * @param y lateral offset
+	 * @return
+	 */
 	public Coordinate getCoordinate(double x, double y);
+	
+	/**
+	 * get the angle of the segment
+	 * 
+	 * @param x position on the segment
+	 * @return
+	 */
+	public double getAngle(double x);
 
 	public double getWidth();
 

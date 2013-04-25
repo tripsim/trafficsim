@@ -38,10 +38,15 @@ public abstract class AbstractSegment<T> extends BaseEntity<T> implements
 	}
 
 	@Override
+	public double getAngle(double x) {
+		return Coordinates.angleDegrees(getLinearGeom(), x);
+	}
+
+	@Override
 	public double getLength() {
 		return getLinearGeom().getLength();
 	}
-	
+
 	@Override
 	public void transform(CoordinateFilter filter) {
 		getLinearGeom().apply(filter);

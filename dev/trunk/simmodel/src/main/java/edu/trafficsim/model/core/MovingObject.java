@@ -3,6 +3,7 @@ package edu.trafficsim.model.core;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.vividsolutions.jts.algorithm.Angle;
 import com.vividsolutions.jts.geom.Coordinate;
 
 import edu.trafficsim.model.Agent;
@@ -12,9 +13,6 @@ import edu.trafficsim.model.Simulator;
 public abstract class MovingObject<T> extends BaseEntity<T> implements Movable,
 		Agent {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	protected final List<Coordinate> coords = new ArrayList<Coordinate>();
@@ -69,6 +67,12 @@ public abstract class MovingObject<T> extends BaseEntity<T> implements Movable,
 	}
 
 	@Override
+	public double angle() {
+		return coords.size() < 2 ? 0 : Angle.angle(
+				coords.get(coords.size() - 1), coords.get(coords.size()));
+	}
+
+	@Override
 	public final Coordinate coord() {
 		return coords.size() < 1 ? null : coords.get(coords.size() - 1);
 	}
@@ -80,6 +84,8 @@ public abstract class MovingObject<T> extends BaseEntity<T> implements Movable,
 
 	@Override
 	public void stepForward(Simulator simulator) {
+		if(!active)
+			return;
 		double stepSize = simulator.getStepSize();
 		before();
 		update();

@@ -32,5 +32,9 @@ public interface Vehicle extends Movable, Agent {
 	public CarFollowingBehavior getCarFollowingBehavior();
 
 	public LaneChangingBehavior getLaneChangingBehavior();
-
+	
+	public double getWidth();
+	
+	public double getLength();
+	
 }

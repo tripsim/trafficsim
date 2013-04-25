@@ -33,8 +33,9 @@ public class DefaultVehicle extends MovingObject<DefaultVehicle> implements
 	// private double desiredSpeed = 0;
 
 	// TODO incorporate those properties
-	// private double width;
-	// private double length;
+	private double width;
+	private double length;
+
 	// private double height;
 
 	public DefaultVehicle(VehicleType vehicleType, DriverType driverType,
@@ -42,6 +43,8 @@ public class DefaultVehicle extends MovingObject<DefaultVehicle> implements
 		super(startFrame);
 		this.vehicleType = vehicleType;
 		this.driverType = driverType;
+		this.width = vehicleType.minWidth;
+		this.length = vehicleType.minLength;
 	}
 
 	@Override
@@ -167,9 +170,9 @@ public class DefaultVehicle extends MovingObject<DefaultVehicle> implements
 		position -= currentLane.getLength();
 		Segment segment = currentLane.getSegment();
 		if (segment instanceof Link) {
-			Collection<Connector> connectors =((Link) segment).getEndNode()
+			Collection<Connector> connectors = ((Link) segment).getEndNode()
 					.getConnectors(currentLane);
-			if(connectors == null) {
+			if (connectors == null) {
 				active = false;
 				targetLink = null;
 				return;
@@ -193,5 +196,23 @@ public class DefaultVehicle extends MovingObject<DefaultVehicle> implements
 	@Override
 	public String toString() {
 		return getName();
+	}
+
+	@Override
+	public final double getWidth() {
+		return width;
+	}
+
+	@Override
+	public final double getLength() {
+		return length;
+	}
+
+	public final void setWidth(double width) {
+		this.width = width;
+	}
+
+	public final void getLength(double length) {
+		this.length = length;
 	}
 }

@@ -50,10 +50,15 @@ public class Builder {
 
 		// TODO using WTKReader, or other well known format reader if viable
 
+		// Links and Nodes need to have there own coordinate object to avoid
+		// transform errors
+		// Coonectors, on the other hands, shared the end coordinate object with
+		// connecting Links
+
 		// Johnson@Randall
 		Coordinate coord53596818 = new Coordinate(43.0728056, -89.409022);
-		Coordinate coord1345424868 = new Coordinate(43.0726121, -89.4084588);
 		Coordinate coord53596819 = new Coordinate(43.072726, -89.408787);
+		Coordinate coord1345424868 = new Coordinate(43.0726121, -89.4084588);
 		Coordinate coord53596820 = new Coordinate(43.072565, -89.408323);
 		Coordinate coord53596821 = new Coordinate(43.07241, -89.407859);
 		Coordinate coord53596824 = new Coordinate(43.072325, -89.407584);
@@ -71,9 +76,9 @@ public class Builder {
 		Coordinate coord53607075 = new Coordinate(43.072159, -89.405751);
 
 		// Johson from Randall to Orchard
-		Coordinate[] coords1 = new Coordinate[] { coord53596818,
-				coord1345424868, coord53596819, coord53596820, coord53596821,
-				coord53596824, coord53596826, coord1345424866 };
+		Coordinate[] coords1 = new Coordinate[] { coord53596818, coord53596819,
+				coord1345424868, coord53596820, coord53596821, coord53596824,
+				coord53596826, coord1345424866 };
 		// Johson from Orchard to Charter
 		Coordinate[] coords2 = new Coordinate[] {
 				new Coordinate(coord1345424866), coord1533633321,

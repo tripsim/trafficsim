@@ -13,10 +13,10 @@ public class VehicleType extends Type<VehicleType> {
 		ConnectedVehicle, CrusieControl, AdaptiveCruiseControl
 	}
 
-	// private double minWidth;
-	// private double maxWidth;
-	// private double minLength;
-	// private double maxLength;
+	 double minWidth = 2;
+	 double maxWidth = 3;
+	 double minLength = 4;
+	 double maxLength = 7;
 	// private double minHeight;
 	// private double maxHeight;
 	//

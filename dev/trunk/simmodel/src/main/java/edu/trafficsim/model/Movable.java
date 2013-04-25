@@ -12,6 +12,8 @@ public interface Movable extends DataContainer {
 	public double acceleration();
 
 	public Coordinate coord();
+	
+	public double angle();
 
 	public Coordinate[] trajectory();
 
