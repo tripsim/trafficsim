@@ -4,8 +4,10 @@ import java.util.NoSuchElementException;
 
 import edu.trafficsim.engine.VehicleFactory;
 import edu.trafficsim.engine.generator.VehicleToAdd;
+import edu.trafficsim.model.CarFollowingBehavior;
 import edu.trafficsim.model.Simulator;
 import edu.trafficsim.model.Vehicle;
+import edu.trafficsim.model.behaviors.DefaultCarFollowing;
 import edu.trafficsim.model.roadusers.DefaultVehicle;
 
 public class DefaultVehicleFactory extends AbstractFactory implements
@@ -15,6 +17,9 @@ public class DefaultVehicleFactory extends AbstractFactory implements
 
 	private static int count = 0;
 
+	// HACK
+	CarFollowingBehavior carFollowing = new DefaultCarFollowing();
+	
 	private DefaultVehicleFactory() {
 	}
 
@@ -47,6 +52,7 @@ public class DefaultVehicleFactory extends AbstractFactory implements
 			position = position > 0 ? 0 : position;
 		} catch (NoSuchElementException e) {
 		}
+		vehicle.setCarFollowingBehavior(carFollowing);
 		vehicle.position(position);
 		String name = "vehicle" + count;
 		vehicle.setName(name);

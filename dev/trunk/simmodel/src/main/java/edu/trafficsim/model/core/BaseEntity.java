@@ -3,7 +3,6 @@ package edu.trafficsim.model.core;
 import java.util.Date;
 
 import edu.trafficsim.model.DataContainer;
-import edu.trafficsim.model.core.User;
 
 public abstract class BaseEntity<T> implements DataContainer, Comparable<T> {
 

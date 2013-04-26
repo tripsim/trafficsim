@@ -2,7 +2,7 @@ package edu.trafficsim.plugin;
 
 import java.io.Serializable;
 
-public interface IPlugin extends Serializable {
+public interface Plugin extends Serializable {
 
 	public String getName();
 	

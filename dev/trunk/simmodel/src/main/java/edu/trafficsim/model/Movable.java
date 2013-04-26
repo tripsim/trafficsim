@@ -15,6 +15,9 @@ public interface Movable extends DataContainer {
 	
 	public double angle();
 
+	// TODO create a class to hold vehicle statistics
 	public Coordinate[] trajectory();
+	
+	public Double[] speeds();
 
 }

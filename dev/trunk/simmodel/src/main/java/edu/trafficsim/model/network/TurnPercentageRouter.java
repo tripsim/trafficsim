@@ -13,7 +13,7 @@ import edu.trafficsim.model.core.AbstractDynamicProperty;
 import edu.trafficsim.model.core.BaseEntity;
 import edu.trafficsim.model.core.ModelInputException;
 import edu.trafficsim.model.core.MultiKey;
-import edu.trafficsim.model.demand.Randoms;
+import edu.trafficsim.model.core.Randoms;
 import edu.trafficsim.model.roadusers.VehicleType.VehicleClass;
 
 public class TurnPercentageRouter extends BaseEntity<TurnPercentageRouter>

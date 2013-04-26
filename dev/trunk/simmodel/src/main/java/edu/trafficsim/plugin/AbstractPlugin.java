@@ -1,8 +1,8 @@
-package edu.trafficsim.plugin.impl;
+package edu.trafficsim.plugin;
 
-import edu.trafficsim.plugin.IPlugin;
+import edu.trafficsim.plugin.Plugin;
 
-public abstract class AbstractPluginImpl implements IPlugin {
+public abstract class AbstractPlugin implements Plugin {
 
 	/**
 	 * 
