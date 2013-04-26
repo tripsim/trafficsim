@@ -9,12 +9,17 @@ import edu.trafficsim.engine.factory.DefaultSimulatorFactory;
 import edu.trafficsim.model.Network;
 import edu.trafficsim.model.Simulator;
 import edu.trafficsim.model.Vehicle;
+import edu.trafficsim.model.core.Colors;
 import edu.trafficsim.model.core.ModelInputException;
 
 public class SimulationTest {
 
 	public static void main(String[] args) throws ModelInputException {
-		getInstance().run();
+		List<Vehicle> vehicles = getInstance().run();
+		for (Vehicle v : vehicles) {
+			System.out.println(v.speed());
+			System.out.println(Colors.getVehicleColor(v.speed()));
+		}
 	}
 
 	private static SimulationTest test = null;

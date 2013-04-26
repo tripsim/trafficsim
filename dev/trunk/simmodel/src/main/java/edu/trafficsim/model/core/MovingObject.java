@@ -15,7 +15,9 @@ public abstract class MovingObject<T> extends BaseEntity<T> implements Movable,
 
 	private static final long serialVersionUID = 1L;
 
+	// TODO remove these two lists
 	protected final List<Coordinate> coords = new ArrayList<Coordinate>();
+	protected final List<Double> speeds = new ArrayList<Double>();
 
 	private final int startFrame;
 
@@ -80,6 +82,11 @@ public abstract class MovingObject<T> extends BaseEntity<T> implements Movable,
 	@Override
 	public final Coordinate[] trajectory() {
 		return coords.toArray(new Coordinate[0]);
+	}
+	
+	@Override
+	public final Double[] speeds() {
+		return speeds.toArray(new Double[0]);
 	}
 
 	@Override

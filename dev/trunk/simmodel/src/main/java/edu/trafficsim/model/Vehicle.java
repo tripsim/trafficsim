@@ -1,7 +1,5 @@
 package edu.trafficsim.model;
 
-import edu.trafficsim.model.behaviors.CarFollowingBehavior;
-import edu.trafficsim.model.behaviors.LaneChangingBehavior;
 import edu.trafficsim.model.roadusers.DriverType;
 import edu.trafficsim.model.roadusers.VehicleType;
 
@@ -32,9 +30,9 @@ public interface Vehicle extends Movable, Agent {
 	public CarFollowingBehavior getCarFollowingBehavior();
 
 	public LaneChangingBehavior getLaneChangingBehavior();
-	
+
 	public double getWidth();
-	
+
 	public double getLength();
-	
+
 }

@@ -12,6 +12,7 @@ import edu.trafficsim.engine.demo.SimulationTest;
 import edu.trafficsim.model.Link;
 import edu.trafficsim.model.Network;
 import edu.trafficsim.model.Vehicle;
+import edu.trafficsim.model.core.Colors;
 import edu.trafficsim.model.core.ModelInputException;
 
 @Service
@@ -38,6 +39,7 @@ public class DemoSimulationService {
 					vehicleSb.append("\"");
 					vehicleSb.append(",");
 
+					Double[] speeds = vehicle.speeds();
 					Coordinate[] trajectory = vehicle.trajectory();
 					for (int i = 0; i < trajectory.length; i++) {
 
@@ -54,7 +56,9 @@ public class DemoSimulationService {
 								.angle(trajectory[i], trajectory[i - 1]));
 						frameSb.append(angle);
 						frameSb.append(",");
-						frameSb.append("red");
+						String color = 
+								Colors.getVehicleColor(speeds[i]);
+						frameSb.append(color);
 						frameSb.append("\"");
 						frameSb.append(",");
 					}

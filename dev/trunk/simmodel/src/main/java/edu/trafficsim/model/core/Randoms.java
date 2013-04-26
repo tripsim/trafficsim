@@ -1,4 +1,4 @@
-package edu.trafficsim.model.demand;
+package edu.trafficsim.model.core;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -35,4 +35,7 @@ public class Randoms {
 		return shuffledList.get(0);
 	}
 
+	public final static double uniform(double min, double max, Random rand) {
+		return min + (max - min) * rand.nextDouble();
+	}
 }

@@ -2,16 +2,17 @@ package edu.trafficsim.model.roadusers;
 
 import java.util.Collection;
 
+import edu.trafficsim.model.CarFollowingBehavior;
 import edu.trafficsim.model.Connector;
 import edu.trafficsim.model.Lane;
+import edu.trafficsim.model.LaneChangingBehavior;
 import edu.trafficsim.model.Link;
 import edu.trafficsim.model.Node;
 import edu.trafficsim.model.Router;
 import edu.trafficsim.model.Segment;
 import edu.trafficsim.model.Simulator;
 import edu.trafficsim.model.Vehicle;
-import edu.trafficsim.model.behaviors.CarFollowingBehavior;
-import edu.trafficsim.model.behaviors.LaneChangingBehavior;
+import edu.trafficsim.model.behaviors.DefaultLaneChanging;
 import edu.trafficsim.model.core.MovingObject;
 
 public class DefaultVehicle extends MovingObject<DefaultVehicle> implements
@@ -32,10 +33,8 @@ public class DefaultVehicle extends MovingObject<DefaultVehicle> implements
 	// private Lane[] desiredLanes;
 	// private double desiredSpeed = 0;
 
-	// TODO incorporate those properties
 	private double width;
 	private double length;
-
 	// private double height;
 
 	public DefaultVehicle(VehicleType vehicleType, DriverType driverType,
@@ -111,7 +110,7 @@ public class DefaultVehicle extends MovingObject<DefaultVehicle> implements
 	}
 
 	public final void setLaneChangingBehavior(
-			LaneChangingBehavior laneChangingBehavior) {
+			DefaultLaneChanging laneChangingBehavior) {
 		this.laneChangingBehavior = laneChangingBehavior;
 	}
 
@@ -125,7 +124,7 @@ public class DefaultVehicle extends MovingObject<DefaultVehicle> implements
 
 	@Override
 	public void update() {
-		// carFollowingBehavior.update(this);
+		 carFollowingBehavior.update(this);
 		// laneChangingBehavior.update(this);
 	}
 
@@ -138,6 +137,7 @@ public class DefaultVehicle extends MovingObject<DefaultVehicle> implements
 	protected void before() {
 		coords.add(currentLane.getSegment().getCoordinate(position,
 				lateralOffset + currentLane.getShift()));
+		speeds.add(speed);
 	}
 
 	@Override

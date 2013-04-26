@@ -1,5 +1,6 @@
 package edu.trafficsim.model.demand;
 
+import edu.trafficsim.model.DriverTypeComposition;
 import edu.trafficsim.model.Node;
 import edu.trafficsim.model.Od;
 import edu.trafficsim.model.VehicleTypeComposition;

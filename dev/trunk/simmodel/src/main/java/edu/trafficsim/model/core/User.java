@@ -1,6 +1,5 @@
 package edu.trafficsim.model.core;
 
-import edu.trafficsim.model.core.BaseEntity;
 
 public class User extends BaseEntity<User> {
 

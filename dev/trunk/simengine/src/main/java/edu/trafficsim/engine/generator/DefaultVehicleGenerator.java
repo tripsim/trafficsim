@@ -12,7 +12,7 @@ import edu.trafficsim.model.Link;
 import edu.trafficsim.model.Od;
 import edu.trafficsim.model.Simulator;
 import edu.trafficsim.model.core.BaseEntity;
-import edu.trafficsim.model.demand.Randoms;
+import edu.trafficsim.model.core.Randoms;
 import edu.trafficsim.model.roadusers.DriverType;
 import edu.trafficsim.model.roadusers.VehicleType;
 
@@ -22,10 +22,10 @@ public class DefaultVehicleGenerator extends
 	private static final long serialVersionUID = 1L;
 
 	private static DefaultVehicleGenerator generator = null;
-	
+
 	private DefaultVehicleGenerator() {
 	}
-	
+
 	public static DefaultVehicleGenerator getInstance() {
 		if (generator == null)
 			generator = new DefaultVehicleGenerator();
@@ -58,8 +58,8 @@ public class DefaultVehicleGenerator extends
 					od.getDriverTypeComposition(time), rand);
 
 			// TODO random speed and accel
-			double speed = 10;
-			double accel = 1;
+			double speed = Randoms.uniform(5, 30, rand);
+			double accel = 0.2;
 
 			// TODO setup routing
 			List<Link> links = new ArrayList<Link>(od.getOrigin()
