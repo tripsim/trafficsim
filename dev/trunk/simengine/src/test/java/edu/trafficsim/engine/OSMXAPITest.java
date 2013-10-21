@@ -25,7 +25,7 @@ public class OSMXAPITest {
 		BufferedReader reader = new BufferedReader(new InputStreamReader(
 				OSMXAPITest.class.getResourceAsStream("test.json")));
 		HighwaysJsonParser parser = new HighwaysJsonParser();
-		parser.parseFromReader(reader);
+		parser.parse(reader);
 		Highways highways = parser.getParsedHighways();
 	}
 
