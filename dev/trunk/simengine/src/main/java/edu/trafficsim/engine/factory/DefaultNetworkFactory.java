@@ -112,12 +112,9 @@ public class DefaultNetworkFactory extends AbstractFactory implements
 
 	@Override
 	public DefaultConnector createConnector(Lane laneFrom, Lane laneTo) {
-		LineString linearGeom = createLineString(new Coordinate[] {
-				laneFrom.getStartCoord(), laneTo.getEndCoord() });
 		DefaultConnector connector;
 		try {
-			connector = new DefaultConnector(laneFrom, laneTo, linearGeom,
-					DEFAULT_WIDTH);
+			connector = new DefaultConnector(laneFrom, laneTo, DEFAULT_WIDTH);
 		} catch (ModelInputException e) {
 			e.printStackTrace();
 			// TODO error message log

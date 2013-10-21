@@ -58,6 +58,7 @@
 		<org.slf4j-version>1.7.5</org.slf4j-version>
 		<geotools.version>8.4</geotools.version>
 		<jts.version>1.13</jts.version>
+		<jackson.version>2.2.3</jackson.version>
 	</properties>
 
 	<modules>
