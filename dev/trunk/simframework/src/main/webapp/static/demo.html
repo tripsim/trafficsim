@@ -1,36 +1,162 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
-        <meta name="apple-mobile-web-app-capable" content="yes">
-        <title>Demo</title>
-        <style type="text/css">
-            html, body, #map {
-                margin: 0;
-                width: 100%;
-                height: 100%;
-            }
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Demo</title>
+<style type="text/css">
+html,body,#map {
+	margin: 0;
+	padding: 0;
+	width: 100%;
+	height: 100%;
+	z-index: 0;
+}
 
-            #text {
-                position: absolute;
-                bottom: 1em;
-                left: 1em;
-                width: 800px;
-                z-index: 20000;
-                background-color: white;
-                padding: 0 0.5em 0.5em 0.5em;
-            }
-        </style>
+#user-interface {
+	position: absolute;
+	padding: 4px;
+	top: 64px;
+	left: 8px;
+	width: 180px;
+	height: 360px;
+	z-index: 20000;
+	opacity: 0.75;
+	color: #ffffff;
+	background-color: #0d58a6;
+}
+
+#user-interface div {
+	background-color: #ffb240;
+	margin: 4px 4px;
+	padding: 2px 8px;
+}
+
+#user-interface .sub {
+	margin-left: 16px;
+	background-color: #ffc773;
+}
+
+#user-interface .select {
+	background-color: #ff5600;
+}
+
+#user-configuration {
+	position: absolute;
+	padding: 4px;
+	top: 64px;
+	left: 200px;
+	width: 500px;
+	height: 360px;
+	z-index: 20000;
+	opacity: 0.75;
+	background-color: #0d58a6;
+}
+
+#user-configuration h2 {
+	color: #ff5600;
+	padding-left: 8px;
+}
+
+#user-configuration p {
+	color: #ffffff;
+	padding-left: 8px;
+}
+
+#user-configuration textarea {
+	padding-left: 8px;
+	width: 480px;
+	height: 200px;
+	overflow: scroll;
+	height: 200px;
+}
+
+#text {
+	margin: auto;
+	position: absolute;
+	bottom: 1em;
+	left: 1em;
+	width: 800px;
+	z-index: 20000;
+	background-color: white;
+	padding: 0 0.5em 0.5em 0.5em;
+}
+</style>
+
+<script src="http://maps.google.com/maps/api/js?v=3.6&sensor=false"></script>
+<script src="../scripts/proj4js-compressed.js"></script>
+<script src="../scripts/openlayers/lib/OpenLayers.js"></script>
+<script src="demo.js"></script>
+</head>
+<body onload="init()">
+	<div id="map"></div>
+	<div id="user-interface">
+		<div>Network Panel</div>
+		<div class="sub">Links</div>
+		<div class="sub">Nodes</div>
+		<div class="sub">ODs</div>
+		<div>Vehicle Panel</div>
+		<div class="sub">Vehicle Type</div>
+		<div class="sub">Vehicle Composition</div>
+		<div>Simulator Panel</div>
+		<div class="select">Online Coding</div>
+	</div>
+	<div id="user-configuration">
+		<h2>Online Coding and Compilation Panel</h2>
+		<p>
+			Model: <select>
+				<option value="0">My Car-Following Model</option>
+				<option value="1">My Lane-Changing Model</option>
+			</select>
+		</p>
+		<p>
+			Interface: <select>
+				<option value="0">Car-Following Model</option>
+				<option value="1">Lane-Changing Model</option>
+			</select>
+		</p>
+		<textarea wrap="off">
+package edu.trafficsim.model.behaviors;
+
+import edu.trafficsim.model.CarFollowingBehavior;
+import edu.trafficsim.model.Vehicle;
+import edu.trafficsim.model.roadusers.DefaultVehicle;
+
+public class DefaultCarFollowing extends AbstractBehavior<DefaultCarFollowing>
+		implements CarFollowingBehavior {
+
+	private static final long serialVersionUID = 1L;
+
+	public DefaultCarFollowing() {
+	}
+
+	public DefaultCarFollowing(String name) {
+		setName(name);
+	}
+
+	/**
+	 * Implement the car-following logic
+	 *
+	 *
+	*/
+	@Override
+	public void update(Vehicle vehicle) {
+		Vehicle leading = vehicle.getPrecedingVehicle();
+		double accerl = 0;
+		if (leading != null)
+			accerl = alpha * (leading.speed() - vehicle.speed());
 		
-		<script src="http://maps.google.com/maps/api/js?v=3.6&sensor=false"></script>
-		<script src="../scripts/proj4js-compressed.js"></script>
-        <script src="../scripts/openlayers/lib/OpenLayers.js"></script>
-        <script src="demo.js"></script>
-    </head>
-    <body onload="init()">
-        <div id="map"></div>
-		<!-- 
+		((DefaultVehicle) vehicle).acceleration(accerl);
+	}
+
+}
+		</textarea>
+	</div>
+
+
+	<!-- 
 		<div id="text">
 			<div id="proj-1"></div>
 			<div id="proj-2"></div>
@@ -41,5 +167,5 @@
 			</div>
 		</div>
 		-->
-    </body>
+</body>
 </html>

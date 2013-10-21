@@ -38,6 +38,7 @@ public class Simulation {
 		// time to live, indicates the remaining simulation steps
 		System.out.println("---- Simulation ----");
 
+		// TODO move the logic to DEFAULT SIMULATOR
 		while (!simulator.isFinished()) {
 			double time = simulator.getForwarded();
 			// for (Link link : network.getLinks()) {

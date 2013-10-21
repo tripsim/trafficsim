@@ -19,7 +19,7 @@
 	</build>
 
 	<dependencies>
-	
+
 		<!-- GEO Tools -->
 		<dependency>
 			<groupId>org.geotools</groupId>
@@ -36,7 +36,19 @@
 			<artifactId>gt-epsg-extension</artifactId>
 			<version>${geotools.version}</version>
 		</dependency>
-		
+
+		<!-- JSON Parser -->
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-core</artifactId>
+			<version>${jackson.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>${jackson.version}</version>
+		</dependency>
+
 		<!-- trafficsim dependencies -->
 		<dependency>
 			<groupId>edu.trafficsim</groupId>

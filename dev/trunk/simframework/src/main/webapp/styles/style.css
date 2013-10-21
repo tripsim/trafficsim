@@ -3,13 +3,7 @@ html,body,#map {
 	width: 100%;
 	height: 100%;
 }
-#control {
-	position: absolute;
-	bottom: 4em;
-	left: 4em;
-	z-index: 20000;
-	background-color: white;
-}
+
 #dev {
 	position: absolute;
 	bottom: 1em;
@@ -19,4 +13,80 @@ html,body,#map {
 	background-color: white;
 	padding: 0 0.5em 0.5em 0.5em;
 	display: none
+}
+
+/* quick demo fixes */
+#user-interface {
+	position: absolute;
+	padding: 4px;
+	top: 64px;
+	left: 8px;
+	width: 180px;
+	height: 360px;
+	z-index: 20000;
+	opacity: 0.75;
+	color: #ffffff;
+	background-color: #0d58a6;
+}
+
+#user-interface div {
+	background-color: #ffb240;
+	margin: 4px 4px;
+	padding: 2px 8px;
+	cursor: pointer;
+}
+
+#user-interface .sub {
+	margin-left: 16px;
+	background-color: #ffc773;
+}
+
+#user-interface .select {
+	background-color: #ff5600;
+}
+
+#user-interface .buttons {
+	margin-top: 60px;
+	padding: 0;
+	cursor: auto;
+	background-color: transparent;
+	cursor: auto;
+}
+
+#user-interface .buttons span {
+	padding: 2px 6px;
+	background-color: #ff5600;
+	cursor: pointer;
+	background-color: #ff5600;
+}
+
+#user-configuration {
+	position: absolute;
+	padding: 4px;
+	top: 64px;
+	left: 200px;
+	width: 500px;
+	height: 360px;
+	z-index: 20000;
+	opacity: 0.75;
+	background-color: #0d58a6;
+	display: none;
+}
+
+#user-configuration h2 {
+	color: #ff5600;
+	padding-left: 8px;
+}
+
+#user-configuration p {
+	color: #ffffff;
+	padding-left: 8px;
+}
+
+#user-configuration textarea {
+	padding-left: 8px;
+	width: 480px;
+	height: 200px;
+	overflow: scroll;
+	height: 200px;
 }

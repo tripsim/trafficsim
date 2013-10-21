@@ -1,6 +1,7 @@
 package edu.trafficsim.model.core;
 
 import org.geotools.geometry.jts.JTS;
+import org.geotools.geometry.jts.JTSFactoryFinder;
 import org.geotools.referencing.CRS;
 import org.opengis.geometry.MismatchedDimensionException;
 import org.opengis.referencing.FactoryException;
@@ -12,6 +13,7 @@ import org.opengis.referencing.operation.TransformException;
 import com.vividsolutions.jts.algorithm.Angle;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.CoordinateFilter;
+import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.LineSegment;
 import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.linearref.LengthLocationMap;
@@ -24,6 +26,12 @@ import edu.trafficsim.model.Node;
  * 
  */
 public class Coordinates {
+
+	private static GeometryFactory geometryFactory;
+
+	static {
+		geometryFactory = JTSFactoryFinder.getGeometryFactory();
+	}
 
 	private Coordinates() {
 	}
@@ -44,7 +52,7 @@ public class Coordinates {
 		LineSegment lineSegment = linearLocation.getSegment(linearGeom);
 		return lineSegment.angle();
 	}
-	
+
 	public static double angleDegrees(LineString linearGeom, double position) {
 		return Angle.toDegrees(angleRadians(linearGeom, position));
 	}
@@ -106,5 +114,9 @@ public class Coordinates {
 	public static void trimLinearGeom(Node startNode, Node endNode,
 			LineString linearGeom) {
 		// TODO cut the part of linearGeom within the node' radius
+	}
+	
+	public static LineString getLineString(Coordinate[] coords){
+		return geometryFactory.createLineString(coords);
 	}
 }

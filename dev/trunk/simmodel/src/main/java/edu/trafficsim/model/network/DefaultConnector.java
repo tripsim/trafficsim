@@ -1,5 +1,6 @@
 package edu.trafficsim.model.network;
 
+import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.CoordinateFilter;
 import com.vividsolutions.jts.geom.LineString;
 
@@ -7,6 +8,7 @@ import edu.trafficsim.model.Connector;
 import edu.trafficsim.model.Lane;
 import edu.trafficsim.model.Link;
 import edu.trafficsim.model.core.AbstractSegment;
+import edu.trafficsim.model.core.Coordinates;
 import edu.trafficsim.model.core.ModelInputException;
 
 public class DefaultConnector extends AbstractSegment<DefaultConnector>
@@ -19,25 +21,26 @@ public class DefaultConnector extends AbstractSegment<DefaultConnector>
 	private Lane fromLane;
 	private Lane toLane;
 	private final Lane lane;
-	private LineString linearGeom;
 
-	public DefaultConnector(Lane fromLane, Lane toLane, LineString linearGeom,
-			double width) throws ModelInputException {
-		if (!(fromLane.getSegment() instanceof Link) || !(toLane.getSegment() instanceof Link))
+	public DefaultConnector(Lane fromLane, Lane toLane, double width)
+			throws ModelInputException {
+		if (!(fromLane.getSegment() instanceof Link)
+				|| !(toLane.getSegment() instanceof Link))
 			throw new ModelInputException("fromLane must be a link lane");
 		else if (!((Link) fromLane.getSegment()).getEndNode().equals(
 				((Link) toLane.getSegment()).getStartNode()))
-			throw new ModelInputException("fromLane must ends at the same node that toLane starts!");
+			throw new ModelInputException(
+					"fromLane must ends at the same node that toLane starts!");
 		this.fromLane = fromLane;
 		this.toLane = toLane;
-		
-		this.linearGeom = linearGeom;
+
 		this.lane = new DefaultLane(this, 0, 1, width, 0, -1);
 	}
 
 	@Override
 	public final LineString getLinearGeom() {
-		return linearGeom;
+		return Coordinates.getLineString(new Coordinate[] { fromLane.getStartCoord(),
+				toLane.getEndCoord() });
 	}
 
 	@Override
@@ -64,9 +67,9 @@ public class DefaultConnector extends AbstractSegment<DefaultConnector>
 	public double getWidth() {
 		return lane.getWidth();
 	}
-	
+
 	@Override
-	public void transform(CoordinateFilter filter ){
+	public void transform(CoordinateFilter filter) {
 		// only transform the intermediates
 	}
 
