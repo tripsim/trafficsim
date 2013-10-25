@@ -1,6 +1,6 @@
 package edu.trafficsim.utility;
 
-public class UnitUtility {
+public class UnitConverter {
 	
 	public final static double METER_USFOOT_FACTOR = 0.3048006096012d;
 

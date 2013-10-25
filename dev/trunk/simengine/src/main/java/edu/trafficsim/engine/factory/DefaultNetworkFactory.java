@@ -37,6 +37,12 @@ public class DefaultNetworkFactory extends AbstractFactory implements
 		geometryFactory = JTSFactoryFinder.getGeometryFactory();
 	}
 
+	public static DefaultNetworkFactory getInstance() {
+		if (factory == null)
+			factory = new DefaultNetworkFactory();
+		return factory;
+	}
+
 	@Override
 	public Network createEmptyNetwork(String name) {
 		return new DefaultNetwork(nextId(), name);
@@ -45,12 +51,6 @@ public class DefaultNetworkFactory extends AbstractFactory implements
 	// TODO set default types
 	private static NodeType nodeType = new NodeType(0, "temp");
 	private static LinkType linkType = new LinkType(0, "temp");
-
-	public static DefaultNetworkFactory getInstance() {
-		if (factory == null)
-			factory = new DefaultNetworkFactory();
-		return factory;
-	}
 
 	public Point createPoint(double x, double y) {
 		return geometryFactory.createPoint(new Coordinate(x, y));

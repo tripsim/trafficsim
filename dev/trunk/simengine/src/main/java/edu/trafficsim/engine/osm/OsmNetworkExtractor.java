@@ -74,6 +74,7 @@ public class OsmNetworkExtractor {
 		}
 
 		CoordinateTransformer.transform(network, filter);
+		network.discover();
 		return network;
 	}
 
