@@ -12,12 +12,14 @@ import com.vividsolutions.jts.geom.Point;
 import edu.trafficsim.engine.NetworkFactory;
 import edu.trafficsim.model.Lane;
 import edu.trafficsim.model.Link;
+import edu.trafficsim.model.Network;
 import edu.trafficsim.model.Node;
-import edu.trafficsim.model.Router;
+import edu.trafficsim.model.Segment;
 import edu.trafficsim.model.core.ModelInputException;
 import edu.trafficsim.model.network.DefaultConnector;
 import edu.trafficsim.model.network.DefaultLane;
 import edu.trafficsim.model.network.DefaultLink;
+import edu.trafficsim.model.network.DefaultNetwork;
 import edu.trafficsim.model.network.DefaultNode;
 import edu.trafficsim.model.network.LinkType;
 import edu.trafficsim.model.network.NodeType;
@@ -35,8 +37,14 @@ public class DefaultNetworkFactory extends AbstractFactory implements
 		geometryFactory = JTSFactoryFinder.getGeometryFactory();
 	}
 
-	private static NodeType nodeType = new NodeType();
-	private static LinkType linkType = new LinkType();
+	@Override
+	public Network createEmptyNetwork(String name) {
+		return new DefaultNetwork(nextId(), name);
+	}
+
+	// TODO set default types
+	private static NodeType nodeType = new NodeType(0, "temp");
+	private static LinkType linkType = new LinkType(0, "temp");
 
 	public static DefaultNetworkFactory getInstance() {
 		if (factory == null)
@@ -66,68 +74,62 @@ public class DefaultNetworkFactory extends AbstractFactory implements
 	}
 
 	public DefaultNode createNode(String name, Point point) {
-		return new DefaultNode(name, nodeType, point, DEFAULT_RADIUS);
-	}
-
-	public DefaultNode createNode(String name, Point point, double radius,
-			Router router) {
-		return new DefaultNode(name, nodeType, point, DEFAULT_RADIUS, router);
+		return new DefaultNode(nextId(), name, nodeType, point, DEFAULT_RADIUS);
 	}
 
 	@Override
 	public DefaultLink createLink(String name, Node startNode, Node endNode,
-			Coordinate[] coords) {
+			Coordinate[] coords) throws ModelInputException {
 		LineString lineString = createLineString(coords);
-		DefaultLink link = new DefaultLink(name, linkType, startNode, endNode,
-				lineString);
-		try {
-			startNode.add(link);
-		} catch (ModelInputException e) {
-			e.printStackTrace();
-			return null;
-		}
+		return createLink(name, startNode, endNode, lineString);
+	}
+
+	public DefaultLink createLink(String name, Node startNode, Node endNode,
+			LineString lineString) throws ModelInputException {
+		DefaultLink link = new DefaultLink(nextId(), name, linkType, startNode,
+				endNode, lineString);
+		startNode.add(link);
 		return link;
 	}
 
 	@Override
-	public DefaultLane createLane(Link link, double start, double end,
-			double width, double shift, int laneId) {
-		try {
-			return new DefaultLane(link, start, end, width, shift, laneId);
-		} catch (ModelInputException e) {
-			e.printStackTrace();
-			return null;
-		}
+	public DefaultLink createReverseLink(String name, Link link)
+			throws ModelInputException {
+		DefaultLink newLink = createLink(name, link.getEndNode(),
+				link.getStartNode(), (LineString) link.getLinearGeom()
+						.reverse());
+		link.setReverseLink(newLink);
+		return newLink;
 	}
 
 	@Override
-	public List<Lane> createLanes(Link link, int num) {
+	public DefaultLane createLane(Segment segment, double start, double end,
+			double width, double shift, int laneId) throws ModelInputException {
+		return new DefaultLane(nextId(), segment, start, end, width, shift,
+				laneId);
+	}
+
+	@Override
+	public List<Lane> createLanes(Link link, int num)
+			throws ModelInputException {
 		for (int i = 0; i < num; i++) {
 			double shift = (num / 2.0 - i) * DEFAULT_WIDTH;
-			DefaultLane lane = new DefaultLane(link, DEFAULT_WIDTH, shift, i);
+			DefaultLane lane = createLane(link, 0, 1, DEFAULT_WIDTH, shift, i);
 			link.add(lane);
 		}
 		return link.getLanes();
 	}
 
 	@Override
-	public DefaultConnector createConnector(Lane laneFrom, Lane laneTo) {
-		DefaultConnector connector;
-		try {
-			connector = new DefaultConnector(laneFrom, laneTo, DEFAULT_WIDTH);
-		} catch (ModelInputException e) {
-			e.printStackTrace();
-			// TODO error message log
-			return null;
-		}
+	public DefaultConnector createConnector(Lane laneFrom, Lane laneTo)
+			throws ModelInputException {
+		DefaultConnector connector = new DefaultConnector(nextId(), laneFrom,
+				laneTo, DEFAULT_WIDTH);
+		Lane lane = createLane(connector, 0, 1, DEFAULT_WIDTH, 0, -1);
+		connector.setLane(lane);
+
 		Node node = ((Link) laneFrom.getSegment()).getEndNode();
-		try {
-			node.add(connector);
-		} catch (ModelInputException e) {
-			e.printStackTrace();
-			// TODO error message log
-			return null;
-		}
+		node.add(connector);
 		return connector;
 	}
 }

@@ -24,6 +24,7 @@ public class DefaultVehicleGenerator extends
 	private static DefaultVehicleGenerator generator = null;
 
 	private DefaultVehicleGenerator() {
+		super(0, null);
 	}
 
 	public static DefaultVehicleGenerator getInstance() {

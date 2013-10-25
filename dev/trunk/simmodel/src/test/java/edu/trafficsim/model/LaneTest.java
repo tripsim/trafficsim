@@ -13,7 +13,7 @@ public class LaneTest {
 
 	@Test
 	public void testNavigable() throws ModelInputException {
-		DefaultLink link = new DefaultLink(null, null, null, null, null) {
+		DefaultLink link = new DefaultLink(0, null, null, null, null, null) {
 			/**
 			 * 
 			 */
@@ -24,12 +24,12 @@ public class LaneTest {
 			}
 		};
 
-		Lane lane = new DefaultLane(link, 4, 0, 0);
-		VehicleType vehicleType = new VehicleType("Test", VehicleClass.Car);
-		DefaultVehicle vehicle1 = new DefaultVehicle(vehicleType, null, 0);
+		Lane lane = new DefaultLane(0, link, 4, 0, 0);
+		VehicleType vehicleType = new VehicleType(0, "Test", VehicleClass.Car);
+		DefaultVehicle vehicle1 = new DefaultVehicle(0, vehicleType, null, 0);
 		vehicle1.setName("first");
 		vehicle1.position(10);
-		DefaultVehicle vehicle2 = new DefaultVehicle(vehicleType, null, 0);
+		DefaultVehicle vehicle2 = new DefaultVehicle(1, vehicleType, null, 0);
 		vehicle2.setName("second");
 		vehicle2.position(2);
 

@@ -29,10 +29,8 @@ public abstract class MovingObject<T> extends BaseEntity<T> implements Movable,
 
 	protected boolean active = true;
 
-	// public MovingObject() {
-	// }
-
-	public MovingObject(int startFrame) {
+	public MovingObject(long id, String name, int startFrame) {
+		super(id, name);
 		this.startFrame = startFrame;
 	}
 
@@ -83,7 +81,7 @@ public abstract class MovingObject<T> extends BaseEntity<T> implements Movable,
 	public final Coordinate[] trajectory() {
 		return coords.toArray(new Coordinate[0]);
 	}
-	
+
 	@Override
 	public final Double[] speeds() {
 		return speeds.toArray(new Double[0]);
@@ -91,7 +89,7 @@ public abstract class MovingObject<T> extends BaseEntity<T> implements Movable,
 
 	@Override
 	public void stepForward(Simulator simulator) {
-		if(!active)
+		if (!active)
 			return;
 		double stepSize = simulator.getStepSize();
 		before();

@@ -18,17 +18,19 @@ public abstract class PointEvent<T> extends AbstractEvent<T> {
 		 */
 		private static final long serialVersionUID = 1L;
 
-		public EventLocation(Point point) {
-			super(point);
+		public EventLocation(long id, String name, Point point) {
+			super(id, name, point);
 		}
 
 	}
 
 	private EventLocation location;
 
-	public PointEvent(double startTime, double endTime, Point point) {
-		super(startTime, endTime);
-		location = new EventLocation(point);
+	public PointEvent(long id, String name, double startTime, double endTime,
+			Point point) {
+		super(id, name, startTime, endTime);
+		// reorganize
+		// location = new EventLocation(point);
 	}
 
 }

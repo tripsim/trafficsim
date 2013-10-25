@@ -7,6 +7,10 @@ import edu.trafficsim.model.network.NodeType;
 
 public interface Node extends Location {
 
+	public Long getId();
+	
+	public String getName();
+	
 	public NodeType getNodeType();
 
 	public boolean upstream(Link link);
@@ -18,10 +22,6 @@ public interface Node extends Location {
 	public Collection<Link> getDownstreams();
 
 	public Collection<Connector> getConnectors(Lane lane);
-
-	public Router getRouter();
-
-	public void setRouter(Router router);
 
 	public void add(Link link) throws ModelInputException;
 

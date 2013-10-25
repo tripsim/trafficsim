@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.vividsolutions.jts.geom.Coordinate;
+
 public class Highways {
 
 	private Map<Long, OsmNode> osmNodes;
@@ -13,10 +15,6 @@ public class Highways {
 	public Highways() {
 		osmNodes = new HashMap<Long, OsmNode>();
 		osmWays = new ArrayList<OsmWay>();
-	}
-
-	public void breakDown() {
-
 	}
 
 	OsmNode addOsmNode(long id, double lat, double lon) {
@@ -37,6 +35,10 @@ public class Highways {
 	OsmNode getOsmNode(long id) {
 		return osmNodes.get(id);
 	}
+	
+	List<OsmWay> getOsmWays() {
+		return osmWays;
+	}
 
 	static class OsmNode {
 		long id;
@@ -47,6 +49,14 @@ public class Highways {
 
 		void addWay(OsmWay osmWay) {
 			osmWays.add(osmWay);
+		}
+		
+		boolean isShared() {
+			return osmWays.size() > 1;
+		}
+		
+		Coordinate asCoord() {
+			return new Coordinate(lat, lon);
 		}
 		// traffic signal
 	}

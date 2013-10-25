@@ -7,14 +7,12 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import com.vividsolutions.jts.geom.CoordinateFilter;
 import com.vividsolutions.jts.geom.Point;
 
 import edu.trafficsim.model.Connector;
 import edu.trafficsim.model.Lane;
 import edu.trafficsim.model.Link;
 import edu.trafficsim.model.Node;
-import edu.trafficsim.model.Router;
 import edu.trafficsim.model.core.AbstractLocation;
 import edu.trafficsim.model.core.ModelInputException;
 
@@ -32,24 +30,15 @@ public class DefaultNode extends AbstractLocation<DefaultNode> implements Node {
 
 	private NodeType nodeType;
 
-	private Router router;
-
 	private final Set<Link> downstreams = new HashSet<Link>();
 	private final Set<Link> upstreams = new HashSet<Link>();
 
 	private final Map<Lane, Set<Connector>> connectors = new HashMap<Lane, Set<Connector>>();
 
-	public DefaultNode(String name, NodeType nodeType, Point point,
+	public DefaultNode(long id, String name, NodeType nodeType, Point point,
 			double radius) {
-		this(name, nodeType, point, radius, null);
-	}
-
-	public DefaultNode(String name, NodeType nodeType, Point point,
-			double radius, Router router) {
-		super(point, radius);
-		setName(name);
+		super(id, name, point, radius);
 		this.nodeType = nodeType;
-		this.router = router;
 	}
 
 	@Override
@@ -60,7 +49,7 @@ public class DefaultNode extends AbstractLocation<DefaultNode> implements Node {
 			downstreams.add(link);
 		else
 			throw new ModelInputException(
-					"The link doesnt start or end from the node.");
+					"The link doesn't start or end from the node.");
 	}
 
 	public final void remove(Link link) {
@@ -109,19 +98,4 @@ public class DefaultNode extends AbstractLocation<DefaultNode> implements Node {
 		fromLaneConnectors.add(connector);
 	}
 
-	@Override
-	public final Router getRouter() {
-		return router;
-	}
-
-	@Override
-	public final void setRouter(Router router) {
-		this.router = router;
-	}
-
-	@Override
-	public void transform(CoordinateFilter filter) {
-		super.transform(filter);
-		// TODO transform unit properly
-	}
 }

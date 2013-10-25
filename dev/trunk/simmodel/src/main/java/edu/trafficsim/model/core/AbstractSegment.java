@@ -1,16 +1,12 @@
 package edu.trafficsim.model.core;
 
 import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.CoordinateFilter;
 
 import edu.trafficsim.model.Segment;
 
 public abstract class AbstractSegment<T> extends BaseEntity<T> implements
 		Segment {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	// TODO use edge representation to fit in the map exactly, or other ways of
@@ -18,7 +14,8 @@ public abstract class AbstractSegment<T> extends BaseEntity<T> implements
 	// private LineString leftEdge;
 	// private LineString rightEdge;
 
-	public AbstractSegment() {
+	public AbstractSegment(long id, String name) {
+		super(id, name);
 	}
 
 	@Override
@@ -45,11 +42,6 @@ public abstract class AbstractSegment<T> extends BaseEntity<T> implements
 	@Override
 	public double getLength() {
 		return getLinearGeom().getLength();
-	}
-
-	@Override
-	public void transform(CoordinateFilter filter) {
-		getLinearGeom().apply(filter);
 	}
 
 }

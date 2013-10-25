@@ -1,7 +1,6 @@
 package edu.trafficsim.model.network;
 
 import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.CoordinateFilter;
 import com.vividsolutions.jts.geom.LineString;
 
 import edu.trafficsim.model.Connector;
@@ -20,10 +19,11 @@ public class DefaultConnector extends AbstractSegment<DefaultConnector>
 
 	private Lane fromLane;
 	private Lane toLane;
-	private final Lane lane;
+	private Lane lane;
 
-	public DefaultConnector(Lane fromLane, Lane toLane, double width)
-			throws ModelInputException {
+	public DefaultConnector(long id, Lane fromLane, Lane toLane,
+			double width) throws ModelInputException {
+		super(id, null);
 		if (!(fromLane.getSegment() instanceof Link)
 				|| !(toLane.getSegment() instanceof Link))
 			throw new ModelInputException("fromLane must be a link lane");
@@ -33,14 +33,17 @@ public class DefaultConnector extends AbstractSegment<DefaultConnector>
 					"fromLane must ends at the same node that toLane starts!");
 		this.fromLane = fromLane;
 		this.toLane = toLane;
+	}
 
-		this.lane = new DefaultLane(this, 0, 1, width, 0, -1);
+	@Override
+	public final String getName() {
+		return fromLane.getName() + " -> " + toLane.getName();
 	}
 
 	@Override
 	public final LineString getLinearGeom() {
-		return Coordinates.getLineString(new Coordinate[] { fromLane.getStartCoord(),
-				toLane.getEndCoord() });
+		return Coordinates.getLineString(new Coordinate[] {
+				fromLane.getStartCoord(), toLane.getEndCoord() });
 	}
 
 	@Override
@@ -59,6 +62,11 @@ public class DefaultConnector extends AbstractSegment<DefaultConnector>
 	}
 
 	@Override
+	public void setLane(Lane lane) {
+		this.lane = lane;
+	}
+
+	@Override
 	public ConnectorType getConnectorType() {
 		return connectorType;
 	}
@@ -66,11 +74,6 @@ public class DefaultConnector extends AbstractSegment<DefaultConnector>
 	@Override
 	public double getWidth() {
 		return lane.getWidth();
-	}
-
-	@Override
-	public void transform(CoordinateFilter filter) {
-		// only transform the intermediates
 	}
 
 }

@@ -29,7 +29,11 @@ public class AppTest {
 		
 		double[] ds = new double[2];
 		System.out.println(Arrays.toString(ds));
-
+		
+		String[] strs = new String[] {"One", "Two"};
+		int t = 0;
+		System.out.println(strs[t++]);
+		System.out.println(t);
 	}
 
 	@Test

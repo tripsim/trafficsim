@@ -4,13 +4,10 @@ import com.vividsolutions.jts.geom.Point;
 
 public class Detector extends Device<Detector> {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
-	public Detector(Point point) {
-		super(point);
+	public Detector(long id, String name, Point point) {
+		super(id, name, point);
 	}
 
 }

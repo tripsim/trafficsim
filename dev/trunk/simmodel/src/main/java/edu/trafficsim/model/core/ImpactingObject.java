@@ -9,8 +9,8 @@ public abstract class ImpactingObject<T> extends BaseEntity<T> {
 
 	private boolean active = true;
 
-	public ImpactingObject() {
-
+	public ImpactingObject(long id, String name) {
+		super(id, name);
 	}
 
 	public boolean isActive() {

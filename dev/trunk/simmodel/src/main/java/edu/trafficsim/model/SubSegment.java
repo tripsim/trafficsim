@@ -8,6 +8,10 @@ import com.vividsolutions.jts.geom.Coordinate;
  */
 public interface SubSegment extends DataContainer {
 
+	public Long getId();
+
+	public String getName();
+
 	public Coordinate getStartCoord();
 
 	public Coordinate getEndCoord();

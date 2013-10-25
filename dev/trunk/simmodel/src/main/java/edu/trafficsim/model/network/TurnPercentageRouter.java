@@ -21,6 +21,10 @@ public class TurnPercentageRouter extends BaseEntity<TurnPercentageRouter>
 
 	private static final long serialVersionUID = 1L;
 
+	public TurnPercentageRouter(long id, String name) {
+		super(id, name);
+	}
+
 	static final class DynamicTurnPercentage extends
 			AbstractDynamicProperty<TurnPercentage> {
 
@@ -49,8 +53,9 @@ public class TurnPercentageRouter extends BaseEntity<TurnPercentageRouter>
 		Link link = (Link) segment;
 		TurnPercentage turnPercentage = getTurnPercentage(link, vehicleClass,
 				simulator.getForwarded());
-		return turnPercentage != null ? Randoms.randomElement(turnPercentage, simulator.getRand()) :
-			Randoms.randomElement(link.getEndNode().getDownstreams(), simulator.getRand());
+		return turnPercentage != null ? Randoms.randomElement(turnPercentage,
+				simulator.getRand()) : Randoms.randomElement(link.getEndNode()
+				.getDownstreams(), simulator.getRand());
 	}
 
 	public TurnPercentage getTurnPercentage(Link link,

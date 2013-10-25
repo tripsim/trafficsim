@@ -31,8 +31,8 @@ public abstract class LinearEvent<T> extends AbstractEvent<T>
 //
 //	private EventSegment segment = new EventSegment();
 	
-	public LinearEvent(double startTime, double endTime, Location fromLocation, Location toLocation) {
-		super(startTime, endTime);
+	public LinearEvent(long id, String name, double startTime, double endTime, Location fromLocation, Location toLocation) {
+		super(id, name, startTime, endTime);
 	}
 
 }

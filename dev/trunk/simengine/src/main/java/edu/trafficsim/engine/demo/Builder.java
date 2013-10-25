@@ -1,14 +1,18 @@
 package edu.trafficsim.engine.demo;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.util.List;
 
 import com.vividsolutions.jts.geom.Coordinate;
 
+import edu.trafficsim.engine.OSMXAPITest;
 import edu.trafficsim.engine.VehicleFactory;
 import edu.trafficsim.engine.VehicleGenerator;
 import edu.trafficsim.engine.factory.DefaultNetworkFactory;
 import edu.trafficsim.engine.factory.DefaultVehicleFactory;
 import edu.trafficsim.engine.generator.DefaultVehicleGenerator;
+import edu.trafficsim.engine.osm.OsmNetworkExtractor;
 import edu.trafficsim.model.Connector;
 import edu.trafficsim.model.Lane;
 import edu.trafficsim.model.Link;
@@ -28,22 +32,37 @@ import edu.trafficsim.model.network.TurnPercentageRouter;
 import edu.trafficsim.model.roadusers.DriverType;
 import edu.trafficsim.model.roadusers.VehicleType;
 import edu.trafficsim.model.roadusers.VehicleType.VehicleClass;
+import edu.trafficsim.utility.CoordinateTransformer;
 
 // Hack to create nodes links...
 public class Builder {
 
 	private DefaultNetwork network;
+	private Network network2;
 	private DefaultNetworkFactory networkFactory;
 	private DefaultVehicleFactory vehicleFactory;
 	private DefaultVehicleGenerator vehicleGenerator;
 
 	public Builder() throws ModelInputException {
-		network = new DefaultNetwork();
 		networkFactory = DefaultNetworkFactory.getInstance();
 		vehicleFactory = DefaultVehicleFactory.getInstance();
 		vehicleGenerator = DefaultVehicleGenerator.getInstance();
 
-		build();
+		buildNetwork();
+	}
+
+	// test
+	private void buildNetwork() {
+		BufferedReader reader = new BufferedReader(new InputStreamReader(
+				getClass().getResourceAsStream("test.json")));
+		OsmNetworkExtractor extractor = new OsmNetworkExtractor(
+				DefaultNetworkFactory.getInstance());
+		try {
+			network2 = extractor.extract(reader);
+		} catch (ModelInputException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	private void build() throws ModelInputException {
@@ -118,24 +137,24 @@ public class Builder {
 		// Transform
 		TransformCoordinateFilter filter = Coordinates
 				.getDefaultTransformFilter();
-		network.transform(filter);
+		CoordinateTransformer.transform(network, filter);
 
 		System.out.println(link1.getLength());
 		System.out.println(link2.getLength());
 
+		// TODO move type
 		// Vehicle Type
-		VehicleType vehicleTypeCar = new VehicleType("TestCar",
+		VehicleType vehicleTypeCar = new VehicleType(0, "TestCar",
 				VehicleClass.Car);
-		VehicleType vehicleTypeTruck = new VehicleType("TestTruck",
+		VehicleType vehicleTypeTruck = new VehicleType(0, "TestTruck",
 				VehicleClass.Truck);
 		VehicleType[] vehicleTypes = new VehicleType[] { vehicleTypeCar,
 				vehicleTypeTruck };
 		double[] vehPossibilities = new double[] { 0.8, 0.2 };
 		VehicleTypeComposition vehicleTypeComposition = new DefaultVehicleTypeComposition(
 				vehicleTypes, vehPossibilities);
-
 		// Driver Type
-		DriverType driverType = new DriverType("TestDriver");
+		DriverType driverType = new DriverType(0, "TestDriver");
 		DriverType[] driverTypes = new DriverType[] { driverType };
 		double[] drvPossibilities = new double[] { 1.0 };
 		DefaultDriverTypeComposition driverTypeComposition = new DefaultDriverTypeComposition(
@@ -146,17 +165,17 @@ public class Builder {
 		// no destination 100s~200s 800vph
 		double[] times = new double[] { 300, 500 };
 		Integer[] vphs = new Integer[] { 1600, 1000 };
-		Od od = new DefaultOd(node1, null, vehicleTypeComposition,
+		Od od = new DefaultOd(0, "test", node1, null, vehicleTypeComposition,
 				driverTypeComposition, times, vphs);
-		network.add(od);
+		// network.add(od);
 
 		// Router
-		Router router = new TurnPercentageRouter();
-		node2.setRouter(router);
+		// Router router = new TurnPercentageRouter();
+		// node2.setRouter(router);
 	}
 
 	public Network getNetwork() {
-		return network;
+		return network2;
 	}
 
 	public VehicleFactory getVehicleFactory() {

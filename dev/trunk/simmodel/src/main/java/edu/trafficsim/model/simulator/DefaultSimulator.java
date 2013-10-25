@@ -9,11 +9,13 @@ public class DefaultSimulator extends AbstractSimulator<DefaultSimulator>
 
 	private static final long DEFAULT_SEED = 0l;
 
-	public DefaultSimulator(double duration, double stepSize) {
-		this(duration, stepSize, DEFAULT_SEED);
+	public DefaultSimulator(long id, String name, double duration,
+			double stepSize) {
+		this(id, name, duration, stepSize, DEFAULT_SEED);
 	}
 
-	public DefaultSimulator(double duration, double stepSize, long seed) {
-		super(duration, stepSize, seed);
+	public DefaultSimulator(long id, String name, double duration,
+			double stepSize, long seed) {
+		super(id, name, duration, stepSize, seed);
 	}
 }

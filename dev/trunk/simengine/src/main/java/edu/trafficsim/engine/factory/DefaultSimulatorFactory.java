@@ -18,7 +18,8 @@ public class DefaultSimulatorFactory extends AbstractFactory implements
 	}
 
 	@Override
-	public DefaultSimulator createSimulator(int duration, int stepSize) {
-		return new DefaultSimulator(duration, stepSize);
+	public DefaultSimulator createSimulator(String name, int duration,
+			int stepSize) {
+		return new DefaultSimulator(nextId(), name, duration, stepSize);
 	}
 }

@@ -19,17 +19,24 @@ public class DefaultLane extends AbstractSubSegment<DefaultLane> implements
 	private final int laneId;
 	private final NavigableSet<Vehicle> vehicles = new TreeSet<Vehicle>();
 
-	public DefaultLane(Segment segment, double width, double shift, int laneId) {
-		super(segment, width, shift);
+	public DefaultLane(long id, Segment segment, double width,
+			double shift, int laneId) {
+		super(id, null, segment, width, shift);
 		this.laneId = laneId;
 	}
 
-	public DefaultLane(Segment segment, double start, double end, double width,
-			double shift, int laneId) throws ModelInputException {
-		super(segment, start, end, width, shift);
+	public DefaultLane(long id, Segment segment, double start,
+			double end, double width, double shift, int laneId)
+			throws ModelInputException {
+		super(id, null, segment, start, end, width, shift);
 		this.laneId = laneId;
 	}
 
+	@Override
+	public final String getName() {
+		return segment.getName() + " " + laneId;
+	}
+	
 	@Override
 	public final Vehicle getHeadVehicle() {
 		return vehicles.last();

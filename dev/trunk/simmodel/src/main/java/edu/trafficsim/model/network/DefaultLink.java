@@ -3,7 +3,6 @@ package edu.trafficsim.model.network;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.vividsolutions.jts.geom.CoordinateFilter;
 import com.vividsolutions.jts.geom.LineString;
 
 import edu.trafficsim.model.Lane;
@@ -21,30 +20,21 @@ public class DefaultLink extends AbstractSegment<DefaultLink> implements Link {
 	private List<Lane> lanes = new ArrayList<Lane>(DEFAULT_LANES_SIZE);
 	private LinkType linkType;
 
-	private DefaultLink reverseLink = null;
+	private Link reverseLink = null;
 
 	private Node startNode;
 	private Node endNode;
 	protected LineString linearGeom;
 
-	public DefaultLink(String name, LinkType linkType, Node startNode,
+	public DefaultLink(long id, String name, LinkType linkType, Node startNode,
 			Node endNode, LineString linearGeom) {
+		super(id, name);
 		setName(name);
 		this.linkType = linkType;
 		this.startNode = startNode;
 		this.endNode = endNode;
 		this.linearGeom = linearGeom;
 		Coordinates.trimLinearGeom(startNode, endNode, linearGeom);
-	}
-
-	public static final DefaultLink createReverseLink(DefaultLink link,
-			String name) {
-		DefaultLink newLink = new DefaultLink(name, link.getLinkType(),
-				link.getStartNode(), link.getEndNode(), (LineString) link
-						.getLinearGeom().reverse());
-		newLink.reverseLink = link;
-		link.reverseLink = newLink;
-		return newLink;
 	}
 
 	@Override
@@ -76,7 +66,7 @@ public class DefaultLink extends AbstractSegment<DefaultLink> implements Link {
 	public void add(Lane lane) {
 		lanes.add(lane);
 	}
-	
+
 	@Override
 	public double getWidth() {
 		double width = 0;
@@ -85,6 +75,7 @@ public class DefaultLink extends AbstractSegment<DefaultLink> implements Link {
 		return width;
 	}
 
+	@Override
 	public LinkType getLinkType() {
 		return linkType;
 	}
@@ -93,19 +84,23 @@ public class DefaultLink extends AbstractSegment<DefaultLink> implements Link {
 		this.linkType = linkType;
 	}
 
+	@Override
 	public Link getReverseLink() {
 		return reverseLink;
 	}
 
-	public void removeReverseLink() {
-		reverseLink.reverseLink = null;
-		reverseLink = null;
+	@Override
+	public void setReverseLink(Link reverseLink) {
+		this.reverseLink = reverseLink;
+		if (reverseLink.getReverseLink() != this)
+			reverseLink.setReverseLink(this);
 	}
 
 	@Override
-	public void transform(CoordinateFilter filter) {
-		super.transform(filter);
-		// TODO transform unit properly
+	public void removeReverseLink() {
+		reverseLink = null;
+		if (reverseLink.getReverseLink() != null)
+			reverseLink.removeReverseLink();
 	}
 
 }

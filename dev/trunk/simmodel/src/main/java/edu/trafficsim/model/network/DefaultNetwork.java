@@ -5,25 +5,20 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.vividsolutions.jts.geom.CoordinateFilter;
-
-import edu.trafficsim.model.Link;
 import edu.trafficsim.model.Network;
 import edu.trafficsim.model.Node;
-import edu.trafficsim.model.Od;
 
 public class DefaultNetwork extends AbstractNetwork<DefaultNetwork> implements
 		Network {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
+
+	public DefaultNetwork(long id, String name) {
+		super(id, name);
+	}
 
 	private final Set<Node> sources = new HashSet<Node>();
 	private final Set<Node> sinks = new HashSet<Node>();
-
-	public final Set<Od> ods = new HashSet<Od>();
 
 	@Override
 	public Collection<Node> getSources() {
@@ -36,30 +31,13 @@ public class DefaultNetwork extends AbstractNetwork<DefaultNetwork> implements
 	}
 
 	@Override
-	public Collection<Od> getOds() {
-		return Collections.unmodifiableCollection(ods);
-	}
-
-	public void add(Od od) {
-		ods.add(od);
-	}
-
-	@Override
 	public void discover() {
-		for (Node node : nodes) {
+		for (Node node : nodes.values()) {
 			if (node.getDownstreams().isEmpty())
 				sinks.add(node);
 			if (node.getUpstreams().isEmpty())
 				sources.add(node);
 		}
-	}
-
-	@Override
-	public void transform(CoordinateFilter filter) {
-		for (Link link : getLinks())
-			link.transform(filter);
-		for (Node node : getNodes())
-			node.transform(filter);
 	}
 
 }

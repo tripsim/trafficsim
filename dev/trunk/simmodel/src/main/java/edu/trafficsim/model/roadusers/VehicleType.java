@@ -13,10 +13,10 @@ public class VehicleType extends Type<VehicleType> {
 		ConnectedVehicle, CrusieControl, AdaptiveCruiseControl
 	}
 
-	 double minWidth = 2;
-	 double maxWidth = 3;
-	 double minLength = 4;
-	 double maxLength = 7;
+	double minWidth = 2;
+	double maxWidth = 3;
+	double minLength = 4;
+	double maxLength = 7;
 	// private double minHeight;
 	// private double maxHeight;
 	//
@@ -32,8 +32,8 @@ public class VehicleType extends Type<VehicleType> {
 
 	private final VehicleClass vehicleClass;
 
-	public VehicleType(String name, VehicleClass vehicleClass) {
-		setName(name);
+	public VehicleType(long id, String name, VehicleClass vehicleClass) {
+		super(id, name);
 		this.vehicleClass = vehicleClass;
 	}
 

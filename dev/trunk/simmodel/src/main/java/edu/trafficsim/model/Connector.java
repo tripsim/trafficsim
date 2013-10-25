@@ -11,5 +11,7 @@ public interface Connector extends Segment {
 	public Lane getFromLane();
 
 	public Lane getToLane();
+	
+	public void setLane(Lane lane);
 
 }
