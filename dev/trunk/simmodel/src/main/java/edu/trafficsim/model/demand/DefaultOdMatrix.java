@@ -9,15 +9,16 @@ import edu.trafficsim.model.Od;
 import edu.trafficsim.model.OdMatrix;
 import edu.trafficsim.model.core.BaseEntity;
 
-public class DefaultOdMatix extends BaseEntity<DefaultOdMatix> implements
+public class DefaultOdMatrix extends BaseEntity<DefaultOdMatrix> implements
 		OdMatrix {
 
 	private static final long serialVersionUID = 1L;
 
-	public final Set<Od> ods = new HashSet<Od>();
+	public final Set<Od> ods;
 
-	public DefaultOdMatix(long id, String name) {
+	public DefaultOdMatrix(long id, String name) {
 		super(id, name);
+		ods = new HashSet<Od>();
 	}
 
 	@Override

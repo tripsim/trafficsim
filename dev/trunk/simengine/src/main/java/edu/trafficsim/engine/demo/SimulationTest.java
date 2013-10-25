@@ -3,8 +3,8 @@ package edu.trafficsim.engine.demo;
 import java.util.List;
 
 import edu.trafficsim.engine.Simulation;
-import edu.trafficsim.engine.VehicleFactory;
-import edu.trafficsim.engine.VehicleGenerator;
+import edu.trafficsim.engine.SimulationScenario;
+import edu.trafficsim.engine.core.DefaultSimulation;
 import edu.trafficsim.engine.factory.DefaultSimulatorFactory;
 import edu.trafficsim.model.Network;
 import edu.trafficsim.model.Simulator;
@@ -24,11 +24,11 @@ public class SimulationTest {
 
 	private static SimulationTest test = null;
 
-	private Builder builder;
+	private DemoBuilder builder;
 
 	private SimulationTest() {
 		try {
-			builder = new Builder();
+			builder = new DemoBuilder();
 		} catch (ModelInputException e) {
 			builder = null;
 			e.printStackTrace();
@@ -46,11 +46,10 @@ public class SimulationTest {
 				.createSimulator("test", 500, 1);
 
 		Network network = builder.getNetwork();
-		VehicleGenerator vehicleGenerator = builder.getVehicleGenerator();
-		VehicleFactory vehicleFactory = builder.getVehicleFactory();
+		SimulationScenario scenario = builder.getScenario();
 
-		Simulation simulation = new Simulation(simulator, network,
-				vehicleGenerator, vehicleFactory);
+		Simulation simulation = new DefaultSimulation(simulator, network,
+				scenario);
 
 		return simulation.run();
 	}
