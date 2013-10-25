@@ -35,11 +35,12 @@ public class DefaultVehicle extends MovingObject<DefaultVehicle> implements
 
 	private double width;
 	private double length;
+
 	// private double height;
 
-	public DefaultVehicle(VehicleType vehicleType, DriverType driverType,
-			int startFrame) {
-		super(startFrame);
+	public DefaultVehicle(long id, VehicleType vehicleType,
+			DriverType driverType, int startFrame) {
+		super(id, null, startFrame);
 		this.vehicleType = vehicleType;
 		this.driverType = driverType;
 		this.width = vehicleType.minWidth;
@@ -124,7 +125,7 @@ public class DefaultVehicle extends MovingObject<DefaultVehicle> implements
 
 	@Override
 	public void update() {
-		 carFollowingBehavior.update(this);
+		carFollowingBehavior.update(this);
 		// laneChangingBehavior.update(this);
 	}
 
@@ -148,16 +149,17 @@ public class DefaultVehicle extends MovingObject<DefaultVehicle> implements
 		}
 	}
 
+	// TODO move vehicle moving logic out
 	@Override
 	public void route(Simulator simulator) {
 		if (!(currentLane.getSegment() instanceof Link)) {
 			targetLink = null;
 			return;
 		}
-		Router router = ((Link) currentLane.getSegment()).getEndNode()
-				.getRouter();
-		targetLink = router == null ? null : router.getSucceedingLink(this,
-				simulator);
+		// Router router = ((Link) currentLane.getSegment()).getEndNode()
+		// .getRouter();
+		// targetLink = router == null ? null : router.getSucceedingLink(this,
+		// simulator);
 	}
 
 	private void convey(Simulator simulator) {

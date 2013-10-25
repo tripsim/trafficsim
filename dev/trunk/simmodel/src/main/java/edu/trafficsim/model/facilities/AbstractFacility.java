@@ -13,8 +13,8 @@ public abstract class AbstractFacility<T> extends AbstractLocation<T> implements
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public AbstractFacility(Point point) {
-		super(point);
+	public AbstractFacility(long id, String name, Point point) {
+		super(id, name, point);
 	}
 
 }

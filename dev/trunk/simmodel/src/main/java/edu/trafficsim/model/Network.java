@@ -2,9 +2,6 @@ package edu.trafficsim.model;
 
 import java.util.Collection;
 
-import com.vividsolutions.jts.geom.CoordinateFilter;
-
-
 public interface Network {
 
 	public Collection<Node> getSources();
@@ -12,22 +9,33 @@ public interface Network {
 	public Collection<Node> getSinks();
 
 	public Collection<Node> getNodes();
-	
+
 	public Collection<Link> getLinks();
 
-	public Collection<Od> getOds();
+	public Node getNode(long id);
+
+	public Link getLink(long id);
+
+	public boolean contains(Node node);
+
+	public boolean contains(Link link);
+
+	public boolean containsNode(long id);
+
+	public boolean containsLink(long id);
+
+	public void add(Node node);
+
+	public void add(Link link);
+
+	public void add(Node... nodes);
+
+	public void add(Link... links);
 
 	/**
 	 * discover its sources and sinks
 	 */
 	public void discover();
-
-	/**
-	 * @param filter
-	 *            which is used to transform all the coordinates of the
-	 *            components in the network
-	 */
-	public void transform(CoordinateFilter filter);
 
 	// TODO implement as needed
 

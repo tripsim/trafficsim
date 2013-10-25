@@ -25,6 +25,12 @@ public abstract class BaseEntity<T> implements DataContainer, Comparable<T> {
 
 	private String description;
 
+	public BaseEntity(long id, String name) {
+		this.id = id;
+		this.name = name;
+		this.description = null;
+	}
+
 	public String getName() {
 		return name;
 	}
@@ -61,12 +67,17 @@ public abstract class BaseEntity<T> implements DataContainer, Comparable<T> {
 		return modifiedBy;
 	}
 
+	@Override
+	public String toString() {
+		return getName();
+	}
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public int compareTo(T o) {
 		if (o instanceof BaseEntity)
 			return equals(o) ? 0 : (id > ((BaseEntity<?>) o).getId() ? 1 : -1);
-		return  -1;
+		return -1;
 	}
 
 }

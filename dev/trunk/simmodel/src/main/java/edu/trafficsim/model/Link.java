@@ -13,10 +13,14 @@ public interface Link extends Segment {
 	public Node getEndNode();
 
 	public Lane getLane(int index);
-	
+
 	public List<Lane> getLanes();
 
 	public void add(Lane lane);
-	
+
 	public Link getReverseLink();
+	
+	public void setReverseLink(Link reverseLink);
+
+	public void removeReverseLink();
 }

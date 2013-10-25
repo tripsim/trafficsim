@@ -18,8 +18,8 @@ public class DefaultVehicleFactory extends AbstractFactory implements
 	private static int count = 0;
 
 	// HACK
-	CarFollowingBehavior carFollowing = new DefaultCarFollowing();
-	
+	CarFollowingBehavior carFollowing = new DefaultCarFollowing(0, "temp");
+
 	private DefaultVehicleFactory() {
 	}
 
@@ -30,6 +30,8 @@ public class DefaultVehicleFactory extends AbstractFactory implements
 	}
 
 	// TODO complete the creation
+	private static long vid = 0;
+
 	@Override
 	public Vehicle createVehicle(VehicleToAdd vehicleToAdd, Simulator simulator) {
 		count++;
@@ -38,7 +40,7 @@ public class DefaultVehicleFactory extends AbstractFactory implements
 		double stepSize = simulator.getStepSize();
 		int initFrameId = (int) Math.round(startTime / stepSize);
 
-		DefaultVehicle vehicle = new DefaultVehicle(
+		DefaultVehicle vehicle = new DefaultVehicle(vid,
 				vehicleToAdd.getVehicleType(), vehicleToAdd.getDriverType(),
 				initFrameId);
 		vehicle.speed(vehicleToAdd.getInitSpeed());

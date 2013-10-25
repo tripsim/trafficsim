@@ -9,11 +9,8 @@ public class DefaultCarFollowing extends AbstractBehavior<DefaultCarFollowing>
 
 	private static final long serialVersionUID = 1L;
 
-	public DefaultCarFollowing() {
-	}
-
-	public DefaultCarFollowing(String name) {
-		setName(name);
+	public DefaultCarFollowing(long id, String name) {
+		super(id, name);
 	}
 
 	// HACK

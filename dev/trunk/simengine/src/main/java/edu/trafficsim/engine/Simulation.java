@@ -53,14 +53,14 @@ public class Simulation {
 				System.out.println("Time: " + time + "s: " + v.getName() + " "
 						+ v.position());
 			}
-			for (Od od : network.getOds()) {
-				for (VehicleToAdd vehicleToAdd : vehicleGenerator
-						.getVehicleToAdd(od, simulator)) {
-					Vehicle vehicle = vehicleFactory.createVehicle(
-							vehicleToAdd, simulator);
-					vehicles.add(vehicle);
-				}
-			}
+//			for (Od od : network.getOds()) {
+//				for (VehicleToAdd vehicleToAdd : vehicleGenerator
+//						.getVehicleToAdd(od, simulator)) {
+//					Vehicle vehicle = vehicleFactory.createVehicle(
+//							vehicleToAdd, simulator);
+//					vehicles.add(vehicle);
+//				}
+//			}
 			simulator.stepForward();
 		}
 

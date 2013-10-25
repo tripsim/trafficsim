@@ -17,8 +17,8 @@ public abstract class ContinuousEvent<T> extends AbstractEvent<T> {
 		 */
 		private static final long serialVersionUID = 1L;
 
-		public EventAgent(int startFrame) {
-			super(startFrame);
+		public EventAgent(long id, String name, int startFrame) {
+			super(id, name, startFrame);
 			// TODO Auto-generated constructor stub
 		}
 
@@ -44,9 +44,11 @@ public abstract class ContinuousEvent<T> extends AbstractEvent<T> {
 
 	private EventAgent agent;
 
-	public ContinuousEvent(double startTime, double endTime, int startFrame) {
-		super(startTime, endTime);
-		agent = new EventAgent(startFrame);
+	public ContinuousEvent(long id, String name, double startTime,
+			double endTime, int startFrame) {
+		super(id, name, startTime, endTime);
+		// reoragnize
+		//agent = new EventAgent(startFrame);
 	}
 
 }

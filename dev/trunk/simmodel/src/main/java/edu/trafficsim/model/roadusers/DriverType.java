@@ -18,8 +18,8 @@ public class DriverType extends Type<DriverType> {
 	// private Aggressiveness drivingAggressiveness;
 	// private Aggressiveness routeAggressiveness;
 
-	public DriverType(String name) {
-		setName(name);
+	public DriverType(long id, String name) {
+		super(id, name);
 	}
 
 	public double getMinHeadway() {

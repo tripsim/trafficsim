@@ -15,7 +15,8 @@ public abstract class AbstractEvent<T> extends ImpactingObject<T> implements
 	private double startTime;
 	private double endTime;
 
-	public AbstractEvent(double startTime, double endTime) {
+	public AbstractEvent(long id, String name, double startTime, double endTime) {
+		super(id, name);
 		this.startTime = startTime;
 		this.endTime = endTime;
 	}

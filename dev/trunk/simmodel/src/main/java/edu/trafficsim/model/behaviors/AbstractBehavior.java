@@ -8,4 +8,7 @@ public abstract class AbstractBehavior<T> extends BaseEntity<T> implements
 
 	private static final long serialVersionUID = 1L;
 
+	public AbstractBehavior(long id, String name) {
+		super(id, name);
+	}
 }

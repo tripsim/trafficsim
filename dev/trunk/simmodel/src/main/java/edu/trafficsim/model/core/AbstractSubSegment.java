@@ -23,15 +23,18 @@ public abstract class AbstractSubSegment<T> extends BaseEntity<T> implements
 
 	protected Segment segment;
 
-	public AbstractSubSegment(Segment segment, double width, double shift) {
+	public AbstractSubSegment(long id, String name, Segment segment,
+			double width, double shift) {
+		super(id, name);
 		this.segment = segment;
 		this.width = width;
 		this.shift = shift;
 	}
 
-	public AbstractSubSegment(Segment segment, double start, double end,
-			double width, double shift) throws ModelInputException {
-		this(segment, start, shift);
+	public AbstractSubSegment(long id, String name, Segment segment,
+			double start, double end, double width, double shift)
+			throws ModelInputException {
+		this(id, name, segment, start, shift);
 
 		if (start < 0 || start > 1 || end < 0 || end > 1)
 			throw new ModelInputException(

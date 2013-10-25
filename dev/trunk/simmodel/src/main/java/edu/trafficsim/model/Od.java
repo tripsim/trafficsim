@@ -1,6 +1,6 @@
 package edu.trafficsim.model;
 
-public interface Od {
+public interface Od extends DataContainer {
 
 	public Node getOrigin();
 

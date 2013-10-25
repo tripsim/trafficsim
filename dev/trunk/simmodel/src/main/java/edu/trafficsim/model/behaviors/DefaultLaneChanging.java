@@ -8,12 +8,8 @@ public class DefaultLaneChanging extends AbstractBehavior<DefaultLaneChanging>
 
 	private static final long serialVersionUID = 1L;
 
-	public DefaultLaneChanging() {
-	}
-
-	public DefaultLaneChanging(String name) {
-		setName(name);
-
+	public DefaultLaneChanging(long id, String name) {
+		super(id, name);
 	}
 
 	@Override

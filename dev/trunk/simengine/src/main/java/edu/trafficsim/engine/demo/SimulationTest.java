@@ -43,7 +43,7 @@ public class SimulationTest {
 
 	public List<Vehicle> run() throws ModelInputException {
 		Simulator simulator = DefaultSimulatorFactory.getInstance()
-				.createSimulator(500, 1);
+				.createSimulator("test", 500, 1);
 
 		Network network = builder.getNetwork();
 		VehicleGenerator vehicleGenerator = builder.getVehicleGenerator();

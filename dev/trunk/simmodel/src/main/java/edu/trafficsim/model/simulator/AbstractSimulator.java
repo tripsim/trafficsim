@@ -25,7 +25,9 @@ public abstract class AbstractSimulator<T> extends BaseEntity<T> implements
 
 	private double ttl;
 
-	public AbstractSimulator(double duration, double stepSize, long seed) {
+	public AbstractSimulator(long id, String name, double duration,
+			double stepSize, long seed) {
+		super(id, name);
 		this.duration = duration;
 		this.stepSize = stepSize;
 		this.seed = seed;

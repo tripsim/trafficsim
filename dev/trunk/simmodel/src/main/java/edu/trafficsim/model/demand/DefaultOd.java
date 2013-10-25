@@ -36,10 +36,11 @@ public class DefaultOd extends BaseEntity<DefaultOd> implements Od {
 	private final DynamicVehicleTypeComposition dynamicVehicleTypeComposition = new DynamicVehicleTypeComposition();
 	private final DynamicDriverTypeComposition dynamicDriverTypeComposition = new DynamicDriverTypeComposition();
 
-	public DefaultOd(Node origin, Node destination,
+	public DefaultOd(long id, String name, Node origin, Node destination,
 			VehicleTypeComposition vehicleTypeComposition,
 			DriverTypeComposition driverTypeComposition, double[] times,
 			Integer[] vphs) throws ModelInputException {
+		super(id, name);
 		this.origin = origin;
 		this.destination = destination;
 		setVphs(times, vphs);

@@ -7,18 +7,32 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import edu.trafficsim.engine.factory.DefaultNetworkFactory;
 import edu.trafficsim.engine.osm.Highways;
 import edu.trafficsim.engine.osm.HighwaysJsonParser;
+import edu.trafficsim.engine.osm.OsmNetworkExtractor;
+import edu.trafficsim.model.core.ModelInputException;
 
 public class OSMXAPITest {
 
 	public static void main(String[] args) {
+		//test();
+		//testParse();
+		testExtract();
+	}
 
-		String url = "http://jxapi.openstreetmap.org/xapi/api/0.6";
-		String testQuery = "/way[highway=*][bbox=-89.4114,43.0707,-89.3955,43.0753]";
+	protected static void testExtract() {
 
-		//test(url+testQuery);
-		testParse();
+		BufferedReader reader = new BufferedReader(new InputStreamReader(
+				OSMXAPITest.class.getResourceAsStream("test.json")));
+		OsmNetworkExtractor extractor = new OsmNetworkExtractor(
+				DefaultNetworkFactory.getInstance());
+		try {
+			extractor.extract(reader);
+		} catch (ModelInputException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	protected static void testParse() {
@@ -29,7 +43,11 @@ public class OSMXAPITest {
 		Highways highways = parser.getParsedHighways();
 	}
 
-	protected static void test(String urlStr) {
+	protected static void test() {
+		String urlPre = "http://jxapi.openstreetmap.org/xapi/api/0.6";
+		String testQuery = "/way[highway=*][bbox=-89.4114,43.0707,-89.3955,43.0753]";
+
+		String urlStr = urlPre + testQuery;
 		try {
 
 			URL url = new URL(urlStr);

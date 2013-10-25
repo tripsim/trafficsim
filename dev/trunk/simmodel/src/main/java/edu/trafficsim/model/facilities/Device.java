@@ -9,8 +9,8 @@ public abstract class Device<T> extends AbstractFacility<T> {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public Device(Point point) {
-		super(point);
+	public Device(long id, String name, Point point) {
+		super(id, name, point);
 	}
 
 }
