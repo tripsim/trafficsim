@@ -139,7 +139,10 @@ simulation.initMap = function() {
 	map.addLayer(vehicleLayer);
 
 	var networkTemplate = {
-		strokeColor : '${strokeColor}'
+		strokeColor : '${strokeColor}',
+		strokeOpacity : 0.5,
+		fillColor : 'black',
+		fillOpacity : 0.5
 	};
 	var networkContext = {
 		strokeColor : function(feature) {
@@ -156,16 +159,52 @@ simulation.initMap = function() {
 			zIndexing : true
 		}
 	});
-	// draw network
-	this.loadnetwork();
-	var features = [];
-	for ( var i in this.network['links']) {
-		var geom = OpenLayers.Geometry.fromWKT(this.network['links'][i]);
-		var feature = new OpenLayers.Feature.Vector(geom);
-		features.push(feature);
-	}
-	networkLayer.addFeatures(features);
+	// draw network TODO make it a function
+	this.reDrawNetwork = function() {
+		networkLayer.removeAllFeatures();
+		var features = [];
+		for ( var i in this.network['links']) {
+			var geom = OpenLayers.Geometry.fromWKT(this.network['links'][i]);
+			var feature = new OpenLayers.Feature.Vector(geom);
+			features.push(feature);
+		}
+		networkLayer.addFeatures(features);
+	};
+	this.networkLayer = networkLayer;
 	map.addLayer(networkLayer);
+
+	// new OpenLayers.Control.DrawFeature(pointLayer, OpenLayers.Handler.Point)
+	// new OpenLayers.Control.DrawFeature(lineLayer, OpenLayers.Handler.Path)
+	var drawControl = new OpenLayers.Control.DrawFeature(networkLayer,
+			OpenLayers.Handler.RegularPolygon, {
+				handlerOptions : {
+					sides : 4,
+					irregular : true
+				}
+			});
+	drawControl.events
+			.register(
+					'featureadded',
+					networkLayer,
+					function(f) {
+						// TODO change the name, and design an object to hold it
+						simulation.area = f.feature.geometry.bounds;
+						drawControl.deactivate();
+						OpenLayers.Request
+								.GET({
+									url : 'resources/components/network-new.html',
+									callback : function(request) {
+										// TODO make it a function and need a
+										// framework
+										document
+												.getElementById("user-configuration").style.display = 'inline';
+										document
+												.getElementById("user-configuration").innerHTML = request.responseText;
+									}
+								});
+					});
+	this.drawControl = drawControl;
+	map.addControl(drawControl);
 
 	map.addControl(new OpenLayers.Control.LayerSwitcher());
 };
@@ -201,19 +240,26 @@ simulation.load = function() {
 	});
 };
 
-simulation.loadnetwork = function() {
-	var that = this;
-	OpenLayers.Request.GET({
-		url : 'loadnetwork',
-		callback : function(request) {
-			var obj = eval('(' + request.responseText + ')');
-			that.network.links = obj["links"];
-		},
-		async : false
-	});
-};
-
 simulation.animate = function() {
 	this.f = 0;
 	this.refreshStrategy.activate();
+};
+
+simulation.selectNetworkArea = function() {
+	this.networkLayer.removeAllFeatures();
+	this.drawControl.activate();
+};
+
+simulation.createNetwork = function() {
+	this.networkLayer.removeAllFeatures();
+	document.getElementById("user-configuration").style.display = 'none';
+	var that = this;
+	OpenLayers.Request.GET({
+		url : 'createnetwork',
+		callback : function(request) {
+			var obj = eval('(' + request.responseText + ')');
+			that.network.links = obj["links"];
+			that.reDrawNetwork();
+		}
+	});
 };

@@ -6,11 +6,8 @@ import org.springframework.stereotype.Service;
 
 import com.vividsolutions.jts.algorithm.Angle;
 import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.io.WKTWriter;
 
 import edu.trafficsim.engine.demo.SimulationTest;
-import edu.trafficsim.model.Link;
-import edu.trafficsim.model.Network;
 import edu.trafficsim.model.Vehicle;
 import edu.trafficsim.model.core.Colors;
 import edu.trafficsim.model.core.ModelInputException;
@@ -56,8 +53,7 @@ public class DemoSimulationService {
 								.angle(trajectory[i], trajectory[i - 1]));
 						frameSb.append(angle);
 						frameSb.append(",");
-						String color = 
-								Colors.getVehicleColor(speeds[i]);
+						String color = Colors.getVehicleColor(speeds[i]);
 						frameSb.append(color);
 						frameSb.append("\"");
 						frameSb.append(",");
@@ -74,17 +70,4 @@ public class DemoSimulationService {
 		return "{}";
 	}
 
-	public String getNetwork() {
-		Network network = SimulationTest.getInstance().getNetwork();
-		WKTWriter writer = new WKTWriter();
-		StringBuffer linkSb = new StringBuffer();
-		for (Link link : network.getLinks()) {
-			linkSb.append("\"");
-			linkSb.append(writer.write(link.getLinearGeom()));
-			linkSb.append("\"");
-			linkSb.append(",");
-		}
-		linkSb.deleteCharAt(linkSb.length() - 1);
-		return "{links:[" + linkSb.toString() + "]}";
-	}
 }
