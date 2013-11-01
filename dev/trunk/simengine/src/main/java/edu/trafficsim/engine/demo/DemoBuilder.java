@@ -1,9 +1,11 @@
 package edu.trafficsim.engine.demo;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.List;
 
+import com.fasterxml.jackson.core.JsonParseException;
 import com.vividsolutions.jts.geom.Coordinate;
 
 import edu.trafficsim.engine.NetworkFactory;
@@ -47,7 +49,7 @@ public class DemoBuilder {
 	}
 
 	// test osm extraction
-	public Network extractOsmNetwork() throws ModelInputException {
+	public Network extractOsmNetwork() throws ModelInputException, JsonParseException, IOException {
 		BufferedReader reader = new BufferedReader(new InputStreamReader(
 				getClass().getResourceAsStream("demo.json")));
 		OsmNetworkExtractor extractor = new OsmNetworkExtractor(

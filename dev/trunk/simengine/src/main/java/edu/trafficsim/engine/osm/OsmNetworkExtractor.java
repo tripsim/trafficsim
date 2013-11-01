@@ -1,11 +1,13 @@
 package edu.trafficsim.engine.osm;
 
+import java.io.IOException;
 import java.io.Reader;
-import java.net.MalformedURLException;
+import java.net.ProtocolException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.core.JsonParseException;
 import com.vividsolutions.jts.geom.Coordinate;
 
 import edu.trafficsim.engine.NetworkFactory;
@@ -15,8 +17,8 @@ import edu.trafficsim.model.Link;
 import edu.trafficsim.model.Network;
 import edu.trafficsim.model.Node;
 import edu.trafficsim.model.core.Coordinates;
-import edu.trafficsim.model.core.ModelInputException;
 import edu.trafficsim.model.core.Coordinates.TransformCoordinateFilter;
+import edu.trafficsim.model.core.ModelInputException;
 import edu.trafficsim.utility.CoordinateTransformer;
 
 public class OsmNetworkExtractor {
@@ -31,14 +33,15 @@ public class OsmNetworkExtractor {
 		this.networkFactory = networkFactory;
 	}
 
-	public Network extract(Reader reader) throws ModelInputException {
+	public Network extract(Reader reader) throws ModelInputException,
+			JsonParseException, IOException {
 		HighwaysJsonParser parser = new HighwaysJsonParser();
 		parser.parse(reader);
 		return getNetwork(parser.getParsedHighways());
 	}
 
-	public Network extract(String urlStr) throws MalformedURLException,
-			ModelInputException {
+	public Network extract(String urlStr) throws ModelInputException,
+			JsonParseException, ProtocolException, IOException {
 		HighwaysJsonParser parser = new HighwaysJsonParser();
 		URL url = new URL(urlStr);
 		parser.parse(url);

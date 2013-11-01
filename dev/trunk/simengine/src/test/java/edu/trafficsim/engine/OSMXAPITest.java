@@ -7,6 +7,8 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import com.fasterxml.jackson.core.JsonParseException;
+
 import edu.trafficsim.engine.factory.DefaultNetworkFactory;
 import edu.trafficsim.engine.osm.Highways;
 import edu.trafficsim.engine.osm.HighwaysJsonParser;
@@ -16,12 +18,13 @@ import edu.trafficsim.model.core.ModelInputException;
 public class OSMXAPITest {
 
 	public static void main(String[] args) {
-		//test();
-		//testParse();
-		testExtract();
+		// test();
+		// testParse();
+		//testExtractByReader();
+		testExtractByUrl();
 	}
 
-	protected static void testExtract() {
+	protected static void testExtractByReader() {
 
 		BufferedReader reader = new BufferedReader(new InputStreamReader(
 				OSMXAPITest.class.getResourceAsStream("test.json")));
@@ -29,7 +32,20 @@ public class OSMXAPITest {
 				DefaultNetworkFactory.getInstance());
 		try {
 			extractor.extract(reader);
-		} catch (ModelInputException e) {
+		} catch (ModelInputException | IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	protected static void testExtractByUrl() {
+		String urlPre = "http://jxapi.openstreetmap.org/xapi/api/0.6";
+		String testQuery = "/way[highway=*][bbox=-89.4114,43.0707,-89.3955,43.0753]";
+		OsmNetworkExtractor extractor = new OsmNetworkExtractor(
+				DefaultNetworkFactory.getInstance());
+		try {
+			extractor.extract(urlPre + testQuery);
+		} catch (ModelInputException | IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -39,7 +55,15 @@ public class OSMXAPITest {
 		BufferedReader reader = new BufferedReader(new InputStreamReader(
 				OSMXAPITest.class.getResourceAsStream("test.json")));
 		HighwaysJsonParser parser = new HighwaysJsonParser();
-		parser.parse(reader);
+		try {
+			parser.parse(reader);
+		} catch (JsonParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		Highways highways = parser.getParsedHighways();
 	}
 

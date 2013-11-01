@@ -5,6 +5,8 @@
 <title>TRIPS</title>
 <link rel="stylesheet"
 	href="<c:url value="/resources/styles/style.css"/>"></link>
+<link rel="stylesheet"
+	href="<c:url value="/resources/styles/style-dev.css"/>"></link>
 
 <script src="http://maps.google.com/maps/api/js?v=3.6&sensor=false"></script>
 <script src="<c:url value="/resources/scripts/proj4js-compressed.js"/>"></script>
@@ -28,29 +30,13 @@
 		<div>Simulator Panel</div>
 		<div>Online Coding</div>
 		<div class="buttons">
-			<span onclick="simulation.load();">Run</span>
-			<span onclick="simulation.animate();">Animate</span>
+			<span onclick="simulation.selectNetworkArea();">Create</span> <span
+				onclick="simulation.load();">Run</span> <span
+				onclick="simulation.animate();">Animate</span>
 		</div>
-		
 	</div>
-	<div id="user-configuration">
-		<h2>Online Coding and Compilation Panel</h2>
-		<p>
-			Model: <select>
-				<option value="0">My Car-Following Model</option>
-				<option value="1">My Lane-Changing Model</option>
-			</select>
-		</p>
-		<p>
-			Interface: <select>
-				<option value="0">Car-Following Model</option>
-				<option value="1">Lane-Changing Model</option>
-			</select>
-		</p>
-		<textarea wrap="off">
-		Codes!		
-		</textarea>
-	</div>
+
+	<div id="user-configuration"></div>
 
 	<%-- DEV mouse position indicator --%>
 	<div id="dev">

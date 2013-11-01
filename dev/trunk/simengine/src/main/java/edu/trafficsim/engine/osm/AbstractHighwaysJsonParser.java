@@ -1,7 +1,10 @@
 package edu.trafficsim.engine.osm;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Reader;
+import java.net.HttpURLConnection;
+import java.net.ProtocolException;
 import java.net.URL;
 
 import com.fasterxml.jackson.core.JsonFactory;
@@ -19,24 +22,29 @@ abstract class AbstractHighwaysJsonParser {
 			jsonFactory = new MappingJsonFactory();
 	}
 
-	public void parse(Reader reader) {
-		try (JsonParser jsonParser = jsonFactory.createParser(reader)) {
-			parse(jsonParser);
-		} catch (JsonParseException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+	public void parse(Reader reader) throws JsonParseException, IOException {
+		JsonParser jsonParser = jsonFactory.createParser(reader);
+		parse(jsonParser);
 	}
 
-	public void parse(URL url) {
-		try (JsonParser jsonParser = jsonFactory.createParser(url)) {
-			parse(jsonParser);
-		} catch (JsonParseException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
+	public void parse(URL url) throws JsonParseException, ProtocolException,
+			IOException {
+		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+		conn.setRequestMethod("GET");
+		conn.setRequestProperty("Accept", "application/json");
+
+		if (conn.getResponseCode() != 200) {
+			throw new RuntimeException("Failed : HTTP error code : "
+					+ conn.getResponseCode());
 		}
+
+		parse(conn.getInputStream());
+	}
+
+	public void parse(InputStream inputStream) throws JsonParseException,
+			IOException {
+		JsonParser jsonParser = jsonFactory.createParser(inputStream);
+		parse(jsonParser);
 	}
 
 	protected void parse(JsonParser jsonParser) throws JsonParseException,

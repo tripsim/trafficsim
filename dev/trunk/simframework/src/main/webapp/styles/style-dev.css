@@ -1,0 +1,10 @@
+#dev {
+	position: absolute;
+	bottom: 1em;
+	left: 1em;
+	width: 800px;
+	z-index: 20000;
+	background-color: white;
+	padding: 0 0.5em 0.5em 0.5em;
+	display: none
+}
