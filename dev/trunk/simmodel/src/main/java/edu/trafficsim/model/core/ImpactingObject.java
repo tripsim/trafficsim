@@ -1,5 +1,7 @@
 package edu.trafficsim.model.core;
 
+import edu.trafficsim.model.BaseEntity;
+
 public abstract class ImpactingObject<T> extends BaseEntity<T> {
 
 	/**

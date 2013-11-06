@@ -2,7 +2,7 @@ package edu.trafficsim.model;
 
 import java.util.Set;
 
-import edu.trafficsim.model.roadusers.VehicleType.VehicleClass;
+import edu.trafficsim.model.VehicleType.VehicleClass;
 
 public interface VehicleClassComposition extends Composition<VehicleClass> {
 

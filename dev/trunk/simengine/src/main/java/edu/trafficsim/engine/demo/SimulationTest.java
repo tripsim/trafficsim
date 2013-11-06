@@ -1,25 +1,19 @@
 package edu.trafficsim.engine.demo;
 
-import java.util.List;
-
-import edu.trafficsim.engine.Simulation;
-import edu.trafficsim.engine.SimulationScenario;
-import edu.trafficsim.engine.core.DefaultSimulation;
-import edu.trafficsim.engine.factory.DefaultSimulatorFactory;
 import edu.trafficsim.model.Network;
-import edu.trafficsim.model.Simulator;
-import edu.trafficsim.model.Vehicle;
-import edu.trafficsim.model.core.Colors;
+import edu.trafficsim.model.SimulationScenario;
 import edu.trafficsim.model.core.ModelInputException;
+import edu.trafficsim.plugin.ISimulation;
+import edu.trafficsim.plugin.core.DefaultSimulation;
 
 public class SimulationTest {
 
 	public static void main(String[] args) throws ModelInputException {
-		List<Vehicle> vehicles = getInstance().run();
-		for (Vehicle v : vehicles) {
-			System.out.println(v.speed());
-			System.out.println(Colors.getVehicleColor(v.speed()));
-		}
+//		List<Vehicle> vehicles = SimulationTest.getInstance().run();
+//		for (Vehicle v : vehicles) {
+//			System.out.println(v.speed());
+//			System.out.println(Colors.getVehicleColor(v.speed()));
+//		}
 	}
 
 	private static SimulationTest test = null;
@@ -41,20 +35,14 @@ public class SimulationTest {
 		return test;
 	}
 
-	public List<Vehicle> run() throws ModelInputException {
-		Simulator simulator = DefaultSimulatorFactory.getInstance()
-				.createSimulator("test", 500, 1);
-
-		Network network = builder.getNetwork();
+	public void run() throws ModelInputException {
 		SimulationScenario scenario = builder.getScenario();
+		ISimulation simulation = new DefaultSimulation(scenario);
 
-		Simulation simulation = new DefaultSimulation(simulator, network,
-				scenario);
-
-		return simulation.run();
+		simulation.run();
 	}
 
 	public Network getNetwork() {
-		return builder.getNetwork();
+		return builder.getScenario().getNetwork();
 	}
 }

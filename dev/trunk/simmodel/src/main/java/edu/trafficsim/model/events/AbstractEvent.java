@@ -1,7 +1,7 @@
 package edu.trafficsim.model.events;
 
 import edu.trafficsim.model.Agent;
-import edu.trafficsim.model.core.Event;
+import edu.trafficsim.model.Event;
 import edu.trafficsim.model.core.ImpactingObject;
 
 public abstract class AbstractEvent<T> extends ImpactingObject<T> implements

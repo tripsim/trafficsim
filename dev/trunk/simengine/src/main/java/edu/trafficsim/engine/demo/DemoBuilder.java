@@ -10,13 +10,11 @@ import com.vividsolutions.jts.geom.Coordinate;
 
 import edu.trafficsim.engine.NetworkFactory;
 import edu.trafficsim.engine.ScenarioBuilder;
-import edu.trafficsim.engine.SimulationScenario;
 import edu.trafficsim.engine.factory.DefaultNetworkFactory;
 import edu.trafficsim.engine.factory.DefaultScenarioBuilder;
-import edu.trafficsim.engine.factory.DefaultVehicleFactory;
-import edu.trafficsim.engine.generator.DefaultVehicleGenerator;
 import edu.trafficsim.engine.osm.OsmNetworkExtractor;
 import edu.trafficsim.model.Connector;
+import edu.trafficsim.model.DriverType;
 import edu.trafficsim.model.DriverTypeComposition;
 import edu.trafficsim.model.Lane;
 import edu.trafficsim.model.Link;
@@ -24,32 +22,42 @@ import edu.trafficsim.model.Network;
 import edu.trafficsim.model.Node;
 import edu.trafficsim.model.Od;
 import edu.trafficsim.model.OdMatrix;
+import edu.trafficsim.model.Router;
+import edu.trafficsim.model.SimulationScenario;
+import edu.trafficsim.model.Simulator;
+import edu.trafficsim.model.VehicleType;
+import edu.trafficsim.model.VehicleType.VehicleClass;
 import edu.trafficsim.model.VehicleTypeComposition;
 import edu.trafficsim.model.core.Coordinates;
 import edu.trafficsim.model.core.Coordinates.TransformCoordinateFilter;
 import edu.trafficsim.model.core.ModelInputException;
-import edu.trafficsim.model.roadusers.DriverType;
-import edu.trafficsim.model.roadusers.VehicleType;
-import edu.trafficsim.model.roadusers.VehicleType.VehicleClass;
 import edu.trafficsim.utility.CoordinateTransformer;
 
 // Hack to create nodes links...
 public class DemoBuilder {
 
+	private Simulator simulator;
 	private Network network;
-	private SimulationScenario scenario;
+	private OdMatrix odMatrix;
+	private Router router;
+
+	static ScenarioBuilder scenarioBuilder = DefaultScenarioBuilder
+			.getInstance();
 
 	// TODO think about Type creation
-	VehicleType vehicleTypeCar = new VehicleType(0, "TestCar", VehicleClass.Car);
-	VehicleType vehicleTypeTruck = new VehicleType(0, "TestTruck",
+	static VehicleType vehicleTypeCar = new VehicleType(0, "TestCar",
+			VehicleClass.Car);
+	static VehicleType vehicleTypeTruck = new VehicleType(0, "TestTruck",
 			VehicleClass.Truck);
+	static DriverType driverType = new DriverType(0, "TestDriver");
 
 	public DemoBuilder() throws ModelInputException {
 		manualBuild();
 	}
 
 	// test osm extraction
-	public Network extractOsmNetwork() throws ModelInputException, JsonParseException, IOException {
+	public Network extractOsmNetwork() throws ModelInputException,
+			JsonParseException, IOException {
 		BufferedReader reader = new BufferedReader(new InputStreamReader(
 				getClass().getResourceAsStream("demo.json")));
 		OsmNetworkExtractor extractor = new OsmNetworkExtractor(
@@ -134,15 +142,12 @@ public class DemoBuilder {
 		CoordinateTransformer.transform(network, filter);
 
 		// create Demand
-		ScenarioBuilder scenarioBuilder = DefaultScenarioBuilder.getInstance();
-
 		VehicleType[] vehicleTypes = new VehicleType[] { vehicleTypeCar,
 				vehicleTypeTruck };
 		double[] vehPossibilities = new double[] { 0.8, 0.2 };
 		VehicleTypeComposition vehicleTypeComposition = scenarioBuilder
 				.createVehicleTypeComposition(vehicleTypes, vehPossibilities);
 		// Driver Type
-		DriverType driverType = new DriverType(0, "TestDriver");
 		DriverType[] driverTypes = new DriverType[] { driverType };
 		double[] drvPossibilities = new double[] { 1.0 };
 		DriverTypeComposition driverTypeComposition = scenarioBuilder
@@ -156,23 +161,22 @@ public class DemoBuilder {
 		Od od = scenarioBuilder.createOd("test", node1, null,
 				vehicleTypeComposition, driverTypeComposition, times, vphs);
 
-		OdMatrix odMatrix = scenarioBuilder.createEmptyOdMatrix("test");
+		odMatrix = scenarioBuilder.createEmptyOdMatrix("test");
 		odMatrix.add(od);
 
 		// Router
+		router = null;
 		// Router router = new TurnPercentageRouter();
 		// node2.setRouter(router);
 
-		scenario = scenarioBuilder.createSimulationScenario(
-				odMatrix, null, DefaultVehicleGenerator.getInstance(),
-				DefaultVehicleFactory.getInstance());
+		// Simulator
+		simulator = scenarioBuilder.createSimulator(
+				"test", 500, 1);
 	}
-	
-	public Network getNetwork() {
-		return network;
-	}
-	
+
 	public SimulationScenario getScenario() {
-		return scenario;
+		return scenarioBuilder.createSimulationScenario("demo", simulator,
+				network, odMatrix, router);
 	}
+
 }

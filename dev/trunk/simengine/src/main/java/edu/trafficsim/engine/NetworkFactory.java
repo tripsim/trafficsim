@@ -33,4 +33,9 @@ public interface NetworkFactory {
 	public Connector createConnector(Lane laneFrom, Lane laneTo)
 			throws ModelInputException;
 
+//	public void connect(Lane laneFrom, Lane laneTo)
+//			throws ModelInputException;
+//	
+//	public void disconnect(Lane laneFrom, Lane laneTo)
+//			throws ModelInputException;
 }

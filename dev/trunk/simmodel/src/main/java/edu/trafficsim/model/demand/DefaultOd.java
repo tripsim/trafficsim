@@ -1,11 +1,11 @@
 package edu.trafficsim.model.demand;
 
+import edu.trafficsim.model.BaseEntity;
 import edu.trafficsim.model.DriverTypeComposition;
 import edu.trafficsim.model.Node;
 import edu.trafficsim.model.Od;
 import edu.trafficsim.model.VehicleTypeComposition;
 import edu.trafficsim.model.core.AbstractDynamicProperty;
-import edu.trafficsim.model.core.BaseEntity;
 import edu.trafficsim.model.core.ModelInputException;
 
 public class DefaultOd extends BaseEntity<DefaultOd> implements Od {

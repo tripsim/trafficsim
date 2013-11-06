@@ -19,15 +19,14 @@ public class DefaultLane extends AbstractSubSegment<DefaultLane> implements
 	private final int laneId;
 	private final NavigableSet<Vehicle> vehicles = new TreeSet<Vehicle>();
 
-	public DefaultLane(long id, Segment segment, double width,
-			double shift, int laneId) {
+	public DefaultLane(long id, Segment segment, double width, double shift,
+			int laneId) {
 		super(id, null, segment, width, shift);
 		this.laneId = laneId;
 	}
 
-	public DefaultLane(long id, Segment segment, double start,
-			double end, double width, double shift, int laneId)
-			throws ModelInputException {
+	public DefaultLane(long id, Segment segment, double start, double end,
+			double width, double shift, int laneId) throws ModelInputException {
 		super(id, null, segment, start, end, width, shift);
 		this.laneId = laneId;
 	}
@@ -36,7 +35,7 @@ public class DefaultLane extends AbstractSubSegment<DefaultLane> implements
 	public final String getName() {
 		return segment.getName() + " " + laneId;
 	}
-	
+
 	@Override
 	public final Vehicle getHeadVehicle() {
 		return vehicles.last();
@@ -59,8 +58,8 @@ public class DefaultLane extends AbstractSubSegment<DefaultLane> implements
 
 	@Override
 	public final void add(Vehicle vehicle) {
-		if (vehicle.getLane() != null)
-			vehicle.getLane().remove(vehicle);
+		if (vehicle.currentLane() != null)
+			vehicle.currentLane().remove(vehicle);
 		vehicles.add(vehicle);
 	}
 
@@ -70,7 +69,7 @@ public class DefaultLane extends AbstractSubSegment<DefaultLane> implements
 	}
 
 	@Override
-	public final void refresh(Vehicle vehicle) {
+	public final void update(Vehicle vehicle) {
 		vehicles.remove(vehicle);
 		vehicles.add(vehicle);
 	}

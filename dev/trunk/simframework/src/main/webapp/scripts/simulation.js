@@ -53,21 +53,22 @@ simulation.initMap = function() {
 				1.194328566789627, 0.5971642833948135 ],
 		transitionEffect : 'resize'
 	});
-	var gmap = new OpenLayers.Layer.Google('Google Streets', {
-		numZoomLevels : 20,
-		visibility : false
-	});
-	var gsat = new OpenLayers.Layer.Google("Google Satellite", {
-		type : google.maps.MapTypeId.SATELLITE,
-		numZoomLevels : 20,
-		visibility : false
-	});
-	var ghyb = new OpenLayers.Layer.Google("Google Hybrid", {
-		type : google.maps.MapTypeId.HYBRID,
-		numZoomLevels : 21,
-		visibility : false
-	});
-	map.addLayers([ osm, gmap, gsat, ghyb ]);
+//	var gmap = new OpenLayers.Layer.Google('Google Streets', {
+//		numZoomLevels : 20,
+//		visibility : false
+//	});
+//	var gsat = new OpenLayers.Layer.Google("Google Satellite", {
+//		type : google.maps.MapTypeId.SATELLITE,
+//		numZoomLevels : 20,
+//		visibility : false
+//	});
+//	var ghyb = new OpenLayers.Layer.Google("Google Hybrid", {
+//		type : google.maps.MapTypeId.HYBRID,
+//		numZoomLevels : 21,
+//		visibility : false
+//	});
+//	map.addLayers([ osm, gmap, gsat, ghyb ]);
+	map.addLayers([ osm ]);
 
 	var mp900913 = new OpenLayers.Control.MousePosition({
 		div : $('proj-900913'),

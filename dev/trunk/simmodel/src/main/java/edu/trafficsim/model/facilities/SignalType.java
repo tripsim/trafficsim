@@ -1,6 +1,6 @@
 package edu.trafficsim.model.facilities;
 
-import edu.trafficsim.model.core.Type;
+import edu.trafficsim.model.Type;
 
 public class SignalType extends Type<SignalType> {
 

@@ -3,8 +3,8 @@ package edu.trafficsim.model.simulator;
 import java.util.Date;
 import java.util.Random;
 
+import edu.trafficsim.model.BaseEntity;
 import edu.trafficsim.model.Simulator;
-import edu.trafficsim.model.core.BaseEntity;
 
 public abstract class AbstractSimulator<T> extends BaseEntity<T> implements
 		Simulator {

@@ -1,6 +1,5 @@
 package edu.trafficsim.model;
 
-import edu.trafficsim.model.network.ConnectorType;
 
 public interface Connector extends Segment {
 

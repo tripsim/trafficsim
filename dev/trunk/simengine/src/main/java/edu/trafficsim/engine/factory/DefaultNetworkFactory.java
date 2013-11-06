@@ -12,8 +12,10 @@ import com.vividsolutions.jts.geom.Point;
 import edu.trafficsim.engine.NetworkFactory;
 import edu.trafficsim.model.Lane;
 import edu.trafficsim.model.Link;
+import edu.trafficsim.model.LinkType;
 import edu.trafficsim.model.Network;
 import edu.trafficsim.model.Node;
+import edu.trafficsim.model.NodeType;
 import edu.trafficsim.model.Segment;
 import edu.trafficsim.model.core.ModelInputException;
 import edu.trafficsim.model.network.DefaultConnector;
@@ -21,8 +23,6 @@ import edu.trafficsim.model.network.DefaultLane;
 import edu.trafficsim.model.network.DefaultLink;
 import edu.trafficsim.model.network.DefaultNetwork;
 import edu.trafficsim.model.network.DefaultNode;
-import edu.trafficsim.model.network.LinkType;
-import edu.trafficsim.model.network.NodeType;
 
 public class DefaultNetworkFactory extends AbstractFactory implements
 		NetworkFactory {

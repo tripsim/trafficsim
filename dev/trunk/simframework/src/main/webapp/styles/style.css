@@ -5,6 +5,7 @@ html,body,#map {
 }
 
 /* quick demo fixes */
+/* Menu */
 #user-interface {
 	position: absolute;
 	padding: 4px;
@@ -46,7 +47,6 @@ html,body,#map {
 	padding: 2px 6px;
 	background-color: #ff5600;
 	cursor: pointer;
-	background-color: #ff5600;
 }
 
 #user-configuration {
@@ -54,22 +54,37 @@ html,body,#map {
 	padding: 4px;
 	top: 64px;
 	left: 200px;
+	padding-left: 10px;
 	width: 500px;
 	height: 360px;
 	z-index: 20000;
 	opacity: 0.75;
 	background-color: #0d58a6;
+	color: #ffffff;
 	display: none;
 }
 
+/* Window */
 #user-configuration h2 {
 	color: #ff5600;
-	padding-left: 8px;
 }
 
 #user-configuration p {
 	color: #ffffff;
-	padding-left: 8px;
+}
+
+#user-configuration .buttons {
+	margin-top: 60px;
+	padding: 0;
+	cursor: auto;
+	background-color: transparent;
+	cursor: auto;
+}
+
+#user-configuration .buttons span {
+	padding: 2px 6px;
+	background-color: #ff5600;
+	cursor: pointer;
 }
 
 #user-configuration textarea {

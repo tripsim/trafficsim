@@ -25,7 +25,7 @@ public interface Lane extends SubSegment {
 
 	public void remove(Vehicle vehicle);
 
-	public void refresh(Vehicle vehicle);
+	public void update(Vehicle vehicle);
 
 	public Collection<Vehicle> getVehicles();
 

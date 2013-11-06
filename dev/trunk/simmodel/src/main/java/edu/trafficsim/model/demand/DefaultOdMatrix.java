@@ -5,9 +5,9 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import edu.trafficsim.model.BaseEntity;
 import edu.trafficsim.model.Od;
 import edu.trafficsim.model.OdMatrix;
-import edu.trafficsim.model.core.BaseEntity;
 
 public class DefaultOdMatrix extends BaseEntity<DefaultOdMatrix> implements
 		OdMatrix {

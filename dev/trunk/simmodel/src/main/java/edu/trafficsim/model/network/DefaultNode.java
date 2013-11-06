@@ -13,6 +13,7 @@ import edu.trafficsim.model.Connector;
 import edu.trafficsim.model.Lane;
 import edu.trafficsim.model.Link;
 import edu.trafficsim.model.Node;
+import edu.trafficsim.model.NodeType;
 import edu.trafficsim.model.core.AbstractLocation;
 import edu.trafficsim.model.core.ModelInputException;
 
@@ -87,6 +88,16 @@ public class DefaultNode extends AbstractLocation<DefaultNode> implements Node {
 		return Collections.unmodifiableCollection(connectors.get(fromLane));
 	}
 
+	@Override
+	public Connector getConnector(Lane fromLane, Link toLink) {
+		for (Connector connector : connectors.get(fromLane)) {
+			if (connector.getToLane().getSegment().equals(toLink))
+				return connector;
+		}
+		return null;
+	}
+
+	@Override
 	public void add(Connector connector) {
 		Set<Connector> fromLaneConnectors = connectors.get(connector
 				.getFromLane());
