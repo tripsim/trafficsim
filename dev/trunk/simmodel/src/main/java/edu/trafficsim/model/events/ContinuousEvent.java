@@ -1,6 +1,7 @@
 package edu.trafficsim.model.events;
 
-import edu.trafficsim.model.Simulator;
+import edu.trafficsim.model.Segment;
+import edu.trafficsim.model.SubSegment;
 import edu.trafficsim.model.core.MovingObject;
 
 public abstract class ContinuousEvent<T> extends AbstractEvent<T> {
@@ -23,22 +24,24 @@ public abstract class ContinuousEvent<T> extends AbstractEvent<T> {
 		}
 
 		@Override
-		protected void before() {
+		public Segment getSegment() {
 			// TODO Auto-generated method stub
-
+			return null;
 		}
 
 		@Override
-		protected void after(Simulator simulator) {
+		public SubSegment getSubSegment() {
 			// TODO Auto-generated method stub
-
+			return null;
 		}
 
 		@Override
-		protected void update() {
+		protected void onRefresh() {
 			// TODO Auto-generated method stub
-
+			
 		}
+
+
 
 	}
 

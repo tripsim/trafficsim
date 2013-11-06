@@ -5,10 +5,10 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import edu.trafficsim.model.BaseEntity;
 import edu.trafficsim.model.Link;
 import edu.trafficsim.model.Network;
 import edu.trafficsim.model.Node;
-import edu.trafficsim.model.core.BaseEntity;
 
 public abstract class AbstractNetwork<T> extends BaseEntity<T> implements
 		Network {

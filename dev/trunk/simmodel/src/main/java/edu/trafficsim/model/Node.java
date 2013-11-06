@@ -3,7 +3,6 @@ package edu.trafficsim.model;
 import java.util.Collection;
 
 import edu.trafficsim.model.core.ModelInputException;
-import edu.trafficsim.model.network.NodeType;
 
 public interface Node extends Location {
 
@@ -22,6 +21,8 @@ public interface Node extends Location {
 	public Collection<Link> getDownstreams();
 
 	public Collection<Connector> getConnectors(Lane lane);
+	
+	public Connector getConnector(Lane fromLane, Link toLink);
 
 	public void add(Link link) throws ModelInputException;
 

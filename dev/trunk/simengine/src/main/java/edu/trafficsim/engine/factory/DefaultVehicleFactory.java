@@ -3,11 +3,13 @@ package edu.trafficsim.engine.factory;
 import java.util.NoSuchElementException;
 
 import edu.trafficsim.engine.VehicleFactory;
-import edu.trafficsim.engine.generator.VehicleToAdd;
-import edu.trafficsim.model.CarFollowingBehavior;
+import edu.trafficsim.model.CarFollowingType;
+import edu.trafficsim.model.LaneChangingType;
+import edu.trafficsim.model.MovingType;
 import edu.trafficsim.model.Simulator;
 import edu.trafficsim.model.Vehicle;
-import edu.trafficsim.model.behaviors.DefaultCarFollowing;
+import edu.trafficsim.model.VehicleBehavior;
+import edu.trafficsim.model.behaviors.DefaultBehavior;
 import edu.trafficsim.model.roadusers.DefaultVehicle;
 
 public class DefaultVehicleFactory extends AbstractFactory implements
@@ -16,9 +18,6 @@ public class DefaultVehicleFactory extends AbstractFactory implements
 	private static DefaultVehicleFactory factory;
 
 	private static int count = 0;
-
-	// HACK
-	CarFollowingBehavior carFollowing = new DefaultCarFollowing(0, "temp");
 
 	private DefaultVehicleFactory() {
 	}
@@ -33,7 +32,7 @@ public class DefaultVehicleFactory extends AbstractFactory implements
 	private static long vid = 0;
 
 	@Override
-	public Vehicle createVehicle(VehicleToAdd vehicleToAdd, Simulator simulator) {
+	public Vehicle createVehicle(VehicleSpecs vehicleSpecs, Simulator simulator) {
 		count++;
 
 		double startTime = simulator.getForwarded();
@@ -41,27 +40,32 @@ public class DefaultVehicleFactory extends AbstractFactory implements
 		int initFrameId = (int) Math.round(startTime / stepSize);
 
 		DefaultVehicle vehicle = new DefaultVehicle(vid,
-				vehicleToAdd.getVehicleType(), vehicleToAdd.getDriverType(),
-				initFrameId);
-		vehicle.speed(vehicleToAdd.getInitSpeed());
-		vehicle.acceleration(vehicleToAdd.getInitAcceleration());
+				vehicleSpecs.vehicleType, vehicleSpecs.driverType, initFrameId);
+		vehicle.speed(vehicleSpecs.initSpeed);
+		vehicle.acceleration(vehicleSpecs.initAccel);
 		double position = 0;
 		try {
-			Vehicle tailVehicle = vehicleToAdd.getLane().getTailVehicle();
+			Vehicle tailVehicle = vehicleSpecs.lane.getTailVehicle();
 			position = tailVehicle.position()
 					- vehicle.getDriverType().getMinHeadway()
-					* vehicleToAdd.getInitSpeed();
+					* vehicleSpecs.initSpeed;
 			position = position > 0 ? 0 : position;
 		} catch (NoSuchElementException e) {
 		}
-		vehicle.setCarFollowingBehavior(carFollowing);
+		vehicle.setVehicleBehavior(vehicleSpecs.vehicleBehavior);
+
 		vehicle.position(position);
 		String name = "vehicle" + count;
 		vehicle.setName(name);
-		vehicle.setLane(vehicleToAdd.getLane());
-		vehicleToAdd.getLane().add(vehicle);
-		vehicle.route(simulator);
+		vehicle.currentLane(vehicleSpecs.lane);
+		vehicleSpecs.lane.add(vehicle);
 		return vehicle;
 	}
 
+	@Override
+	public VehicleBehavior createBehavior(String name, MovingType movingType,
+			CarFollowingType carFollowingType, LaneChangingType laneChangingType) {
+		return new DefaultBehavior(nextId(), name, movingType,
+				carFollowingType, laneChangingType);
+	}
 }

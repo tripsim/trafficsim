@@ -2,19 +2,17 @@ package edu.trafficsim.model.network;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
+import edu.trafficsim.model.BaseEntity;
 import edu.trafficsim.model.Link;
 import edu.trafficsim.model.Router;
-import edu.trafficsim.model.Segment;
-import edu.trafficsim.model.Simulator;
 import edu.trafficsim.model.TurnPercentage;
-import edu.trafficsim.model.Vehicle;
+import edu.trafficsim.model.VehicleType.VehicleClass;
 import edu.trafficsim.model.core.AbstractDynamicProperty;
-import edu.trafficsim.model.core.BaseEntity;
 import edu.trafficsim.model.core.ModelInputException;
 import edu.trafficsim.model.core.MultiKey;
 import edu.trafficsim.model.core.Randoms;
-import edu.trafficsim.model.roadusers.VehicleType.VehicleClass;
 
 public class TurnPercentageRouter extends BaseEntity<TurnPercentageRouter>
 		implements Router {
@@ -45,17 +43,13 @@ public class TurnPercentageRouter extends BaseEntity<TurnPercentageRouter>
 	private Map<Key, DynamicTurnPercentage> dynamicTurnPercentages = new HashMap<Key, DynamicTurnPercentage>();
 
 	@Override
-	public Link getSucceedingLink(Vehicle vehicle, Simulator simulator) {
-		VehicleClass vehicleClass = vehicle.getVehicleType().getVehicleClass();
-		Segment segment = vehicle.getLane().getSegment();
-		if (!(segment instanceof Link))
-			return null;
-		Link link = (Link) segment;
-		TurnPercentage turnPercentage = getTurnPercentage(link, vehicleClass,
-				simulator.getForwarded());
+	public Link getSucceedingLink(Link precedingLink,
+			VehicleClass vehicleClass, double forwardedTime, Random rand) {
+		TurnPercentage turnPercentage = getTurnPercentage(precedingLink,
+				vehicleClass, forwardedTime);
 		return turnPercentage != null ? Randoms.randomElement(turnPercentage,
-				simulator.getRand()) : Randoms.randomElement(link.getEndNode()
-				.getDownstreams(), simulator.getRand());
+				rand) : Randoms.randomElement(precedingLink.getEndNode()
+				.getDownstreams(), rand);
 	}
 
 	public TurnPercentage getTurnPercentage(Link link,

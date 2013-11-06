@@ -2,12 +2,11 @@ package edu.trafficsim.model;
 
 import org.junit.Test;
 
+import edu.trafficsim.model.VehicleType.VehicleClass;
 import edu.trafficsim.model.core.ModelInputException;
 import edu.trafficsim.model.network.DefaultLane;
 import edu.trafficsim.model.network.DefaultLink;
 import edu.trafficsim.model.roadusers.DefaultVehicle;
-import edu.trafficsim.model.roadusers.VehicleType;
-import edu.trafficsim.model.roadusers.VehicleType.VehicleClass;
 
 public class LaneTest {
 

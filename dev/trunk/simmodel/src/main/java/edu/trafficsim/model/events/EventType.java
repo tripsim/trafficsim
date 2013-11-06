@@ -1,6 +1,6 @@
 package edu.trafficsim.model.events;
 
-import edu.trafficsim.model.core.Type;
+import edu.trafficsim.model.Type;
 
 public class EventType extends Type<EventType> {
 

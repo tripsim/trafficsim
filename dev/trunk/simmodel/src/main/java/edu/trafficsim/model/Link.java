@@ -2,7 +2,6 @@ package edu.trafficsim.model;
 
 import java.util.List;
 
-import edu.trafficsim.model.network.LinkType;
 
 public interface Link extends Segment {
 

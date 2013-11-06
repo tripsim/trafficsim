@@ -7,6 +7,7 @@ import com.vividsolutions.jts.geom.LineString;
 
 import edu.trafficsim.model.Lane;
 import edu.trafficsim.model.Link;
+import edu.trafficsim.model.LinkType;
 import edu.trafficsim.model.Node;
 import edu.trafficsim.model.core.AbstractSegment;
 import edu.trafficsim.model.core.Coordinates;

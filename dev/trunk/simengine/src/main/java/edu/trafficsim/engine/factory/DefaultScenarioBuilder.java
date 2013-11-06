@@ -1,23 +1,24 @@
 package edu.trafficsim.engine.factory;
 
 import edu.trafficsim.engine.ScenarioBuilder;
-import edu.trafficsim.engine.SimulationScenario;
-import edu.trafficsim.engine.VehicleFactory;
-import edu.trafficsim.engine.VehicleGenerator;
-import edu.trafficsim.engine.core.DefaultSimulationScenario;
+import edu.trafficsim.model.DriverType;
 import edu.trafficsim.model.DriverTypeComposition;
+import edu.trafficsim.model.Network;
 import edu.trafficsim.model.Node;
 import edu.trafficsim.model.Od;
 import edu.trafficsim.model.OdMatrix;
 import edu.trafficsim.model.Router;
+import edu.trafficsim.model.SimulationScenario;
+import edu.trafficsim.model.Simulator;
+import edu.trafficsim.model.VehicleType;
 import edu.trafficsim.model.VehicleTypeComposition;
+import edu.trafficsim.model.core.DefaultSimulationScenario;
 import edu.trafficsim.model.core.ModelInputException;
 import edu.trafficsim.model.demand.DefaultDriverTypeComposition;
 import edu.trafficsim.model.demand.DefaultOd;
 import edu.trafficsim.model.demand.DefaultOdMatrix;
 import edu.trafficsim.model.demand.DefaultVehicleTypeComposition;
-import edu.trafficsim.model.roadusers.DriverType;
-import edu.trafficsim.model.roadusers.VehicleType;
+import edu.trafficsim.model.simulator.DefaultSimulator;
 
 public class DefaultScenarioBuilder extends AbstractFactory implements
 		ScenarioBuilder {
@@ -35,11 +36,11 @@ public class DefaultScenarioBuilder extends AbstractFactory implements
 	}
 
 	@Override
-	public SimulationScenario createSimulationScenario(OdMatrix odMatrix,
-			Router router, VehicleGenerator vehicleGenerator,
-			VehicleFactory vehicleFactory) {
-		return new DefaultSimulationScenario(odMatrix, router,
-				vehicleGenerator, vehicleFactory);
+	public SimulationScenario createSimulationScenario(String name,
+			Simulator simulator, Network network, OdMatrix odMatrix,
+			Router router) {
+		return new DefaultSimulationScenario(nextId(), name, simulator,
+				network, odMatrix, router);
 	}
 
 	@Override
@@ -74,6 +75,12 @@ public class DefaultScenarioBuilder extends AbstractFactory implements
 	public Router createRouter() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public DefaultSimulator createSimulator(String name, int duration,
+			int stepSize) {
+		return new DefaultSimulator(nextId(), name, duration, stepSize);
 	}
 
 }

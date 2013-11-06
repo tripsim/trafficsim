@@ -30,6 +30,8 @@ public class Randoms {
 	}
 
 	public final static <T> T randomElement(Collection<T> c, Random rand) {
+		if (c == null || c.isEmpty())
+			return null;
 		List<T> shuffledList = new ArrayList<T>(c);
 		Collections.shuffle(shuffledList, rand);
 		return shuffledList.get(0);

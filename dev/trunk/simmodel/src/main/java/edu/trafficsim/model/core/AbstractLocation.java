@@ -2,6 +2,7 @@ package edu.trafficsim.model.core;
 
 import com.vividsolutions.jts.geom.Point;
 
+import edu.trafficsim.model.BaseEntity;
 import edu.trafficsim.model.Location;
 
 public abstract class AbstractLocation<T> extends BaseEntity<T> implements
