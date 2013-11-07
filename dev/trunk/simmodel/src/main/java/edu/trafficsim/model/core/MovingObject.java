@@ -97,7 +97,7 @@ public abstract class MovingObject<T> extends BaseEntity<T> implements Movable,
 
 	protected final Coordinate computeCoord() {
 		return getSegment().getCoordinate(position,
-				lateralOffset + getSubSegment().getShift());
+				lateralOffset + getSubsegment().getShift());
 	}
 	
 	@Override

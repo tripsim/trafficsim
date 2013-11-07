@@ -8,10 +8,10 @@ import java.util.TreeSet;
 import edu.trafficsim.model.Lane;
 import edu.trafficsim.model.Segment;
 import edu.trafficsim.model.Vehicle;
-import edu.trafficsim.model.core.AbstractSubSegment;
+import edu.trafficsim.model.core.AbstractSubsegment;
 import edu.trafficsim.model.core.ModelInputException;
 
-public class DefaultLane extends AbstractSubSegment<DefaultLane> implements
+public class DefaultLane extends AbstractSubsegment<DefaultLane> implements
 		Lane {
 
 	private static final long serialVersionUID = 1L;

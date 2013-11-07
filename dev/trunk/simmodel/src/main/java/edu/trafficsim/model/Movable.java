@@ -22,6 +22,6 @@ public interface Movable extends DataContainer {
 
 	public Segment getSegment();
 
-	public SubSegment getSubSegment();
+	public Subsegment getSubsegment();
 
 }

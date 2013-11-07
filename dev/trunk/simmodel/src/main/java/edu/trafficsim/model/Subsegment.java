@@ -6,7 +6,7 @@ import com.vividsolutions.jts.geom.Coordinate;
  * @author Xuan
  * 
  */
-public interface SubSegment extends DataContainer {
+public interface Subsegment extends DataContainer {
 
 	public Long getId();
 

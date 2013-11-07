@@ -6,7 +6,7 @@ import java.util.Collection;
  * @author Xuan
  * 
  */
-public interface Lane extends SubSegment {
+public interface Lane extends Subsegment {
 
 	/**
 	 * Implement our own efficient collection to hold the vehicles within a lane
