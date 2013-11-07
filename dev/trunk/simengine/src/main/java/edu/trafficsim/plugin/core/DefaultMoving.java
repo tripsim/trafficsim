@@ -29,7 +29,7 @@ public class DefaultMoving extends AbstractPlugin implements IMoving {
 		double newPosition = vehicle.position() + stepSize * newSpeed;
 		vehicle.speed(newSpeed);
 
-		if (vehicle.getSubSegment().getLength() - newPosition < 0) {
+		if (vehicle.getSubsegment().getLength() - newPosition < 0) {
 			vehicle.currentLane().remove(vehicle);
 			vehicle.position(vehicle.position()
 					- vehicle.currentLane().getLength());
@@ -64,7 +64,7 @@ public class DefaultMoving extends AbstractPlugin implements IMoving {
 				return;
 			}
 		}
-		if (vehicle.getSubSegment().getLength() - vehicle.position() < 0) {
+		if (vehicle.getSubsegment().getLength() - vehicle.position() < 0) {
 			vehicle.position(vehicle.position()
 					- vehicle.currentLane().getLength());
 			convey(vehicle, simulationScenario);
