@@ -4,10 +4,10 @@ import com.vividsolutions.jts.geom.Coordinate;
 
 import edu.trafficsim.model.BaseEntity;
 import edu.trafficsim.model.Segment;
-import edu.trafficsim.model.SubSegment;
+import edu.trafficsim.model.Subsegment;
 
-public abstract class AbstractSubSegment<T> extends BaseEntity<T> implements
-		SubSegment {
+public abstract class AbstractSubsegment<T> extends BaseEntity<T> implements
+		Subsegment {
 
 	private static final long serialVersionUID = 1L;
 
@@ -24,7 +24,7 @@ public abstract class AbstractSubSegment<T> extends BaseEntity<T> implements
 
 	protected Segment segment;
 
-	public AbstractSubSegment(long id, String name, Segment segment,
+	public AbstractSubsegment(long id, String name, Segment segment,
 			double width, double shift) {
 		super(id, name);
 		this.segment = segment;
@@ -32,7 +32,7 @@ public abstract class AbstractSubSegment<T> extends BaseEntity<T> implements
 		this.shift = shift;
 	}
 
-	public AbstractSubSegment(long id, String name, Segment segment,
+	public AbstractSubsegment(long id, String name, Segment segment,
 			double start, double end, double width, double shift)
 			throws ModelInputException {
 		this(id, name, segment, start, shift);

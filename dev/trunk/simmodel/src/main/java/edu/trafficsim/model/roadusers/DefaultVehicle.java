@@ -1,14 +1,14 @@
 package edu.trafficsim.model.roadusers;
 
-import edu.trafficsim.model.VehicleBehavior;
 import edu.trafficsim.model.Connector;
 import edu.trafficsim.model.DriverType;
 import edu.trafficsim.model.Lane;
 import edu.trafficsim.model.Link;
 import edu.trafficsim.model.Node;
 import edu.trafficsim.model.Segment;
-import edu.trafficsim.model.SubSegment;
+import edu.trafficsim.model.Subsegment;
 import edu.trafficsim.model.Vehicle;
+import edu.trafficsim.model.VehicleBehavior;
 import edu.trafficsim.model.VehicleType;
 import edu.trafficsim.model.core.MovingObject;
 
@@ -48,7 +48,7 @@ public class DefaultVehicle extends MovingObject<DefaultVehicle> implements
 	}
 
 	@Override
-	public SubSegment getSubSegment() {
+	public Subsegment getSubsegment() {
 		return currentLane;
 	}
 
