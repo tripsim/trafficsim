@@ -9,8 +9,8 @@ import edu.trafficsim.model.MovingType;
 import edu.trafficsim.model.Simulator;
 import edu.trafficsim.model.Vehicle;
 import edu.trafficsim.model.VehicleBehavior;
-import edu.trafficsim.model.behaviors.DefaultBehavior;
 import edu.trafficsim.model.roadusers.DefaultVehicle;
+import edu.trafficsim.model.roadusers.DefaultVehicleBehavior;
 
 public class DefaultVehicleFactory extends AbstractFactory implements
 		VehicleFactory {
@@ -35,7 +35,7 @@ public class DefaultVehicleFactory extends AbstractFactory implements
 	public Vehicle createVehicle(VehicleSpecs vehicleSpecs, Simulator simulator) {
 		count++;
 
-		double startTime = simulator.getForwarded();
+		double startTime = simulator.getForwardedTime();
 		double stepSize = simulator.getStepSize();
 		int initFrameId = (int) Math.round(startTime / stepSize);
 
@@ -58,14 +58,15 @@ public class DefaultVehicleFactory extends AbstractFactory implements
 		String name = "vehicle" + count;
 		vehicle.setName(name);
 		vehicle.currentLane(vehicleSpecs.lane);
-		vehicleSpecs.lane.add(vehicle);
+		
+		vehicle.refresh();
 		return vehicle;
 	}
 
 	@Override
 	public VehicleBehavior createBehavior(String name, MovingType movingType,
 			CarFollowingType carFollowingType, LaneChangingType laneChangingType) {
-		return new DefaultBehavior(nextId(), name, movingType,
+		return new DefaultVehicleBehavior(nextId(), name, movingType,
 				carFollowingType, laneChangingType);
 	}
 }

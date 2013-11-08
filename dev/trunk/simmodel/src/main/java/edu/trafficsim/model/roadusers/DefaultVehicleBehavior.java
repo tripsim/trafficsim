@@ -1,4 +1,4 @@
-package edu.trafficsim.model.behaviors;
+package edu.trafficsim.model.roadusers;
 
 import edu.trafficsim.model.BaseEntity;
 import edu.trafficsim.model.VehicleBehavior;
@@ -6,7 +6,7 @@ import edu.trafficsim.model.CarFollowingType;
 import edu.trafficsim.model.MovingType;
 import edu.trafficsim.model.LaneChangingType;
 
-public class DefaultBehavior extends BaseEntity<DefaultBehavior> implements
+public class DefaultVehicleBehavior extends BaseEntity<DefaultVehicleBehavior> implements
 		VehicleBehavior {
 
 	private static final long serialVersionUID = 1L;
@@ -15,11 +15,11 @@ public class DefaultBehavior extends BaseEntity<DefaultBehavior> implements
 	private CarFollowingType carFollowingType;
 	private LaneChangingType laneChangingType;
 
-	public DefaultBehavior(long id, String name, MovingType kinematicsType) {
+	public DefaultVehicleBehavior(long id, String name, MovingType kinematicsType) {
 		this(id, name, kinematicsType, null, null);
 	}
 
-	public DefaultBehavior(long id, String name, MovingType kinematicsType,
+	public DefaultVehicleBehavior(long id, String name, MovingType kinematicsType,
 			CarFollowingType carFollowingType, LaneChangingType laneChangingType) {
 		super(id, name);
 		setMovingType(kinematicsType);

@@ -8,9 +8,6 @@ import edu.trafficsim.model.Composition;
 
 public abstract class AbstractComposition<K> implements Composition<K> {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	private Map<K, Double> map = new HashMap<K, Double>();

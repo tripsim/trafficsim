@@ -13,7 +13,6 @@ import edu.trafficsim.engine.ScenarioBuilder;
 import edu.trafficsim.engine.factory.DefaultNetworkFactory;
 import edu.trafficsim.engine.factory.DefaultScenarioBuilder;
 import edu.trafficsim.engine.osm.OsmNetworkExtractor;
-import edu.trafficsim.model.Connector;
 import edu.trafficsim.model.DriverType;
 import edu.trafficsim.model.DriverTypeComposition;
 import edu.trafficsim.model.Lane;
@@ -31,6 +30,8 @@ import edu.trafficsim.model.VehicleTypeComposition;
 import edu.trafficsim.model.core.Coordinates;
 import edu.trafficsim.model.core.Coordinates.TransformCoordinateFilter;
 import edu.trafficsim.model.core.ModelInputException;
+import edu.trafficsim.model.network.TurnPercentage;
+import edu.trafficsim.model.network.TurnPercentageRouter;
 import edu.trafficsim.utility.CoordinateTransformer;
 
 // Hack to create nodes links...
@@ -124,14 +125,12 @@ public class DemoBuilder {
 		List<Lane> lanes1 = networkFactory.createLanes(link1, 3);
 		List<Lane> lanes2 = networkFactory.createLanes(link2, 3);
 		// Connectors
-		Connector connector200 = networkFactory.createConnector(lanes1.get(0),
-				lanes2.get(0));
-		Connector connector211 = networkFactory.createConnector(lanes1.get(1),
-				lanes2.get(1));
-		Connector connector222 = networkFactory.createConnector(lanes1.get(2),
-				lanes2.get(2));
+		networkFactory.createConnector(lanes1.get(0), lanes2.get(0));
+		networkFactory.createConnector(lanes1.get(1), lanes2.get(1));
+		networkFactory.createConnector(lanes1.get(2), lanes2.get(2));
 
 		// Network
+		network = networkFactory.createEmptyNetwork("test");
 		network.add(node1, node2, node3);
 		network.add(link1, link2);
 		network.discover();
@@ -165,13 +164,17 @@ public class DemoBuilder {
 		odMatrix.add(od);
 
 		// Router
-		router = null;
-		// Router router = new TurnPercentageRouter();
-		// node2.setRouter(router);
+		TurnPercentageRouter turnPercentageRouter = new TurnPercentageRouter(0,
+				"test");
+		double[] times1 = new double[] { 500 };
+		TurnPercentage turnPercentage1 = new TurnPercentage(link1);
+		turnPercentage1.put(link2, 1.0);
+		TurnPercentage[] turnPercentages = new TurnPercentage[] { turnPercentage1 };
+		turnPercentageRouter.setTurnPercentage(link1, VehicleClass.Car, times1,
+				turnPercentages);
 
 		// Simulator
-		simulator = scenarioBuilder.createSimulator(
-				"test", 500, 1);
+		simulator = scenarioBuilder.createSimulator("test", 500, 1);
 	}
 
 	public SimulationScenario getScenario() {
