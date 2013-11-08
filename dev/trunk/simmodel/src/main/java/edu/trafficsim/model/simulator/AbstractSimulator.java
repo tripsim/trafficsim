@@ -15,17 +15,17 @@ public abstract class AbstractSimulator<T> extends BaseEntity<T> implements
 	private static final long serialVersionUID = 1L;
 
 	private Date startTime;
-	private double warmup; // in seconds
+	private int warmup; // in seconds
 
-	protected double duration; // in seconds
+	protected int duration; // in seconds
 	protected double stepSize; // in seconds
 
 	private long seed;
 	private Random rand;
 
-	private double ttl;
+	private int forwardedSteps;
 
-	public AbstractSimulator(long id, String name, double duration,
+	public AbstractSimulator(long id, String name, int duration,
 			double stepSize, long seed) {
 		super(id, name);
 		this.duration = duration;
@@ -46,20 +46,20 @@ public abstract class AbstractSimulator<T> extends BaseEntity<T> implements
 	}
 
 	@Override
-	public double getWarmup() {
+	public int getWarmup() {
 		return warmup;
 	}
 
-	public void setWarmup(double warmup) {
+	public void setWarmup(int warmup) {
 		this.warmup = warmup;
 	}
 
 	@Override
-	public double getDuration() {
+	public int getDuration() {
 		return duration;
 	}
 
-	public void setDuration(double duration) {
+	public void setDuration(int duration) {
 		this.duration = duration;
 	}
 
@@ -72,6 +72,12 @@ public abstract class AbstractSimulator<T> extends BaseEntity<T> implements
 		this.stepSize = stepSize;
 	}
 
+	@Override
+	public int getTotalSteps() {
+		return (int) Math.round(duration / stepSize);
+	}
+
+	@Override
 	public long getSeed() {
 		return seed;
 	}
@@ -86,23 +92,27 @@ public abstract class AbstractSimulator<T> extends BaseEntity<T> implements
 	}
 
 	@Override
-	public double getForwarded() {
-		return duration - stepSize * (double) ttl;
+	public double getForwardedTime() {
+		return stepSize * (double) forwardedSteps;
+	}
+	
+	@Override
+	public int getForwardedSteps() {
+		return forwardedSteps;
 	}
 
 	@Override
 	public boolean isFinished() {
-		return ttl < 0;
+		return duration < forwardedSteps;
 	}
 
 	@Override
 	public void stepForward() {
-		ttl--;
+		forwardedSteps++;
 	}
 
 	private void ready() {
-		ttl = (int) Math.round(duration / stepSize);
+		forwardedSteps = 0;
 		rand = new Random(seed);
 	}
-
 }

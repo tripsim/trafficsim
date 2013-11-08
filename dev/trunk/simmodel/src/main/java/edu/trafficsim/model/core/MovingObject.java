@@ -35,7 +35,7 @@ public abstract class MovingObject<T> extends BaseEntity<T> implements Movable,
 		this.acceleration = 0;
 
 		this.angle = 0;
-		this.coord = computeCoord();
+		this.coord = new Coordinate();;
 
 		this.active = true;
 	}

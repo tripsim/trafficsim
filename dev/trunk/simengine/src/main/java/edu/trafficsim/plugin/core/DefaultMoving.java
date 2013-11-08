@@ -52,7 +52,7 @@ public class DefaultMoving extends AbstractPlugin implements IMoving {
 					((Link) ((Connector) vehicle.getSegment()).getFromLane()
 							.getSegment()),
 					vehicle.getVehicleType().getVehicleClass(),
-					simulationScenario.getSimulator().getForwarded(),
+					simulationScenario.getSimulator().getForwardedTime(),
 					simulationScenario.getSimulator().getRand());
 			vehicle.currentLane(((Connector) vehicle.getSegment()).getToLane());
 			vehicle.targetLink(link);

@@ -31,7 +31,7 @@ public class DefaultVehicleGenerator extends AbstractVehicleGenerator {
 	// The other should be based on headway
 	@Override
 	public final List<Vehicle> getVehicles(Od od, Simulator simulator) {
-		double time = simulator.getForwarded();
+		double time = simulator.getForwardedTime();
 		double stepSize = simulator.getStepSize();
 		Random rand = simulator.getRand();
 
@@ -67,9 +67,10 @@ public class DefaultVehicleGenerator extends AbstractVehicleGenerator {
 
 			VehicleSpecs vehicleSpecs = new VehicleSpecs(vtypeToBuild,
 					dtypeToBuild, vehicleBehavior, lane, speed, accel);
-			Vehicle vehicle = vehicleFactory.createVehicle(vehicleSpecs, simulator);
+			Vehicle vehicle = vehicleFactory.createVehicle(vehicleSpecs,
+					simulator);
 			vehicles.add(vehicle);
-			
+
 			// Test
 			StringBuffer sb = new StringBuffer();
 			sb.append("Time: " + time + "s -- " + "New Vehicle: ");

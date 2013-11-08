@@ -7,7 +7,6 @@ import java.util.Random;
 import edu.trafficsim.model.BaseEntity;
 import edu.trafficsim.model.Link;
 import edu.trafficsim.model.Router;
-import edu.trafficsim.model.TurnPercentage;
 import edu.trafficsim.model.VehicleType.VehicleClass;
 import edu.trafficsim.model.core.AbstractDynamicProperty;
 import edu.trafficsim.model.core.ModelInputException;
