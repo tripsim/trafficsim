@@ -1,9 +1,10 @@
 var simulation = {}; // attach simulation to somewhere for navigation
+var map = {};
+
 simulation.defaultCenterX = -9952964.247717002;
 simulation.defaultCenterY = 5323065.604899759;
 simulation.defaultRefreshInterval = 400;
 
-simulation.map = {};
 simulation.network = {}; // links : [], nodes: [], connectors: []
 simulation.vehicles = {}; // key: vid value: vehicle
 simulation.frames = {}; // key: fid values: {vid: record}
@@ -24,15 +25,16 @@ simulation.element = function(fid, vehicle, x, y, angle, color) {
 };
 simulation.refreshStrategy = null;
 
+simulation.proj900913 = new OpenLayers.Projection('EPSG:900913');
+simulation.proj4326 = new OpenLayers.Projection('EPSG:4326');
+
 simulation.initMap = function() {
-	var proj900913 = new OpenLayers.Projection('EPSG:900913');
-	var proj4326 = new OpenLayers.Projection('EPSG:4326');
 
 	// load();
 	var that = this;
 
-	var map = this.map = new OpenLayers.Map('map', {
-		projection : proj900913,
+	map = this.map = new OpenLayers.Map('map', {
+		projection : that.proj900913,
 		allOverlays : true,
 		fractionalZoom : true
 	});
@@ -53,21 +55,21 @@ simulation.initMap = function() {
 				1.194328566789627, 0.5971642833948135 ],
 		transitionEffect : 'resize'
 	});
-//	var gmap = new OpenLayers.Layer.Google('Google Streets', {
-//		numZoomLevels : 20,
-//		visibility : false
-//	});
-//	var gsat = new OpenLayers.Layer.Google("Google Satellite", {
-//		type : google.maps.MapTypeId.SATELLITE,
-//		numZoomLevels : 20,
-//		visibility : false
-//	});
-//	var ghyb = new OpenLayers.Layer.Google("Google Hybrid", {
-//		type : google.maps.MapTypeId.HYBRID,
-//		numZoomLevels : 21,
-//		visibility : false
-//	});
-//	map.addLayers([ osm, gmap, gsat, ghyb ]);
+	var gmap = new OpenLayers.Layer.Google('Google Streets', {
+		numZoomLevels : 20,
+		visibility : false
+	});
+	var gsat = new OpenLayers.Layer.Google('Google Satellite', {
+		type : google.maps.MapTypeId.SATELLITE,
+		numZoomLevels : 20,
+		visibility : false
+	});
+	var ghyb = new OpenLayers.Layer.Google('Google Hybrid', {
+		type : google.maps.MapTypeId.HYBRID,
+		numZoomLevels : 21,
+		visibility : false
+	});
+	map.addLayers([ osm, gmap, gsat, ghyb ]);
 	map.addLayers([ osm ]);
 
 	var mp900913 = new OpenLayers.Control.MousePosition({
@@ -77,9 +79,9 @@ simulation.initMap = function() {
 	});
 	var mp4326 = new OpenLayers.Control.MousePosition({
 		div : $('proj-4326'),
-		displayProjection : proj4326,
+		displayProjection : that.proj4326,
 		prefix : 'Coordinates: ',
-		suffix : ' (in ' + proj4326 + ')'
+		suffix : ' (in ' + that.proj4326 + ')'
 	});
 	map.addControls([ mp900913, mp4326 ]);
 
@@ -104,7 +106,7 @@ simulation.initMap = function() {
 		interval : that.defaultRefreshInterval
 	});
 	var vehicleLayer = new OpenLayers.Layer.Vector('Vehicles', {
-		projection : proj900913,
+		projection : that.proj900913,
 		styleMap : new OpenLayers.StyleMap(new OpenLayers.Style(
 				vehicleTemplate, {
 					context : vehicleContext
@@ -151,7 +153,7 @@ simulation.initMap = function() {
 		}
 	};
 	var networkLayer = new OpenLayers.Layer.Vector('Network', {
-		projection : proj900913,
+		projection : that.proj900913,
 		styleMap : new OpenLayers.StyleMap(new OpenLayers.Style(
 				networkTemplate, {
 					context : networkContext
@@ -183,60 +185,80 @@ simulation.initMap = function() {
 					irregular : true
 				}
 			});
-	drawControl.events
-			.register(
-					'featureadded',
-					networkLayer,
-					function(f) {
-						// TODO change the name, and design an object to hold it
-						simulation.area = f.feature.geometry.bounds;
-						drawControl.deactivate();
-						OpenLayers.Request
-								.GET({
-									url : 'resources/components/network-new.html',
-									callback : function(request) {
-										// TODO make it a function and need a
-										// framework
-										document
-												.getElementById("user-configuration").style.display = 'inline';
-										document
-												.getElementById("user-configuration").innerHTML = request.responseText;
-									}
-								});
-					});
+	drawControl.events.register('featureadded', networkLayer, function(f) {
+		// TODO change the name, and design an object to hold it
+		simulation.importArea = f.feature.geometry.bounds;
+		drawControl.deactivate();
+		jQuery.get('resources/components/network-new.html', function(data) {
+			jQuery('#map').css('cursor', 'auto');
+			jQuery('#user-configuration').html(data).show();
+		});
+	});
 	this.drawControl = drawControl;
 	map.addControl(drawControl);
 
 	map.addControl(new OpenLayers.Control.LayerSwitcher());
 };
 
+simulation.createNew = function() {
+	this.networkLayer.removeAllFeatures();
+	// TODO initiate objects
+	jQuery.get('resources/components/scenario-new.html', function(data) {
+		jQuery('#user-configuration').html(data).show();
+	});
+};
+
+simulation.selectNetworkArea = function() {
+	this.drawControl.activate();
+	jQuery('#user-configuration').hide();
+	jQuery('#user-feedback').html('Please select area!').show();
+	jQuery('#map').css('cursor', 'crosshair');
+};
+
+simulation.importFromOsm = function() {
+	this.networkLayer.removeAllFeatures();
+	jQuery('#user-configuration').hide();
+
+	var that = this;
+	var postData = {
+		bbox : simulation.importArea.transform(map.getProjectionObject(),
+				that.proj4326).toBBOX(),
+		highway : jQuery('select#user-network-highway').val()
+	};
+	jQuery.post('createnetwork', postData, function(data) {
+
+		var obj = eval('(' + data + ')');
+		that.network.links = obj['links'];
+		that.reDrawNetwork();
+	});
+};
+
+
+
 simulation.load = function() {
 	var that = this;
 	that.totalF = 0;
 	that.vehicles = {};
 	that.frames = {};
-	OpenLayers.Request.GET({
-		url : 'loaddemo',
-		callback : function(request) {
-			var obj = eval('(' + request.responseText + ')');
-			for ( var i in obj['vehicles']) {
-				var vs = obj.vehicles[i].split(',');
-				var v = new that.vehicle(vs[0], vs[1], vs[2]);
-				that.vehicles[v.vid] = v;
+	jQuery.get('loaddemo', function(data) {
+		var obj = eval('(' + data + ')');
+		for ( var i in obj['vehicles']) {
+			var vs = obj.vehicles[i].split(',');
+			var v = new that.vehicle(vs[0], vs[1], vs[2]);
+			that.vehicles[v.vid] = v;
+		}
+		for ( var i in obj['elements']) {
+			var es = obj.elements[i].split(',');
+			var v = that.vehicles[es[1]];
+			if (!v)
+				continue;
+			var e = new that.element(es[0], v, es[2], es[3], es[4], es[5]);
+			var frame = that.frames[es[0]];
+			if (!frame) {
+				that.frames[es[0]] = frame = [];
+				that.totalF++;
 			}
-			for ( var i in obj['elements']) {
-				var es = obj.elements[i].split(',');
-				var v = that.vehicles[es[1]];
-				if (!v)
-					continue;
-				var e = new that.element(es[0], v, es[2], es[3], es[4], es[5]);
-				var frame = that.frames[es[0]];
-				if (!frame) {
-					that.frames[es[0]] = frame = [];
-					that.totalF++;
-				}
-				frame.push(e);
-			}
+			frame.push(e);
 		}
 	});
 };
@@ -244,23 +266,4 @@ simulation.load = function() {
 simulation.animate = function() {
 	this.f = 0;
 	this.refreshStrategy.activate();
-};
-
-simulation.selectNetworkArea = function() {
-	this.networkLayer.removeAllFeatures();
-	this.drawControl.activate();
-};
-
-simulation.createNetwork = function() {
-	this.networkLayer.removeAllFeatures();
-	document.getElementById("user-configuration").style.display = 'none';
-	var that = this;
-	OpenLayers.Request.GET({
-		url : 'createnetwork',
-		callback : function(request) {
-			var obj = eval('(' + request.responseText + ')');
-			that.network.links = obj["links"];
-			that.reDrawNetwork();
-		}
-	});
 };

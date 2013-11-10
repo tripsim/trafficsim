@@ -96,6 +96,11 @@ public class OsmNetworkExtractor {
 		}
 		Link link = createLink(osmWay, startNode, endNode, coords);
 		network.add(link);
+		if (!osmWay.oneway) {
+			Link reverseLink = createReverseLink(link);
+			network.add(reverseLink);
+		}
+
 	}
 
 	private Node createNode(OsmNode osmNode) {
@@ -109,7 +114,14 @@ public class OsmNetworkExtractor {
 			List<Coordinate> coords) throws ModelInputException {
 		Link link = networkFactory.createLink(osmWay.name, startNode, endNode,
 				coords.toArray(new Coordinate[0]));
+
 		// TODO add additional info like highways
 		return link;
+	}
+
+	private Link createReverseLink(Link link) throws ModelInputException {
+		Link reverseLink = networkFactory.createReverseLink(
+				String.format("%s Reversed", link.getName()), link);
+		return reverseLink;
 	}
 }

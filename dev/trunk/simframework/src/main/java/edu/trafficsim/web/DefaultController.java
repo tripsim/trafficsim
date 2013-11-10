@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.fasterxml.jackson.core.JsonParseException;
@@ -47,12 +48,13 @@ public class DefaultController {
 		return str;
 	}
 
-	@RequestMapping(value = "/createnetwork", method = RequestMethod.GET)
+	@RequestMapping(value = "/createnetwork", method = RequestMethod.POST)
 	public @ResponseBody
-	String createNetwork() {
+	String createNetwork(@RequestParam("bbox")String bbox, @RequestParam("highway")String highway) {
 		Network network;
+		// TODO build feedbacks
 		try {
-			network = extractOsmNetworkService.createNetwork("");
+			network = extractOsmNetworkService.createNetwork(bbox);
 			String str = extractOsmNetworkService.getNetwork(network);
 			return str;
 		} catch (MalformedURLException e) {
