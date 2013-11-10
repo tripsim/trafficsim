@@ -9,9 +9,10 @@
 	href="<c:url value="/resources/styles/style-dev.css"/>"></link>
 
 <script src="http://maps.google.com/maps/api/js?v=3.6&sensor=false"></script>
-<script src="<c:url value="/resources/scripts/proj4js-compressed.js"/>"></script>
+<script src="<c:url value="/resources/scripts/lib/proj4js-compressed.js"/>"></script>
 <script
-	src="<c:url value="/resources/scripts/openlayers/lib/OpenLayers.js"/>"></script>
+	src="<c:url value="/resources/scripts/lib/openlayers/OpenLayers.js"/>"></script>
+<script src="<c:url value="/resources/scripts/lib/jquery-2.0.3.min.js"/>"></script>
 <script src="<c:url value="/resources/scripts/simulation.js"/>"></script>
 </head>
 
