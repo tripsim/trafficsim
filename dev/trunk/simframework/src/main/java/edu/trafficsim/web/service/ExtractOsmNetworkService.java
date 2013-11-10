@@ -18,14 +18,17 @@ import edu.trafficsim.model.core.ModelInputException;
 public class ExtractOsmNetworkService {
 
 	private static final String url = "http://jxapi.openstreetmap.org/xapi/api/0.6";
-	private static final String query = "/way[highway=*][bbox=-89.4114,43.0707,-89.3955,43.0753]";
-	
-	public Network createNetwork(String bbox) throws ModelInputException, JsonParseException, ProtocolException, IOException {
+	// private static final String query =
+	// "/way[highway=*][bbox=-89.4114,43.0707,-89.3955,43.0753]";
+	private static final String queryTemplate = "/way[highway=*][bbox=%s]";
+
+	public Network createNetwork(String bbox) throws ModelInputException,
+			JsonParseException, ProtocolException, IOException {
 		OsmNetworkExtractor extractor = new OsmNetworkExtractor(
 				DefaultNetworkFactory.getInstance());
-		return extractor.extract(url+query);
+		String query = String.format(queryTemplate, bbox);
+		return extractor.extract(url + query);
 	}
-	
 
 	public String getNetwork(Network network) {
 		WKTWriter writer = new WKTWriter();

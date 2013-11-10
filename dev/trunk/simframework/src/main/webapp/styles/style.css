@@ -4,7 +4,16 @@ html,body,#map {
 	height: 100%;
 }
 
-/* quick demo fixes */
+#ajax-indicator {
+	position: fixed;
+	left: 0;
+	top: 0;
+	background: url('../images/ajax.gif') no-repeat fixed center;
+	z-index: 100000;
+	display: none;
+	z-index: 100000;
+}
+
 /* Menu */
 #user-interface {
 	position: absolute;
@@ -51,10 +60,9 @@ html,body,#map {
 
 #user-configuration {
 	position: absolute;
-	padding: 4px;
+	padding: 4px 4px 4px 10px;
 	top: 64px;
 	left: 200px;
-	padding-left: 10px;
 	width: 500px;
 	height: 360px;
 	z-index: 20000;
@@ -64,7 +72,7 @@ html,body,#map {
 	display: none;
 }
 
-/* Window */
+/* Configuration Window */
 #user-configuration h2 {
 	color: #ff5600;
 }
@@ -73,18 +81,15 @@ html,body,#map {
 	color: #ffffff;
 }
 
-#user-configuration .buttons {
-	margin-top: 60px;
+#user-configuration .button {
 	padding: 0;
-	cursor: auto;
-	background-color: transparent;
-	cursor: auto;
+	cursor: pointer;
+	background-color: #ff5600;
 }
 
-#user-configuration .buttons span {
+#user-configuration span.button {
+	margin-left: 4px;
 	padding: 2px 6px;
-	background-color: #ff5600;
-	cursor: pointer;
 }
 
 #user-configuration textarea {
@@ -93,4 +98,23 @@ html,body,#map {
 	height: 200px;
 	overflow: scroll;
 	height: 200px;
+}
+
+/* Feedback Info */
+#user-feedback {
+	position: absolute;
+	top: 0;
+	left: 200px;
+	padding: 4px 4px 0 10px;
+	width: 500px;
+	height: 50px;
+	background-color: #0d58a6;
+	color: #ffffff;
+	opacity: 0.50;
+	z-index: 20000;
+	display: none;
+}
+
+#user-feedback .info {
+	color: #ffffff;
 }
