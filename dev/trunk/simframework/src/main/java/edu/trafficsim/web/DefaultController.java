@@ -13,19 +13,24 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.fasterxml.jackson.core.JsonParseException;
 
-import edu.trafficsim.engine.demo.SimulationTest;
 import edu.trafficsim.model.Network;
 import edu.trafficsim.model.core.ModelInputException;
 import edu.trafficsim.web.service.DemoSimulationService;
 import edu.trafficsim.web.service.ExtractOsmNetworkService;
+import edu.trafficsim.web.service.JsonOutputService;
 
 @Controller
 public class DefaultController {
 
 	@Autowired
+	SimulationProject project;
+
+	@Autowired
 	DemoSimulationService demoSimulationService;
 	@Autowired
 	ExtractOsmNetworkService extractOsmNetworkService;
+	@Autowired
+	JsonOutputService jsonOutputService;
 
 	@RequestMapping(value = "/")
 	public String home() {
@@ -40,22 +45,25 @@ public class DefaultController {
 		return str;
 	}
 
-	@RequestMapping(value = "/loadnetwork", method = RequestMethod.GET)
+	@RequestMapping(value = "/getnetwork", method = RequestMethod.GET)
 	public @ResponseBody
-	String demoNetwork() {
-		Network network = SimulationTest.getInstance().getNetwork();
-		String str = extractOsmNetworkService.getNetwork(network);
+	String getNetwork() {
+		Network network = project.getNetwork();
+		String str = jsonOutputService.getNetwork(network);
 		return str;
 	}
 
 	@RequestMapping(value = "/createnetwork", method = RequestMethod.POST)
 	public @ResponseBody
-	String createNetwork(@RequestParam("bbox")String bbox, @RequestParam("highway")String highway) {
+	String createNetwork(@RequestParam("bbox") String bbox,
+			@RequestParam("highway") String highway) {
 		Network network;
 		// TODO build feedbacks
 		try {
-			network = extractOsmNetworkService.createNetwork(bbox);
-			String str = extractOsmNetworkService.getNetwork(network);
+			network = extractOsmNetworkService.createNetwork(bbox, highway,
+					project.getNetworkFactory());
+			project.setNetwork(network);
+			String str = jsonOutputService.getNetwork(network);
 			return str;
 		} catch (MalformedURLException e) {
 			// TODO Auto-generated catch block

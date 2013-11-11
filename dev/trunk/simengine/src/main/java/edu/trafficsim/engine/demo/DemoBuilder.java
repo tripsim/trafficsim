@@ -61,9 +61,9 @@ public class DemoBuilder {
 			JsonParseException, IOException {
 		BufferedReader reader = new BufferedReader(new InputStreamReader(
 				getClass().getResourceAsStream("demo.json")));
-		OsmNetworkExtractor extractor = new OsmNetworkExtractor(
+		OsmNetworkExtractor extractor = OsmNetworkExtractor.getInstance();
+		return extractor.extract(extractor.parse(reader),
 				DefaultNetworkFactory.getInstance());
-		return extractor.extract(reader);
 	}
 
 	private void manualBuild() throws ModelInputException {

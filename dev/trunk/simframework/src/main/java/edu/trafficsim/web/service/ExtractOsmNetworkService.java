@@ -6,40 +6,58 @@ import java.net.ProtocolException;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonParseException;
-import com.vividsolutions.jts.io.WKTWriter;
 
-import edu.trafficsim.engine.factory.DefaultNetworkFactory;
+import edu.trafficsim.engine.NetworkFactory;
 import edu.trafficsim.engine.osm.OsmNetworkExtractor;
-import edu.trafficsim.model.Link;
 import edu.trafficsim.model.Network;
 import edu.trafficsim.model.core.ModelInputException;
 
 @Service
 public class ExtractOsmNetworkService {
 
+	// "/way[highway=*][bbox=-89.4114,43.0707,-89.3955,43.0753]"
 	private static final String url = "http://jxapi.openstreetmap.org/xapi/api/0.6";
-	// private static final String query =
-	// "/way[highway=*][bbox=-89.4114,43.0707,-89.3955,43.0753]";
-	private static final String queryTemplate = "/way[highway=*][bbox=%s]";
+	private static final String queryTemplate = "/way[highway=%s][bbox=%s]";
 
-	public Network createNetwork(String bbox) throws ModelInputException,
+	public Network createNetwork(String bbox, String highway,
+			NetworkFactory factory) throws ModelInputException,
 			JsonParseException, ProtocolException, IOException {
-		OsmNetworkExtractor extractor = new OsmNetworkExtractor(
-				DefaultNetworkFactory.getInstance());
-		String query = String.format(queryTemplate, bbox);
-		return extractor.extract(url + query);
+		OsmNetworkExtractor extractor = OsmNetworkExtractor.getInstance();
+
+		String highwayQuery = OsmHighwayValue.valueOf(highway) == null ? OsmHighwayValue.All.queryValue
+				: OsmHighwayValue.valueOf(highway).queryValue;
+		String query = String.format(queryTemplate, highwayQuery, bbox);
+		return extractor.extract(url + query, factory);
 	}
 
-	public String getNetwork(Network network) {
-		WKTWriter writer = new WKTWriter();
-		StringBuffer linkSb = new StringBuffer();
-		for (Link link : network.getLinks()) {
-			linkSb.append("\"");
-			linkSb.append(writer.write(link.getLinearGeom()));
-			linkSb.append("\"");
-			linkSb.append(",");
+	public static enum OsmHighwayValue {
+		Motorway("Motorway only", "motorway|motorway_link"), Trunk(
+				"Trunk and above", "motorway|motorway_link|trunk|trunk_link"), Primary(
+				"Primary Highway and above",
+				"motorway|motorway_link|trunk|trunk_link|primary|primary_link"), Secondary(
+				"Secondary Highway and above",
+				"motorway|motorway_link|trunk|trunk_link|primary|primary_link|secondary|secondary_link"), Tertiary(
+				"Tertiary Highway and above",
+				"motorway|motorway_link|trunk|trunk_link|primary|primary_link|secondary|secondary_link|tertiary"), Residential(
+				"Residential and unclassified roads and above",
+				"motorway|motorway_link|trunk|trunk_link|primary|primary_link|secondary|secondary_link|tertiary|residential|unclassified"), All(
+				"All roads", "*");
+
+		private final String desc;
+		private final String queryValue;
+
+		OsmHighwayValue(String desc, String queryValue) {
+			this.desc = desc;
+			this.queryValue = queryValue;
 		}
-		linkSb.deleteCharAt(linkSb.length() - 1);
-		return "{links:[" + linkSb.toString() + "]}";
+
+		public String getName() {
+			return name();
+		}
+
+		public String getDesc() {
+			return desc;
+		}
 	}
+
 }

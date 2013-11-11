@@ -15,8 +15,16 @@ jQuery(document).ajaxError(function() {
 });
 
 jQuery(document).ready(function() {
+
+	jQuery.getJSON('getnetwork', function(data) {
+		if (data['links'] != null)
+			that.reDrawNetwork(data['links']);
+		var center = new OpenLayers.LonLat(data.center[0], data.center[1]);
+		map.setCenter(center, map.numZoomLevels);
+	});
+
 	jQuery('#user-interface-network').click(function() {
-		jQuery.get('resources/components/network.html', function(data) {
+		jQuery.get('view/network', function(data) {
 			jQuery('#user-configuration').html(data).show();
 		});
 	});

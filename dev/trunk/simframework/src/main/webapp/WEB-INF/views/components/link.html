@@ -1,0 +1,7 @@
+<h2>Link Info</h2>
+<p th:each="link : ${links}">
+	<span th:text="'Link Name: ' + ${link.name}"></span><br/>
+	<span th:text="'Start Node: ' + ${link.startNode.name}"></span><br/>
+	<span th:text="'End Node: ' + ${link.endNode.name}"></span><br/>
+	<span th:text="'Highway: '+ ${link.roadInfo.highway}"></span><br/>
+</p>

@@ -9,6 +9,7 @@ import edu.trafficsim.model.Lane;
 import edu.trafficsim.model.Link;
 import edu.trafficsim.model.LinkType;
 import edu.trafficsim.model.Node;
+import edu.trafficsim.model.RoadInfo;
 import edu.trafficsim.model.core.AbstractSegment;
 import edu.trafficsim.model.core.Coordinates;
 
@@ -26,6 +27,8 @@ public class DefaultLink extends AbstractSegment<DefaultLink> implements Link {
 	private Node startNode;
 	private Node endNode;
 	protected LineString linearGeom;
+
+	private RoadInfo roadInfo;
 
 	public DefaultLink(long id, String name, LinkType linkType, Node startNode,
 			Node endNode, LineString linearGeom) {
@@ -102,6 +105,16 @@ public class DefaultLink extends AbstractSegment<DefaultLink> implements Link {
 		reverseLink = null;
 		if (reverseLink.getReverseLink() != null)
 			reverseLink.removeReverseLink();
+	}
+
+	@Override
+	public RoadInfo getRoadInfo() {
+		return roadInfo;
+	}
+
+	@Override
+	public void setRoadInfo(RoadInfo roadInfo) {
+		this.roadInfo = roadInfo;
 	}
 
 }
