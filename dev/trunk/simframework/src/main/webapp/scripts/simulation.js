@@ -1,8 +1,6 @@
 var simulation = {}; // attach simulation to somewhere for navigation
 var map = {};
 
-simulation.defaultCenterX = -9952964.247717002;
-simulation.defaultCenterY = 5323065.604899759;
 simulation.defaultRefreshInterval = 400;
 
 simulation.network = {}; // links : [], nodes: [], connectors: []
@@ -30,7 +28,6 @@ simulation.proj4326 = new OpenLayers.Projection('EPSG:4326');
 
 simulation.initMap = function() {
 
-	// load();
 	var that = this;
 
 	map = this.map = new OpenLayers.Map('map', {
@@ -84,9 +81,6 @@ simulation.initMap = function() {
 		suffix : ' (in ' + that.proj4326 + ')'
 	});
 	map.addControls([ mp900913, mp4326 ]);
-
-	var center = new OpenLayers.LonLat(this.defaultCenterX, this.defaultCenterY);
-	map.setCenter(center, map.numZoomLevels);
 
 	var vehicleTemplate = {
 		strokeOpacity : 0.8,
@@ -142,10 +136,18 @@ simulation.initMap = function() {
 	map.addLayer(vehicleLayer);
 
 	var networkTemplate = {
+		strokeWidth : 4,
 		strokeColor : '${strokeColor}',
 		strokeOpacity : 0.5,
 		fillColor : 'black',
 		fillOpacity : 0.5
+	};
+	var networkSelectTemplate = {
+		strokeColor : 'gray',
+		strokeOpacity : 0.75,
+		strokeWidth : 10,
+		fillColor : 'gray',
+		fillOpacity : 0.75,
 	};
 	var networkContext = {
 		strokeColor : function(feature) {
@@ -154,27 +156,49 @@ simulation.initMap = function() {
 	};
 	var networkLayer = new OpenLayers.Layer.Vector('Network', {
 		projection : that.proj900913,
-		styleMap : new OpenLayers.StyleMap(new OpenLayers.Style(
-				networkTemplate, {
-					context : networkContext
-				})),
+		styleMap : new OpenLayers.StyleMap({
+			'default' : new OpenLayers.Style(networkTemplate, {
+				context : networkContext
+			}),
+			'select' : new OpenLayers.Style(networkSelectTemplate, {
+				context : networkContext
+			}),
+		}),
 		rendererOptions : {
 			zIndexing : true
 		}
 	});
 	// draw network TODO make it a function
-	this.reDrawNetwork = function() {
+	this.reDrawNetwork = function(links) {
+		this.network.links = links;
 		networkLayer.removeAllFeatures();
 		var features = [];
-		for ( var i in this.network['links']) {
+		for ( var i in links) {
 			var geom = OpenLayers.Geometry.fromWKT(this.network['links'][i]);
-			var feature = new OpenLayers.Feature.Vector(geom);
+			var feature = new OpenLayers.Feature.Vector(geom, {
+				linkId : i
+			});
 			features.push(feature);
 		}
 		networkLayer.addFeatures(features);
 	};
 	this.networkLayer = networkLayer;
 	map.addLayer(networkLayer);
+
+	networkLayer.events.on({
+		"featureselected" : function(e) {
+			jQuery.get('view/link/' + e.feature.attributes['linkId'], function(
+					data) {
+				jQuery('#user-configuration').html(data).show();
+			});
+		},
+		"featureunselected" : function(e) {
+			jQuery.get('view/link/' + e.feature.attributes['linkId'], function(
+					data) {
+				jQuery('#user-configuration').hide();
+			});
+		}
+	});
 
 	// new OpenLayers.Control.DrawFeature(pointLayer, OpenLayers.Handler.Point)
 	// new OpenLayers.Control.DrawFeature(lineLayer, OpenLayers.Handler.Path)
@@ -186,10 +210,9 @@ simulation.initMap = function() {
 				}
 			});
 	drawControl.events.register('featureadded', networkLayer, function(f) {
-		// TODO change the name, and design an object to hold it
 		simulation.importArea = f.feature.geometry.bounds;
 		drawControl.deactivate();
-		jQuery.get('resources/components/network-new.html', function(data) {
+		jQuery.get('view/network-new', function(data) {
 			jQuery('#map').css('cursor', 'auto');
 			jQuery('#user-configuration').html(data).show();
 		});
@@ -197,13 +220,29 @@ simulation.initMap = function() {
 	this.drawControl = drawControl;
 	map.addControl(drawControl);
 
+	var highlightLinkControl = new OpenLayers.Control.SelectFeature(
+			networkLayer, {
+				hover : true,
+				highlightOnly : true,
+				clickout : true,
+				renderIntent : "select"
+			});
+	var selectLinkControl = new OpenLayers.Control.SelectFeature(networkLayer,
+			{
+				clickout : true
+			});
+	map.addControl(highlightLinkControl);
+	map.addControl(selectLinkControl);
+	highlightLinkControl.activate();
+	selectLinkControl.activate();
+
 	map.addControl(new OpenLayers.Control.LayerSwitcher());
 };
 
 simulation.createNew = function() {
 	this.networkLayer.removeAllFeatures();
 	// TODO initiate objects
-	jQuery.get('resources/components/scenario-new.html', function(data) {
+	jQuery.get('view/scenario-new', function(data) {
 		jQuery('#user-configuration').html(data).show();
 	});
 };
@@ -226,14 +265,13 @@ simulation.importFromOsm = function() {
 		highway : jQuery('select#user-network-highway').val()
 	};
 	jQuery.post('createnetwork', postData, function(data) {
-
 		var obj = eval('(' + data + ')');
-		that.network.links = obj['links'];
-		that.reDrawNetwork();
+		that.reDrawNetwork(obj['links']);
+		jQuery.get('view/network', function(data) {
+			jQuery('#user-configuration').html(data).show();
+		});
 	});
 };
-
-
 
 simulation.load = function() {
 	var that = this;

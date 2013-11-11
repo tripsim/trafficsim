@@ -16,6 +16,7 @@ import edu.trafficsim.engine.osm.Highways.OsmWay;
 import edu.trafficsim.model.Link;
 import edu.trafficsim.model.Network;
 import edu.trafficsim.model.Node;
+import edu.trafficsim.model.RoadInfo;
 import edu.trafficsim.model.core.Coordinates;
 import edu.trafficsim.model.core.Coordinates.TransformCoordinateFilter;
 import edu.trafficsim.model.core.ModelInputException;
@@ -27,28 +28,46 @@ public class OsmNetworkExtractor {
 	private static final TransformCoordinateFilter filter = Coordinates
 			.getDefaultTransformFilter();
 
-	private NetworkFactory networkFactory;
+	private static OsmNetworkExtractor extractor = null;
 
-	public OsmNetworkExtractor(NetworkFactory networkFactory) {
-		this.networkFactory = networkFactory;
+	private OsmNetworkExtractor() {
 	}
 
-	public Network extract(Reader reader) throws ModelInputException,
-			JsonParseException, IOException {
+	public static OsmNetworkExtractor getInstance() {
+		if (extractor == null)
+			extractor = new OsmNetworkExtractor();
+		return extractor;
+	}
+
+	public Highways parse(Reader reader) throws JsonParseException, IOException {
 		HighwaysJsonParser parser = new HighwaysJsonParser();
 		parser.parse(reader);
-		return getNetwork(parser.getParsedHighways());
+		return parser.getParsedHighways();
 	}
 
-	public Network extract(String urlStr) throws ModelInputException,
-			JsonParseException, ProtocolException, IOException {
+	public Highways parse(String urlStr) throws ModelInputException,
+			JsonParseException, IOException {
 		HighwaysJsonParser parser = new HighwaysJsonParser();
 		URL url = new URL(urlStr);
 		parser.parse(url);
-		return getNetwork(parser.getParsedHighways());
+		return parser.getParsedHighways();
 	}
 
-	protected Network getNetwork(Highways highways) throws ModelInputException {
+	public Network extract(String urlStr, NetworkFactory networkFactory)
+			throws ModelInputException, JsonParseException, ProtocolException,
+			IOException {
+		Highways highways = parse(urlStr);
+		return extract(highways, networkFactory);
+	}
+
+	public Network extract(Highways highways, NetworkFactory networkFactory)
+			throws ModelInputException, JsonParseException, ProtocolException,
+			IOException {
+		return createNetwork(highways, networkFactory);
+	}
+
+	protected Network createNetwork(Highways highways,
+			NetworkFactory networkFactory) throws ModelInputException {
 		Network network = networkFactory.createEmptyNetwork(NETWORK_NAME);
 
 		for (OsmWay osmWay : highways.getOsmWays()) {
@@ -68,7 +87,8 @@ public class OsmNetworkExtractor {
 				// start
 				// node for next link
 				if (endOsmNode.isShared() || i == osmWay.osmNodes.size() - 1) {
-					create(network, startOsmNode, endOsmNode, osmWay, coords);
+					create(network, startOsmNode, endOsmNode, osmWay, coords,
+							networkFactory);
 					coords.clear();
 					startOsmNode = endOsmNode;
 					coords.add(startOsmNode.asCoord());
@@ -82,44 +102,50 @@ public class OsmNetworkExtractor {
 	}
 
 	private void create(Network network, OsmNode startOsmNode,
-			OsmNode endOsmNode, OsmWay osmWay, List<Coordinate> coords)
-			throws ModelInputException {
+			OsmNode endOsmNode, OsmWay osmWay, List<Coordinate> coords,
+			NetworkFactory networkFactory) throws ModelInputException {
 		Node startNode = network.getNode(startOsmNode.id);
 		if (startNode == null) {
-			startNode = createNode(startOsmNode);
+			startNode = createNode(startOsmNode, networkFactory);
 			network.add(startNode);
 		}
 		Node endNode = network.getNode(endOsmNode.id);
 		if (endNode == null) {
-			endNode = createNode(endOsmNode);
+			endNode = createNode(endOsmNode, networkFactory);
 			network.add(endNode);
 		}
-		Link link = createLink(osmWay, startNode, endNode, coords);
+		RoadInfo roadInfo = networkFactory.createRoadInfo(osmWay.name,
+				osmWay.id, osmWay.highway);
+		Link link = createLink(osmWay, startNode, endNode, coords,
+				networkFactory);
+		link.setRoadInfo(roadInfo);
 		network.add(link);
 		if (!osmWay.oneway) {
-			Link reverseLink = createReverseLink(link);
+			Link reverseLink = createReverseLink(link, networkFactory);
+			reverseLink.setRoadInfo(roadInfo);
 			network.add(reverseLink);
 		}
 
 	}
 
-	private Node createNode(OsmNode osmNode) {
+	private Node createNode(OsmNode osmNode, NetworkFactory networkFactory) {
 		Node node = networkFactory.createNode(String.valueOf(osmNode.id),
 				osmNode.asCoord());
-		// TODO add additional info like highways
+		// TODO edit node
 		return node;
 	}
 
 	private Link createLink(OsmWay osmWay, Node startNode, Node endNode,
-			List<Coordinate> coords) throws ModelInputException {
+			List<Coordinate> coords, NetworkFactory networkFactory)
+			throws ModelInputException {
 		Link link = networkFactory.createLink(osmWay.name, startNode, endNode,
 				coords.toArray(new Coordinate[0]));
-
-		// TODO add additional info like highways
+		// TODO edit link
 		return link;
 	}
 
-	private Link createReverseLink(Link link) throws ModelInputException {
+	private Link createReverseLink(Link link, NetworkFactory networkFactory)
+			throws ModelInputException {
 		Link reverseLink = networkFactory.createReverseLink(
 				String.format("%s Reversed", link.getName()), link);
 		return reverseLink;

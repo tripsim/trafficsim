@@ -16,6 +16,7 @@ import edu.trafficsim.model.LinkType;
 import edu.trafficsim.model.Network;
 import edu.trafficsim.model.Node;
 import edu.trafficsim.model.NodeType;
+import edu.trafficsim.model.RoadInfo;
 import edu.trafficsim.model.Segment;
 import edu.trafficsim.model.core.ModelInputException;
 import edu.trafficsim.model.network.DefaultConnector;
@@ -89,6 +90,7 @@ public class DefaultNetworkFactory extends AbstractFactory implements
 		DefaultLink link = new DefaultLink(nextId(), name, linkType, startNode,
 				endNode, lineString);
 		startNode.add(link);
+		endNode.add(link);
 		return link;
 	}
 
@@ -131,5 +133,10 @@ public class DefaultNetworkFactory extends AbstractFactory implements
 		Node node = ((Link) laneFrom.getSegment()).getEndNode();
 		node.add(connector);
 		return connector;
+	}
+
+	@Override
+	public RoadInfo createRoadInfo(String roadName, long osmId, String highway) {
+		return new RoadInfo(roadName, osmId, highway);
 	}
 }

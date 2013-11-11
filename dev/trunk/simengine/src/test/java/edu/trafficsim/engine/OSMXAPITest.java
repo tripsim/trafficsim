@@ -20,18 +20,21 @@ public class OSMXAPITest {
 	public static void main(String[] args) {
 		// test();
 		// testParse();
-		//testExtractByReader();
+		// testExtractByReader();
 		testExtractByUrl();
 	}
+
+	static NetworkFactory networkFactory = DefaultNetworkFactory.getInstance();
+	static OsmNetworkExtractor extractor = OsmNetworkExtractor.getInstance();
 
 	protected static void testExtractByReader() {
 
 		BufferedReader reader = new BufferedReader(new InputStreamReader(
 				OSMXAPITest.class.getResourceAsStream("test.json")));
-		OsmNetworkExtractor extractor = new OsmNetworkExtractor(
-				DefaultNetworkFactory.getInstance());
+
 		try {
-			extractor.extract(reader);
+			extractor.extract(extractor.parse(reader), networkFactory);
+
 		} catch (ModelInputException | IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -41,10 +44,8 @@ public class OSMXAPITest {
 	protected static void testExtractByUrl() {
 		String urlPre = "http://jxapi.openstreetmap.org/xapi/api/0.6";
 		String testQuery = "/way[highway=*][bbox=-89.4114,43.0707,-89.3955,43.0753]";
-		OsmNetworkExtractor extractor = new OsmNetworkExtractor(
-				DefaultNetworkFactory.getInstance());
 		try {
-			extractor.extract(urlPre + testQuery);
+			extractor.extract(urlPre + testQuery, networkFactory);
 		} catch (ModelInputException | IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

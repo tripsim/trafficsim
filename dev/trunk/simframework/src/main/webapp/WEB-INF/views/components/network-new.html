@@ -1,0 +1,10 @@
+<h2>Import Network from Open Street Map</h2>
+<p>
+	<span>Restrictions</span> <select id="user-network-highway">
+		<option th:each="option : ${options}" th:value="${option.name}"
+			th:text="${option.desc}"></option>
+	</select>
+</p>
+<p>
+	<span class="button" onclick="simulation.importFromOsm();">Create</span>
+</p>

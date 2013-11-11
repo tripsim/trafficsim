@@ -9,6 +9,7 @@ import edu.trafficsim.model.Lane;
 import edu.trafficsim.model.Link;
 import edu.trafficsim.model.Network;
 import edu.trafficsim.model.Node;
+import edu.trafficsim.model.RoadInfo;
 import edu.trafficsim.model.Segment;
 import edu.trafficsim.model.core.ModelInputException;
 
@@ -24,8 +25,8 @@ public interface NetworkFactory {
 	public Link createReverseLink(String name, Link link)
 			throws ModelInputException;
 
-	public Lane createLane(Segment segment, double start, double end, double width,
-			double shift, int laneId) throws ModelInputException;
+	public Lane createLane(Segment segment, double start, double end,
+			double width, double shift, int laneId) throws ModelInputException;
 
 	public List<Lane> createLanes(Link link, int num)
 			throws ModelInputException;
@@ -33,9 +34,11 @@ public interface NetworkFactory {
 	public Connector createConnector(Lane laneFrom, Lane laneTo)
 			throws ModelInputException;
 
-//	public void connect(Lane laneFrom, Lane laneTo)
-//			throws ModelInputException;
-//	
-//	public void disconnect(Lane laneFrom, Lane laneTo)
-//			throws ModelInputException;
+	public RoadInfo createRoadInfo(String roadName, long osmId, String highway);
+
+	// public void connect(Lane laneFrom, Lane laneTo)
+	// throws ModelInputException;
+	//
+	// public void disconnect(Lane laneFrom, Lane laneTo)
+	// throws ModelInputException;
 }

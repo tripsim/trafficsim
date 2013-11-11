@@ -2,6 +2,8 @@ package edu.trafficsim.model;
 
 import java.util.Collection;
 
+import com.vividsolutions.jts.geom.Coordinate;
+
 public interface Network {
 
 	public Collection<Node> getSources();
@@ -31,6 +33,8 @@ public interface Network {
 	public void add(Node... nodes);
 
 	public void add(Link... links);
+	
+	public Coordinate center();
 
 	/**
 	 * discover its sources and sinks
