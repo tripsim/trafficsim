@@ -7,6 +7,8 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import org.opengis.referencing.operation.TransformException;
+
 import com.fasterxml.jackson.core.JsonParseException;
 
 import edu.trafficsim.engine.factory.DefaultNetworkFactory;
@@ -17,7 +19,7 @@ import edu.trafficsim.model.core.ModelInputException;
 
 public class OSMXAPITest {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws TransformException {
 		// test();
 		// testParse();
 		// testExtractByReader();
@@ -27,7 +29,7 @@ public class OSMXAPITest {
 	static NetworkFactory networkFactory = DefaultNetworkFactory.getInstance();
 	static OsmNetworkExtractor extractor = OsmNetworkExtractor.getInstance();
 
-	protected static void testExtractByReader() {
+	protected static void testExtractByReader() throws TransformException {
 
 		BufferedReader reader = new BufferedReader(new InputStreamReader(
 				OSMXAPITest.class.getResourceAsStream("test.json")));
@@ -41,7 +43,7 @@ public class OSMXAPITest {
 		}
 	}
 
-	protected static void testExtractByUrl() {
+	protected static void testExtractByUrl() throws TransformException {
 		String urlPre = "http://jxapi.openstreetmap.org/xapi/api/0.6";
 		String testQuery = "/way[highway=*][bbox=-89.4114,43.0707,-89.3955,43.0753]";
 		try {

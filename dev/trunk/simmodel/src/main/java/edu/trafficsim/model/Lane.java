@@ -8,6 +8,8 @@ import java.util.Collection;
  */
 public interface Lane extends Subsegment {
 
+	public int getLaneId();
+
 	/**
 	 * Implement our own efficient collection to hold the vehicles within a lane
 	 * or link.
@@ -29,15 +31,4 @@ public interface Lane extends Subsegment {
 
 	public Collection<Vehicle> getVehicles();
 
-	public double getStart();
-
-	public double getEnd();
-
-	public double getWidth();
-
-	public double getLength();
-
-	public double getShift();
-
-	public int getLaneId();
 }

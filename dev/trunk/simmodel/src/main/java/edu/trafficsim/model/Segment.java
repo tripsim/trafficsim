@@ -1,48 +1,37 @@
 package edu.trafficsim.model;
 
-import com.vividsolutions.jts.geom.Coordinate;
+import java.util.List;
+
 import com.vividsolutions.jts.geom.LineString;
 
 /**
  * @author Xuan
  * 
  */
-public interface Segment extends DataContainer {
+public interface Segment extends GeoReferenced {
 
 	public Long getId();
 
 	public String getName();
 
-	public Coordinate getStartCoordinate();
+	public Location getStartLocation();
 
-	public Coordinate getEndCoordinate();
+	public Location getEndLocation();
 
 	public LineString getLinearGeom();
 
-	/**
-	 * transfer local coordinate to global coordinate
-	 * 
-	 * @param x
-	 *            position on the segment
-	 * @param y
-	 *            lateral offset
-	 * @return
-	 */
-	public Coordinate getCoordinate(double x, double y);
-
-	/**
-	 * get the angle of the segment
-	 * 
-	 * @param x
-	 *            position on the segment
-	 * @return
-	 */
-	public double getAngle(double x);
-
 	public double getWidth();
 
+	/**
+	 * @return the real world length of the segment
+	 */
 	public double getLength();
 
-	// public List<SubSegment> getSubSegments();
+	/**
+	 * @return the linear geometry length, based on coordinates
+	 */
+	public double getGeomLength();
+
+	public List<Subsegment> getSubsegments();
 
 }

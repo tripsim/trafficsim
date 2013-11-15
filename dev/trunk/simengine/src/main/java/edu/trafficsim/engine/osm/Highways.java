@@ -1,6 +1,7 @@
 package edu.trafficsim.engine.osm;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,9 +36,13 @@ public class Highways {
 	OsmNode getOsmNode(long id) {
 		return osmNodes.get(id);
 	}
-	
+
 	List<OsmWay> getOsmWays() {
 		return osmWays;
+	}
+
+	Collection<OsmNode> getOsmNodes() {
+		return osmNodes.values();
 	}
 
 	static class OsmNode {
@@ -50,11 +55,11 @@ public class Highways {
 		void addWay(OsmWay osmWay) {
 			osmWays.add(osmWay);
 		}
-		
+
 		boolean isShared() {
 			return osmWays.size() > 1;
 		}
-		
+
 		Coordinate asCoord() {
 			return new Coordinate(lat, lon);
 		}

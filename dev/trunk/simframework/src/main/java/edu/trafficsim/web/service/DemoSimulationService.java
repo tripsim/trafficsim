@@ -3,6 +3,7 @@ package edu.trafficsim.web.service;
 import java.util.List;
 import java.util.Map;
 
+import org.opengis.referencing.operation.TransformException;
 import org.springframework.stereotype.Service;
 
 import edu.trafficsim.engine.StatisticsCollector;
@@ -15,7 +16,7 @@ import edu.trafficsim.model.core.ModelInputException;
 @Service
 public class DemoSimulationService {
 
-	public String runSimulation() {
+	public String runSimulation() throws TransformException {
 		try {
 			StatisticsCollector statisticsCollector = SimulationTest
 					.getInstance().run();

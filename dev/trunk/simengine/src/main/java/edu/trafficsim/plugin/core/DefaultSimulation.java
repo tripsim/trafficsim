@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.opengis.referencing.operation.TransformException;
+
 import edu.trafficsim.engine.StatisticsCollector;
 import edu.trafficsim.engine.StatisticsCollector.VehicleState;
 import edu.trafficsim.engine.VehicleFactory;
@@ -40,7 +42,7 @@ public class DefaultSimulation extends AbstractSimulation {
 	}
 
 	@Override
-	public void run() {
+	public void run() throws TransformException {
 		Simulator simulator = simulationScenario.getSimulator();
 		System.out.println("******** Simulation Demo ********");
 		System.out.println("---- Parameters ----");

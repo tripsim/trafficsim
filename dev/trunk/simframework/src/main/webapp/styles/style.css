@@ -58,6 +58,7 @@ html,body,#map {
 	cursor: pointer;
 }
 
+/* Configuration Window */
 #user-configuration {
 	position: absolute;
 	padding: 4px 4px 4px 10px;
@@ -70,11 +71,15 @@ html,body,#map {
 	background-color: #0d58a6;
 	color: #ffffff;
 	display: none;
+	overflow: scroll;
 }
 
-/* Configuration Window */
 #user-configuration h2 {
 	color: #ff5600;
+}
+
+#user-configuration div {
+	margin: 16px 0;
 }
 
 #user-configuration p {
@@ -98,6 +103,26 @@ html,body,#map {
 	height: 200px;
 	overflow: scroll;
 	height: 200px;
+}
+
+/* User Online JSON Editor */
+#user-editor {
+	position: absolute;
+	top: 64px;
+	left: 200px;
+	padding: 10px;
+	width: 800px;
+	height: 800px;
+	background-color: #ffffff;
+	color: #ffffff;
+	opacity: 0.9;
+	z-index: 20000;
+	display: none;
+	overflow: scroll;
+}
+
+.jsoneditor .menu {
+	background-color: #0d58a6
 }
 
 /* Feedback Info */

@@ -1,6 +1,9 @@
 package edu.trafficsim.model.core;
 
-import com.vividsolutions.jts.geom.Coordinate;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.referencing.operation.TransformException;
+
+import com.vividsolutions.jts.geom.LineString;
 
 import edu.trafficsim.model.BaseEntity;
 import edu.trafficsim.model.Segment;
@@ -13,29 +16,26 @@ public abstract class AbstractSubsegment<T> extends BaseEntity<T> implements
 
 	// the distance in the link where the lane starts and ends
 	// 0.0 as the start , and 1.0 as the end of segment
-	protected double start = 0;
-	protected double end = 1;
+	protected double start;
+	protected double end;
 
 	// in meter
 	protected double width;
-
+	protected double length;
 	// shift from the center line of link
 	protected double shift;
 
-	protected Segment segment;
+	protected LineString linearGeom;
+	protected final Segment segment;
 
 	public AbstractSubsegment(long id, String name, Segment segment,
-			double width, double shift) {
+			double start, double end, double width, double shift)
+			throws ModelInputException, TransformException {
+
 		super(id, name);
 		this.segment = segment;
 		this.width = width;
 		this.shift = shift;
-	}
-
-	public AbstractSubsegment(long id, String name, Segment segment,
-			double start, double end, double width, double shift)
-			throws ModelInputException {
-		this(id, name, segment, start, shift);
 
 		if (start < 0 || start > 1 || end < 0 || end > 1)
 			throw new ModelInputException(
@@ -51,20 +51,22 @@ public abstract class AbstractSubsegment<T> extends BaseEntity<T> implements
 		return segment;
 	}
 
-	public Coordinate getStartCoord() {
-		return segment.getCoordinate(start, shift);
-	}
-
-	public Coordinate getEndCoord() {
-		return segment.getCoordinate(end, shift);
+	@Override
+	public CoordinateReferenceSystem getCrs() {
+		return segment == null ? null : segment.getCrs();
 	}
 
 	@Override
-	public double getStart() {
+	public LineString getLinearGeom() {
+		return linearGeom;
+	}
+
+	@Override
+	public final double getStart() {
 		return start;
 	}
 
-	public void setStart(double start) throws ModelInputException {
+	public final void setStart(double start) throws ModelInputException {
 		if (start < 0 || start > 1)
 			throw new ModelInputException(
 					"Segment element start should be within 0 ~ 1");
@@ -72,11 +74,11 @@ public abstract class AbstractSubsegment<T> extends BaseEntity<T> implements
 	}
 
 	@Override
-	public double getEnd() {
+	public final double getEnd() {
 		return end;
 	}
 
-	public void setEnd(double end) throws ModelInputException {
+	public final void setEnd(double end) throws ModelInputException {
 		if (end < 0 || end > 1)
 			throw new ModelInputException(
 					"Segment element end should be within 0 ~ 1");
@@ -84,18 +86,25 @@ public abstract class AbstractSubsegment<T> extends BaseEntity<T> implements
 	}
 
 	@Override
-	public double getShift() {
+	public final double getShift() {
 		return shift;
 	}
 
 	@Override
-	public double getWidth() {
+	public final double getWidth() {
 		return width;
 	}
 
 	@Override
-	public double getLength() {
-		return (end - start) * segment.getLength();
+	public final double getLength() {
+		return length;
 	}
 
+	@Override
+	public void onGeomUpdated() throws TransformException {
+		linearGeom = Coordinates.getOffSetLineString(getCrs(),
+				segment.getLinearGeom(), shift);
+		Coordinates.trimLinearGeom(this);
+		length = Coordinates.orthodromicDistance(getCrs(), linearGeom);
+	}
 }

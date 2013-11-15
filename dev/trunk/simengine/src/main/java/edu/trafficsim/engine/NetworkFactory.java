@@ -1,10 +1,10 @@
 package edu.trafficsim.engine;
 
-import java.util.List;
+import org.opengis.referencing.operation.TransformException;
 
 import com.vividsolutions.jts.geom.Coordinate;
 
-import edu.trafficsim.model.Connector;
+import edu.trafficsim.model.ConnectionLane;
 import edu.trafficsim.model.Lane;
 import edu.trafficsim.model.Link;
 import edu.trafficsim.model.Network;
@@ -20,25 +20,21 @@ public interface NetworkFactory {
 	public Node createNode(String name, Coordinate coord);
 
 	public Link createLink(String name, Node startNode, Node endNode,
-			Coordinate[] coords) throws ModelInputException;
+			Coordinate[] coords) throws ModelInputException, TransformException;
 
 	public Link createReverseLink(String name, Link link)
-			throws ModelInputException;
+			throws ModelInputException, TransformException;
 
 	public Lane createLane(Segment segment, double start, double end,
-			double width, double shift, int laneId) throws ModelInputException;
+			double width, double shift, int laneId) throws ModelInputException,
+			TransformException;
 
-	public List<Lane> createLanes(Link link, int num)
-			throws ModelInputException;
-
-	public Connector createConnector(Lane laneFrom, Lane laneTo)
-			throws ModelInputException;
+	public Lane[] createLanes(Link link, int num) throws ModelInputException,
+			TransformException;
 
 	public RoadInfo createRoadInfo(String roadName, long osmId, String highway);
 
-	// public void connect(Lane laneFrom, Lane laneTo)
-	// throws ModelInputException;
-	//
-	// public void disconnect(Lane laneFrom, Lane laneTo)
-	// throws ModelInputException;
+	public ConnectionLane connect(Lane laneFrom, Lane laneTo)
+			throws ModelInputException, TransformException;
+
 }

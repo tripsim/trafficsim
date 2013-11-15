@@ -1,20 +1,16 @@
 package edu.trafficsim.model;
 
-import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.LineString;
 
 /**
  * @author Xuan
  * 
  */
-public interface Subsegment extends DataContainer {
+public interface Subsegment extends GeoReferenced {
 
 	public Long getId();
 
 	public String getName();
-
-	public Coordinate getStartCoord();
-
-	public Coordinate getEndCoord();
 
 	public double getStart();
 
@@ -26,5 +22,8 @@ public interface Subsegment extends DataContainer {
 
 	public double getLength();
 
+	public LineString getLinearGeom();
+
 	public Segment getSegment();
+
 }

@@ -1,5 +1,7 @@
 package edu.trafficsim.engine;
 
+import org.opengis.referencing.operation.TransformException;
+
 import edu.trafficsim.model.CarFollowingType;
 import edu.trafficsim.model.DriverType;
 import edu.trafficsim.model.Lane;
@@ -12,7 +14,8 @@ import edu.trafficsim.model.VehicleType;
 
 public interface VehicleFactory {
 
-	public Vehicle createVehicle(VehicleSpecs vehicleSpecs, Simulator simulator);
+	public Vehicle createVehicle(VehicleSpecs vehicleSpecs, Simulator simulator)
+			throws TransformException;
 
 	public VehicleBehavior createBehavior(String name, MovingType movingType,
 			CarFollowingType carFollowingType, LaneChangingType laneChangingType);

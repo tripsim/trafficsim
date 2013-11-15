@@ -2,6 +2,8 @@ package edu.trafficsim.engine.factory;
 
 import java.util.NoSuchElementException;
 
+import org.opengis.referencing.operation.TransformException;
+
 import edu.trafficsim.engine.VehicleFactory;
 import edu.trafficsim.model.CarFollowingType;
 import edu.trafficsim.model.LaneChangingType;
@@ -32,7 +34,8 @@ public class DefaultVehicleFactory extends AbstractFactory implements
 	private static long vid = 0;
 
 	@Override
-	public Vehicle createVehicle(VehicleSpecs vehicleSpecs, Simulator simulator) {
+	public Vehicle createVehicle(VehicleSpecs vehicleSpecs, Simulator simulator)
+			throws TransformException {
 		count++;
 
 		double startTime = simulator.getForwardedTime();
@@ -58,7 +61,7 @@ public class DefaultVehicleFactory extends AbstractFactory implements
 		String name = "vehicle" + count;
 		vehicle.setName(name);
 		vehicle.currentLane(vehicleSpecs.lane);
-		
+
 		vehicle.refresh();
 		return vehicle;
 	}

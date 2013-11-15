@@ -1,10 +1,12 @@
 package edu.trafficsim.plugin.core;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
 import org.apache.commons.math3.distribution.PoissonDistribution;
+import org.opengis.referencing.operation.TransformException;
 
 import edu.trafficsim.engine.VehicleFactory;
 import edu.trafficsim.engine.VehicleFactory.VehicleSpecs;
@@ -30,7 +32,8 @@ public class DefaultVehicleGenerator extends AbstractVehicleGenerator {
 	// Based on arrival rate
 	// The other should be based on headway
 	@Override
-	public final List<Vehicle> getVehicles(Od od, Simulator simulator) {
+	public final List<Vehicle> getVehicles(Od od, Simulator simulator)
+			throws TransformException {
 		double time = simulator.getForwardedTime();
 		double stepSize = simulator.getStepSize();
 		Random rand = simulator.getRand();
@@ -62,7 +65,7 @@ public class DefaultVehicleGenerator extends AbstractVehicleGenerator {
 			List<Link> links = new ArrayList<Link>(od.getOrigin()
 					.getDownstreams());
 			Link link = links.get(rand.nextInt(links.size()));
-			List<Lane> lanes = new ArrayList<Lane>(link.getLanes());
+			List<Lane> lanes = Arrays.asList(link.getLanes());
 			Lane lane = lanes.get(rand.nextInt(lanes.size()));
 
 			VehicleSpecs vehicleSpecs = new VehicleSpecs(vtypeToBuild,

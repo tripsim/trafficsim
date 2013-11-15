@@ -3,6 +3,7 @@ package edu.trafficsim.web.service;
 import java.io.IOException;
 import java.net.ProtocolException;
 
+import org.opengis.referencing.operation.TransformException;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonParseException;
@@ -21,7 +22,8 @@ public class ExtractOsmNetworkService {
 
 	public Network createNetwork(String bbox, String highway,
 			NetworkFactory factory) throws ModelInputException,
-			JsonParseException, ProtocolException, IOException {
+			JsonParseException, ProtocolException, IOException,
+			TransformException {
 		OsmNetworkExtractor extractor = OsmNetworkExtractor.getInstance();
 
 		String highwayQuery = OsmHighwayValue.valueOf(highway) == null ? OsmHighwayValue.All.queryValue
