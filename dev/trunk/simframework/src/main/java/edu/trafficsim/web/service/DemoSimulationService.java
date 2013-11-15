@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import edu.trafficsim.engine.StatisticsCollector;
 import edu.trafficsim.engine.StatisticsCollector.VehicleState;
 import edu.trafficsim.engine.demo.SimulationTest;
+import edu.trafficsim.model.Network;
 import edu.trafficsim.model.Vehicle;
 import edu.trafficsim.model.core.Colors;
 import edu.trafficsim.model.core.ModelInputException;
@@ -69,6 +70,10 @@ public class DemoSimulationService {
 			e.printStackTrace();
 		}
 		return "{}";
+	}
+
+	public Network getNetwork() throws TransformException {
+		return SimulationTest.getInstance().getNetwork();
 	}
 
 }

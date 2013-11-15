@@ -17,12 +17,14 @@ jQuery(document).ajaxError(function() {
 jQuery(document).ready(function() {
 
 	var that = simulation;
-	
+
 	that.initMap();
 
 	jQuery.getJSON('getnetwork', function(data) {
 		if (data['links'] != null)
 			that.reDrawNetwork(data['links']);
+		if (data['lanes'] != null)
+			that.reDrawLanes(data['lanes']);
 		var center = new OpenLayers.LonLat(data.center[0], data.center[1]);
 		map.setCenter(center, map.numZoomLevels);
 	});
@@ -55,5 +57,21 @@ jQuery(document).ready(function() {
 
 		// get json
 		var json = editor.get();
+	});
+
+	// TEST HACK TODO
+	jQuery('#test').click(function() {
+		jQuery.get('getdemonetwork', function(data) {
+			data = eval('(' + data + ')');
+			if (data['links'] != null)
+				that.reDrawNetwork(data['links']);
+			if (data['lanes'] != null)
+				that.reDrawLanes(data['lanes']);
+			var center = new OpenLayers.LonLat(data.center[0], data.center[1]);
+			map.setCenter(center, map.numZoomLevels);
+		});
+	});
+	jQuery('#test-anim').click(function() {
+		simulation.load();
 	});
 });

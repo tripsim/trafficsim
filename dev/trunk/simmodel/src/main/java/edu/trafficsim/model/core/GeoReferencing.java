@@ -128,17 +128,18 @@ public class GeoReferencing {
 			return null;
 
 		List<Coordinate> coords = new ArrayList<Coordinate>(n);
-
 		Coordinate p0 = new Coordinate();
 		Coordinate p1 = new Coordinate();
+		
+		// offset the first point in the linear geom
 		pts.getCoordinate(0, p0);
 		pts.getCoordinate(1, p1);
 		setGeodeticCalculator(p0, p1);
 		double azimuth0 = gc.getAzimuth();
 		double azimuth = rotate(azimuth0, 90, offsetDistance > 0);
-
 		coords.add(getOffsetCoordinate(p0, azimuth, Math.abs(offsetDistance)));
 
+		// offset the points from 2 to n-1 in the linear geom
 		double azimuth1 = azimuth0;
 		for (int i = 2; i < n; i++) {
 			p0.x = p1.x;
@@ -153,6 +154,11 @@ public class GeoReferencing {
 			coords.add(getOffsetCoordinate(p0, azimuth,
 					Math.abs(offsetDistance)));
 		}
+		
+		// offset the last point in the linear geom
+		setGeodeticCalculator(p0, p1);
+		azimuth = rotate(gc.getAzimuth(), 90, offsetDistance > 0);
+		coords.add(getOffsetCoordinate(p1, azimuth, Math.abs(offsetDistance)));
 
 		return coords.toArray(new Coordinate[0]);
 	}

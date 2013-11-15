@@ -36,5 +36,6 @@ public class CoordinateTransformer {
 			transform(link, filter);
 		for (Node node : network.getNodes())
 			transform(node, filter);
+		network.discover();
 	}
 }
