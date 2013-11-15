@@ -68,10 +68,10 @@ public class DefaultSimulation extends AbstractSimulation {
 				moving.update(v, simulationScenario);
 				System.out.println("Time: " + time + "s: " + v.getName() + " "
 						+ v.position());
-				// if (!v.active())
-				// iterator.remove();
-				// else
-				statisticsCollector.visit(v);
+				if (v.active()) {
+					// iterator.remove();
+					statisticsCollector.visit(v);
+				}
 			}
 			for (Od od : simulationScenario.getOdMatrix().getOds()) {
 				List<Vehicle> newVehicles = vehicleGenerator.getVehicles(od,

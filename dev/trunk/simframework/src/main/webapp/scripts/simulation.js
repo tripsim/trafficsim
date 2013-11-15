@@ -200,6 +200,46 @@ simulation.initMap = function() {
 		}
 	});
 
+	// lanes
+	var lanesTemplate = {
+		strokeWidth : 4,
+		strokeColor : '${strokeColor}',
+		strokeOpacity : 0.5,
+		fillColor : 'black',
+		fillOpacity : 0.5
+	};
+	var lanesContext = {
+		strokeColor : function(feature) {
+			return 'black';
+		}
+	};
+	var lanesLayer = new OpenLayers.Layer.Vector('Lanes', {
+		projection : that.proj900913,
+		styleMap : new OpenLayers.StyleMap({
+			'default' : new OpenLayers.Style(lanesTemplate, {
+				context : lanesContext
+			})
+		}),
+		rendererOptions : {
+			zIndexing : true
+		},
+		visibility : false
+	});
+	// draw network TODO make it a function
+	this.reDrawLanes = function(lanes) {
+		lanesLayer.removeAllFeatures();
+		var features = [];
+		for ( var i in lanes) {
+			var geom = OpenLayers.Geometry.fromWKT(lanes[i]);
+			var feature = new OpenLayers.Feature.Vector(geom, {
+				laneId : i
+			});
+			features.push(feature);
+		}
+		lanesLayer.addFeatures(features);
+	};
+	map.addLayer(lanesLayer);
+
 	// new OpenLayers.Control.DrawFeature(pointLayer, OpenLayers.Handler.Point)
 	// new OpenLayers.Control.DrawFeature(lineLayer, OpenLayers.Handler.Path)
 	var drawControl = new OpenLayers.Control.DrawFeature(networkLayer,
@@ -298,6 +338,8 @@ simulation.load = function() {
 			}
 			frame.push(e);
 		}
+
+		simulation.animate();
 	});
 };
 

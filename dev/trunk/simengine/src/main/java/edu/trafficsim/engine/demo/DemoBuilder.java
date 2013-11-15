@@ -24,6 +24,7 @@ import edu.trafficsim.model.Network;
 import edu.trafficsim.model.Node;
 import edu.trafficsim.model.Od;
 import edu.trafficsim.model.OdMatrix;
+import edu.trafficsim.model.RoadInfo;
 import edu.trafficsim.model.Router;
 import edu.trafficsim.model.SimulationScenario;
 import edu.trafficsim.model.Simulator;
@@ -126,6 +127,12 @@ public class DemoBuilder {
 				.createLink("Johson1", node1, node2, coords1);
 		Link link2 = networkFactory
 				.createLink("Johson2", node2, node3, coords2);
+		
+		// RoadInfo
+		RoadInfo info1 = networkFactory.createRoadInfo("Test name", 12345, "Test highway");
+		RoadInfo info2 = networkFactory.createRoadInfo("Test name", 54321, "Test highway");
+		link1.setRoadInfo(info1);
+		link2.setRoadInfo(info2);
 
 		// Network
 		network = networkFactory.createEmptyNetwork("test");

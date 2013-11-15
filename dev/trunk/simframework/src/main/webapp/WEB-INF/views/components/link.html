@@ -8,10 +8,11 @@
 	<span th:text="'Highway: '+ ${link.roadInfo.highway}"></span><br/>
 	<span th:text="'Road Name:  '+ ${link.roadInfo.roadName}"></span><br/>
 	<p th:each="lane : ${link.lanes}">
-		<span th:text="'Lane : ' + ${lane.id}"></span>
+		<span th:text="'Lane : ' + ${lane.id}"></span><br/>
 		<span th:text="' width : ' + ${lane.width}"></span>
 		<span th:text="' start : ' + ${lane.start}"></span>
 		<span th:text="' end : ' + ${lane.end}"></span>
 		<span th:text="' shift : ' + ${lane.shift}"></span>
+		<span th:text="' length : ' + ${lane.length}"></span>
 	</p>
 </div>

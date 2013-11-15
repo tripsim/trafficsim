@@ -107,7 +107,7 @@ public abstract class MovingObject<T> extends BaseEntity<T> implements Movable,
 	@Override
 	public final void refresh() throws TransformException {
 		Coordinate newCoord = computeCoord();
-		this.angle = Angle.angle(coord, newCoord);
+		this.angle = Angle.toDegrees(Angle.angle(coord, newCoord));
 		this.coord = newCoord;
 		onRefresh();
 	}

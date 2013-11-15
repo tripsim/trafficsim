@@ -39,12 +39,28 @@ public class DefaultController {
 		return "index";
 	}
 
+	// TODO remove it
 	@RequestMapping(value = "/loaddemo", method = RequestMethod.GET)
 	public @ResponseBody
 	String demoSimulation() {
 		String str = "";
 		try {
 			str = demoSimulationService.runSimulation();
+		} catch (TransformException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return str;
+	}
+
+	// TODO remove it
+	@RequestMapping(value = "/getdemonetwork", method = RequestMethod.GET)
+	public @ResponseBody
+	String demoNetwork() {
+		String str = "";
+		try {
+			project.setNetwork(demoSimulationService.getNetwork());
+			str = jsonOutputService.getNetwork(project.getNetwork());
 		} catch (TransformException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
