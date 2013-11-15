@@ -1,0 +1,94 @@
+1. Java 7 SDK 
+-- Install latest Java 7 SE SDK form Oracle (Java 7 update 9)
+-- (be aware of your operating system 32 or 64)
+2. Apache Maven
+-- Get the latest Apache Maven 3 (3.0.4)
+-- Upzip it and place in C:\ (or anywhere you like)
+-- Edit settings.xml in conf/
+-- find "<localRepository>", and add our own local repository
+-- "<localRepository>C:/mvn_repo</localRepository>" (optional)
+3. Apache Tomcat
+-- Get the latest Apache Tomcat 7 (7.0.32)
+-- Upzip it and place in C:\ (or anywhere you like)
+4. Eclipse
+-- Get Eclipse EE (Juno)
+-- Edit eclipse.ini
+-- Insert
+-- "-vm
+-- C:/Program Files/Java/jdk1.7.0_09/bin/javaw.exe"
+-- after "openFile"
+5. Subclipse and m2e
+-- Open Eclipse
+-- Goto Help -> Install New Software...
+-- Click Add... to add a repository with
+-- Name: subclipse
+-- Location: http://subclipse.tigris.org/update_1.8.x
+-- Choose the above site, and install everything within
+-- Choose All site, and find and install m2e - Maven Integration for Eclipse
+6. Config m2e
+-- Open Eclipse
+-- Goto Window -> Preference
+-- Goto Maven -> User Settings
+-- Set the settings file to the file in Step 2
+7. Config subclipse
+-- Open Eclipse
+-- Goto Window -> Preference
+-- Goto Team -> Ignored Resources
+-- Add three more patterns (.setting*, .project, .classpath)
+-- (will not be necessary after we configure the svn file)
+-- Click Apply
+8. Config Tomcat
+-- Open Eclipse
+-- Goto Window -> Preference
+-- Goto Server -> Runtime Environment
+-- Click Add...
+-- Choose Apache Tomcat v7.0
+-- Check create new local server
+-- Set the Tomcat installation directory in Step 3
+-- Set our own jdk for the JRE
+9. Install m2e-wtp
+10. Install thyemeleaf
+-- Goto Help -> Install New Software...
+-- Click Add... to add a repository with
+-- Name: subclipse
+-- Location: http://www.thymeleaf.org/eclipse-plugin-update-site/
+-- Choose the above site, and install everything within
+
+
+
+
+
+To be configured in the future
+9 PostgreSQL
+10 PostGIS
+
+11.Checkout Projects
+-- Open Eclipse
+-- Goto File -> Import -> SVN -> Checkout Projects from SVN
+-- URL https://subversion.cae.wisc.edu/svn/traffic_sim/dev/trunk/
+-- Select all the projects in the reposotories, and check out
+-- Select all the projecs, and right click, goto Configure -> Convert to maven projects
+-- Right click the projects, and click Maven -> Update project
+-- Right click the trafficsim project, and click Run as -> Maven Clean
+-- (The last two steps are optional to clean the settings)
+
+
+
+links
+Java
+http://www.oracle.com/technetwork/java/javase/downloads/jdk7u9-downloads-1859576.html
+http://download.oracle.com/otn-pub/java/jdk/7u9-b05/jdk-7u9-windows-x64.exe
+Maven
+http://maven.apache.org/download.html
+http://www.apache.org/dyn/closer.cgi/maven/maven-3/3.0.4/binaries/apache-maven-3.0.4-bin.tar.gz
+Tomcat
+http://tomcat.apache.org/download-70.cgi
+http://www.eng.lsu.edu/mirrors/apache/tomcat/tomcat-7/v7.0.33/bin/apache-tomcat-7.0.33-windows-x64.zip
+Eclipse
+http://www.eclipse.org/downloads/
+http://www.eclipse.org/downloads/download.php?file=/technology/epp/downloads/release/juno/SR1/eclipse-jee-juno-SR1-win32-x86_64.zip
+
+trac site
+https://trac.cae.wisc.edu/trac/traffic_sim
+svn site
+https://subversion.cae.wisc.edu/svn/traffic_sim
