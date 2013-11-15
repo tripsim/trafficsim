@@ -3,7 +3,10 @@ package edu.trafficsim.engine.demo;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.List;
+
+import org.opengis.referencing.FactoryException;
+import org.opengis.referencing.NoSuchAuthorityCodeException;
+import org.opengis.referencing.operation.TransformException;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.vividsolutions.jts.geom.Coordinate;
@@ -27,8 +30,8 @@ import edu.trafficsim.model.Simulator;
 import edu.trafficsim.model.VehicleType;
 import edu.trafficsim.model.VehicleType.VehicleClass;
 import edu.trafficsim.model.VehicleTypeComposition;
-import edu.trafficsim.model.core.Coordinates;
-import edu.trafficsim.model.core.Coordinates.TransformCoordinateFilter;
+import edu.trafficsim.model.core.GeoReferencing;
+import edu.trafficsim.model.core.GeoReferencing.TransformCoordinateFilter;
 import edu.trafficsim.model.core.ModelInputException;
 import edu.trafficsim.model.network.TurnPercentage;
 import edu.trafficsim.model.network.TurnPercentageRouter;
@@ -52,13 +55,14 @@ public class DemoBuilder {
 			VehicleClass.Truck);
 	static DriverType driverType = new DriverType(0, "TestDriver");
 
-	public DemoBuilder() throws ModelInputException {
+	public DemoBuilder() throws ModelInputException,
+			NoSuchAuthorityCodeException, FactoryException, TransformException {
 		manualBuild();
 	}
 
 	// test osm extraction
 	public Network extractOsmNetwork() throws ModelInputException,
-			JsonParseException, IOException {
+			JsonParseException, IOException, TransformException {
 		BufferedReader reader = new BufferedReader(new InputStreamReader(
 				getClass().getResourceAsStream("demo.json")));
 		OsmNetworkExtractor extractor = OsmNetworkExtractor.getInstance();
@@ -66,7 +70,8 @@ public class DemoBuilder {
 				DefaultNetworkFactory.getInstance());
 	}
 
-	private void manualBuild() throws ModelInputException {
+	private void manualBuild() throws ModelInputException,
+			NoSuchAuthorityCodeException, FactoryException, TransformException {
 
 		NetworkFactory networkFactory = DefaultNetworkFactory.getInstance();
 
@@ -121,13 +126,6 @@ public class DemoBuilder {
 				.createLink("Johson1", node1, node2, coords1);
 		Link link2 = networkFactory
 				.createLink("Johson2", node2, node3, coords2);
-		// Lanes
-		List<Lane> lanes1 = networkFactory.createLanes(link1, 3);
-		List<Lane> lanes2 = networkFactory.createLanes(link2, 3);
-		// Connectors
-		networkFactory.createConnector(lanes1.get(0), lanes2.get(0));
-		networkFactory.createConnector(lanes1.get(1), lanes2.get(1));
-		networkFactory.createConnector(lanes1.get(2), lanes2.get(2));
 
 		// Network
 		network = networkFactory.createEmptyNetwork("test");
@@ -136,9 +134,19 @@ public class DemoBuilder {
 		network.discover();
 
 		// Transform
-		TransformCoordinateFilter filter = Coordinates
-				.getDefaultTransformFilter();
+		TransformCoordinateFilter filter = GeoReferencing.getTransformFilter(
+				GeoReferencing.getCrs(GeoReferencing.CRS_CODE_4326),
+				GeoReferencing.getCrs(GeoReferencing.CRS_CODE_900913));
 		CoordinateTransformer.transform(network, filter);
+		
+
+		// Lanes
+		Lane[] lanes1 = networkFactory.createLanes(link1, 3);
+		Lane[] lanes2 = networkFactory.createLanes(link2, 3);
+		// Connectors
+		networkFactory.connect(lanes1[0], lanes2[0]);
+		networkFactory.connect(lanes1[1], lanes2[1]);
+		networkFactory.connect(lanes1[2], lanes2[2]);
 
 		// create Demand
 		VehicleType[] vehicleTypes = new VehicleType[] { vehicleTypeCar,

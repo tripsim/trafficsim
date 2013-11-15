@@ -1,48 +1,79 @@
 package edu.trafficsim.model.core;
 
-import com.vividsolutions.jts.geom.Coordinate;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.referencing.operation.TransformException;
+
+import com.vividsolutions.jts.geom.LineString;
 
 import edu.trafficsim.model.BaseEntity;
+import edu.trafficsim.model.Location;
 import edu.trafficsim.model.Segment;
+import edu.trafficsim.model.Subsegment;
 
 public abstract class AbstractSegment<T> extends BaseEntity<T> implements
 		Segment {
 
 	private static final long serialVersionUID = 1L;
 
-	// TODO use edge representation to fit in the map exactly, or other ways of
-	// polygon representation
-	// private LineString leftEdge;
-	// private LineString rightEdge;
+	private static final int DEFAULT_SUBSEGMENTS_SIZE = 3;
 
-	public AbstractSegment(long id, String name) {
+	private CoordinateReferenceSystem crs = null;
+	protected List<Subsegment> subsegments;
+	protected Location startLocation;
+	protected Location endLocation;
+
+	private LineString linearGeom;
+	private double length;
+
+	public AbstractSegment(long id, String name, LineString linearGeom)
+			throws TransformException {
 		super(id, name);
+		this.linearGeom = linearGeom;
+		this.subsegments = new ArrayList<Subsegment>(DEFAULT_SUBSEGMENTS_SIZE);
 	}
 
 	@Override
-	public final Coordinate getStartCoordinate() {
-		return getLinearGeom().getCoordinate();
+	public CoordinateReferenceSystem getCrs() {
+		return crs;
 	}
 
 	@Override
-	public final Coordinate getEndCoordinate() {
-		return getLinearGeom().getCoordinateN(
-				getLinearGeom().getNumPoints() - 1);
+	public final List<Subsegment> getSubsegments() {
+		return subsegments;
 	}
 
 	@Override
-	public final Coordinate getCoordinate(double x, double y) {
-		return Coordinates.transformFromLocal(getLinearGeom(), x, y);
+	public final LineString getLinearGeom() {
+		return linearGeom;
 	}
 
 	@Override
-	public double getAngle(double x) {
-		return Coordinates.angleDegrees(getLinearGeom(), x);
+	public final Location getStartLocation() {
+		return startLocation;
 	}
 
 	@Override
-	public double getLength() {
+	public final Location getEndLocation() {
+		return endLocation;
+	}
+
+	@Override
+	public final double getLength() {
+		return length;
+	}
+
+	@Override
+	public final double getGeomLength() {
 		return getLinearGeom().getLength();
 	}
 
+	@Override
+	public void onGeomUpdated() throws TransformException {
+		length = Coordinates.orthodromicDistance(getCrs(), getLinearGeom());
+		for (Subsegment subsegment : subsegments)
+			subsegment.onGeomUpdated();
+	}
 }

@@ -1,7 +1,17 @@
 <h2>Link Info</h2>
-<p th:each="link : ${links}">
+<div th:each="link : ${links}">
+	<span th:text="'Link Id: ' + ${link.id}"></span><br/>
 	<span th:text="'Link Name: ' + ${link.name}"></span><br/>
 	<span th:text="'Start Node: ' + ${link.startNode.name}"></span><br/>
 	<span th:text="'End Node: ' + ${link.endNode.name}"></span><br/>
+	<span th:text="'Length: ' + ${link.length}"></span><br/>
 	<span th:text="'Highway: '+ ${link.roadInfo.highway}"></span><br/>
-</p>
+	<span th:text="'Road Name:  '+ ${link.roadInfo.roadName}"></span><br/>
+	<p th:each="lane : ${link.lanes}">
+		<span th:text="'Lane : ' + ${lane.id}"></span>
+		<span th:text="' width : ' + ${lane.width}"></span>
+		<span th:text="' start : ' + ${lane.start}"></span>
+		<span th:text="' end : ' + ${lane.end}"></span>
+		<span th:text="' shift : ' + ${lane.shift}"></span>
+	</p>
+</div>

@@ -1,6 +1,8 @@
 package edu.trafficsim.plugin.core;
 
-import edu.trafficsim.model.Connector;
+import org.opengis.referencing.operation.TransformException;
+
+import edu.trafficsim.model.ConnectionLane;
 import edu.trafficsim.model.Link;
 import edu.trafficsim.model.SimulationScenario;
 import edu.trafficsim.model.Vehicle;
@@ -14,7 +16,7 @@ public class DefaultMoving extends AbstractPlugin implements IMoving {
 
 	@Override
 	public final void update(Vehicle vehicle,
-			SimulationScenario simulationScenario) {
+			SimulationScenario simulationScenario) throws TransformException {
 		if (!vehicle.active())
 			return;
 		updatePosition(vehicle, simulationScenario);
@@ -49,17 +51,19 @@ public class DefaultMoving extends AbstractPlugin implements IMoving {
 		System.out.println("------- Debug Convey --------");
 		if (vehicle.onConnector()) {
 			Link link = simulationScenario.getRouter().getSucceedingLink(
-					((Link) ((Connector) vehicle.getSegment()).getFromLane()
-							.getSegment()),
+					((Link) ((ConnectionLane) vehicle.getSegment())
+							.getFromLane().getSegment()),
 					vehicle.getVehicleType().getVehicleClass(),
 					simulationScenario.getSimulator().getForwardedTime(),
 					simulationScenario.getSimulator().getRand());
-			vehicle.currentLane(((Connector) vehicle.getSegment()).getToLane());
+			vehicle.currentLane(((ConnectionLane) vehicle.getSegment())
+					.getToLane());
 			vehicle.targetLink(link);
 		} else {
-			Connector connector = ((Link) vehicle.getSegment()).getEndNode()
-					.getConnector(vehicle.currentLane(), vehicle.targetLink());
-			if (connector == null) {
+			ConnectionLane connectionLane = ((Link) vehicle.getSegment())
+					.getEndNode().getConnector(vehicle.currentLane(),
+							vehicle.targetLink());
+			if (connectionLane == null) {
 				vehicle.deactivate();
 				return;
 			}

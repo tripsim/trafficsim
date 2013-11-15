@@ -33,7 +33,7 @@ public interface Network {
 	public void add(Node... nodes);
 
 	public void add(Link... links);
-	
+
 	public Coordinate center();
 
 	/**

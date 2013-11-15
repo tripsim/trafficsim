@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 
+import org.opengis.referencing.operation.TransformException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -41,7 +42,13 @@ public class DefaultController {
 	@RequestMapping(value = "/loaddemo", method = RequestMethod.GET)
 	public @ResponseBody
 	String demoSimulation() {
-		String str = demoSimulationService.runSimulation();
+		String str = "";
+		try {
+			str = demoSimulationService.runSimulation();
+		} catch (TransformException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return str;
 	}
 
@@ -78,6 +85,9 @@ public class DefaultController {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (TransformException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

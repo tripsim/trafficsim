@@ -16,6 +16,10 @@ jQuery(document).ajaxError(function() {
 
 jQuery(document).ready(function() {
 
+	var that = simulation;
+	
+	that.initMap();
+
 	jQuery.getJSON('getnetwork', function(data) {
 		if (data['links'] != null)
 			that.reDrawNetwork(data['links']);
@@ -27,5 +31,29 @@ jQuery(document).ready(function() {
 		jQuery.get('view/network', function(data) {
 			jQuery('#user-configuration').html(data).show();
 		});
+	});
+
+	jQuery('#user-interface-links').click(function() {
+		jQuery('#user-editor').show();
+		var container = document.getElementById("user-json-editor");
+		var editor = new jsoneditor.JSONEditor(container);
+
+		// set json
+		var json = {
+			"link1" : {
+				"StartNode" : "One",
+				"EndNode" : "Another",
+				"Lane" : {
+					"width" : 3,
+					"start" : 0,
+					"end" : 12,
+					"shift" : 6
+				}
+			}
+		};
+		editor.set(json);
+
+		// get json
+		var json = editor.get();
 	});
 });

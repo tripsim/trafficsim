@@ -1,5 +1,7 @@
 package edu.trafficsim.model.core;
 
+import org.opengis.referencing.operation.TransformException;
+
 import com.vividsolutions.jts.algorithm.Angle;
 import com.vividsolutions.jts.geom.Coordinate;
 
@@ -35,7 +37,8 @@ public abstract class MovingObject<T> extends BaseEntity<T> implements Movable,
 		this.acceleration = 0;
 
 		this.angle = 0;
-		this.coord = new Coordinate();;
+		this.coord = new Coordinate();
+		;
 
 		this.active = true;
 	}
@@ -95,19 +98,20 @@ public abstract class MovingObject<T> extends BaseEntity<T> implements Movable,
 		this.active = false;
 	}
 
-	protected final Coordinate computeCoord() {
-		return getSegment().getCoordinate(position,
-				lateralOffset + getSubsegment().getShift());
+	protected final Coordinate computeCoord() throws TransformException {
+		return position < 0 ? coord : Coordinates.getOffsetCoordinate(
+				getSegment().getCrs(), getSubsegment().getLinearGeom(),
+				position, lateralOffset);
 	}
-	
+
 	@Override
-	public final void refresh() {
+	public final void refresh() throws TransformException {
 		Coordinate newCoord = computeCoord();
 		this.angle = Angle.angle(coord, newCoord);
 		this.coord = newCoord;
 		onRefresh();
 	}
-	
+
 	abstract protected void onRefresh();
 
 }

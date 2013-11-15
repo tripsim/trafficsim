@@ -1,25 +1,22 @@
 package edu.trafficsim.model.core;
 
-import org.geotools.geometry.jts.JTS;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.geotools.geometry.jts.JTSFactoryFinder;
-import org.geotools.referencing.CRS;
-import org.opengis.geometry.MismatchedDimensionException;
 import org.opengis.referencing.FactoryException;
-import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.TransformException;
 
 import com.vividsolutions.jts.algorithm.Angle;
 import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.CoordinateFilter;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.LineSegment;
 import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.linearref.LengthLocationMap;
 import com.vividsolutions.jts.linearref.LinearLocation;
 
-import edu.trafficsim.model.Node;
+import edu.trafficsim.model.Subsegment;
 
 /**
  * @author Xuan
@@ -27,16 +24,96 @@ import edu.trafficsim.model.Node;
  */
 public class Coordinates {
 
-	private static GeometryFactory geometryFactory;
+	private static final GeometryFactory geometryFactory = JTSFactoryFinder
+			.getGeometryFactory();
+	private static final Map<CoordinateReferenceSystem, GeoReferencing> geoReferencings = new HashMap<CoordinateReferenceSystem, GeoReferencing>(
+			1);
 
-	static {
-		geometryFactory = JTSFactoryFinder.getGeometryFactory();
+	public static final synchronized GeoReferencing getGeoReferencing(
+			CoordinateReferenceSystem crs) {
+		// TODO hack, remove it from here, to network factory
+		if (crs == null)
+			try {
+				crs = GeoReferencing.getCrs(GeoReferencing.CRS_CODE_900913);
+			} catch (FactoryException e) {
+				e.printStackTrace();
+			}
+
+		GeoReferencing gr = geoReferencings.get(crs);
+		if (gr == null)
+			geoReferencings.put(crs, gr = new GeoReferencing(crs));
+		return gr;
 	}
 
-	private Coordinates() {
+	/********************************************************************************
+	 * Helper Method to Calculate Geodetic Parameters
+	 ********************************************************************************/
+
+	/**
+	 * @param crs
+	 * @param linearGeom
+	 * @return
+	 * @throws TransformException
+	 */
+	public static double orthodromicDistance(CoordinateReferenceSystem crs,
+			LineString linearGeom) throws TransformException {
+		return getGeoReferencing(crs).orthodromicDistance(linearGeom);
 	}
 
-	public static Coordinate transformFromLocal(LineString linearGeom,
+	/**
+	 * @param crs
+	 * @param linearGeom
+	 * @param position
+	 * @param shift
+	 * @return
+	 * @throws TransformException
+	 */
+	public static Coordinate getOffsetCoordinate(CoordinateReferenceSystem crs,
+			LineString linearGeom, double position, double offset)
+			throws TransformException {
+		return getGeoReferencing(crs).getOffsetCoordinate(linearGeom, position,
+				offset);
+	}
+
+	/**
+	 * @param crs
+	 * @param linearGeom
+	 * @param shift
+	 * @return
+	 * @throws TransformException
+	 */
+	public static LineString getOffSetLineString(CoordinateReferenceSystem crs,
+			LineString linearGeom, double shift) throws TransformException {
+		Coordinate[] coords = getGeoReferencing(crs).getOffsetLine(linearGeom,
+				shift);
+		return getLineString(coords);
+	}
+
+	/********************************************************************************
+	 * Unimplemented Helper Method
+	 ********************************************************************************/
+	// TODO may not be necessary
+	public static void trimLinearGeom(Subsegment subsegment) {
+		// cut the part of linearGeom within the node' radius
+		// based on start node and end node radius, trim the lineargeom
+		// only trim the lanes not the links
+		// ajust start and end but not the actual lineargeom
+	}
+
+	/********************************************************************************
+	 * Helper Method to Calculate Geometric Operations
+	 ********************************************************************************/
+
+	/**
+	 * This is WRONG: because this transformation doesn't consider the actual
+	 * distance, use geodetic calculations in @link GeoReferencing
+	 * 
+	 * @param linearGeom
+	 * @param position
+	 * @param lateralOffset
+	 * @return
+	 */
+	public static final Coordinate offset(LineString linearGeom,
 			double position, double lateralOffset) {
 		LinearLocation linearLocation = LengthLocationMap.getLocation(
 				linearGeom, position);
@@ -46,77 +123,34 @@ public class Coordinates {
 		return coord;
 	}
 
-	public static double angleRadians(LineString linearGeom, double position) {
+	public static final double angleRadians(LineString linearGeom,
+			double position) {
 		LinearLocation linearLocation = LengthLocationMap.getLocation(
 				linearGeom, position);
 		LineSegment lineSegment = linearLocation.getSegment(linearGeom);
 		return lineSegment.angle();
 	}
 
-	public static double angleDegrees(LineString linearGeom, double position) {
+	public static final double angleDegrees(LineString linearGeom,
+			double position) {
 		return Angle.toDegrees(angleRadians(linearGeom, position));
 	}
 
-	public static final String CRS_4326 = "EPSG:4326";
-
-	public static final String CRS_900913 = "EPSG:900913";
+	/**
+	 * @param coords
+	 * @return
+	 */
+	public static LineString getLineString(Coordinate[] coords) {
+		return geometryFactory.createLineString(coords);
+	}
 
 	/**
-	 * @return default filter to transform the coordinates from degrees
-	 *         (EPSG:4326) to meters (EPSG:900913)
+	 * @param from
+	 * @param to
+	 * @return
 	 */
-	public final static TransformCoordinateFilter getDefaultTransformFilter() {
-		return getTransformFilter(CRS_4326, CRS_900913);
-	}
-
-	public static final TransformCoordinateFilter getTransformFilter(
-			String source, String target) {
-		TransformCoordinateFilter filter = null;
-		try {
-			CoordinateReferenceSystem sourceCRS = CRS.decode(source);
-			CoordinateReferenceSystem targetCRS = CRS.decode(target);
-			filter = new TransformCoordinateFilter(sourceCRS, targetCRS);
-		} catch (MismatchedDimensionException e) {
-			e.printStackTrace();
-		} catch (NoSuchAuthorityCodeException e) {
-			e.printStackTrace();
-		} catch (FactoryException e) {
-			e.printStackTrace();
-		}
-		return filter;
-	}
-
-	public static final class TransformCoordinateFilter implements
-			CoordinateFilter {
-
-		private MathTransform transform;
-
-		public TransformCoordinateFilter(CoordinateReferenceSystem sourceCRS,
-				CoordinateReferenceSystem targetCRS) throws FactoryException {
-			transform = CRS.findMathTransform(sourceCRS, targetCRS);
-		}
-
-		@Override
-		public void filter(Coordinate coord) {
-			try {
-				JTS.transform(coord, coord, transform);
-			} catch (TransformException e) {
-				e.printStackTrace();
-			}
-		}
-	}
-
-	public static final void transformCoordinate(Coordinate[] coords,
-			TransformCoordinateFilter filter) {
-		// TODO
-	}
-
-	public static void trimLinearGeom(Node startNode, Node endNode,
-			LineString linearGeom) {
-		// TODO cut the part of linearGeom within the node' radius
-	}
-	
-	public static LineString getLineString(Coordinate[] coords){
-		return geometryFactory.createLineString(coords);
+	public static LineString getLineString(LineString from, LineString to) {
+		return getLineString(new Coordinate[] { from.getCoordinateN(0),
+				to.getCoordinateN(to.getNumPoints() - 1) });
 	}
 }

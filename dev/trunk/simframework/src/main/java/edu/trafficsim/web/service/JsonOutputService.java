@@ -15,12 +15,15 @@ public class JsonOutputService {
 
 	public String getNetwork(Network network) {
 		if (network == null)
-			return "{\"center\":[" + defaultCenterX + "," + defaultCenterY + "]}";
+			return "{\"center\":[" + defaultCenterX + "," + defaultCenterY
+					+ "]}";
 
 		WKTWriter writer = new WKTWriter();
 		StringBuffer linkSb = new StringBuffer();
 		for (Link link : network.getLinks()) {
+			linkSb.append("\"");
 			linkSb.append(link.getId());
+			linkSb.append("\"");
 			linkSb.append(":");
 			linkSb.append("\"");
 			linkSb.append(writer.write(link.getLinearGeom()));

@@ -4,22 +4,22 @@ public class RoadInfo implements DataContainer {
 
 	private static final long serialVersionUID = 1L;
 
-	private String raodName;
+	private String roadName;
 	private long osmId;
 	private String highway;
 
 	public RoadInfo(String roadName, long osmId, String highway) {
-		this.raodName = roadName;
+		this.roadName = roadName;
 		this.osmId = osmId;
 		this.highway = highway;
 	}
 
-	public String getRaodName() {
-		return raodName;
+	public String getRoadName() {
+		return roadName;
 	}
 
-	public void setRaodName(String raodName) {
-		this.raodName = raodName;
+	public void setRoadName(String roadName) {
+		this.roadName = roadName;
 	}
 
 	public long getOsmId() {

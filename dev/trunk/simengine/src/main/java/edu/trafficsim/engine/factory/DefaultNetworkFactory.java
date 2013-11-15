@@ -1,8 +1,7 @@
 package edu.trafficsim.engine.factory;
 
-import java.util.List;
-
 import org.geotools.geometry.jts.JTSFactoryFinder;
+import org.opengis.referencing.operation.TransformException;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
@@ -10,6 +9,7 @@ import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.Point;
 
 import edu.trafficsim.engine.NetworkFactory;
+import edu.trafficsim.model.ConnectionLane;
 import edu.trafficsim.model.Lane;
 import edu.trafficsim.model.Link;
 import edu.trafficsim.model.LinkType;
@@ -19,7 +19,7 @@ import edu.trafficsim.model.NodeType;
 import edu.trafficsim.model.RoadInfo;
 import edu.trafficsim.model.Segment;
 import edu.trafficsim.model.core.ModelInputException;
-import edu.trafficsim.model.network.DefaultConnector;
+import edu.trafficsim.model.network.DefaultConnectionLane;
 import edu.trafficsim.model.network.DefaultLane;
 import edu.trafficsim.model.network.DefaultLink;
 import edu.trafficsim.model.network.DefaultNetwork;
@@ -80,13 +80,14 @@ public class DefaultNetworkFactory extends AbstractFactory implements
 
 	@Override
 	public DefaultLink createLink(String name, Node startNode, Node endNode,
-			Coordinate[] coords) throws ModelInputException {
+			Coordinate[] coords) throws ModelInputException, TransformException {
 		LineString lineString = createLineString(coords);
 		return createLink(name, startNode, endNode, lineString);
 	}
 
 	public DefaultLink createLink(String name, Node startNode, Node endNode,
-			LineString lineString) throws ModelInputException {
+			LineString lineString) throws ModelInputException,
+			TransformException {
 		DefaultLink link = new DefaultLink(nextId(), name, linkType, startNode,
 				endNode, lineString);
 		startNode.add(link);
@@ -96,7 +97,7 @@ public class DefaultNetworkFactory extends AbstractFactory implements
 
 	@Override
 	public DefaultLink createReverseLink(String name, Link link)
-			throws ModelInputException {
+			throws ModelInputException, TransformException {
 		DefaultLink newLink = createLink(name, link.getEndNode(),
 				link.getStartNode(), (LineString) link.getLinearGeom()
 						.reverse());
@@ -106,16 +107,18 @@ public class DefaultNetworkFactory extends AbstractFactory implements
 
 	@Override
 	public DefaultLane createLane(Segment segment, double start, double end,
-			double width, double shift, int laneId) throws ModelInputException {
+			double width, double shift, int laneId) throws ModelInputException,
+			TransformException {
 		return new DefaultLane(nextId(), segment, start, end, width, shift,
 				laneId);
 	}
 
 	@Override
-	public List<Lane> createLanes(Link link, int num)
-			throws ModelInputException {
+	public Lane[] createLanes(Link link, int num) throws ModelInputException,
+			TransformException {
 		for (int i = 0; i < num; i++) {
-			double shift = (num / 2.0 - i) * DEFAULT_WIDTH;
+			double shift = link.getReverseLink() == null ? (num / 2.0 - i)
+					* DEFAULT_WIDTH : i * DEFAULT_WIDTH;
 			DefaultLane lane = createLane(link, 0, 1, DEFAULT_WIDTH, shift, i);
 			link.add(lane);
 		}
@@ -123,20 +126,17 @@ public class DefaultNetworkFactory extends AbstractFactory implements
 	}
 
 	@Override
-	public DefaultConnector createConnector(Lane laneFrom, Lane laneTo)
-			throws ModelInputException {
-		DefaultConnector connector = new DefaultConnector(nextId(), laneFrom,
-				laneTo, DEFAULT_WIDTH);
-		Lane lane = createLane(connector, 0, 1, DEFAULT_WIDTH, 0, -1);
-		connector.setLane(lane);
-
-		Node node = ((Link) laneFrom.getSegment()).getEndNode();
-		node.add(connector);
-		return connector;
+	public RoadInfo createRoadInfo(String roadName, long osmId, String highway) {
+		return new RoadInfo(roadName, osmId, highway);
 	}
 
 	@Override
-	public RoadInfo createRoadInfo(String roadName, long osmId, String highway) {
-		return new RoadInfo(roadName, osmId, highway);
+	public ConnectionLane connect(Lane laneFrom, Lane laneTo)
+			throws ModelInputException, TransformException {
+		DefaultConnectionLane connectionLane = new DefaultConnectionLane(
+				nextId(), laneFrom, laneTo, DEFAULT_WIDTH);
+
+		connectionLane.getNode().add(connectionLane);
+		return connectionLane;
 	}
 }

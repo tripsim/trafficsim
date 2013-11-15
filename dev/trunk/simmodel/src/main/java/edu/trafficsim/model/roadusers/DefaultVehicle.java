@@ -1,6 +1,6 @@
 package edu.trafficsim.model.roadusers;
 
-import edu.trafficsim.model.Connector;
+import edu.trafficsim.model.ConnectionLane;
 import edu.trafficsim.model.DriverType;
 import edu.trafficsim.model.Lane;
 import edu.trafficsim.model.Link;
@@ -94,7 +94,7 @@ public class DefaultVehicle extends MovingObject<DefaultVehicle> implements
 
 	@Override
 	public final boolean onConnector() {
-		return currentLane.getSegment() instanceof Connector;
+		return currentLane.getSegment() instanceof ConnectionLane;
 	}
 
 	@Override

@@ -7,14 +7,18 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.opengis.referencing.operation.TransformException;
+
 import com.vividsolutions.jts.geom.Point;
 
-import edu.trafficsim.model.Connector;
+import edu.trafficsim.model.ConnectionLane;
 import edu.trafficsim.model.Lane;
 import edu.trafficsim.model.Link;
 import edu.trafficsim.model.Node;
 import edu.trafficsim.model.NodeType;
+import edu.trafficsim.model.Subsegment;
 import edu.trafficsim.model.core.AbstractLocation;
+import edu.trafficsim.model.core.Coordinates;
 import edu.trafficsim.model.core.ModelInputException;
 
 public class DefaultNode extends AbstractLocation<DefaultNode> implements Node {
@@ -34,7 +38,7 @@ public class DefaultNode extends AbstractLocation<DefaultNode> implements Node {
 	private final Set<Link> downstreams = new HashSet<Link>();
 	private final Set<Link> upstreams = new HashSet<Link>();
 
-	private final Map<Lane, Set<Connector>> connectors = new HashMap<Lane, Set<Connector>>();
+	private final Map<Lane, Set<ConnectionLane>> connectionLanes = new HashMap<Lane, Set<ConnectionLane>>();
 
 	public DefaultNode(long id, String name, NodeType nodeType, Point point,
 			double radius) {
@@ -84,29 +88,42 @@ public class DefaultNode extends AbstractLocation<DefaultNode> implements Node {
 	}
 
 	@Override
-	public Collection<Connector> getConnectors(Lane fromLane) {
-		return Collections.unmodifiableCollection(connectors.get(fromLane));
+	public Collection<ConnectionLane> getConnectors(Lane fromLane) {
+		return Collections.unmodifiableCollection(connectionLanes.get(fromLane));
 	}
 
 	@Override
-	public Connector getConnector(Lane fromLane, Link toLink) {
-		for (Connector connector : connectors.get(fromLane)) {
-			if (connector.getToLane().getSegment().equals(toLink))
-				return connector;
+	public ConnectionLane getConnector(Lane fromLane, Link toLink) {
+		for (ConnectionLane connectionLane : connectionLanes.get(fromLane)) {
+			if (connectionLane.getToLane().getSegment().equals(toLink))
+				return connectionLane;
 		}
 		return null;
 	}
 
 	@Override
-	public void add(Connector connector) {
-		Set<Connector> fromLaneConnectors = connectors.get(connector
+	public void add(ConnectionLane connectionLane) {
+		Set<ConnectionLane> fromLaneConnectors = connectionLanes.get(connectionLane
 				.getFromLane());
 		if (fromLaneConnectors == null) {
-			fromLaneConnectors = new HashSet<Connector>(
+			fromLaneConnectors = new HashSet<ConnectionLane>(
 					DEFAULT_INITIAL_CONNECTOR_SET_CAPACITY);
-			connectors.put(connector.getFromLane(), fromLaneConnectors);
+			connectionLanes.put(connectionLane.getFromLane(), fromLaneConnectors);
 		}
-		fromLaneConnectors.add(connector);
+		fromLaneConnectors.add(connectionLane);
+	}
+
+	@Override
+	public void onGeomUpdated() throws TransformException {
+		for (Link link : upstreams) {
+			for (Subsegment subsegment : link.getSubsegments())
+				Coordinates.trimLinearGeom(subsegment);
+		}
+		for (Link link : downstreams) {
+			for (Subsegment subsegment : link.getSubsegments())
+				Coordinates.trimLinearGeom(subsegment);
+		}
+		// TODO ....
 	}
 
 }

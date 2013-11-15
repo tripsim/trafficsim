@@ -1,82 +1,36 @@
 package edu.trafficsim.model.network;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.NavigableSet;
-import java.util.TreeSet;
+import org.opengis.referencing.operation.TransformException;
 
 import edu.trafficsim.model.Lane;
 import edu.trafficsim.model.Segment;
-import edu.trafficsim.model.Vehicle;
-import edu.trafficsim.model.core.AbstractSubsegment;
 import edu.trafficsim.model.core.ModelInputException;
 
-public class DefaultLane extends AbstractSubsegment<DefaultLane> implements
-		Lane {
+public class DefaultLane extends AbstractLane<DefaultLane> implements Lane {
 
 	private static final long serialVersionUID = 1L;
 
+	private static final double DEFAULT_START = 0.0;
+	private static final double DEFAULT_END = 1.0;
+
 	private final int laneId;
-	private final NavigableSet<Vehicle> vehicles = new TreeSet<Vehicle>();
 
 	public DefaultLane(long id, Segment segment, double width, double shift,
-			int laneId) {
-		super(id, null, segment, width, shift);
-		this.laneId = laneId;
+			int laneId) throws TransformException, ModelInputException {
+		this(id, segment, DEFAULT_START, DEFAULT_END, width, shift, laneId);
 	}
 
 	public DefaultLane(long id, Segment segment, double start, double end,
-			double width, double shift, int laneId) throws ModelInputException {
-		super(id, null, segment, start, end, width, shift);
+			double width, double shift, int laneId) throws ModelInputException,
+			TransformException {
+		super(id, segment, start, end, width, shift);
 		this.laneId = laneId;
+		onGeomUpdated();
 	}
 
 	@Override
 	public final String getName() {
 		return segment.getName() + " " + laneId;
-	}
-
-	@Override
-	public final Vehicle getHeadVehicle() {
-		return vehicles.last();
-	}
-
-	@Override
-	public final Vehicle getTailVehicle() {
-		return vehicles.first();
-	}
-
-	@Override
-	public final Vehicle getLeadingVehicle(Vehicle v) {
-		return vehicles.ceiling(v);
-	}
-
-	@Override
-	public final Vehicle getPrecedingVehicle(Vehicle v) {
-		return vehicles.floor(v);
-	}
-
-	@Override
-	public final void add(Vehicle vehicle) {
-		if (vehicle.currentLane() != null)
-			vehicle.currentLane().remove(vehicle);
-		vehicles.add(vehicle);
-	}
-
-	@Override
-	public final void remove(Vehicle vehicle) {
-		vehicles.remove(vehicle);
-	}
-
-	@Override
-	public final void update(Vehicle vehicle) {
-		vehicles.remove(vehicle);
-		vehicles.add(vehicle);
-	}
-
-	@Override
-	public final Collection<Vehicle> getVehicles() {
-		return Collections.unmodifiableCollection(vehicles);
 	}
 
 	@Override

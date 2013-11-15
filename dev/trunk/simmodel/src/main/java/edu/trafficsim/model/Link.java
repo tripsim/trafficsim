@@ -1,7 +1,5 @@
 package edu.trafficsim.model;
 
-import java.util.List;
-
 public interface Link extends Segment {
 
 	public LinkType getLinkType();
@@ -12,9 +10,16 @@ public interface Link extends Segment {
 
 	public Lane getLane(int index);
 
-	public List<Lane> getLanes();
+	public Lane[] getLanes();
 
 	public void add(Lane lane);
+
+	public ConnectionLane[] getConnectionLane(Link destLink);
+
+	public void add(ConnectionLane lane, Link destLink);
+
+	// TODO
+	// public void remove(ConnectionLane lane);
 
 	public Link getReverseLink();
 
