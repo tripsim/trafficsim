@@ -21,6 +21,7 @@ public class DefaultConnectionLane extends AbstractLane<DefaultConnectionLane>
 		super(id, fromLane.getSegment(), 1.0, 1.0, width, 0.0);
 		this.fromLane = fromLane;
 		this.toLane = toLane;
+		getNode().add(this);
 		onGeomUpdated();
 	}
 
@@ -32,6 +33,11 @@ public class DefaultConnectionLane extends AbstractLane<DefaultConnectionLane>
 	@Override
 	public int getLaneId() {
 		return -1;
+	}
+
+	@Override
+	public void setLaneId(int laneId) {
+		return;
 	}
 
 	@Override
@@ -55,4 +61,5 @@ public class DefaultConnectionLane extends AbstractLane<DefaultConnectionLane>
 	public Node getNode() {
 		return (Node) fromLane.getSegment().getEndLocation();
 	}
+
 }

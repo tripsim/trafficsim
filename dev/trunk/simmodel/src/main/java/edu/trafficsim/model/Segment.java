@@ -34,4 +34,6 @@ public interface Segment extends GeoReferenced {
 
 	public List<Subsegment> getSubsegments();
 
+	public int sizeOfSubsegments();
+
 }

@@ -17,7 +17,6 @@ import edu.trafficsim.model.Network;
 import edu.trafficsim.model.Node;
 import edu.trafficsim.model.NodeType;
 import edu.trafficsim.model.RoadInfo;
-import edu.trafficsim.model.Segment;
 import edu.trafficsim.model.core.ModelInputException;
 import edu.trafficsim.model.network.DefaultConnectionLane;
 import edu.trafficsim.model.network.DefaultLane;
@@ -106,21 +105,16 @@ public class DefaultNetworkFactory extends AbstractFactory implements
 	}
 
 	@Override
-	public DefaultLane createLane(Segment segment, double start, double end,
-			double width, double shift, int laneId) throws ModelInputException,
-			TransformException {
-		return new DefaultLane(nextId(), segment, start, end, width, shift,
-				laneId);
+	public DefaultLane createLane(Link link, double start, double end,
+			double width) throws ModelInputException, TransformException {
+		return new DefaultLane(nextId(), link, start, end, width);
 	}
 
 	@Override
 	public Lane[] createLanes(Link link, int num) throws ModelInputException,
 			TransformException {
 		for (int i = 0; i < num; i++) {
-			double shift = link.getReverseLink() == null ? (num / 2.0 - i)
-					* DEFAULT_WIDTH : i * DEFAULT_WIDTH;
-			DefaultLane lane = createLane(link, 0, 1, DEFAULT_WIDTH, shift, i);
-			link.add(lane);
+			createLane(link, 0, 1, DEFAULT_WIDTH);
 		}
 		return link.getLanes();
 	}
@@ -135,8 +129,6 @@ public class DefaultNetworkFactory extends AbstractFactory implements
 			throws ModelInputException, TransformException {
 		DefaultConnectionLane connectionLane = new DefaultConnectionLane(
 				nextId(), laneFrom, laneTo, DEFAULT_WIDTH);
-
-		connectionLane.getNode().add(connectionLane);
 		return connectionLane;
 	}
 }

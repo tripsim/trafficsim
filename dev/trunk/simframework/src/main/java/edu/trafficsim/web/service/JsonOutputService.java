@@ -14,15 +14,27 @@ public class JsonOutputService {
 	private double defaultCenterX = -9952964.247717002;
 	private double defaultCenterY = 5323065.604899759;
 
-	public String getNetwork(Network network) {
-		if (network == null)
-			return "{\"center\":[" + defaultCenterX + "," + defaultCenterY
-					+ "]}";
+	private static WKTWriter writer = new WKTWriter();
 
-		WKTWriter writer = new WKTWriter();
+	/**
+	 * @param network
+	 * @param linkId
+	 * @return {linkId : link WKT String}
+	 */
+	public String getLinkJson(Network network, long linkId) {
+		if (network == null)
+			return "{}";
+
+		return "{" + getLink(network.getLink(linkId)) + "}";
+	}
+
+	/**
+	 * @param link
+	 * @return linkId : link WKT String
+	 */
+	private String getLink(Link link) {
 		StringBuffer linkSb = new StringBuffer();
-		StringBuffer laneSb = new StringBuffer();
-		for (Link link : network.getLinks()) {
+		if (link != null) {
 			linkSb.append("\"");
 			linkSb.append(link.getId());
 			linkSb.append("\"");
@@ -30,34 +42,87 @@ public class JsonOutputService {
 			linkSb.append("\"");
 			linkSb.append(writer.write(link.getLinearGeom()));
 			linkSb.append("\"");
-			linkSb.append(",");
+		}
+		return linkSb.toString();
+	}
 
-			// quick hack
+	/**
+	 * @param network
+	 * @param linkId
+	 * @return {linkId : [lane WKT Strings]}
+	 */
+	public String getLanesJson(Network network, long linkId) {
+		if (network == null)
+			return "{}";
+		return "{" + getLanes(network.getLink(linkId)) + "}";
+	}
+
+	/**
+	 * @param network
+	 * @param linkId
+	 * @return linkId : [lane WKT Strings]
+	 */
+	private String getLanes(Link link) {
+		StringBuffer laneSb = new StringBuffer();
+		if (link != null) {
+			laneSb.append("\"");
+			laneSb.append(link.getId());
+			laneSb.append("\"");
+			laneSb.append(":");
+			laneSb.append("[");
 			for (Lane lane : link.getLanes()) {
-				laneSb.append("\"");
-				laneSb.append(lane.getId());
-				laneSb.append("\"");
-				laneSb.append(":");
 				laneSb.append("\"");
 				laneSb.append(writer.write(lane.getLinearGeom()));
 				laneSb.append("\"");
 				laneSb.append(",");
 			}
+			if (link.numOfLanes() > 0)
+				laneSb.deleteCharAt(laneSb.length() - 1);
+			laneSb.append("]");
 		}
-		if (linkSb.length() > 0)
-			linkSb.deleteCharAt(linkSb.length() - 1);
-		if (laneSb.length() > 0)
-			laneSb.deleteCharAt(laneSb.length() - 1);
+		return laneSb.toString();
 
-		StringBuffer centerSb = new StringBuffer();
-		centerSb.append("[");
-		centerSb.append(network.center().x);
-		centerSb.append(",");
-		centerSb.append(network.center().y);
-		centerSb.append("]");
+	}
 
-		return "{\"links\":{" + linkSb.toString() + "}, \"center\":"
-				+ centerSb.toString() + ", \"lanes\":{" + laneSb.toString()
-				+ "}}";
+	/**
+	 * @param network
+	 * @return "center" : [x , y]
+	 */
+	private String getCenter(Network network) {
+		return network == null ? "\"center\":[" + defaultCenterX + ","
+				+ defaultCenterY + "]" : "\"center\":[" + network.center().x
+				+ "," + network.center().y + "]";
+	}
+
+	/**
+	 * @param network
+	 * @return { "center" : [x , y] }
+	 */
+	public String getCenterJson(Network network) {
+		return "{" + getCenter(network) + "}";
+	}
+
+	/**
+	 * @param network
+	 * @return { "center" : [x, y] , "links" : { linkId : link WKT String } ,
+	 *         "lanes" : { linkId : [lane WKT Strings] }}
+	 */
+	public String getNetworkJson(Network network) {
+		StringBuffer linkSb = new StringBuffer();
+		StringBuffer laneSb = new StringBuffer();
+		if (network != null) {
+			for (Link link : network.getLinks()) {
+				linkSb.append(getLink(link));
+				linkSb.append(",");
+				laneSb.append(getLanes(link));
+				laneSb.append(",");
+			}
+			if (linkSb.length() > 0)
+				linkSb.deleteCharAt(linkSb.length() - 1);
+			if (laneSb.length() > 0)
+				laneSb.deleteCharAt(laneSb.length() - 1);
+		}
+		return "{" + getCenter(network) + ", \"links\": {" + linkSb.toString()
+				+ "}, \"lanes\":{" + laneSb.toString() + "}}";
 	}
 }

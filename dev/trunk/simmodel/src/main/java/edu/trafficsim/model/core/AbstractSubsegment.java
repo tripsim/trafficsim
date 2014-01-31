@@ -66,11 +66,16 @@ public abstract class AbstractSubsegment<T> extends BaseEntity<T> implements
 		return start;
 	}
 
-	public final void setStart(double start) throws ModelInputException {
+	@Override
+	public final void setStart(double start) throws ModelInputException,
+			TransformException {
+		if (this.start == start)
+			return;
 		if (start < 0 || start > 1)
 			throw new ModelInputException(
 					"Segment element start should be within 0 ~ 1");
 		this.start = start;
+		onGeomUpdated();
 	}
 
 	@Override
@@ -78,11 +83,16 @@ public abstract class AbstractSubsegment<T> extends BaseEntity<T> implements
 		return end;
 	}
 
-	public final void setEnd(double end) throws ModelInputException {
+	@Override
+	public final void setEnd(double end) throws ModelInputException,
+			TransformException {
+		if (this.end == end)
+			return;
 		if (end < 0 || end > 1)
 			throw new ModelInputException(
 					"Segment element end should be within 0 ~ 1");
 		this.end = end;
+		onGeomUpdated();
 	}
 
 	@Override
@@ -91,8 +101,22 @@ public abstract class AbstractSubsegment<T> extends BaseEntity<T> implements
 	}
 
 	@Override
+	public final void setShift(double shift) throws TransformException {
+		if (this.shift == shift)
+			return;
+		this.shift = shift;
+		onGeomUpdated();
+	}
+
+	@Override
 	public final double getWidth() {
 		return width;
+	}
+
+	@Override
+	public final void setWidth(double width) throws TransformException {
+		this.width = width;
+		onGeomUpdated();
 	}
 
 	@Override
@@ -102,6 +126,7 @@ public abstract class AbstractSubsegment<T> extends BaseEntity<T> implements
 
 	@Override
 	public void onGeomUpdated() throws TransformException {
+		// TODO update start, end....
 		linearGeom = Coordinates.getOffSetLineString(getCrs(),
 				segment.getLinearGeom(), shift);
 		Coordinates.trimLinearGeom(this);

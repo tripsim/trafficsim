@@ -10,6 +10,8 @@ public interface Lane extends Subsegment {
 
 	public int getLaneId();
 
+	public void setLaneId(int laneId);
+
 	/**
 	 * Implement our own efficient collection to hold the vehicles within a lane
 	 * or link.
