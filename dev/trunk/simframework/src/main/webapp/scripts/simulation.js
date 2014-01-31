@@ -3,7 +3,8 @@ var map = {};
 
 simulation.defaultRefreshInterval = 400;
 
-simulation.network = {}; // links : [], nodes: [], connectors: []
+simulation.network = {}; // {links : {linkId : feature}, lanes: {linkId:
+// [features]}}
 simulation.vehicles = {}; // key: vid value: vehicle
 simulation.frames = {}; // key: fid values: {vid: record}
 simulation.totalF = 0;
@@ -136,7 +137,7 @@ simulation.initMap = function() {
 	map.addLayer(vehicleLayer);
 
 	var networkTemplate = {
-		strokeWidth : 4,
+		strokeWidth : 6,
 		strokeColor : '${strokeColor}',
 		strokeOpacity : 0.5,
 		fillColor : 'black',
@@ -168,17 +169,17 @@ simulation.initMap = function() {
 			zIndexing : true
 		}
 	});
-	// draw network TODO make it a function
 	this.reDrawNetwork = function(links) {
-		this.network.links = links;
+		this.network.links = {};
 		networkLayer.removeAllFeatures();
 		var features = [];
 		for ( var i in links) {
-			var geom = OpenLayers.Geometry.fromWKT(this.network['links'][i]);
+			var geom = OpenLayers.Geometry.fromWKT(links[i]);
 			var feature = new OpenLayers.Feature.Vector(geom, {
 				linkId : i
 			});
 			features.push(feature);
+			this.network.links[i] = feature;
 		}
 		networkLayer.addFeatures(features);
 	};
@@ -193,10 +194,7 @@ simulation.initMap = function() {
 			});
 		},
 		"featureunselected" : function(e) {
-			jQuery.get('view/link/' + e.feature.attributes['linkId'], function(
-					data) {
-				jQuery('#user-configuration').hide();
-			});
+			jQuery('#user-configuration').hide();
 		}
 	});
 
@@ -225,18 +223,30 @@ simulation.initMap = function() {
 		},
 		visibility : false
 	});
-	// draw network TODO make it a function
-	this.reDrawLanes = function(lanes) {
+	this.reDrawAllLanes = function(lanes) {
+		this.network.lanes = {};
 		lanesLayer.removeAllFeatures();
+		this._drawLanes(lanes);
+	};
+	this._drawLanes = function(lanes) {
 		var features = [];
-		for ( var i in lanes) {
-			var geom = OpenLayers.Geometry.fromWKT(lanes[i]);
-			var feature = new OpenLayers.Feature.Vector(geom, {
-				laneId : i
-			});
-			features.push(feature);
+		for ( var linkId in lanes) {
+			for ( var j in lanes[linkId]) {
+				var geom = OpenLayers.Geometry.fromWKT(lanes[linkId][j]);
+				var feature = new OpenLayers.Feature.Vector(geom, {
+					linkId : linkId
+				});
+				features.push(feature);
+			}
 		}
 		lanesLayer.addFeatures(features);
+	};
+	this.reDrawLanes = function(lanes) {
+		for ( var linkId in lanes) {
+			var features = lanesLayer.getFeaturesByAttribute("linkId", linkId);
+			lanesLayer.removeFeatures(features);
+		}
+		lanesLayer._drawLanes(lanes);
 	};
 	map.addLayer(lanesLayer);
 

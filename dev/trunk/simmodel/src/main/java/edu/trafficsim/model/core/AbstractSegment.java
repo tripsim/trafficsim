@@ -1,6 +1,7 @@
 package edu.trafficsim.model.core;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -42,7 +43,12 @@ public abstract class AbstractSegment<T> extends BaseEntity<T> implements
 
 	@Override
 	public final List<Subsegment> getSubsegments() {
-		return subsegments;
+		return Collections.unmodifiableList(subsegments);
+	}
+
+	@Override
+	public final int sizeOfSubsegments() {
+		return subsegments.size();
 	}
 
 	@Override
@@ -58,6 +64,14 @@ public abstract class AbstractSegment<T> extends BaseEntity<T> implements
 	@Override
 	public final Location getEndLocation() {
 		return endLocation;
+	}
+
+	@Override
+	public double getWidth() {
+		double width = 0;
+		for (Subsegment subsegment : subsegments)
+			width += subsegment.getWidth();
+		return width;
 	}
 
 	@Override

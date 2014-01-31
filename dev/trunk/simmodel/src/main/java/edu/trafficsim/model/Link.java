@@ -1,5 +1,7 @@
 package edu.trafficsim.model;
 
+import org.opengis.referencing.operation.TransformException;
+
 public interface Link extends Segment {
 
 	public LinkType getLinkType();
@@ -12,7 +14,11 @@ public interface Link extends Segment {
 
 	public Lane[] getLanes();
 
-	public void add(Lane lane);
+	public int numOfLanes();
+
+	public void add(Lane lane) throws TransformException;
+
+	public void remove(int laneId) throws TransformException;
 
 	public ConnectionLane[] getConnectionLane(Link destLink);
 

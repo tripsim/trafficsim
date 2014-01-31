@@ -1,0 +1,63 @@
+<h2>Link Edit</h2>
+<div id="user-configuration-buttons">
+	<span id="user-configuration-button-close" class="button">finish</span>
+	<span id="user-configuration-button-close" class="button">cancel</span>
+</div>
+<div>
+	<table>
+		<tbody>
+			<tr>
+				<td>Link Id</td>
+				<td th:text="${link.id}"></td>
+			</tr>
+			<tr>
+				<td>Link Name</td>
+				<td th:text="${link.name}"></td>
+			</tr>
+			<tr>
+				<td>Start Node</td>
+				<td th:text="${link.startNode.name}"></td>
+			</tr>
+			<tr>
+				<td>End Node</td>
+				<td th:text="${link.endNode.name}"></td>
+			</tr>
+			<tr>
+				<td>Length</td>
+				<td th:text="${link.length}"></td>
+			</tr>
+			<tr>
+				<td>Highway</td>
+				<td th:text="${link.roadInfo.highway}"></td>
+			</tr>
+			<tr>
+				<td>Road Name</td>
+				<td th:text="${link.roadInfo.roadName}"></td>
+			</tr>
+		</tbody>
+	</table>
+	<table>
+		<tbody th:each="lane : ${link.lanes}">
+			<tr>
+				<td>Lane</td>
+				<td th:text="${lane.laneId}"></td>
+				<td colspan="6"><span th:id="${link.id} + '-' + ${lane.laneId}"
+					class="user-configuration-button-remove-lane button">remove</span></td>
+			</tr>
+			<tr>
+				<td>width</td>
+				<td th:text="${lane.width}"></td>
+				<td>start</td>
+				<td th:text="${lane.start}"></td>
+				<td>end</td>
+				<td th:text="${lane.end}"></td>
+				<td>shift</td>
+				<td th:text="${lane.shift}"></td>
+			</tr>
+		</tbody>
+		<tr>
+			<td colspan="8"><span th:id="${link.id}"
+				class="user-configuration-button-add-lane button">add lane</span></td>
+		</tr>
+	</table>
+</div>

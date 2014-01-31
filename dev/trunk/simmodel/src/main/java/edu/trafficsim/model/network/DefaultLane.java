@@ -2,29 +2,28 @@ package edu.trafficsim.model.network;
 
 import org.opengis.referencing.operation.TransformException;
 
-import edu.trafficsim.model.Lane;
-import edu.trafficsim.model.Segment;
+import edu.trafficsim.model.Link;
 import edu.trafficsim.model.core.ModelInputException;
 
-public class DefaultLane extends AbstractLane<DefaultLane> implements Lane {
+public class DefaultLane extends AbstractLane<DefaultLane> {
 
 	private static final long serialVersionUID = 1L;
 
 	private static final double DEFAULT_START = 0.0;
 	private static final double DEFAULT_END = 1.0;
 
-	private final int laneId;
+	private int laneId;
 
-	public DefaultLane(long id, Segment segment, double width, double shift,
-			int laneId) throws TransformException, ModelInputException {
-		this(id, segment, DEFAULT_START, DEFAULT_END, width, shift, laneId);
+	public DefaultLane(long id, Link link, double width)
+			throws TransformException, ModelInputException {
+		this(id, link, DEFAULT_START, DEFAULT_END, width);
 	}
 
-	public DefaultLane(long id, Segment segment, double start, double end,
-			double width, double shift, int laneId) throws ModelInputException,
-			TransformException {
-		super(id, segment, start, end, width, shift);
-		this.laneId = laneId;
+	public DefaultLane(long id, Link link, double start, double end,
+			double width) throws ModelInputException, TransformException {
+		super(id, link, start, end, width, 0);
+		this.laneId = -2;
+		link.add(this);
 		onGeomUpdated();
 	}
 
@@ -36,6 +35,11 @@ public class DefaultLane extends AbstractLane<DefaultLane> implements Lane {
 	@Override
 	public int getLaneId() {
 		return laneId;
+	}
+
+	@Override
+	public void setLaneId(int laneId) {
+		this.laneId = laneId;
 	}
 
 	@Override

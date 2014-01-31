@@ -1,18 +1,62 @@
 <h2>Link Info</h2>
+<div id="user-configuration-buttons">
+	<span id="user-configuration-button-edit-connector" class="button">connection</span>
+
+	<span id="user-configuration-button-close" class="button">close</span>
+</div>
 <div th:each="link : ${links}">
-	<span th:text="'Link Id: ' + ${link.id}"></span><br/>
-	<span th:text="'Link Name: ' + ${link.name}"></span><br/>
-	<span th:text="'Start Node: ' + ${link.startNode.name}"></span><br/>
-	<span th:text="'End Node: ' + ${link.endNode.name}"></span><br/>
-	<span th:text="'Length: ' + ${link.length}"></span><br/>
-	<span th:text="'Highway: '+ ${link.roadInfo.highway}"></span><br/>
-	<span th:text="'Road Name:  '+ ${link.roadInfo.roadName}"></span><br/>
-	<p th:each="lane : ${link.lanes}">
-		<span th:text="'Lane : ' + ${lane.id}"></span><br/>
-		<span th:text="' width : ' + ${lane.width}"></span>
-		<span th:text="' start : ' + ${lane.start}"></span>
-		<span th:text="' end : ' + ${lane.end}"></span>
-		<span th:text="' shift : ' + ${lane.shift}"></span>
-		<span th:text="' length : ' + ${lane.length}"></span>
-	</p>
+	<table>
+		<tbody>
+			<tr>
+				<td>Link Id</td>
+				<td th:text="${link.id}"></td>
+				<td><span th:id="${link.id}"
+					class="user-configuration-button-edit-link button">edit</span></td>
+			</tr>
+			<tr>
+				<td>Link Name</td>
+				<td colspan="2" th:text="${link.name}"></td>
+			</tr>
+			<tr>
+				<td>Start Node</td>
+				<td colspan="2" th:text="${link.startNode.name}"></td>
+			</tr>
+			<tr>
+				<td>End Node</td>
+				<td colspan="2" th:text="${link.endNode.name}"></td>
+			</tr>
+			<tr>
+				<td>Length</td>
+				<td colspan="2" th:text="${link.length}"></td>
+			</tr>
+			<tr>
+				<td>Highway</td>
+				<td colspan="2" th:text="${link.roadInfo.highway}"></td>
+			</tr>
+			<tr>
+				<td>Road Name</td>
+				<td colspan="2" th:text="${link.roadInfo.roadName}"></td>
+			</tr>
+		</tbody>
+	</table>
+	<table>
+		<tbody th:each="lane : ${link.lanes}">
+			<tr>
+				<td>Lane</td>
+				<td colspan="9" th:text="${lane.laneId}"></td>
+			</tr>
+			<tr>
+				<td>width</td>
+				<td th:text="${lane.width}"></td>
+				<td>start</td>
+				<td th:text="${lane.start}"></td>
+				<td>end</td>
+				<td th:text="${lane.end}"></td>
+				<td>shift</td>
+				<td th:text="${lane.shift}"></td>
+				<td>length</td>
+				<td th:text="${lane.length}"></td>
+			</tr>
+		</tbody>
+	</table>
 </div>

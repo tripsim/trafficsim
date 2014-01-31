@@ -60,19 +60,11 @@ public class DefaultController {
 		String str = "";
 		try {
 			project.setNetwork(demoSimulationService.getNetwork());
-			str = jsonOutputService.getNetwork(project.getNetwork());
+			str = jsonOutputService.getNetworkJson(project.getNetwork());
 		} catch (TransformException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return str;
-	}
-
-	@RequestMapping(value = "/getnetwork", method = RequestMethod.GET)
-	public @ResponseBody
-	String getNetwork() {
-		Network network = project.getNetwork();
-		String str = jsonOutputService.getNetwork(network);
 		return str;
 	}
 
@@ -86,7 +78,7 @@ public class DefaultController {
 			network = extractOsmNetworkService.createNetwork(bbox, highway,
 					project.getNetworkFactory());
 			project.setNetwork(network);
-			String str = jsonOutputService.getNetwork(network);
+			String str = jsonOutputService.getNetworkJson(network);
 			return str;
 		} catch (MalformedURLException e) {
 			// TODO Auto-generated catch block
