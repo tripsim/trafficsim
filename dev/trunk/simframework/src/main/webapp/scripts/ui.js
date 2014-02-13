@@ -81,7 +81,7 @@ jQuery(document).ready(
 							jQuery('#user-configuration').html(data).show();
 							jQuery.getJSON('json/lanes/' + id, function(data) {
 								if (data != null)
-									that.reDrawAllLanes(data);
+									that.reDrawLanes(data);
 							});
 						});
 					});
@@ -97,7 +97,7 @@ jQuery(document).ready(
 							jQuery.getJSON('json/lanes/' + ids[0], function(
 									data) {
 								if (data != null)
-									that.reDrawAllLanes(data);
+									that.reDrawLanes(data);
 							});
 						});
 					});
