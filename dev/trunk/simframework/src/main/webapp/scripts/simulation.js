@@ -246,7 +246,7 @@ simulation.initMap = function() {
 			var features = lanesLayer.getFeaturesByAttribute("linkId", linkId);
 			lanesLayer.removeFeatures(features);
 		}
-		lanesLayer._drawLanes(lanes);
+		this._drawLanes(lanes);
 	};
 	map.addLayer(lanesLayer);
 
