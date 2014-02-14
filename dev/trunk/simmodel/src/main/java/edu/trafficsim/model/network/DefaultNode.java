@@ -38,7 +38,8 @@ public class DefaultNode extends AbstractLocation<DefaultNode> implements Node {
 	private final Set<Link> downstreams = new HashSet<Link>();
 	private final Set<Link> upstreams = new HashSet<Link>();
 
-	private final Map<Lane, Set<ConnectionLane>> connectionLanes = new HashMap<Lane, Set<ConnectionLane>>();
+	// fromLane, toLane => connectionLane
+	private final Map<Lane, Map<Lane, ConnectionLane>> connectionLanes = new HashMap<Lane, Map<Lane, ConnectionLane>>();
 
 	public DefaultNode(long id, String name, NodeType nodeType, Point point,
 			double radius) {
@@ -89,12 +90,15 @@ public class DefaultNode extends AbstractLocation<DefaultNode> implements Node {
 
 	@Override
 	public Collection<ConnectionLane> getConnectors(Lane fromLane) {
-		return Collections.unmodifiableCollection(connectionLanes.get(fromLane));
+		if (connectionLanes.get(fromLane) != null)
+			return Collections.unmodifiableCollection(connectionLanes.get(
+					fromLane).values());
+		return Collections.emptySet();
 	}
 
 	@Override
 	public ConnectionLane getConnector(Lane fromLane, Link toLink) {
-		for (ConnectionLane connectionLane : connectionLanes.get(fromLane)) {
+		for (ConnectionLane connectionLane : getConnectors(fromLane)) {
 			if (connectionLane.getToLane().getSegment().equals(toLink))
 				return connectionLane;
 		}
@@ -102,15 +106,27 @@ public class DefaultNode extends AbstractLocation<DefaultNode> implements Node {
 	}
 
 	@Override
+	public ConnectionLane getConnector(Lane fromLane, Lane toLane) {
+		return connectionLanes.get(fromLane) == null ? null : connectionLanes
+				.get(fromLane).get(toLane);
+	}
+
+	@Override
 	public void add(ConnectionLane connectionLane) {
-		Set<ConnectionLane> fromLaneConnectors = connectionLanes.get(connectionLane
-				.getFromLane());
+		Map<Lane, ConnectionLane> fromLaneConnectors = connectionLanes
+				.get(connectionLane.getFromLane());
 		if (fromLaneConnectors == null) {
-			fromLaneConnectors = new HashSet<ConnectionLane>(
+			fromLaneConnectors = new HashMap<Lane, ConnectionLane>(
 					DEFAULT_INITIAL_CONNECTOR_SET_CAPACITY);
-			connectionLanes.put(connectionLane.getFromLane(), fromLaneConnectors);
+			connectionLanes.put(connectionLane.getFromLane(),
+					fromLaneConnectors);
 		}
-		fromLaneConnectors.add(connectionLane);
+		fromLaneConnectors.put(connectionLane.getToLane(), connectionLane);
+	}
+
+	@Override
+	public boolean isConnected(Lane fromLane, Lane toLane) {
+		return getConnector(fromLane, toLane) != null;
 	}
 
 	@Override

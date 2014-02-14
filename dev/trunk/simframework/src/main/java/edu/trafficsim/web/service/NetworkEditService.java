@@ -4,6 +4,7 @@ import org.opengis.referencing.operation.TransformException;
 import org.springframework.stereotype.Service;
 
 import edu.trafficsim.engine.NetworkFactory;
+import edu.trafficsim.model.Lane;
 import edu.trafficsim.model.Link;
 import edu.trafficsim.model.core.ModelInputException;
 
@@ -22,5 +23,10 @@ public class NetworkEditService {
 
 	public void removeLane(Link link, int laneId) throws TransformException {
 		link.remove(laneId);
+	}
+
+	public void connectLanes(Lane laneFrom, Lane laneTo, NetworkFactory factory)
+			throws ModelInputException, TransformException {
+		factory.connect(laneFrom, laneTo);
 	}
 }

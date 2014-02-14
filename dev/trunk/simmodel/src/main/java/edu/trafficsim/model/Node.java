@@ -19,8 +19,12 @@ public interface Node extends Location {
 	public Collection<ConnectionLane> getConnectors(Lane lane);
 	
 	public ConnectionLane getConnector(Lane fromLane, Link toLink);
+	
+	public ConnectionLane getConnector(Lane fromLane, Lane toLane);
 
 	public void add(Link link) throws ModelInputException;
 
 	public void add(ConnectionLane connectionLane) throws ModelInputException;
+	
+	public boolean isConnected(Lane fromLane, Lane toLane);
 }
