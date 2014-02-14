@@ -1,7 +1,5 @@
 <h2>Link Info</h2>
 <div id="user-configuration-buttons">
-	<span id="user-configuration-button-edit-connector" class="button">connection</span>
-
 	<span id="user-configuration-button-close" class="button">close</span>
 </div>
 <div th:each="link : ${links}">
@@ -11,7 +9,7 @@
 				<td>Link Id</td>
 				<td th:text="${link.id}"></td>
 				<td><span th:id="${link.id}"
-					class="user-configuration-button-edit-link button">edit</span></td>
+					class="user-configuration-link-edit button">edit</span></td>
 			</tr>
 			<tr>
 				<td>Link Name</td>

@@ -31,6 +31,9 @@ simulation.initMap = function() {
 
 	var that = this;
 
+	/***************************************************************************
+	 * Base Map
+	 **************************************************************************/
 	map = this.map = new OpenLayers.Map('map', {
 		projection : that.proj900913,
 		allOverlays : true,
@@ -68,21 +71,10 @@ simulation.initMap = function() {
 		visibility : false
 	});
 	map.addLayers([ osm, gmap, gsat, ghyb ]);
-	map.addLayers([ osm ]);
 
-	var mp900913 = new OpenLayers.Control.MousePosition({
-		div : $('proj-900913'),
-		prefix : 'Coordinates: ',
-		suffix : ' (in ' + map.getProjectionObject() + ')'
-	});
-	var mp4326 = new OpenLayers.Control.MousePosition({
-		div : $('proj-4326'),
-		displayProjection : that.proj4326,
-		prefix : 'Coordinates: ',
-		suffix : ' (in ' + that.proj4326 + ')'
-	});
-	map.addControls([ mp900913, mp4326 ]);
-
+	/***************************************************************************
+	 * Vector Layer, Vehicles
+	 **************************************************************************/
 	var vehicleTemplate = {
 		strokeOpacity : 0.8,
 		strokeWidth : 0.1,
@@ -109,7 +101,8 @@ simulation.initMap = function() {
 		rendererOptions : {
 			zIndexing : true
 		},
-		strategies : [ that.refreshStrategy ]
+		strategies : [ that.refreshStrategy ],
+		visibility : false
 	});
 	vehicleLayer.events.register('refresh', vehicleLayer, function() {
 		if (that.totalF == that.f) {
@@ -136,6 +129,9 @@ simulation.initMap = function() {
 	});
 	map.addLayer(vehicleLayer);
 
+	/***************************************************************************
+	 * Vector Layer, Network (Link-Node)
+	 **************************************************************************/
 	var networkTemplate = {
 		strokeWidth : 6,
 		strokeColor : '${strokeColor}',
@@ -186,25 +182,15 @@ simulation.initMap = function() {
 	this.networkLayer = networkLayer;
 	map.addLayer(networkLayer);
 
-	networkLayer.events.on({
-		"featureselected" : function(e) {
-			jQuery.get('view/link/' + e.feature.attributes['linkId'], function(
-					data) {
-				jQuery('#user-configuration').html(data).show();
-			});
-		},
-		"featureunselected" : function(e) {
-			jQuery('#user-configuration').hide();
-		}
-	});
-
-	// lanes
+	/***************************************************************************
+	 * Vector Layer, Lanes
+	 **************************************************************************/
 	var lanesTemplate = {
-		strokeWidth : 4,
+		strokeWidth : 6,
 		strokeColor : '${strokeColor}',
-		strokeOpacity : 0.5,
+		strokeOpacity : 0.8,
 		fillColor : 'black',
-		fillOpacity : 0.5
+		fillOpacity : 0.8
 	};
 	var lanesContext = {
 		strokeColor : function(feature) {
@@ -223,18 +209,14 @@ simulation.initMap = function() {
 		},
 		visibility : false
 	});
-	this.reDrawAllLanes = function(lanes) {
-		this.network.lanes = {};
-		lanesLayer.removeAllFeatures();
-		this._drawLanes(lanes);
-	};
 	this._drawLanes = function(lanes) {
 		var features = [];
 		for ( var linkId in lanes) {
 			for ( var j in lanes[linkId]) {
 				var geom = OpenLayers.Geometry.fromWKT(lanes[linkId][j]);
 				var feature = new OpenLayers.Feature.Vector(geom, {
-					linkId : linkId
+					linkId : linkId,
+					laneId : j
 				});
 				features.push(feature);
 			}
@@ -243,84 +225,170 @@ simulation.initMap = function() {
 	};
 	this.reDrawLanes = function(lanes) {
 		for ( var linkId in lanes) {
+			// TODO make it find the exact lane feature for change
 			var features = lanesLayer.getFeaturesByAttribute("linkId", linkId);
 			lanesLayer.removeFeatures(features);
 		}
 		this._drawLanes(lanes);
 	};
+	this.reDrawAllLanes = function(lanes) {
+		this.network.lanes = {};
+		lanesLayer.removeAllFeatures();
+		this._drawLanes(lanes);
+	};
 	map.addLayer(lanesLayer);
 
+	/***************************************************************************
+	 * Draw Control, Create Network Control
+	 **************************************************************************/
 	// new OpenLayers.Control.DrawFeature(pointLayer, OpenLayers.Handler.Point)
 	// new OpenLayers.Control.DrawFeature(lineLayer, OpenLayers.Handler.Path)
-	var drawControl = new OpenLayers.Control.DrawFeature(networkLayer,
+	var selectAreaControl = new OpenLayers.Control.DrawFeature(networkLayer,
 			OpenLayers.Handler.RegularPolygon, {
 				handlerOptions : {
 					sides : 4,
 					irregular : true
 				}
 			});
-	drawControl.events.register('featureadded', networkLayer, function(f) {
-		simulation.importArea = f.feature.geometry.bounds;
-		drawControl.deactivate();
-		jQuery.get('view/network-new', function(data) {
-			jQuery('#map').css('cursor', 'auto');
-			jQuery('#user-configuration').html(data).show();
-		});
-	});
-	this.drawControl = drawControl;
-	map.addControl(drawControl);
-
-	var highlightLinkControl = new OpenLayers.Control.SelectFeature(
-			networkLayer, {
-				hover : true,
-				highlightOnly : true,
-				clickout : true,
-				renderIntent : "select"
+	selectAreaControl.events.register('featureadded', networkLayer,
+			function(f) {
+				simulation.importArea = f.feature.geometry.bounds;
+				selectAreaControl.deactivate();
+				simwebhelper.loadPanel('view/network-new', function() {
+					jQuery('#map').css('cursor', 'auto');
+				});
 			});
+	map.addControl(selectAreaControl);
+
+	/***************************************************************************
+	 * Select Control, Select Link
+	 **************************************************************************/
 	var selectLinkControl = new OpenLayers.Control.SelectFeature(networkLayer,
 			{
 				clickout : true
 			});
-	map.addControl(highlightLinkControl);
 	map.addControl(selectLinkControl);
-	highlightLinkControl.activate();
-	selectLinkControl.activate();
 
+	/***************************************************************************
+	 * Select Control, Select Lane (lane connection configuration)
+	 **************************************************************************/
+	var selectLaneControl = new OpenLayers.Control.SelectFeature(lanesLayer, {
+		clickout : true,
+		multiple : true
+	});
+	map.addControl(selectLaneControl);
+
+	/***************************************************************************
+	 * LayerSitcher Control
+	 **************************************************************************/
 	map.addControl(new OpenLayers.Control.LayerSwitcher());
-};
 
-simulation.createNew = function() {
-	this.networkLayer.removeAllFeatures();
-	// TODO initiate objects
-	jQuery.get('view/scenario-new', function(data) {
-		jQuery('#user-configuration').html(data).show();
+	/***************************************************************************
+	 * Mouse Position Control, for developing only
+	 **************************************************************************/
+	var mp900913 = new OpenLayers.Control.MousePosition({
+		div : $('proj-900913'),
+		prefix : 'Coordinates: ',
+		suffix : ' (in ' + map.getProjectionObject() + ')'
 	});
-};
+	var mp4326 = new OpenLayers.Control.MousePosition({
+		div : $('proj-4326'),
+		displayProjection : that.proj4326,
+		prefix : 'Coordinates: ',
+		suffix : ' (in ' + that.proj4326 + ')'
+	});
+	map.addControls([ mp900913, mp4326 ]);
 
-simulation.selectNetworkArea = function() {
-	this.drawControl.activate();
-	jQuery('#user-configuration').hide();
-	jQuery('#user-feedback').html('Please select area!').show();
-	jQuery('#map').css('cursor', 'crosshair');
-};
-
-simulation.importFromOsm = function() {
-	this.networkLayer.removeAllFeatures();
-	jQuery('#user-configuration').hide();
-
-	var that = this;
-	var postData = {
-		bbox : simulation.importArea.transform(map.getProjectionObject(),
-				that.proj4326).toBBOX(),
-		highway : jQuery('select#user-network-highway').val()
+	/***************************************************************************
+	 * Events, Network Layer
+	 **************************************************************************/
+	networkLayer.events.on({
+		"featureselected" : function(e) {
+			simwebhelper.loadPanel('view/link/'
+					+ e.feature.attributes['linkId']);
+		},
+		"featureunselected" : function(e) {
+			simwebhelper.hidePanel();
+		},
+		"featureover" : function(e) {
+			e.feature.renderIntent = "select";
+			e.feature.layer.drawFeature(e.feature);
+		},
+		"featureout" : function(e) {
+			e.feature.renderIntent = "default";
+			e.feature.layer.drawFeature(e.feature);
+		}
+	});
+	/***************************************************************************
+	 * Events, Lanes Layer
+	 **************************************************************************/
+	lanesLayer.events
+			.on({
+				"featureselected" : function(e) {
+					if (lanesLayer.selectedFeatures.length === 2) {
+						var link1 = lanesLayer.selectedFeatures[0].attributes['linkId'];
+						var lane1 = lanesLayer.selectedFeatures[0].attributes['laneId'];
+						var link2 = lanesLayer.selectedFeatures[1].attributes['linkId'];
+						var lane2 = lanesLayer.selectedFeatures[1].attributes['laneId'];
+						if (link1 === link2) {
+							simwebhelper
+									.error("Cannot connect lanes on the same link.");
+						} else {
+							var postData = {
+								link1 : link1,
+								link2 : link2,
+								lane1 : lane1,
+								lane2 : lane2
+							};
+							simwebhelper.post('edit/connectlanes', postData,
+									function(data) {
+										simwebhelper.feedback(data);
+									});
+						}
+						selectLaneControl.unselectAll();
+					}
+				}
+			});
+	/***************************************************************************
+	 * Utility Functions
+	 **************************************************************************/
+	/* remove all features on map */
+	this.clearLayers = function() {
+		networkLayer.removeAllFeatures();
+		lanesLayer.removeAllFeatures();
 	};
-	jQuery.post('createnetwork', postData, function(data) {
-		var obj = eval('(' + data + ')');
-		that.reDrawNetwork(obj['links']);
-		jQuery.get('view/network', function(data) {
-			jQuery('#user-configuration').html(data).show();
+	/* select area */
+	this.prepareSelectArea = function() {
+		selectAreaControl.activate();
+	};
+	/* generate network from import */
+	this.createNetworkFromOsm = function(highway) {
+		var postData = {
+			bbox : simulation.importArea.transform(map.getProjectionObject(),
+					that.proj4326).toBBOX(),
+			highway : highway
+		};
+		simwebhelper.post('createnetwork', postData, function(data) {
+			var obj = eval('(' + data + ')');
+			that.reDrawNetwork(obj['links']);
+			simwebhelper.loadPanel('view/network');
 		});
-	});
+	};
+	/* activate link selection */
+	this.editLinks = function() {
+		selectLinkControl.activate();
+		selectLaneControl.deactivate();
+		networkLayer.setVisibility(true);
+		lanesLayer.setVisibility(false);
+	};
+	/* activate lane selection */
+	this.editLanes = function() {
+		selectLinkControl.deactivate();
+		selectLaneControl.activate();
+		networkLayer.setVisibility(false);
+		lanesLayer.setVisibility(true);
+	};
+
 };
 
 simulation.load = function() {

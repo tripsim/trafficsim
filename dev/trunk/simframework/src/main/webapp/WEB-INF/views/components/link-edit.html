@@ -1,7 +1,6 @@
 <h2>Link Edit</h2>
 <div id="user-configuration-buttons">
 	<span id="user-configuration-button-close" class="button">finish</span>
-	<span id="user-configuration-button-close" class="button">cancel</span>
 </div>
 <div>
 	<table>
@@ -42,7 +41,7 @@
 				<td>Lane</td>
 				<td th:text="${lane.laneId}"></td>
 				<td colspan="6"><span th:id="${link.id} + '-' + ${lane.laneId}"
-					class="user-configuration-button-remove-lane button">remove</span></td>
+					class="user-configuration-link-remove-lane button">remove</span></td>
 			</tr>
 			<tr>
 				<td>width</td>
@@ -57,7 +56,7 @@
 		</tbody>
 		<tr>
 			<td colspan="8"><span th:id="${link.id}"
-				class="user-configuration-button-add-lane button">add lane</span></td>
+				class="user-configuration-link-add-lane button">add lane</span></td>
 		</tr>
 	</table>
 </div>
