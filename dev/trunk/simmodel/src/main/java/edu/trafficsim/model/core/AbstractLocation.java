@@ -49,7 +49,8 @@ public abstract class AbstractLocation<T> extends BaseEntity<T> implements
 	@Override
 	public final void setRadius(double radius) throws TransformException {
 		this.radius = radius;
-		onGeomUpdated();
+		// TODO reconsider the necessity for radius
+		// onGeomUpdated();
 	}
 
 }

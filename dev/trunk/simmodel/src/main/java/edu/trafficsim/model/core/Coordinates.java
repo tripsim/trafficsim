@@ -1,5 +1,6 @@
 package edu.trafficsim.model.core;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,8 +16,6 @@ import com.vividsolutions.jts.geom.LineSegment;
 import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.linearref.LengthLocationMap;
 import com.vividsolutions.jts.linearref.LinearLocation;
-
-import edu.trafficsim.model.Subsegment;
 
 /**
  * @author Xuan
@@ -91,13 +90,62 @@ public class Coordinates {
 
 	/********************************************************************************
 	 * Unimplemented Helper Method
+	 * 
+	 * @throws TransformException
 	 ********************************************************************************/
-	// TODO may not be necessary
-	public static void trimLinearGeom(Subsegment subsegment) {
+	public static LineString trimLinearGeom(CoordinateReferenceSystem crs,
+			LineString linearGeom) throws TransformException {
+		// TODO set default value somewhere else
+		return trimLinearGeom(crs, linearGeom, 10, 10);
+	}
+
+	public static LineString trimLinearGeom(CoordinateReferenceSystem crs,
+			LineString linearGeom, double head, double tail)
+			throws TransformException {
 		// cut the part of linearGeom within the node' radius
 		// based on start node and end node radius, trim the lineargeom
 		// only trim the lanes not the links
 		// ajust start and end but not the actual lineargeom
+		if (linearGeom.getNumPoints() < 3)
+			return linearGeom;
+
+		GeoReferencing geo = getGeoReferencing(crs);
+		Coordinate[] coords = Arrays.copyOf(linearGeom.getCoordinates(),
+				linearGeom.getCoordinates().length);
+		Coordinate newStart = getTrimedStartCooridnate(geo, coords[0],
+				coords[1], head);
+		Coordinate newEnd = getTrimedStartCooridnate(geo,
+				coords[coords.length - 1], coords[coords.length - 2], tail);
+
+		if (newStart != null) {
+			coords[0] = newStart;
+			if (newEnd != null) {
+				coords[coords.length - 1] = newEnd;
+			} else {
+				coords = Arrays.copyOfRange(coords, 0, coords.length - 1);
+			}
+		} else {
+			if (newEnd != null) {
+				coords[coords.length - 1] = newEnd;
+				coords = Arrays.copyOfRange(coords, 1, coords.length);
+			} else {
+				coords = Arrays.copyOfRange(coords, 1, coords.length - 1);
+			}
+		}
+
+		return getLineString(coords);
+	}
+
+	protected static Coordinate getTrimedStartCooridnate(GeoReferencing geo,
+			Coordinate startCoord, Coordinate endCoord, double trimSize)
+			throws TransformException {
+		double distance = geo.orthodromicDistance(startCoord, endCoord);
+		if (distance > trimSize) {
+			double azimuth = geo.azimuth(startCoord, endCoord);
+			return geo.getOffsetCoordinate(startCoord, azimuth, trimSize);
+		} else {
+			return null;
+		}
 	}
 
 	/********************************************************************************

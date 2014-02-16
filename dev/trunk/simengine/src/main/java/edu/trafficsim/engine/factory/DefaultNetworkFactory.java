@@ -30,7 +30,7 @@ public class DefaultNetworkFactory extends AbstractFactory implements
 	private static DefaultNetworkFactory factory;
 	private GeometryFactory geometryFactory;
 
-	private final static double DEFAULT_RADIUS = 20.0d;
+	private final static double DEFAULT_RADIUS = 10.0d;
 	private final static double DEFAULT_WIDTH = 4.0d;
 
 	private DefaultNetworkFactory() {
