@@ -63,6 +63,19 @@ public class GuiViewController {
 		return "components/link";
 	}
 
+	@RequestMapping(value = "/link-edit/{id}", method = RequestMethod.GET)
+	public String linkEdit(@PathVariable long id, Model model) {
+		Network network = project.getNetwork();
+		if (network == null)
+			return "components/empty";
+		Link link = network.getLink(id);
+		if (link == null)
+			return "components/empty";
+
+		model.addAttribute("link", link);
+		return "components/link-edit";
+	}
+
 	@RequestMapping(value = "/simulator", method = RequestMethod.GET)
 	public String simulatorViw() {
 		return "components/simulator";

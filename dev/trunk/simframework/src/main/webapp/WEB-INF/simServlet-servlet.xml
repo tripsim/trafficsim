@@ -26,6 +26,17 @@
 		value=".jsp" /> </bean> -->
 
 	<!-- **************************************************************** -->
+	<!-- Interceptor -->
+	<!-- **************************************************************** -->
+	<!-- <mvc:interceptors> -->
+	<!-- <mvc:interceptor> -->
+	<!-- <mvc:mapping path="/edit/**" /> -->
+	<!-- <bean class="edu.trafficsim.web.Interceptor" /> -->
+	<!-- </mvc:interceptor> -->
+	<!-- </mvc:interceptors> -->
+
+
+	<!-- **************************************************************** -->
 	<!-- THYMELEAF-SPECIFIC ARTIFACTS -->
 	<!-- TemplateResolver <- TemplateEngine <- ViewResolver -->
 	<!-- **************************************************************** -->

@@ -1,10 +1,10 @@
 package edu.trafficsim.web;
 
+import java.util.Map;
+
 import org.opengis.referencing.operation.TransformException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -14,6 +14,8 @@ import edu.trafficsim.model.Lane;
 import edu.trafficsim.model.Link;
 import edu.trafficsim.model.Network;
 import edu.trafficsim.model.core.ModelInputException;
+import edu.trafficsim.web.service.ActionJsonResponseService;
+import edu.trafficsim.web.service.JsonOutputService;
 import edu.trafficsim.web.service.NetworkEditService;
 
 @Controller
@@ -24,28 +26,23 @@ public class GuiEditController {
 	SimulationProject project;
 	@Autowired
 	NetworkEditService networkEdit;
+	@Autowired
+	JsonOutputService jsonOutputService;
+	@Autowired
+	ActionJsonResponseService actionJsonResponse;
 
-	@RequestMapping(value = "/link/{id}", method = RequestMethod.GET)
-	public String linkEdit(@PathVariable long id, Model model) {
+	@RequestMapping(value = "/addlanetolink", method = RequestMethod.POST)
+	public @ResponseBody
+	Map<String, Object> addLane(@RequestParam("id") long id) {
 		Network network = project.getNetwork();
-		if (network == null)
-			return "components/empty";
+		if (network == null) {
+			return actionJsonResponse.messageOnlyResponse("no network.");
+		}
 		Link link = network.getLink(id);
-		if (link == null)
-			return "components/empty";
-
-		model.addAttribute("link", link);
-		return "components/link-edit";
-	}
-
-	@RequestMapping(value = "/addlanetolink/{id}", method = RequestMethod.GET)
-	public String addLane(@PathVariable long id, Model model) {
-		Network network = project.getNetwork();
-		if (network == null)
-			return "components/empty";
-		Link link = network.getLink(id);
-		if (link == null)
-			return "components/empty";
+		if (link == null) {
+			return actionJsonResponse
+					.messageOnlyResponse("link doesn't exist.");
+		}
 
 		try {
 			networkEdit.addLane(link, project.getNetworkFactory());
@@ -55,19 +52,23 @@ public class GuiEditController {
 			e.printStackTrace();
 		}
 
-		model.addAttribute("link", link);
-		return "components/link-edit";
+		return lanesUpdateSuccessResponse(network, id);
 	}
 
-	@RequestMapping(value = "/removelane/{laneId}/fromlink/{id}", method = RequestMethod.GET)
-	public String removeLane(@PathVariable int laneId, @PathVariable long id,
-			Model model) {
+	@RequestMapping(value = "/removelanefromlink", method = RequestMethod.POST)
+	public @ResponseBody
+	Map<String, Object> removeLane(@RequestParam("laneId") int laneId,
+			@RequestParam("linkId") long linkId) {
+
 		Network network = project.getNetwork();
-		if (network == null)
-			return "components/empty";
-		Link link = network.getLink(id);
-		if (link == null)
-			return "components/empty";
+		if (network == null) {
+			return actionJsonResponse.messageOnlyResponse("no network.");
+		}
+		Link link = network.getLink(linkId);
+		if (link == null) {
+			return actionJsonResponse
+					.messageOnlyResponse("link doesn't exist.");
+		}
 
 		try {
 			networkEdit.removeLane(link, laneId);
@@ -77,55 +78,61 @@ public class GuiEditController {
 			e.printStackTrace();
 		}
 
-		model.addAttribute("link", link);
-		return "components/link-edit";
+		return lanesUpdateSuccessResponse(network, linkId);
+	}
+
+	private Map<String, Object> lanesUpdateSuccessResponse(Network network,
+			long linkId) {
+		return actionJsonResponse.response("lane updated.", "view/link-edit/"
+				+ linkId, jsonOutputService.getLanesJson(network, linkId));
 	}
 
 	@RequestMapping(value = "/connectlanes", method = RequestMethod.POST)
 	public @ResponseBody
-	String connectLanes(@RequestParam("link1") long link1Id,
+	Map<String, Object> connectLanes(@RequestParam("link1") long link1Id,
 			@RequestParam("lane1") int lane1Id,
 			@RequestParam("link2") long link2Id,
 			@RequestParam("lane2") int lane2Id) {
 		Network network = project.getNetwork();
 		if (network == null)
-			return "";
+			return actionJsonResponse.messageOnlyResponse("no network.");
 		Link link1 = network.getLink(link1Id);
 		if (link1 == null)
-			return "";
+			return actionJsonResponse.messageOnlyResponse("no link.");
 		Lane lane1 = link1.getLane(lane1Id);
 		if (lane1 == null)
-			return "";
+			return actionJsonResponse.messageOnlyResponse("no lane.");
 		Link link2 = network.getLink(link2Id);
 		if (link2 == null)
-			return "";
+			return actionJsonResponse.messageOnlyResponse("no link.");
 		Lane lane2 = link2.getLane(lane2Id);
 		if (lane2 == null)
-			return "";
+			return actionJsonResponse.messageOnlyResponse("no lane.");
 
 		try {
 			if (link1.getEndNode() == link2.getStartNode()) {
 				if (link1.getEndNode().isConnected(lane1, lane2)) {
-					return "already connected";
+					return actionJsonResponse
+							.messageOnlyResponse("already connected");
 				}
 				networkEdit.connectLanes(lane1, lane2,
 						project.getNetworkFactory());
-				return "success 1";
+				return actionJsonResponse.messageOnlyResponse("success 1");
 			} else if (link1.getStartNode() == link2.getEndNode()) {
 				if (link1.getStartNode().isConnected(lane2, lane1)) {
-					return "already connected";
+					return actionJsonResponse
+							.messageOnlyResponse("already connected");
 				}
 				networkEdit.connectLanes(lane2, lane1,
 						project.getNetworkFactory());
-				return "success 2";
+				return actionJsonResponse.messageOnlyResponse("success 2");
 			} else {
-				return "";
+				return actionJsonResponse.messageOnlyResponse("no connection");
 			}
 		} catch (ModelInputException | TransformException e) {
 			e.printStackTrace();
 		}
 
-		return "null";
+		return actionJsonResponse.messageOnlyResponse("null");
 	}
-
 }

@@ -254,7 +254,7 @@ simulation.initMap = function() {
 			function(f) {
 				simulation.importArea = f.feature.geometry.bounds;
 				selectAreaControl.deactivate();
-				simwebhelper.loadPanel('view/network-new', function() {
+				simwebhelper.getPanel('view/network-new', function() {
 					jQuery('#map').css('cursor', 'auto');
 				});
 			});
@@ -304,8 +304,8 @@ simulation.initMap = function() {
 	 **************************************************************************/
 	networkLayer.events.on({
 		"featureselected" : function(e) {
-			simwebhelper.loadPanel('view/link/'
-					+ e.feature.attributes['linkId']);
+			simwebhelper
+					.getPanel('view/link/' + e.feature.attributes['linkId']);
 		},
 		"featureunselected" : function(e) {
 			simwebhelper.hidePanel();
@@ -340,10 +340,7 @@ simulation.initMap = function() {
 								lane1 : lane1,
 								lane2 : lane2
 							};
-							simwebhelper.post('edit/connectlanes', postData,
-									function(data) {
-										simwebhelper.feedback(data);
-									});
+							simwebhelper.action('edit/connectlanes', postData);
 						}
 						selectLaneControl.unselectAll();
 					}
@@ -368,10 +365,10 @@ simulation.initMap = function() {
 					that.proj4326).toBBOX(),
 			highway : highway
 		};
-		simwebhelper.post('createnetwork', postData, function(data) {
-			var obj = eval('(' + data + ')');
-			that.reDrawNetwork(obj['links']);
-			simwebhelper.loadPanel('view/network');
+		simwebhelper.action('createnetwork', postData, function(data) {
+			// TODO upadate server json output
+			data = JSON.parse(data);
+			that.reDrawNetwork(data['links']);
 		});
 	};
 	/* activate link selection */

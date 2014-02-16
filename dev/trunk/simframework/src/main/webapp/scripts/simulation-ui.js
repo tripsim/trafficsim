@@ -33,7 +33,7 @@ jQuery(document).ready(
 			 ******************************************************************/
 			/* network */
 			jQuery('#user-interface-network').click(function() {
-				simwebhelper.loadPanel('view/network', function() {
+				simwebhelper.getPanel('view/network', function() {
 					simwebhelper.getJson('json/center', function(data) {
 						if (data['center'] != null)
 							map.setCenter(data['center'], map.numZoomLevels);
@@ -55,7 +55,7 @@ jQuery(document).ready(
 			jQuery('#user-interface-newScenario').click(function() {
 				simulation.clearLayers();
 				// TODO initiate objects
-				simwebhelper.loadPanel('view/scenario-new');
+				simwebhelper.getPanel('view/scenario-new');
 			});
 
 			/* json editor example */
@@ -85,39 +85,32 @@ jQuery(document).ready(
 			jQuery('#user-configuration').on('click',
 					'.user-configuration-link-edit', function() {
 						var id = jQuery(this).attr('id');
-						simwebhelper.loadPanel('edit/link/' + id);
+						simwebhelper.getPanel('view/link-edit/' + id);
 					});
 			/*******************************************************************
 			 * Panel, User Configuration, Link Edit
 			 ******************************************************************/
 			/* add lane */
-			jQuery('#user-configuration').on(
-					'click',
-					'.user-configuration-link-add-lane',
-					function() {
+			jQuery('#user-configuration').on('click',
+					'.user-configuration-link-add-lane', function() {
 						var id = jQuery(this).attr('id');
-						simwebhelper.loadPanel('edit/addlanetolink/' + id,
-								function() {
-									simwebhelper.getJson('json/lanes/' + id,
-											function(data) {
-												if (data != null)
-													that.reDrawLanes(data);
-											});
-								});
+						simwebhelper.action('edit/addlanetolink', {
+							id : id
+						}, function(data) {
+							// TODO upadate server json output
+							that.reDrawLanes(JSON.parse(data));
+						});
 					});
 			/* remove lane */
-			jQuery('#user-configuration').on(
-					'click',
-					'.user-configuration-link-remove-lane',
-					function() {
+			jQuery('#user-configuration').on('click',
+					'.user-configuration-link-remove-lane', function() {
 						var ids = jQuery(this).attr('id').split('-');
-						simwebhelper.loadPanel('edit/removelane/' + ids[1]
-								+ '/fromlink/' + ids[0], function() {
-							simwebhelper.getJson('json/lanes/' + ids[0],
-									function(data) {
-										if (data != null)
-											that.reDrawLanes(data);
-									});
+						simwebhelper.action('edit/removelanefromlink', {
+							laneId : ids[1],
+							linkId : ids[0]
+						}, function(data) {
+							// TODO upadate server json output
+							that.reDrawLanes(JSON.parse(data));
 						});
 					});
 			/*******************************************************************
