@@ -3,6 +3,7 @@ package edu.trafficsim.web;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
+import java.util.Map;
 
 import org.opengis.referencing.operation.TransformException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 
 import edu.trafficsim.model.Network;
 import edu.trafficsim.model.core.ModelInputException;
+import edu.trafficsim.web.service.ActionJsonResponseService;
 import edu.trafficsim.web.service.DemoSimulationService;
 import edu.trafficsim.web.service.ExtractOsmNetworkService;
 import edu.trafficsim.web.service.JsonOutputService;
@@ -32,6 +34,8 @@ public class DefaultController {
 	ExtractOsmNetworkService extractOsmNetworkService;
 	@Autowired
 	JsonOutputService jsonOutputService;
+	@Autowired
+	ActionJsonResponseService actionJsonResponse;
 
 	@RequestMapping(value = "/")
 	public String home() {
@@ -70,7 +74,7 @@ public class DefaultController {
 
 	@RequestMapping(value = "/createnetwork", method = RequestMethod.POST)
 	public @ResponseBody
-	String createNetwork(@RequestParam("bbox") String bbox,
+	Map<String, Object> createNetwork(@RequestParam("bbox") String bbox,
 			@RequestParam("highway") String highway) {
 		Network network;
 		// TODO build feedbacks
@@ -78,8 +82,8 @@ public class DefaultController {
 			network = extractOsmNetworkService.createNetwork(bbox, highway,
 					project.getNetworkFactory());
 			project.setNetwork(network);
-			String str = jsonOutputService.getNetworkJson(network);
-			return str;
+			return actionJsonResponse.response("network created",
+					"view/network", jsonOutputService.getNetworkJson(network));
 		} catch (MalformedURLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -99,6 +103,7 @@ public class DefaultController {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return "";
+		return actionJsonResponse
+				.messageOnlyResponse("Network generation failed.");
 	}
 }

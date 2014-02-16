@@ -43,11 +43,11 @@ public class JsonController {
 		return str;
 	}
 
-	@RequestMapping(value = "/lanes/{id}", method = RequestMethod.GET)
+	@RequestMapping(value = "/lanes/{linkId}", method = RequestMethod.GET)
 	public @ResponseBody
-	String getLanes(@PathVariable long id) {
+	String getLanes(@PathVariable long linkId) {
 		Network network = project.getNetwork();
-		String str = jsonOutputService.getLanesJson(network, id);
+		String str = jsonOutputService.getLanesJson(network, linkId);
 		return str;
 	}
 
