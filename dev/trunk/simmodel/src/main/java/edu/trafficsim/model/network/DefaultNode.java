@@ -16,9 +16,7 @@ import edu.trafficsim.model.Lane;
 import edu.trafficsim.model.Link;
 import edu.trafficsim.model.Node;
 import edu.trafficsim.model.NodeType;
-import edu.trafficsim.model.Subsegment;
 import edu.trafficsim.model.core.AbstractLocation;
-import edu.trafficsim.model.core.Coordinates;
 import edu.trafficsim.model.core.ModelInputException;
 
 public class DefaultNode extends AbstractLocation<DefaultNode> implements Node {
@@ -131,15 +129,7 @@ public class DefaultNode extends AbstractLocation<DefaultNode> implements Node {
 
 	@Override
 	public void onGeomUpdated() throws TransformException {
-		for (Link link : upstreams) {
-			for (Subsegment subsegment : link.getSubsegments())
-				Coordinates.trimLinearGeom(subsegment);
-		}
-		for (Link link : downstreams) {
-			for (Subsegment subsegment : link.getSubsegments())
-				Coordinates.trimLinearGeom(subsegment);
-		}
-		// TODO ....
+		// TODO trimming lane linear geom if necessary (Coordinates.trimxxxx)
 	}
 
 }

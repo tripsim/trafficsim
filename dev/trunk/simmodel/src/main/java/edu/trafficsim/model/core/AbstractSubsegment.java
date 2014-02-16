@@ -126,10 +126,10 @@ public abstract class AbstractSubsegment<T> extends BaseEntity<T> implements
 
 	@Override
 	public void onGeomUpdated() throws TransformException {
-		// TODO update start, end....
+		// TODO update linearGeom according to start, end, shift
 		linearGeom = Coordinates.getOffSetLineString(getCrs(),
 				segment.getLinearGeom(), shift);
-		Coordinates.trimLinearGeom(this);
+		linearGeom = Coordinates.trimLinearGeom(getCrs(), linearGeom);
 		length = Coordinates.orthodromicDistance(getCrs(), linearGeom);
 	}
 }
