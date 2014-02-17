@@ -1,0 +1,38 @@
+<h2>Connector Info</h2>
+<div id="user-configuration-buttons">
+	<span id="user-configuration-button-close" class="button">finish</span>
+</div>
+<div>
+	<table>
+		<tbody>
+			<tr>
+				<td>From Link</td>
+				<td th:text="${connector.fromLane.link.id}"></td>
+			</tr>
+			<tr>
+				<td>From Lane</td>
+				<td th:text="${connector.fromLane.laneId}"></td>
+			</tr>
+			<tr>
+				<td>To Link</td>
+				<td th:text="${connector.toLane.link.id}"></td>
+			</tr>
+			<tr>
+				<td>To Lane</td>
+				<td th:text="${connector.toLane.laneId}"></td>
+			</tr>
+			<tr>
+				<td>Length</td>
+				<td th:text="${connector.length}"></td>
+			</tr>
+			<tr>
+				<td colspan="2"><span
+					th:id="${connector.fromLane.link.id} + '-' + ${connector.fromLane.laneId} + '-'
+					+ ${connector.toLane.link.id} + '-' + ${connector.toLane.laneId}"
+					class="user-configuration-connector-remove button">remove
+						connection</span></td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+

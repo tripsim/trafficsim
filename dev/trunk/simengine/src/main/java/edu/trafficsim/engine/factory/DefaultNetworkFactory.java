@@ -30,7 +30,6 @@ public class DefaultNetworkFactory extends AbstractFactory implements
 	private static DefaultNetworkFactory factory;
 	private GeometryFactory geometryFactory;
 
-	private final static double DEFAULT_RADIUS = 10.0d;
 	private final static double DEFAULT_WIDTH = 4.0d;
 
 	private DefaultNetworkFactory() {
@@ -74,7 +73,7 @@ public class DefaultNetworkFactory extends AbstractFactory implements
 	}
 
 	public DefaultNode createNode(String name, Point point) {
-		return new DefaultNode(nextId(), name, nodeType, point, DEFAULT_RADIUS);
+		return new DefaultNode(nextId(), name, nodeType, point);
 	}
 
 	@Override

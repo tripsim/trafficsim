@@ -1,5 +1,7 @@
 package edu.trafficsim.model;
 
+import java.util.Collection;
+
 import org.opengis.referencing.operation.TransformException;
 
 public interface Link extends Segment {
@@ -20,12 +22,7 @@ public interface Link extends Segment {
 
 	public void remove(int laneId) throws TransformException;
 
-	public ConnectionLane[] getConnectionLane(Link destLink);
-
-	public void add(ConnectionLane lane, Link destLink);
-
-	// TODO
-	// public void remove(ConnectionLane lane);
+	public Collection<ConnectionLane> getConnectionLanes(Link destLink);
 
 	public Link getReverseLink();
 

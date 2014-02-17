@@ -1,5 +1,7 @@
 package edu.trafficsim.plugin.core;
 
+import java.util.Collection;
+
 import org.opengis.referencing.operation.TransformException;
 
 import edu.trafficsim.model.ConnectionLane;
@@ -60,10 +62,10 @@ public class DefaultMoving extends AbstractPlugin implements IMoving {
 					.getToLane());
 			vehicle.targetLink(link);
 		} else {
-			ConnectionLane connectionLane = ((Link) vehicle.getSegment())
-					.getEndNode().getConnector(vehicle.currentLane(),
-							vehicle.targetLink());
-			if (connectionLane == null) {
+			Collection<ConnectionLane> connectionLanes = ((Link) vehicle
+					.getSegment()).getEndNode().getConnectors(
+					vehicle.currentLane(), vehicle.targetLink());
+			if (connectionLanes.size() == 0) {
 				vehicle.deactivate();
 				return;
 			}

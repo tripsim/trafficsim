@@ -1,9 +1,9 @@
 package edu.trafficsim.model.network;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 import org.opengis.referencing.operation.TransformException;
 
@@ -22,15 +22,11 @@ public abstract class AbstractLink<T> extends AbstractSegment<T> implements
 
 	private Link reverseLink = null;
 
-	private final Map<Link, List<ConnectionLane>> connectionLanes;
-
 	public AbstractLink(long id, String name, Node startNode, Node endNode,
 			LineString linearGeom) throws TransformException {
 		super(id, name, linearGeom);
 		startLocation = startNode;
 		endLocation = endNode;
-
-		connectionLanes = new HashMap<Link, List<ConnectionLane>>();
 	}
 
 	@Override
@@ -117,16 +113,13 @@ public abstract class AbstractLink<T> extends AbstractSegment<T> implements
 	}
 
 	@Override
-	public ConnectionLane[] getConnectionLane(Link destLink) {
-		return connectionLanes.get(destLink).toArray(new ConnectionLane[0]);
+	public Collection<ConnectionLane> getConnectionLanes(Link destLink) {
+		List<ConnectionLane> connectionLanes = new ArrayList<ConnectionLane>();
+		for (Lane fromLane : getLanes()) {
+			connectionLanes.addAll(getEndNode().getConnectors(fromLane,
+					destLink));
+		}
+		return Collections.unmodifiableCollection(connectionLanes);
 	}
 
-	@Override
-	public void add(ConnectionLane lane, Link destLink) {
-		List<ConnectionLane> lanes = connectionLanes.get(destLink);
-		if (lanes == null)
-			connectionLanes.put(destLink,
-					lanes = new ArrayList<ConnectionLane>());
-		lanes.add(lane);
-	}
 }

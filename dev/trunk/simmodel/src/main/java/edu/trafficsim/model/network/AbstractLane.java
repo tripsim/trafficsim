@@ -8,6 +8,7 @@ import java.util.TreeSet;
 import org.opengis.referencing.operation.TransformException;
 
 import edu.trafficsim.model.Lane;
+import edu.trafficsim.model.Link;
 import edu.trafficsim.model.Segment;
 import edu.trafficsim.model.Vehicle;
 import edu.trafficsim.model.core.AbstractSubsegment;
@@ -24,6 +25,11 @@ public abstract class AbstractLane<T> extends AbstractSubsegment<T> implements
 			double width, double shift) throws TransformException,
 			ModelInputException {
 		super(id, null, segment, start, end, width, shift);
+	}
+
+	@Override
+	public Link getLink() {
+		return (Link) segment;
 	}
 
 	@Override

@@ -197,8 +197,9 @@ public class Coordinates {
 	 * @param to
 	 * @return
 	 */
-	public static LineString getLineString(LineString from, LineString to) {
-		return getLineString(new Coordinate[] { from.getCoordinateN(0),
-				to.getCoordinateN(to.getNumPoints() - 1) });
+	public static LineString getConnectLineString(LineString from, LineString to) {
+		return getLineString(new Coordinate[] {
+				from.getCoordinateN(from.getNumPoints() - 1),
+				to.getCoordinateN(0) });
 	}
 }
