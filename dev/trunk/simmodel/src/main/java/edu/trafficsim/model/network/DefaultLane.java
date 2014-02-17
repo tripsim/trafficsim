@@ -1,7 +1,10 @@
 package edu.trafficsim.model.network;
 
+import java.util.Collection;
+
 import org.opengis.referencing.operation.TransformException;
 
+import edu.trafficsim.model.ConnectionLane;
 import edu.trafficsim.model.Link;
 import edu.trafficsim.model.core.ModelInputException;
 
@@ -49,4 +52,24 @@ public class DefaultLane extends AbstractLane<DefaultLane> {
 		return laneId > lane.laneId ? 1 : (laneId > lane.laneId ? -1 : 0);
 	}
 
+	@Override
+	public void onGeomUpdated() throws TransformException {
+		super.onGeomUpdated();
+		for (ConnectionLane connectionLane : getToConnectors()) {
+			connectionLane.onGeomUpdated();
+		}
+		for (ConnectionLane connectionLane : getFromConnectors()) {
+			connectionLane.onGeomUpdated();
+		}
+	}
+
+	@Override
+	public Collection<ConnectionLane> getToConnectors() {
+		return getLink().getEndNode().getInConnectors(this);
+	}
+
+	@Override
+	public Collection<ConnectionLane> getFromConnectors() {
+		return getLink().getStartNode().getOutConnectors(this);
+	}
 }

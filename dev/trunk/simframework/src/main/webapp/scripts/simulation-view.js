@@ -43,20 +43,29 @@ simwebhelper = {
 		});
 	},
 	action : function(url, postdata, callback) {
-		jQuery.post(url, postdata, function(data) {
-			if (data.status) {
-				if (data.status.successful) {
-				}
-				if (data.status.message) {
-					simwebhelper.feedback(data.status.message);
-				}
-				if (data.status.panelUrl) {
-					simwebhelper.getPanel(data.status.panelUrl);
-				}
-			}
-			if (callback) {
-				callback(data.data);
-			}
-		});
+		jQuery
+				.post(
+						url,
+						postdata,
+						function(data) {
+							if (data.status) {
+								if (data.status.successful) {
+								}
+								if (data.status.message) {
+									simwebhelper.feedback(data.status.message);
+								}
+								if (data.status.panelUrl) {
+									simwebhelper.getPanel(data.status.panelUrl);
+								} else {
+									simwebhelper.hidePanel();
+								}
+							}
+							if (callback) {
+								var callbackData = data.data ? (typeof data.data === 'object' ? data.data
+										: JSON.parse(data.data))
+										: {};
+								callback(callbackData);
+							}
+						});
 	}
 };

@@ -187,14 +187,14 @@ simulation.initMap = function() {
 	 **************************************************************************/
 	var lanesTemplate = {
 		strokeWidth : 6,
-		strokeColor : '${strokeColor}',
+		strokeColor : '${color}',
 		strokeOpacity : 0.8,
-		fillColor : 'black',
+		fillColor : '${color}',
 		fillOpacity : 0.8
 	};
 	var lanesContext = {
-		strokeColor : function(feature) {
-			return 'black';
+		color : function(feature) {
+			return feature.attributes['cid'] ? 'blue' : 'black';
 		}
 	};
 	var lanesLayer = new OpenLayers.Layer.Vector('Lanes', {
@@ -209,7 +209,7 @@ simulation.initMap = function() {
 		},
 		visibility : false
 	});
-	this._drawLanes = function(lanes) {
+	var _drawLanes = function(lanes) {
 		var features = [];
 		for ( var linkId in lanes) {
 			for ( var j in lanes[linkId]) {
@@ -223,18 +223,50 @@ simulation.initMap = function() {
 		}
 		lanesLayer.addFeatures(features);
 	};
-	this.reDrawLanes = function(lanes) {
+	var _drawConnectors = function(connectors) {
+		var features = [];
+		for ( var cid in connectors) {
+			var ids = cid.split('-');
+			var geom = OpenLayers.Geometry.fromWKT(connectors[cid]);
+			var feature = new OpenLayers.Feature.Vector(geom, {
+				cid : cid,
+				fromLink : ids[0],
+				toLink : ids[2]
+			});
+
+			features.push(feature);
+		}
+		lanesLayer.addFeatures(features);
+	};
+	this.reDrawLanes = function(lanes, connectors) {
 		for ( var linkId in lanes) {
 			// TODO make it find the exact lane feature for change
-			var features = lanesLayer.getFeaturesByAttribute("linkId", linkId);
+			var features = lanesLayer.getFeaturesByAttribute('linkId', linkId);
+			lanesLayer.removeFeatures(features);
+			var features = lanesLayer
+					.getFeaturesByAttribute('fromLink', linkId);
+			lanesLayer.removeFeatures(features);
+			var features = lanesLayer.getFeaturesByAttribute('toLink', linkId);
 			lanesLayer.removeFeatures(features);
 		}
-		this._drawLanes(lanes);
+		_drawLanes(lanes);
+		_drawConnectors(connectors);
 	};
-	this.reDrawAllLanes = function(lanes) {
-		this.network.lanes = {};
+	this.reDrawAllLanes = function(lanes, connectors) {
+		that.network.lanes = {};
+		that.network.connectors = {};
 		lanesLayer.removeAllFeatures();
-		this._drawLanes(lanes);
+		_drawLanes(lanes);
+		_drawConnectors(connectors);
+	};
+	this.removeConnector = function(cids) {
+		for ( var i in cids) {
+			var features = lanesLayer.getFeaturesByAttribute('cid', cids[i]);
+			lanesLayer.removeFeatures(features);
+		}
+	};
+	this.addConnectors = function(connectors) {
+		_drawConnectors(connectors);
 	};
 	map.addLayer(lanesLayer);
 
@@ -311,11 +343,11 @@ simulation.initMap = function() {
 			simwebhelper.hidePanel();
 		},
 		"featureover" : function(e) {
-			e.feature.renderIntent = "select";
+			e.feature.renderIntent = 'select';
 			e.feature.layer.drawFeature(e.feature);
 		},
 		"featureout" : function(e) {
-			e.feature.renderIntent = "default";
+			e.feature.renderIntent = 'default';
 			e.feature.layer.drawFeature(e.feature);
 		}
 	});
@@ -325,14 +357,32 @@ simulation.initMap = function() {
 	lanesLayer.events
 			.on({
 				"featureselected" : function(e) {
+					if (e.feature.attributes['cid']) {
+						if (lanesLayer.selectedFeatures.length === 2) {
+							selectLaneControl
+									.unselect(lanesLayer.selectedFeatures[0]);
+						}
+						var ids = e.feature.attributes['cid'].split('-');
+						simwebhelper.getPanel('view/connector/' + ids[0]
+								+ ';laneId=' + ids[1] + '/' + ids[2]
+								+ ';laneId=' + ids[3]);
+						return;
+					}
+
 					if (lanesLayer.selectedFeatures.length === 2) {
+						if (lanesLayer.selectedFeatures[0].attributes['cid']) {
+							selectLaneControl
+									.unselect(lanesLayer.selectedFeatures[0]);
+							simwebhelper.hidePanel();
+							return;
+						}
 						var link1 = lanesLayer.selectedFeatures[0].attributes['linkId'];
 						var lane1 = lanesLayer.selectedFeatures[0].attributes['laneId'];
 						var link2 = lanesLayer.selectedFeatures[1].attributes['linkId'];
 						var lane2 = lanesLayer.selectedFeatures[1].attributes['laneId'];
 						if (link1 === link2) {
 							simwebhelper
-									.error("Cannot connect lanes on the same link.");
+									.error('Cannot connect lanes on the same link.');
 						} else {
 							var postData = {
 								link1 : link1,
@@ -340,7 +390,10 @@ simulation.initMap = function() {
 								lane1 : lane1,
 								lane2 : lane2
 							};
-							simwebhelper.action('edit/connectlanes', postData);
+							simwebhelper.action('edit/connectlanes', postData,
+									function(connectors) {
+										that.addConnectors(connectors);
+									});
 						}
 						selectLaneControl.unselectAll();
 					}
@@ -366,9 +419,8 @@ simulation.initMap = function() {
 			highway : highway
 		};
 		simwebhelper.action('createnetwork', postData, function(data) {
-			// TODO upadate server json output
-			data = JSON.parse(data);
 			that.reDrawNetwork(data['links']);
+			that.editLinks();
 		});
 	};
 	/* activate link selection */

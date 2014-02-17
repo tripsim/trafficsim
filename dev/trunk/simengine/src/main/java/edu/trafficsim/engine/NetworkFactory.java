@@ -34,5 +34,4 @@ public interface NetworkFactory {
 
 	public ConnectionLane connect(Lane laneFrom, Lane laneTo)
 			throws ModelInputException, TransformException;
-
 }

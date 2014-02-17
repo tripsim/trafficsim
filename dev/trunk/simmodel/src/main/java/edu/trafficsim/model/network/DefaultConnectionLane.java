@@ -1,5 +1,8 @@
 package edu.trafficsim.model.network;
 
+import java.util.Collection;
+import java.util.Collections;
+
 import org.opengis.referencing.operation.TransformException;
 
 import edu.trafficsim.model.ConnectionLane;
@@ -52,7 +55,7 @@ public class DefaultConnectionLane extends AbstractLane<DefaultConnectionLane>
 
 	@Override
 	public void onGeomUpdated() throws TransformException {
-		linearGeom = Coordinates.getLineString(fromLane.getLinearGeom(),
+		linearGeom = Coordinates.getConnectLineString(fromLane.getLinearGeom(),
 				toLane.getLinearGeom());
 		length = Coordinates.orthodromicDistance(getCrs(), getLinearGeom());
 	}
@@ -60,6 +63,16 @@ public class DefaultConnectionLane extends AbstractLane<DefaultConnectionLane>
 	@Override
 	public Node getNode() {
 		return (Node) fromLane.getSegment().getEndLocation();
+	}
+
+	@Override
+	public Collection<ConnectionLane> getToConnectors() {
+		return Collections.emptyList();
+	}
+
+	@Override
+	public Collection<ConnectionLane> getFromConnectors() {
+		return Collections.emptyList();
 	}
 
 }

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import edu.trafficsim.model.ConnectionLane;
 import edu.trafficsim.model.Lane;
 import edu.trafficsim.model.Link;
 import edu.trafficsim.model.Network;
@@ -52,7 +53,7 @@ public class GuiEditController {
 			e.printStackTrace();
 		}
 
-		return lanesUpdateSuccessResponse(network, id);
+		return laneUpdatedResponse(network, id);
 	}
 
 	@RequestMapping(value = "/removelanefromlink", method = RequestMethod.POST)
@@ -78,13 +79,13 @@ public class GuiEditController {
 			e.printStackTrace();
 		}
 
-		return lanesUpdateSuccessResponse(network, linkId);
+		return laneUpdatedResponse(network, linkId);
 	}
 
-	private Map<String, Object> lanesUpdateSuccessResponse(Network network,
-			long linkId) {
+	private Map<String, Object> laneUpdatedResponse(Network network, long linkId) {
 		return actionJsonResponse.response("lane updated.", "view/link-edit/"
-				+ linkId, jsonOutputService.getLanesJson(network, linkId));
+				+ linkId,
+				jsonOutputService.getLanesConnectorsJson(network, linkId));
 	}
 
 	@RequestMapping(value = "/connectlanes", method = RequestMethod.POST)
@@ -115,17 +116,17 @@ public class GuiEditController {
 					return actionJsonResponse
 							.messageOnlyResponse("already connected");
 				}
-				networkEdit.connectLanes(lane1, lane2,
-						project.getNetworkFactory());
-				return actionJsonResponse.messageOnlyResponse("success 1");
+				ConnectionLane connector = networkEdit.connectLanes(lane1,
+						lane2, project.getNetworkFactory());
+				return connectSuccessResponse(connector, "Success 1!");
 			} else if (link1.getStartNode() == link2.getEndNode()) {
 				if (link1.getStartNode().isConnected(lane2, lane1)) {
 					return actionJsonResponse
 							.messageOnlyResponse("already connected");
 				}
-				networkEdit.connectLanes(lane2, lane1,
-						project.getNetworkFactory());
-				return actionJsonResponse.messageOnlyResponse("success 2");
+				ConnectionLane connector = networkEdit.connectLanes(lane2,
+						lane1, project.getNetworkFactory());
+				return connectSuccessResponse(connector, "Success 2!");
 			} else {
 				return actionJsonResponse.messageOnlyResponse("no connection");
 			}
@@ -134,5 +135,49 @@ public class GuiEditController {
 		}
 
 		return actionJsonResponse.messageOnlyResponse("null");
+	}
+
+	@RequestMapping(value = "/removeconnector", method = RequestMethod.POST)
+	public @ResponseBody
+	Map<String, Object> removeConnector(
+			@RequestParam("fromLink") long fromLinkId,
+			@RequestParam("fromLane") int fromLaneId,
+			@RequestParam("toLink") long toLinkId,
+			@RequestParam("toLane") int toLaneId) {
+		Network network = project.getNetwork();
+		if (network == null)
+			return actionJsonResponse.messageOnlyResponse("no network.");
+		Link fromLink = network.getLink(fromLinkId);
+		if (fromLink == null)
+			return actionJsonResponse.messageOnlyResponse("no link.");
+		Lane fromLane = fromLink.getLane(fromLaneId);
+		if (fromLane == null)
+			return actionJsonResponse.messageOnlyResponse("no lane.");
+		Link toLink = network.getLink(toLinkId);
+		if (toLink == null)
+			return actionJsonResponse.messageOnlyResponse("no link.");
+		Lane toLane = toLink.getLane(toLaneId);
+		if (toLane == null)
+			return actionJsonResponse.messageOnlyResponse("no lane.");
+
+		ConnectionLane connector = fromLane.getLink().getEndNode()
+				.getConnector(fromLane, toLane);
+		if (connector == null)
+			return actionJsonResponse.messageOnlyResponse("no lane.");
+
+		networkEdit.removeConnector(connector);
+		return disconnectSuccessResponse(connector, "Success!");
+	}
+
+	private Map<String, Object> connectSuccessResponse(
+			ConnectionLane connector, String message) {
+		return actionJsonResponse.response(message, null,
+				jsonOutputService.getConnectorJson(connector));
+	}
+
+	private Map<String, Object> disconnectSuccessResponse(
+			ConnectionLane connector, String message) {
+		return actionJsonResponse.response(message, null,
+				jsonOutputService.getConnectorsIdsJson(connector));
 	}
 }

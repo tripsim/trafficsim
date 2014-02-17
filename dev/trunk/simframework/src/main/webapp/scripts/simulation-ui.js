@@ -21,8 +21,8 @@ jQuery(document).ready(
 			simwebhelper.getJson('json/network', function(data) {
 				if (data['links'] != null)
 					that.reDrawNetwork(data['links']);
-				if (data['lanes'] != null)
-					that.reDrawAllLanes(data['lanes']);
+				if (data['lanes'] != null && data['connectors'] != null)
+					that.reDrawAllLanes(data['lanes'], data['connectors']);
 				var center = new OpenLayers.LonLat(data.center[0],
 						data.center[1]);
 				map.setCenter(center, map.numZoomLevels);
@@ -43,11 +43,13 @@ jQuery(document).ready(
 
 			/* links */
 			jQuery('#user-interface-links').click(function() {
+				simwebhelper.hidePanel();
 				simulation.editLinks();
 			});
 
 			/* lanes */
 			jQuery('#user-interface-lanes').click(function() {
+				simwebhelper.hidePanel();
 				simulation.editLanes();
 			});
 
@@ -97,8 +99,7 @@ jQuery(document).ready(
 						simwebhelper.action('edit/addlanetolink', {
 							id : id
 						}, function(data) {
-							// TODO upadate server json output
-							that.reDrawLanes(JSON.parse(data));
+							that.reDrawLanes(data.lanes, data.connectors);
 						});
 					});
 			/* remove lane */
@@ -109,8 +110,23 @@ jQuery(document).ready(
 							laneId : ids[1],
 							linkId : ids[0]
 						}, function(data) {
-							// TODO upadate server json output
-							that.reDrawLanes(JSON.parse(data));
+							that.reDrawLanes(data.lanes, data.connectors);
+						});
+					});
+			/*******************************************************************
+			 * Panel, User Configuration, Connector Edit
+			 ******************************************************************/
+			/* remove connector */
+			jQuery('#user-configuration').on('click',
+					'.user-configuration-connector-remove', function() {
+						var ids = jQuery(this).attr('id').split('-');
+						simwebhelper.action('edit/removeconnector', {
+							fromLink : ids[0],
+							fromLane : ids[1],
+							toLink : ids[2],
+							toLane : ids[3]
+						}, function(data) {
+							that.removeConnector(data);
 						});
 					});
 			/*******************************************************************
@@ -152,8 +168,10 @@ jQuery(document).ready(
 							data = eval('(' + data + ')');
 							if (data['links'] != null)
 								that.reDrawNetwork(data['links']);
-							if (data['lanes'] != null)
-								that.reDrawAllLanes(data['lanes']);
+							if (data['lanes'] != null
+									|| data['connectors'] != null)
+								that.reDrawAllLanes(data['lanes'],
+										data['connectors']);
 							var center = new OpenLayers.LonLat(data.center[0],
 									data.center[1]);
 							map.setCenter(center, map.numZoomLevels);

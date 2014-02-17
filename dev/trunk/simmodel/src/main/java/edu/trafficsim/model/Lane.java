@@ -12,6 +12,12 @@ public interface Lane extends Subsegment {
 
 	public void setLaneId(int laneId);
 
+	public Link getLink();
+
+	public Collection<ConnectionLane> getToConnectors();
+
+	public Collection<ConnectionLane> getFromConnectors();
+
 	/**
 	 * Implement our own efficient collection to hold the vehicles within a lane
 	 * or link.

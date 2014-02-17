@@ -4,9 +4,11 @@ import org.springframework.stereotype.Service;
 
 import com.vividsolutions.jts.io.WKTWriter;
 
+import edu.trafficsim.model.ConnectionLane;
 import edu.trafficsim.model.Lane;
 import edu.trafficsim.model.Link;
 import edu.trafficsim.model.Network;
+import edu.trafficsim.model.Node;
 
 @Service
 public class JsonOutputService {
@@ -25,7 +27,8 @@ public class JsonOutputService {
 		if (network == null)
 			return "{}";
 
-		return "{" + getLink(network.getLink(linkId)) + "}";
+		return network.getLink(linkId) != null ? "{"
+				+ getLink(network.getLink(linkId)) + "}" : "{}";
 	}
 
 	/**
@@ -34,15 +37,13 @@ public class JsonOutputService {
 	 */
 	private String getLink(Link link) {
 		StringBuffer linkSb = new StringBuffer();
-		if (link != null) {
-			linkSb.append("\"");
-			linkSb.append(link.getId());
-			linkSb.append("\"");
-			linkSb.append(":");
-			linkSb.append("\"");
-			linkSb.append(writer.write(link.getLinearGeom()));
-			linkSb.append("\"");
-		}
+		linkSb.append("\"");
+		linkSb.append(link.getId());
+		linkSb.append("\"");
+		linkSb.append(":");
+		linkSb.append("\"");
+		linkSb.append(writer.write(link.getLinearGeom()));
+		linkSb.append("\"");
 		return linkSb.toString();
 	}
 
@@ -60,28 +61,139 @@ public class JsonOutputService {
 	/**
 	 * @param network
 	 * @param linkId
+	 * @return {lanes : { linkId : [lane WKT Strings] }, connectors : { cid :
+	 *         connector WKT String } }
+	 */
+	public String getLanesConnectorsJson(Network network, long linkId) {
+		return "{\"lanes\":" + getLanesJson(network, linkId)
+				+ ",\"connectors\":" + getConnectorsJson(network, linkId) + "}";
+	}
+
+	/**
+	 * @param link
 	 * @return linkId : [lane WKT Strings]
 	 */
 	private String getLanes(Link link) {
 		StringBuffer laneSb = new StringBuffer();
-		if (link != null) {
+		laneSb.append("\"");
+		laneSb.append(link.getId());
+		laneSb.append("\"");
+		laneSb.append(":");
+		laneSb.append("[");
+		for (Lane lane : link.getLanes()) {
 			laneSb.append("\"");
-			laneSb.append(link.getId());
+			laneSb.append(writer.write(lane.getLinearGeom()));
 			laneSb.append("\"");
-			laneSb.append(":");
-			laneSb.append("[");
-			for (Lane lane : link.getLanes()) {
-				laneSb.append("\"");
-				laneSb.append(writer.write(lane.getLinearGeom()));
-				laneSb.append("\"");
-				laneSb.append(",");
-			}
-			if (link.numOfLanes() > 0)
-				laneSb.deleteCharAt(laneSb.length() - 1);
-			laneSb.append("]");
+			laneSb.append(",");
 		}
+		if (link.numOfLanes() > 0)
+			laneSb.deleteCharAt(laneSb.length() - 1);
+		laneSb.append("]");
 		return laneSb.toString();
 
+	}
+
+	/**
+	 * @param ConnectionLane
+	 * @return { fromLinkId-fromLaneId-toLinkId-toLaneId : [connector WKT
+	 *         Strings] }
+	 */
+	public String getConnectorJson(ConnectionLane connector) {
+		return "{" + getConnector(connector) + "}";
+	}
+
+	/**
+	 * @param ConnectionLane
+	 * @return { fromLinkId-fromLaneId-toLinkId-toLaneId : [connector WKT
+	 *         Strings] }
+	 */
+	public String getConnectorsJson(Network network, long linkId) {
+		if (network == null)
+			return "{}";
+		Link link = network.getLink(linkId);
+		if (link == null)
+			return "{}";
+
+		StringBuffer connectorSb = new StringBuffer();
+		for (Lane lane : link.getLanes()) {
+			StringBuffer sb = getConnectors(lane);
+			if (sb.length() > 0) {
+				connectorSb.append(sb);
+				connectorSb.append(",");
+			}
+		}
+		if (connectorSb.length() > 0)
+			connectorSb.deleteCharAt(connectorSb.length() - 1);
+
+		return "{" + connectorSb.toString() + "}";
+	}
+
+	/**
+	 * @param ConnectionLanes
+	 * @return [ fromLinkId-fromLaneId-toLinkId-toLaneId ] }
+	 */
+	public String getConnectorsIdsJson(ConnectionLane... connectors) {
+		StringBuffer connectorSb = new StringBuffer();
+		for (ConnectionLane connector : connectors) {
+			connectorSb.append(getConnectorId(connector));
+			connectorSb.append(",");
+		}
+		if (connectorSb.length() > 0)
+			connectorSb.deleteCharAt(connectorSb.length() - 1);
+		return "[" + connectorSb.toString() + "]";
+	}
+
+	/**
+	 * @param ConnectionLane
+	 * @return "fromLinkId-fromLaneId-toLinkId-toLaneId"
+	 */
+	private StringBuffer getConnectorId(ConnectionLane connector) {
+		StringBuffer connectorSb = new StringBuffer();
+		connectorSb.append("\"");
+		connectorSb.append(connector.getFromLane().getLink().getId());
+		connectorSb.append("-");
+		connectorSb.append(connector.getFromLane().getLaneId());
+		connectorSb.append("-");
+		connectorSb.append(connector.getToLane().getLink().getId());
+		connectorSb.append("-");
+		connectorSb.append(connector.getToLane().getLaneId());
+		connectorSb.append("\"");
+		return connectorSb;
+	}
+
+	/**
+	 * @param ConnectionLane
+	 * @return fromLinkId-fromLaneId-toLinkId-toLaneId : connector WKT Strings
+	 */
+	private String getConnector(ConnectionLane connector) {
+		StringBuffer connectorSb = new StringBuffer();
+		if (connector != null) {
+			connectorSb.append(getConnectorId(connector));
+			connectorSb.append(":");
+			connectorSb.append("\"");
+			connectorSb.append(writer.write(connector.getLinearGeom()));
+			connectorSb.append("\"");
+		}
+		return connectorSb.toString();
+	}
+
+	/**
+	 * @param Lane
+	 * @return fromLinkId-fromLaneId-toLinkId-toLaneId : connector WKT Strings
+	 */
+	private StringBuffer getConnectors(Lane lane) {
+		StringBuffer connectorSb = new StringBuffer();
+		for (ConnectionLane connector : lane.getToConnectors()) {
+			connectorSb.append(getConnector(connector));
+			connectorSb.append(",");
+		}
+		for (ConnectionLane connector : lane.getFromConnectors()) {
+			connectorSb.append(getConnector(connector));
+			connectorSb.append(",");
+		}
+		if (connectorSb.length() > 0)
+			connectorSb.deleteCharAt(connectorSb.length() - 1);
+		return connectorSb;
 	}
 
 	/**
@@ -110,6 +222,7 @@ public class JsonOutputService {
 	public String getNetworkJson(Network network) {
 		StringBuffer linkSb = new StringBuffer();
 		StringBuffer laneSb = new StringBuffer();
+		StringBuffer connectorSb = new StringBuffer();
 		if (network != null) {
 			for (Link link : network.getLinks()) {
 				linkSb.append(getLink(link));
@@ -117,12 +230,22 @@ public class JsonOutputService {
 				laneSb.append(getLanes(link));
 				laneSb.append(",");
 			}
+			for (Node node : network.getNodes()) {
+				for (ConnectionLane connector : node.getConnectors()) {
+					connectorSb.append(getConnector(connector));
+					connectorSb.append(",");
+				}
+			}
+
 			if (linkSb.length() > 0)
 				linkSb.deleteCharAt(linkSb.length() - 1);
 			if (laneSb.length() > 0)
 				laneSb.deleteCharAt(laneSb.length() - 1);
+			if (connectorSb.length() > 0)
+				connectorSb.deleteCharAt(connectorSb.length() - 1);
 		}
 		return "{" + getCenter(network) + ", \"links\": {" + linkSb.toString()
-				+ "}, \"lanes\":{" + laneSb.toString() + "}}";
+				+ "}, \"lanes\":{" + laneSb.toString() + "}, \"connectors\":{"
+				+ connectorSb.toString() + "}}";
 	}
 }

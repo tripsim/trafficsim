@@ -49,18 +49,18 @@
 		<property name="cacheable" value="false" />
 	</bean>
 
-	<bean id="templateEngine" class="org.thymeleaf.spring3.SpringTemplateEngine">
+	<bean id="templateEngine" class="org.thymeleaf.spring4.SpringTemplateEngine">
 		<property name="templateResolver" ref="templateResolver" />
 	</bean>
 
-	<bean class="org.thymeleaf.spring3.view.ThymeleafViewResolver">
+	<bean class="org.thymeleaf.spring4.view.ThymeleafViewResolver">
 		<property name="templateEngine" ref="templateEngine" />
 	</bean>
 
 	<!-- **************************************************************** -->
 	<!-- SPRING ANNOTATION PROCESSING -->
 	<!-- **************************************************************** -->
-	<mvc:annotation-driven />
+	<mvc:annotation-driven enable-matrix-variables="true" />
 	<context:component-scan base-package="edu.trafficsim.web" />
 
 	<!-- **************************************************************** -->

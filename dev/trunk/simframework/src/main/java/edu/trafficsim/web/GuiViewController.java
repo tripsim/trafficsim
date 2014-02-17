@@ -6,10 +6,13 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.MatrixVariable;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import edu.trafficsim.model.ConnectionLane;
+import edu.trafficsim.model.Lane;
 import edu.trafficsim.model.Link;
 import edu.trafficsim.model.Network;
 import edu.trafficsim.web.service.ExtractOsmNetworkService.OsmHighwayValue;
@@ -74,6 +77,38 @@ public class GuiViewController {
 
 		model.addAttribute("link", link);
 		return "components/link-edit";
+	}
+
+	@RequestMapping(value = "/connector/{fromLinkId}/{toLinkId}", method = RequestMethod.GET)
+	public String connectorView(
+			@PathVariable long fromLinkId,
+			@MatrixVariable(value = "laneId", pathVar = "fromLinkId") int fromLaneId,
+			@PathVariable long toLinkId,
+			@MatrixVariable(value = "laneId", pathVar = "toLinkId") int toLaneId,
+			Model model) {
+		Network network = project.getNetwork();
+		if (network == null)
+			return "components/empty";
+		Link fromLink = network.getLink(fromLinkId);
+		if (fromLink == null)
+			return "components/empty";
+		Lane fromLane = fromLink.getLane(fromLaneId);
+		if (fromLane == null)
+			return "components/empty";
+		Link toLink = network.getLink(toLinkId);
+		if (toLink == null)
+			return "components/empty";
+		Lane toLane = toLink.getLane(toLaneId);
+		if (toLane == null)
+			return "components/empty";
+
+		ConnectionLane connector = fromLane.getLink().getEndNode()
+				.getConnector(fromLane, toLane);
+		if (connector == null)
+			return "components/empty";
+
+		model.addAttribute("connector", connector);
+		return "components/connector";
 	}
 
 	@RequestMapping(value = "/simulator", method = RequestMethod.GET)
