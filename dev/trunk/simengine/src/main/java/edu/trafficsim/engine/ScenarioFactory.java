@@ -1,6 +1,5 @@
 package edu.trafficsim.engine;
 
-import edu.trafficsim.model.DriverType;
 import edu.trafficsim.model.DriverTypeComposition;
 import edu.trafficsim.model.Network;
 import edu.trafficsim.model.Node;
@@ -9,11 +8,10 @@ import edu.trafficsim.model.OdMatrix;
 import edu.trafficsim.model.Router;
 import edu.trafficsim.model.SimulationScenario;
 import edu.trafficsim.model.Simulator;
-import edu.trafficsim.model.VehicleType;
 import edu.trafficsim.model.VehicleTypeComposition;
 import edu.trafficsim.model.core.ModelInputException;
 
-public interface ScenarioBuilder {
+public interface ScenarioFactory {
 
 	public SimulationScenario createSimulationScenario(String name,
 			Simulator simulator, Network network, OdMatrix odMatrix,
@@ -25,14 +23,6 @@ public interface ScenarioBuilder {
 			VehicleTypeComposition vehicleTypeComposition,
 			DriverTypeComposition driverTypeComposition, double[] times,
 			Integer[] vphs) throws ModelInputException;
-
-	public VehicleTypeComposition createVehicleTypeComposition(
-			VehicleType[] vehicleTypes, double[] probabilities)
-			throws ModelInputException;
-
-	public DriverTypeComposition createDriverTypeComposition(
-			DriverType[] driverTypes, double[] probabilities)
-			throws ModelInputException;
 
 	public Router createRouter();
 

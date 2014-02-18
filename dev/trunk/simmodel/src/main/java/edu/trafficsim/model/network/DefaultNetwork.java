@@ -35,6 +35,8 @@ public class DefaultNetwork extends AbstractNetwork<DefaultNetwork> implements
 
 	@Override
 	public void discover() {
+		sources.clear();
+		sinks.clear();
 		double x = 0, y = 0;
 		for (Node node : nodes.values()) {
 			x += node.getPoint().getX();
@@ -43,6 +45,14 @@ public class DefaultNetwork extends AbstractNetwork<DefaultNetwork> implements
 				sinks.add(node);
 			if (node.getUpstreams().isEmpty())
 				sources.add(node);
+			if (node.getUpstreams().size() == 1
+					&& node.getDownstreams().size() == 1
+					&& node.getUpstreams().iterator().next() == node
+							.getDownstreams().iterator().next()
+							.getReverseLink()) {
+				sinks.add(node);
+				sources.add(node);
+			}
 		}
 		double n = (double) nodes.size();
 		center = new Coordinate(x / n, y / n);

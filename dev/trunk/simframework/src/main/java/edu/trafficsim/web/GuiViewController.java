@@ -23,6 +23,8 @@ public class GuiViewController {
 
 	@Autowired
 	SimulationProject project;
+	@Autowired
+	VehicleTypeRepo vehicleRepo;
 
 	@RequestMapping(value = "/scenario-new", method = RequestMethod.GET)
 	public String newScenarioView() {
@@ -66,19 +68,6 @@ public class GuiViewController {
 		return "components/link";
 	}
 
-	@RequestMapping(value = "/link-edit/{id}", method = RequestMethod.GET)
-	public String linkEdit(@PathVariable long id, Model model) {
-		Network network = project.getNetwork();
-		if (network == null)
-			return "components/empty";
-		Link link = network.getLink(id);
-		if (link == null)
-			return "components/empty";
-
-		model.addAttribute("link", link);
-		return "components/link-edit";
-	}
-
 	@RequestMapping(value = "/connector/{fromLinkId}/{toLinkId}", method = RequestMethod.GET)
 	public String connectorView(
 			@PathVariable long fromLinkId,
@@ -109,6 +98,20 @@ public class GuiViewController {
 
 		model.addAttribute("connector", connector);
 		return "components/connector";
+	}
+
+	@RequestMapping(value = "/node/{id}", method = RequestMethod.GET)
+	public String nodeView(@PathVariable long id, Model model) {
+		// TODO logic
+
+		return "components/empty";
+	}
+
+	@RequestMapping(value = "/vehiclecomposition", method = RequestMethod.GET)
+	public String viechleCompositionView(Model model) {
+		model.addAttribute("vehicleCompositions",
+				vehicleRepo.getVehicleTypeCompositions());
+		return "components/vehiclecomposition";
 	}
 
 	@RequestMapping(value = "/simulator", method = RequestMethod.GET)

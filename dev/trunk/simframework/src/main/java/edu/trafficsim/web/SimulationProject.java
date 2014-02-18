@@ -5,9 +5,9 @@ import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Component;
 
 import edu.trafficsim.engine.NetworkFactory;
-import edu.trafficsim.engine.ScenarioBuilder;
+import edu.trafficsim.engine.ScenarioFactory;
 import edu.trafficsim.engine.factory.DefaultNetworkFactory;
-import edu.trafficsim.engine.factory.DefaultScenarioBuilder;
+import edu.trafficsim.engine.factory.DefaultScenarioFactory;
 import edu.trafficsim.model.Network;
 import edu.trafficsim.model.OdMatrix;
 import edu.trafficsim.model.Router;
@@ -22,7 +22,7 @@ public class SimulationProject {
 
 	// TODO set factory through settings
 	private NetworkFactory networkFactory;
-	private ScenarioBuilder scenarioBuilder;
+	private ScenarioFactory scenarioFactory;
 
 	private Simulator simulator;
 	private Network network;
@@ -31,14 +31,14 @@ public class SimulationProject {
 
 	public SimulationProject() {
 		networkFactory = DefaultNetworkFactory.getInstance();
-		scenarioBuilder = DefaultScenarioBuilder.getInstance();
+		scenarioFactory = DefaultScenarioFactory.getInstance();
 
 		reset();
 	}
 
 	public void reset() {
 		network = null;
-		odMatrix = scenarioBuilder.createEmptyOdMatrix(ENTITY_NAME);
+		odMatrix = scenarioFactory.createEmptyOdMatrix(ENTITY_NAME);
 		router = null;
 	}
 
@@ -50,12 +50,12 @@ public class SimulationProject {
 		this.networkFactory = networkFactory;
 	}
 
-	public ScenarioBuilder getScenarioBuilder() {
-		return scenarioBuilder;
+	public ScenarioFactory getScenarioFactory() {
+		return scenarioFactory;
 	}
 
-	public void setScenarioBuilder(ScenarioBuilder scenarioBuilder) {
-		this.scenarioBuilder = scenarioBuilder;
+	public void setScenarioFactory(ScenarioFactory scenarioFactory) {
+		this.scenarioFactory = scenarioFactory;
 	}
 
 	public Simulator getSimulator() {
@@ -91,7 +91,7 @@ public class SimulationProject {
 	}
 
 	public SimulationScenario getScenario() {
-		return scenarioBuilder.createSimulationScenario(ENTITY_NAME, simulator,
+		return scenarioFactory.createSimulationScenario(ENTITY_NAME, simulator,
 				network, odMatrix, router);
 	}
 }

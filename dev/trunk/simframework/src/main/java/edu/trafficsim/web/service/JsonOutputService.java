@@ -49,6 +49,35 @@ public class JsonOutputService {
 
 	/**
 	 * @param network
+	 * @param nodeId
+	 * @return {nodeId : node WKT String}
+	 */
+	public String getNodeJson(Network network, long nodeId) {
+		if (network == null)
+			return "{}";
+
+		return network.getNode(nodeId) != null ? "{"
+				+ getNode(network.getNode(nodeId)) + "}" : "{}";
+	}
+
+	/**
+	 * @param node
+	 * @return nodeId : node WKT String
+	 */
+	private String getNode(Node node) {
+		StringBuffer nodeSb = new StringBuffer();
+		nodeSb.append("\"");
+		nodeSb.append(node.getId());
+		nodeSb.append("\"");
+		nodeSb.append(":");
+		nodeSb.append("\"");
+		nodeSb.append(writer.write(node.getPoint()));
+		nodeSb.append("\"");
+		return nodeSb.toString();
+	}
+
+	/**
+	 * @param network
 	 * @param linkId
 	 * @return {linkId : [lane WKT Strings]}
 	 */
@@ -223,6 +252,7 @@ public class JsonOutputService {
 		StringBuffer linkSb = new StringBuffer();
 		StringBuffer laneSb = new StringBuffer();
 		StringBuffer connectorSb = new StringBuffer();
+		StringBuffer nodeSb = new StringBuffer();
 		if (network != null) {
 			for (Link link : network.getLinks()) {
 				linkSb.append(getLink(link));
@@ -235,6 +265,8 @@ public class JsonOutputService {
 					connectorSb.append(getConnector(connector));
 					connectorSb.append(",");
 				}
+				nodeSb.append(getNode(node));
+				nodeSb.append(",");
 			}
 
 			if (linkSb.length() > 0)
@@ -243,9 +275,12 @@ public class JsonOutputService {
 				laneSb.deleteCharAt(laneSb.length() - 1);
 			if (connectorSb.length() > 0)
 				connectorSb.deleteCharAt(connectorSb.length() - 1);
+			if (nodeSb.length() > 0)
+				nodeSb.deleteCharAt(nodeSb.length() - 1);
 		}
 		return "{" + getCenter(network) + ", \"links\": {" + linkSb.toString()
 				+ "}, \"lanes\":{" + laneSb.toString() + "}, \"connectors\":{"
-				+ connectorSb.toString() + "}}";
+				+ connectorSb.toString() + "}, \"nodes\":{" + nodeSb.toString()
+				+ "}}";
 	}
 }
