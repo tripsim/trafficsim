@@ -7,56 +7,56 @@
 		<tbody>
 			<tr>
 				<td>Link Id</td>
-				<td th:text="${link.id}"></td>
+				<td data-th-text="${link.id}"></td>
 			</tr>
 			<tr>
 				<td>Link Name</td>
-				<td th:text="${link.name}"></td>
+				<td data-th-text="${link.name}"></td>
 			</tr>
 			<tr>
 				<td>Start Node</td>
-				<td th:text="${link.startNode.name}"></td>
+				<td data-th-text="${link.startNode.name}"></td>
 			</tr>
 			<tr>
 				<td>End Node</td>
-				<td th:text="${link.endNode.name}"></td>
+				<td data-th-text="${link.endNode.name}"></td>
 			</tr>
 			<tr>
 				<td>Length</td>
-				<td th:text="${link.length}"></td>
+				<td data-th-text="${link.length}"></td>
 			</tr>
 			<tr>
 				<td>Highway</td>
-				<td th:text="${link.roadInfo.highway}"></td>
+				<td data-th-text="${link.roadInfo.highway}"></td>
 			</tr>
 			<tr>
 				<td>Road Name</td>
-				<td th:text="${link.roadInfo.roadName}"></td>
+				<td data-th-text="${link.roadInfo.roadName}"></td>
 			</tr>
 		</tbody>
 	</table>
 	<table>
-		<tbody th:each="lane : ${link.lanes}">
+		<tbody data-th-each="lane : ${link.lanes}">
 			<tr>
 				<td>Lane</td>
-				<td th:text="${lane.laneId}"></td>
+				<td data-th-text="${lane.laneId}"></td>
 				<td colspan="6"><span
-					th:attr="data-id=${link.id} + '-' + ${lane.laneId}"
+					data-th-attr="data-id=${link.id} + '-' + ${lane.laneId}"
 					class="user-configuration-link-remove-lane button">remove</span></td>
 			</tr>
 			<tr>
 				<td>width</td>
-				<td th:text="${lane.width}"></td>
+				<td data-th-text="${lane.width}"></td>
 				<td>start</td>
-				<td th:text="${lane.start}"></td>
+				<td data-th-text="${lane.start}"></td>
 				<td>end</td>
-				<td th:text="${lane.end}"></td>
+				<td data-th-text="${lane.end}"></td>
 				<td>shift</td>
-				<td th:text="${lane.shift}"></td>
+				<td data-th-text="${lane.shift}"></td>
 			</tr>
 		</tbody>
 		<tr>
-			<td colspan="8"><span th:attr="data-id=${link.id}"
+			<td colspan="8"><span data-th-attr="data-id=${link.id}"
 				class="user-configuration-link-add-lane button">add lane</span></td>
 		</tr>
 	</table>

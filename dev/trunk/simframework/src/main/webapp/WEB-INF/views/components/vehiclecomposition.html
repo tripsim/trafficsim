@@ -6,9 +6,9 @@
 <div>
 	<table>
 		<tbody id="user-configuration-vehicle-comp-tbody">
-			<th:block th:each="vehicleComposition : ${vehicleCompositions}">
+			<th:block data-th-each="vehicleComposition : ${vehicleCompositions}">
 				<tr
-					th:include="components/vehiclecomposition-fragments :: view(${vehicleComposition})">
+					data-th-include="components/vehiclecomposition-fragments :: view(${vehicleComposition})">
 				</tr>
 			</th:block>
 		</tbody>
