@@ -2,58 +2,58 @@
 <div id="user-configuration-buttons">
 	<span id="user-configuration-button-close" class="button">close</span>
 </div>
-<div th:each="link : ${links}">
+<div data-th-each="link : ${links}">
 	<table>
 		<tbody>
 			<tr>
 				<td>Link Id</td>
-				<td th:text="${link.id}"></td>
-				<td><span th:attr="data-id=${link.id}"
+				<td data-th-text="${link.id}"></td>
+				<td><span data-th-attr="data-id=${link.id}"
 					class="user-configuration-link-edit button">edit</span></td>
 			</tr>
 			<tr>
 				<td>Link Name</td>
-				<td colspan="2" th:text="${link.name}"></td>
+				<td colspan="2" data-th-text="${link.name}"></td>
 			</tr>
 			<tr>
 				<td>Start Node</td>
-				<td colspan="2" th:text="${link.startNode.name}"></td>
+				<td colspan="2" data-th-text="${link.startNode.name}"></td>
 			</tr>
 			<tr>
 				<td>End Node</td>
-				<td colspan="2" th:text="${link.endNode.name}"></td>
+				<td colspan="2" data-th-text="${link.endNode.name}"></td>
 			</tr>
 			<tr>
 				<td>Length</td>
-				<td colspan="2" th:text="${link.length}"></td>
+				<td colspan="2" data-th-text="${link.length}"></td>
 			</tr>
 			<tr>
 				<td>Highway</td>
-				<td colspan="2" th:text="${link.roadInfo.highway}"></td>
+				<td colspan="2" data-th-text="${link.roadInfo.highway}"></td>
 			</tr>
 			<tr>
 				<td>Road Name</td>
-				<td colspan="2" th:text="${link.roadInfo.roadName}"></td>
+				<td colspan="2" data-th-text="${link.roadInfo.roadName}"></td>
 			</tr>
 		</tbody>
 	</table>
 	<table>
-		<tbody th:each="lane : ${link.lanes}">
+		<tbody data-th-each="lane : ${link.lanes}">
 			<tr>
 				<td>Lane</td>
-				<td colspan="9" th:text="${lane.laneId}"></td>
+				<td colspan="9" data-th-text="${lane.laneId}"></td>
 			</tr>
 			<tr>
 				<td>width</td>
-				<td th:text="${lane.width}"></td>
+				<td data-th-text="${lane.width}"></td>
 				<td>start</td>
-				<td th:text="${lane.start}"></td>
+				<td data-th-text="${lane.start}"></td>
 				<td>end</td>
-				<td th:text="${lane.end}"></td>
+				<td data-th-text="${lane.end}"></td>
 				<td>shift</td>
-				<td th:text="${lane.shift}"></td>
+				<td data-th-text="${lane.shift}"></td>
 				<td>length</td>
-				<td th:text="${lane.length}"></td>
+				<td data-th-text="${lane.length}"></td>
 			</tr>
 		</tbody>
 	</table>
