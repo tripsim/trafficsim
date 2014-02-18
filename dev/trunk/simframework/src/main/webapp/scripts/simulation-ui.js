@@ -117,7 +117,7 @@ jQuery(document)
 					/* edit link */
 					jQuery('#user-configuration').on('click',
 							'.user-configuration-link-edit', function() {
-								var id = jQuery(this).attr('id');
+								var id = jQuery(this).attr('data-id');
 								simwebhelper.getPanel('edit/link/' + id);
 							});
 					/***********************************************************
@@ -128,7 +128,7 @@ jQuery(document)
 							'click',
 							'.user-configuration-link-add-lane',
 							function() {
-								var id = jQuery(this).attr('id');
+								var id = jQuery(this).attr('data-id');
 								simwebhelper.action('action/addlanetolink', {
 									id : id
 								}, function(data) {
@@ -141,7 +141,8 @@ jQuery(document)
 							'click',
 							'.user-configuration-link-remove-lane',
 							function() {
-								var ids = jQuery(this).attr('id').split('-');
+								var ids = jQuery(this).attr('data-id').split(
+										'-');
 								simwebhelper.action(
 										'action/removelanefromlink', {
 											laneId : ids[1],
@@ -155,9 +156,12 @@ jQuery(document)
 					 * Panel, User Configuration, Connector Edit
 					 **********************************************************/
 					/* remove connector */
-					jQuery('#user-configuration').on('click',
-							'.user-configuration-connector-remove', function() {
-								var ids = jQuery(this).attr('id').split('-');
+					jQuery('#user-configuration').on(
+							'click',
+							'.user-configuration-connector-remove',
+							function() {
+								var ids = jQuery(this).attr('data-id').split(
+										'-');
 								simwebhelper.action('action/removeconnector', {
 									fromLink : ids[0],
 									fromLane : ids[1],
@@ -165,7 +169,7 @@ jQuery(document)
 									toLane : ids[3]
 								}, function(data) {
 									that.removeConnector(data);
-									simwebhelper.hidPanel();
+									simwebhelper.hidePanel();
 								});
 							});
 					/***********************************************************

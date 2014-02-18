@@ -40,7 +40,8 @@
 			<tr>
 				<td>Lane</td>
 				<td th:text="${lane.laneId}"></td>
-				<td colspan="6"><span th:id="${link.id} + '-' + ${lane.laneId}"
+				<td colspan="6"><span
+					th:attr="data-id=${link.id} + '-' + ${lane.laneId}"
 					class="user-configuration-link-remove-lane button">remove</span></td>
 			</tr>
 			<tr>
@@ -55,7 +56,7 @@
 			</tr>
 		</tbody>
 		<tr>
-			<td colspan="8"><span th:id="${link.id}"
+			<td colspan="8"><span th:attr="data-id=${link.id}"
 				class="user-configuration-link-add-lane button">add lane</span></td>
 		</tr>
 	</table>

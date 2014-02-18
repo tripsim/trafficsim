@@ -414,13 +414,16 @@ simulation.initMap = function() {
 								lane1 : lane1,
 								lane2 : lane2
 							};
-							simwebhelper.action('action/connectlanes', postData,
-									function(connectors) {
+							simwebhelper.action('action/connectlanes',
+									postData, function(connectors) {
 										that.addConnectors(connectors);
 									});
 						}
 						selectLaneControl.unselectAll();
 					}
+				},
+				"featureunselected" : function(e) {
+					simwebhelper.hidePanel();
 				}
 			});
 	/***************************************************************************

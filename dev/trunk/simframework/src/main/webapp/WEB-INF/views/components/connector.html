@@ -27,7 +27,7 @@
 			</tr>
 			<tr>
 				<td colspan="2"><span
-					th:id="${connector.fromLane.link.id} + '-' + ${connector.fromLane.laneId} + '-'
+					th:attr="data-id=${connector.fromLane.link.id} + '-' + ${connector.fromLane.laneId} + '-'
 					+ ${connector.toLane.link.id} + '-' + ${connector.toLane.laneId}"
 					class="user-configuration-connector-remove button">remove
 						connection</span></td>
