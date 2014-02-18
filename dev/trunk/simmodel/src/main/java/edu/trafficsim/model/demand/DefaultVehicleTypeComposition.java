@@ -10,14 +10,12 @@ import edu.trafficsim.model.core.ModelInputException;
 public class DefaultVehicleTypeComposition extends
 		AbstractComposition<VehicleType> implements VehicleTypeComposition {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
-	public DefaultVehicleTypeComposition(VehicleType[] vehicleTypes,
-			double[] probabilities) throws ModelInputException {
-		super(vehicleTypes, probabilities);
+	public DefaultVehicleTypeComposition(long id, String name,
+			VehicleType[] vehicleTypes, double[] probabilities)
+			throws ModelInputException {
+		super(id, name, vehicleTypes, probabilities);
 	}
 
 	@Override

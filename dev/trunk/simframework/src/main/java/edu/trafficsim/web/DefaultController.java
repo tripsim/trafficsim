@@ -82,7 +82,7 @@ public class DefaultController {
 			network = extractOsmNetworkService.createNetwork(bbox, highway,
 					project.getNetworkFactory());
 			project.setNetwork(network);
-			return actionJsonResponse.response("network created",
+			return actionJsonResponse.successResponse("network created",
 					"view/network", jsonOutputService.getNetworkJson(network));
 		} catch (MalformedURLException e) {
 			// TODO Auto-generated catch block
@@ -104,6 +104,6 @@ public class DefaultController {
 			e.printStackTrace();
 		}
 		return actionJsonResponse
-				.messageOnlyResponse("Network generation failed.");
+				.failureResponse("Network generation failed.");
 	}
 }

@@ -133,13 +133,15 @@ simulation.initMap = function() {
 	 * Vector Layer, Network (Link-Node)
 	 **************************************************************************/
 	var networkTemplate = {
+		pointRadius : 4,
 		strokeWidth : 6,
-		strokeColor : '${strokeColor}',
+		strokeColor : '${color}',
 		strokeOpacity : 0.5,
 		fillColor : 'black',
 		fillOpacity : 0.5
 	};
 	var networkSelectTemplate = {
+		pointRadius : 6,
 		strokeColor : 'gray',
 		strokeOpacity : 0.75,
 		strokeWidth : 10,
@@ -147,8 +149,8 @@ simulation.initMap = function() {
 		fillOpacity : 0.75,
 	};
 	var networkContext = {
-		strokeColor : function(feature) {
-			return 'black';
+		color : function(feature) {
+			return feature.attributes['linkId'] ? 'gray' : 'black';
 		}
 	};
 	var networkLayer = new OpenLayers.Layer.Vector('Network', {
@@ -165,9 +167,7 @@ simulation.initMap = function() {
 			zIndexing : true
 		}
 	});
-	this.reDrawNetwork = function(links) {
-		this.network.links = {};
-		networkLayer.removeAllFeatures();
+	var _drawLinks = function(links) {
 		var features = [];
 		for ( var i in links) {
 			var geom = OpenLayers.Geometry.fromWKT(links[i]);
@@ -175,9 +175,28 @@ simulation.initMap = function() {
 				linkId : i
 			});
 			features.push(feature);
-			this.network.links[i] = feature;
+			that.network.links[i] = feature;
 		}
 		networkLayer.addFeatures(features);
+	};
+	var _drawNodes = function(nodes) {
+		var features = [];
+		for ( var i in nodes) {
+			var geom = OpenLayers.Geometry.fromWKT(nodes[i]);
+			var feature = new OpenLayers.Feature.Vector(geom, {
+				nodeId : i
+			});
+			features.push(feature);
+			that.network.nodes[i] = feature;
+		}
+		networkLayer.addFeatures(features);
+	};
+	this.reDrawNetwork = function(links, nodes) {
+		this.network.links = {};
+		this.network.nodes = {};
+		networkLayer.removeAllFeatures();
+		_drawLinks(links);
+		_drawNodes(nodes);
 	};
 	this.networkLayer = networkLayer;
 	map.addLayer(networkLayer);
@@ -336,8 +355,13 @@ simulation.initMap = function() {
 	 **************************************************************************/
 	networkLayer.events.on({
 		"featureselected" : function(e) {
-			simwebhelper
-					.getPanel('view/link/' + e.feature.attributes['linkId']);
+			if (e.feature.attributes['linkId'])
+				simwebhelper.getPanel('view/link/'
+						+ e.feature.attributes['linkId']);
+			else if (e.feature.attributes['nodeId'])
+				simwebhelper.getPanel('view/node/'
+						+ e.feature.attributes['nodeId']);
+
 		},
 		"featureunselected" : function(e) {
 			simwebhelper.hidePanel();
@@ -390,7 +414,7 @@ simulation.initMap = function() {
 								lane1 : lane1,
 								lane2 : lane2
 							};
-							simwebhelper.action('edit/connectlanes', postData,
+							simwebhelper.action('action/connectlanes', postData,
 									function(connectors) {
 										that.addConnectors(connectors);
 									});
@@ -419,7 +443,7 @@ simulation.initMap = function() {
 			highway : highway
 		};
 		simwebhelper.action('createnetwork', postData, function(data) {
-			that.reDrawNetwork(data['links']);
+			that.reDrawNetwork(data['links'], data['nodes']);
 			that.editLinks();
 		});
 	};

@@ -13,9 +13,11 @@ public class TurnPercentage extends AbstractComposition<Link> {
 
 	private Link upstream;
 
-	public TurnPercentage(Link upstream) throws ModelInputException {
-		super(upstream.getEndNode().getDownstreams().toArray(new Link[0]),
-				new double[upstream.getEndNode().getDownstreams().size()]);
+	public TurnPercentage(long id, String name, Link upstream)
+			throws ModelInputException {
+		super(id, name, upstream.getEndNode().getDownstreams()
+				.toArray(new Link[0]), new double[upstream.getEndNode()
+				.getDownstreams().size()]);
 		this.upstream = upstream;
 	}
 

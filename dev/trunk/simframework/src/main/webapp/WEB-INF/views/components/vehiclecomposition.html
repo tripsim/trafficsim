@@ -1,0 +1,22 @@
+<h2>Vehicle Compositions</h2>
+<div id="user-configuration-buttons">
+	<span id="user-configuration-button-close" class="button">close</span>
+</div>
+
+<div>
+	<table>
+		<tbody id="user-configuration-vehicle-comp-tbody">
+			<th:block th:each="vehicleComposition : ${vehicleCompositions}">
+				<tr
+					th:include="components/vehiclecomposition-fragments :: view(${vehicleComposition})">
+				</tr>
+			</th:block>
+		</tbody>
+		<tbody>
+			<tr>
+				<td><span class="user-configuration-vehicle-comp-new button">new</span></td>
+			</tr>
+		</tbody>
+	</table>
+
+</div>

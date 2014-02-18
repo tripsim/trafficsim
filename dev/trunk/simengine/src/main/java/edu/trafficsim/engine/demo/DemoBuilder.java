@@ -12,9 +12,11 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.vividsolutions.jts.geom.Coordinate;
 
 import edu.trafficsim.engine.NetworkFactory;
-import edu.trafficsim.engine.ScenarioBuilder;
+import edu.trafficsim.engine.ScenarioFactory;
+import edu.trafficsim.engine.TypesFactory;
 import edu.trafficsim.engine.factory.DefaultNetworkFactory;
-import edu.trafficsim.engine.factory.DefaultScenarioBuilder;
+import edu.trafficsim.engine.factory.DefaultScenarioFactory;
+import edu.trafficsim.engine.factory.DefaultTypesFactory;
 import edu.trafficsim.engine.osm.OsmNetworkExtractor;
 import edu.trafficsim.model.DriverType;
 import edu.trafficsim.model.DriverTypeComposition;
@@ -46,15 +48,8 @@ public class DemoBuilder {
 	private OdMatrix odMatrix;
 	private Router router;
 
-	static ScenarioBuilder scenarioBuilder = DefaultScenarioBuilder
+	static ScenarioFactory scenarioFactory = DefaultScenarioFactory
 			.getInstance();
-
-	// TODO think about Type creation
-	static VehicleType vehicleTypeCar = new VehicleType(0, "TestCar",
-			VehicleClass.Car);
-	static VehicleType vehicleTypeTruck = new VehicleType(0, "TestTruck",
-			VehicleClass.Truck);
-	static DriverType driverType = new DriverType(0, "TestDriver");
 
 	public DemoBuilder() throws ModelInputException,
 			NoSuchAuthorityCodeException, FactoryException, TransformException {
@@ -75,6 +70,7 @@ public class DemoBuilder {
 			NoSuchAuthorityCodeException, FactoryException, TransformException {
 
 		NetworkFactory networkFactory = DefaultNetworkFactory.getInstance();
+		TypesFactory typesFactory = DefaultTypesFactory.getInstance();
 
 		// TODO using WTKReader, or other well known format reader if viable
 
@@ -127,10 +123,12 @@ public class DemoBuilder {
 				.createLink("Johson1", node1, node2, coords1);
 		Link link2 = networkFactory
 				.createLink("Johson2", node2, node3, coords2);
-		
+
 		// RoadInfo
-		RoadInfo info1 = networkFactory.createRoadInfo("Test name", 12345, "Test highway");
-		RoadInfo info2 = networkFactory.createRoadInfo("Test name", 54321, "Test highway");
+		RoadInfo info1 = networkFactory.createRoadInfo("Test name", 12345,
+				"Test highway");
+		RoadInfo info2 = networkFactory.createRoadInfo("Test name", 54321,
+				"Test highway");
 		link1.setRoadInfo(info1);
 		link2.setRoadInfo(info2);
 
@@ -145,7 +143,6 @@ public class DemoBuilder {
 				GeoReferencing.getCrs(GeoReferencing.CRS_CODE_4326),
 				GeoReferencing.getCrs(GeoReferencing.CRS_CODE_900913));
 		CoordinateTransformer.transform(network, filter);
-		
 
 		// Lanes
 		Lane[] lanes1 = networkFactory.createLanes(link1, 3);
@@ -155,45 +152,54 @@ public class DemoBuilder {
 		networkFactory.connect(lanes1[1], lanes2[1]);
 		networkFactory.connect(lanes1[2], lanes2[2]);
 
+		// create types and
+		VehicleType vehicleTypeCar = typesFactory.createVechileType("TestCar",
+				VehicleClass.Car);
+		VehicleType vehicleTypeTruck = typesFactory.createVechileType(
+				"TestTruck", VehicleClass.Truck);
+		DriverType driverType = typesFactory.createDriverType("TestDriver");
+
 		// create Demand
 		VehicleType[] vehicleTypes = new VehicleType[] { vehicleTypeCar,
 				vehicleTypeTruck };
 		double[] vehPossibilities = new double[] { 0.8, 0.2 };
-		VehicleTypeComposition vehicleTypeComposition = scenarioBuilder
-				.createVehicleTypeComposition(vehicleTypes, vehPossibilities);
+		VehicleTypeComposition vehicleTypeComposition = typesFactory
+				.createVehicleTypeComposition("Default", vehicleTypes,
+						vehPossibilities);
 		// Driver Type
 		DriverType[] driverTypes = new DriverType[] { driverType };
 		double[] drvPossibilities = new double[] { 1.0 };
-		DriverTypeComposition driverTypeComposition = scenarioBuilder
-				.createDriverTypeComposition(driverTypes, drvPossibilities);
+		DriverTypeComposition driverTypeComposition = typesFactory
+				.createDriverTypeComposition("Default", driverTypes,
+						drvPossibilities);
 
 		// Origin Destination
 		// no destination 0s ~ 100s 1000vph
 		// no destination 100s~200s 800vph
 		double[] times = new double[] { 300, 500 };
 		Integer[] vphs = new Integer[] { 1600, 1000 };
-		Od od = scenarioBuilder.createOd("test", node1, null,
+		Od od = scenarioFactory.createOd("test", node1, null,
 				vehicleTypeComposition, driverTypeComposition, times, vphs);
 
-		odMatrix = scenarioBuilder.createEmptyOdMatrix("test");
+		odMatrix = scenarioFactory.createEmptyOdMatrix("test");
 		odMatrix.add(od);
 
 		// Router
 		TurnPercentageRouter turnPercentageRouter = new TurnPercentageRouter(0,
 				"test");
 		double[] times1 = new double[] { 500 };
-		TurnPercentage turnPercentage1 = new TurnPercentage(link1);
+		TurnPercentage turnPercentage1 = new TurnPercentage(0, "test", link1);
 		turnPercentage1.put(link2, 1.0);
 		TurnPercentage[] turnPercentages = new TurnPercentage[] { turnPercentage1 };
 		turnPercentageRouter.setTurnPercentage(link1, VehicleClass.Car, times1,
 				turnPercentages);
 
 		// Simulator
-		simulator = scenarioBuilder.createSimulator("test", 500, 1);
+		simulator = scenarioFactory.createSimulator("test", 500, 1);
 	}
 
 	public SimulationScenario getScenario() {
-		return scenarioBuilder.createSimulationScenario("demo", simulator,
+		return scenarioFactory.createSimulationScenario("demo", simulator,
 				network, odMatrix, router);
 	}
 

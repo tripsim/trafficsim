@@ -1,0 +1,38 @@
+<th:block th:fragment="view(vehicleComposition)">
+	<td><span>Name</span> <br /> <span
+		th:text="${vehicleComposition.name}"></span></td>
+	<td th:each="vehicleType : ${vehicleComposition.vehicleTypes}"><span
+		th:text="${vehicleType.name}"></span> <br /> <span
+		th:text="${vehicleComposition.probability(vehicleType)}"></span></td>
+	<td><span th:attr="data-id=${vehicleComposition.id}"
+		class="user-configuration-vehicle-comp-edit button">edit</span></td>
+	<td><span th:attr="data-id=${vehicleComposition.id}"
+		class="user-configuration-vehicle-comp-remove button">remove</span></td>
+</th:block>
+
+<th:block th:fragment="edit(vehicleComposition, vehicleTypes)">
+	<td class="vehiclecomposition-td-name"><span>Name</span> <br /> <input
+		type="text" size="10" name="name"
+		th:value="${vehicleComposition.name}" /></td>
+	<td class="vehiclecomposition-td"
+		th:each="vehicleType : ${vehicleComposition.vehicleTypes}"><span
+		th:include="components/vehiclecomposition-fragments :: select(${vehicleTypes}, ${vehicleType})"></span>
+		<br /> <input type="text" size="10"
+		th:value="${vehicleComposition.probability(vehicleType)}" /></td>
+	<td><span th:attr="data-id=${vehicleComposition.id}"
+		class="user-configuration-vehicle-comp-add button">add</span></td>
+	<td><span th:attr="data-id=${vehicleComposition.id}"
+		class="user-configuration-vehicle-comp-save button">save</span></td>
+	<td><span th:attr="data-id=${vehicleComposition.id}"
+		class="user-configuration-vehicle-comp-cancel button">cancel</span></td>
+</th:block>
+
+<th:block th:fragment="select(vehicleTypes, selectedVehicleType)">
+	<select>
+		<th:block th:each="vehicleType : ${vehicleTypes}">
+			<option
+				th:attr="selected=${selectedVehicleType.equals(vehicleType)} ? 'true' :'false', value=${vehicleType.id}"
+				th:text="${vehicleType.name}"></option>
+		</th:block>
+	</select>
+</th:block>

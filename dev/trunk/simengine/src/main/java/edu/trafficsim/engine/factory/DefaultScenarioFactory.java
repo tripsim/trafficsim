@@ -1,7 +1,6 @@
 package edu.trafficsim.engine.factory;
 
-import edu.trafficsim.engine.ScenarioBuilder;
-import edu.trafficsim.model.DriverType;
+import edu.trafficsim.engine.ScenarioFactory;
 import edu.trafficsim.model.DriverTypeComposition;
 import edu.trafficsim.model.Network;
 import edu.trafficsim.model.Node;
@@ -10,27 +9,24 @@ import edu.trafficsim.model.OdMatrix;
 import edu.trafficsim.model.Router;
 import edu.trafficsim.model.SimulationScenario;
 import edu.trafficsim.model.Simulator;
-import edu.trafficsim.model.VehicleType;
 import edu.trafficsim.model.VehicleTypeComposition;
 import edu.trafficsim.model.core.DefaultSimulationScenario;
 import edu.trafficsim.model.core.ModelInputException;
-import edu.trafficsim.model.demand.DefaultDriverTypeComposition;
 import edu.trafficsim.model.demand.DefaultOd;
 import edu.trafficsim.model.demand.DefaultOdMatrix;
-import edu.trafficsim.model.demand.DefaultVehicleTypeComposition;
 import edu.trafficsim.model.simulator.DefaultSimulator;
 
-public class DefaultScenarioBuilder extends AbstractFactory implements
-		ScenarioBuilder {
+public class DefaultScenarioFactory extends AbstractFactory implements
+		ScenarioFactory {
 
-	private static DefaultScenarioBuilder factory;
+	private static DefaultScenarioFactory factory;
 
-	private DefaultScenarioBuilder() {
+	private DefaultScenarioFactory() {
 	}
 
-	public static DefaultScenarioBuilder getInstance() {
+	public static DefaultScenarioFactory getInstance() {
 		if (factory == null) {
-			factory = new DefaultScenarioBuilder();
+			factory = new DefaultScenarioFactory();
 		}
 		return factory;
 	}
@@ -55,20 +51,6 @@ public class DefaultScenarioBuilder extends AbstractFactory implements
 			Integer[] vphs) throws ModelInputException {
 		return new DefaultOd(nextId(), name, origin, destination,
 				vehicleTypeComposition, driverTypeComposition, times, vphs);
-	}
-
-	@Override
-	public VehicleTypeComposition createVehicleTypeComposition(
-			VehicleType[] vehicleTypes, double[] probabilities)
-			throws ModelInputException {
-		return new DefaultVehicleTypeComposition(vehicleTypes, probabilities);
-	}
-
-	@Override
-	public DriverTypeComposition createDriverTypeComposition(
-			DriverType[] driverTypes, double[] probabilities)
-			throws ModelInputException {
-		return new DefaultDriverTypeComposition(driverTypes, probabilities);
 	}
 
 	@Override

@@ -30,6 +30,12 @@ simwebhelper = {
 	/***************************************************************************
 	 * Request (Server Interaction)
 	 **************************************************************************/
+	getHtml : function(url, callback) {
+		jQuery.get(url, function(html) {
+			if (callback)
+				callback(html);
+		});
+	},
 	getPanel : function(url, callback) {
 		jQuery.get(url, function(html) {
 			simwebhelper.panel(html);
@@ -57,7 +63,7 @@ simwebhelper = {
 								if (data.status.panelUrl) {
 									simwebhelper.getPanel(data.status.panelUrl);
 								} else {
-									simwebhelper.hidePanel();
+									//simwebhelper.hidePanel();
 								}
 							}
 							if (callback) {

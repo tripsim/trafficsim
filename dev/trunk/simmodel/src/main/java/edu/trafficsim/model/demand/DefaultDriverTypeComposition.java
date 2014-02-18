@@ -12,9 +12,10 @@ public class DefaultDriverTypeComposition extends
 
 	private static final long serialVersionUID = 1L;
 
-	public DefaultDriverTypeComposition(DriverType[] driverTypes,
-			double[] probabilities) throws ModelInputException {
-		super(driverTypes, probabilities);
+	public DefaultDriverTypeComposition(long id, String name,
+			DriverType[] driverTypes, double[] probabilities)
+			throws ModelInputException {
+		super(id, name, driverTypes, probabilities);
 	}
 
 	@Override
