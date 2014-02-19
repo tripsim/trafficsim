@@ -3,10 +3,8 @@ package edu.trafficsim.model.network;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.opengis.referencing.operation.TransformException;
@@ -19,6 +17,7 @@ import edu.trafficsim.model.Link;
 import edu.trafficsim.model.Node;
 import edu.trafficsim.model.core.AbstractLocation;
 import edu.trafficsim.model.core.ModelInputException;
+import edu.trafficsim.model.core.MultiValuedMap;
 
 public abstract class AbstractNode<T> extends AbstractLocation<T> implements
 		Node {
@@ -26,15 +25,14 @@ public abstract class AbstractNode<T> extends AbstractLocation<T> implements
 	private static final long serialVersionUID = 1L;
 
 	private static final int DEFAULT_INITIAL_CONNECTOR_MAP_CAPACITY = 4;
-	private static final int DEFAULT_INITIAL_CONNECTOR_LIST_CAPACITY = 4;
 
 	private final Set<Link> downstreams = new HashSet<Link>();
 	private final Set<Link> upstreams = new HashSet<Link>();
 
 	// TODO may not need to maps
-	private final Map<Lane, List<ConnectionLane>> inConnectors = new HashMap<Lane, List<ConnectionLane>>(
+	private final MultiValuedMap<Lane, ConnectionLane> inConnectors = new MultiValuedMap<Lane, ConnectionLane>(
 			DEFAULT_INITIAL_CONNECTOR_MAP_CAPACITY);
-	private final Map<Lane, List<ConnectionLane>> outConnectors = new HashMap<Lane, List<ConnectionLane>>(
+	private final MultiValuedMap<Lane, ConnectionLane> outConnectors = new MultiValuedMap<Lane, ConnectionLane>(
 			DEFAULT_INITIAL_CONNECTOR_MAP_CAPACITY);
 
 	public AbstractNode(long id, String name, Point point, double radius) {
@@ -80,38 +78,26 @@ public abstract class AbstractNode<T> extends AbstractLocation<T> implements
 	@Override
 	public Collection<ConnectionLane> getConnectors() {
 		List<ConnectionLane> allConnectors = new ArrayList<ConnectionLane>();
-		for (List<ConnectionLane> connectors : inConnectors.values()) {
-			allConnectors.addAll(connectors);
-		}
-		for (List<ConnectionLane> connectors : outConnectors.values()) {
-			allConnectors.addAll(connectors);
-		}
+		allConnectors.addAll(inConnectors.values());
+		allConnectors.addAll(outConnectors.values());
 		return Collections.unmodifiableCollection(allConnectors);
 	}
 
 	@Override
 	public Collection<ConnectionLane> getInConnectors(Lane fromLane) {
-		if (inConnectors.get(fromLane) != null)
-			return Collections.unmodifiableCollection(inConnectors
-					.get(fromLane));
-		return Collections.emptyList();
+		return inConnectors.get(fromLane);
 	}
 
 	@Override
 	public Collection<ConnectionLane> getOutConnectors(Lane toLane) {
-		if (outConnectors.get(toLane) != null)
-			return Collections
-					.unmodifiableCollection(outConnectors.get(toLane));
-		return Collections.emptyList();
+		return outConnectors.get(toLane);
 	}
 
 	@Override
 	public ConnectionLane getConnector(Lane fromLane, Lane toLane) {
-		if (inConnectors.get(fromLane) != null) {
-			for (ConnectionLane connector : inConnectors.get(fromLane)) {
-				if (connector.getToLane() == toLane)
-					return connector;
-			}
+		for (ConnectionLane connector : inConnectors.get(fromLane)) {
+			if (connector.getToLane() == toLane)
+				return connector;
 		}
 		return null;
 	}
@@ -119,45 +105,23 @@ public abstract class AbstractNode<T> extends AbstractLocation<T> implements
 	@Override
 	public Collection<ConnectionLane> getConnectors(Lane fromLane, Link toLink) {
 		List<ConnectionLane> newConnectors = new ArrayList<ConnectionLane>();
-		if (inConnectors.get(fromLane) != null) {
-			for (ConnectionLane connector : inConnectors.get(fromLane)) {
-				if (connector.getToLane().getLink() == toLink)
-					newConnectors.add(connector);
-			}
+		for (ConnectionLane connector : inConnectors.get(fromLane)) {
+			if (connector.getToLane().getLink() == toLink)
+				newConnectors.add(connector);
 		}
 		return Collections.unmodifiableCollection(newConnectors);
 	}
 
 	@Override
 	public void add(ConnectionLane connector) {
-		List<ConnectionLane> connectors = inConnectors.get(connector
-				.getFromLane());
-		if (connectors == null) {
-			connectors = new ArrayList<ConnectionLane>(
-					DEFAULT_INITIAL_CONNECTOR_LIST_CAPACITY);
-			inConnectors.put(connector.getFromLane(), connectors);
-		}
-		connectors.add(connector);
-
-		connectors = outConnectors.get(connector.getToLane());
-		if (connectors == null) {
-			connectors = new ArrayList<ConnectionLane>(
-					DEFAULT_INITIAL_CONNECTOR_LIST_CAPACITY);
-			outConnectors.put(connector.getToLane(), connectors);
-		}
-		connectors.add(connector);
+		inConnectors.add(connector.getFromLane(), connector);
+		outConnectors.add(connector.getToLane(), connector);
 	}
 
 	@Override
 	public void remove(ConnectionLane connector) {
-		List<ConnectionLane> connectors = inConnectors.get(connector
-				.getFromLane());
-		if (connectors != null)
-			connectors.remove(connector);
-
-		connectors = outConnectors.get(connector.getToLane());
-		if (connectors != null)
-			connectors.remove(connector);
+		inConnectors.remove(connector.getFromLane(), connector);
+		outConnectors.remove(connector.getToLane(), connector);
 	}
 
 	@Override

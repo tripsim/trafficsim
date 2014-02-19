@@ -1,5 +1,6 @@
 package edu.trafficsim.model.core;
 
+import java.util.Collection;
 import java.util.NavigableMap;
 import java.util.TreeMap;
 
@@ -43,4 +44,12 @@ public abstract class AbstractDynamicProperty<T> implements DataContainer {
 			setProperty(times[i], values[i]);
 	}
 
+	public final Collection<Double> getJumpTimes() {
+		return properties.keySet();
+	}
+
+	@Override
+	public String toString() {
+		return properties.toString();
+	}
 }

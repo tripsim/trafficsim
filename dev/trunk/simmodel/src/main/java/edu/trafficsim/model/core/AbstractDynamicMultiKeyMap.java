@@ -70,4 +70,8 @@ public abstract class AbstractDynamicMultiKeyMap<K1, K2, V> implements
 		return set;
 	}
 
+	@Override
+	public String toString() {
+		return properties.toString();
+	}
 }

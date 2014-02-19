@@ -73,4 +73,9 @@ public abstract class AbstractComposition<K> extends BaseEntity<K> implements
 		total = 0;
 	}
 
+	@Override
+	public String toString() {
+		return super.toString() + ":" + map.toString();
+	}
+
 }

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import edu.trafficsim.model.Link;
 import edu.trafficsim.model.Network;
+import edu.trafficsim.model.Od;
 import edu.trafficsim.model.VehicleTypeComposition;
 
 @Controller
@@ -31,6 +32,22 @@ public class GuiEditController {
 
 		model.addAttribute("link", link);
 		return "components/link-edit";
+	}
+
+	@RequestMapping(value = "/od-view/{id}", method = RequestMethod.GET)
+	public String odView(@PathVariable long id, Model model) {
+		Od od = project.getOdMatrix().getOd(id);
+
+		model.addAttribute("od", od);
+		return "components/od-view";
+	}
+
+	@RequestMapping(value = "/od-form/{id}", method = RequestMethod.GET)
+	public String odEdit(@PathVariable long id, Model model) {
+		Od od = project.getOdMatrix().getOd(id);
+
+		model.addAttribute("od", od);
+		return "components/od-form";
 	}
 
 	@RequestMapping(value = "/vehiclecomposition-form/{id}", method = RequestMethod.GET)

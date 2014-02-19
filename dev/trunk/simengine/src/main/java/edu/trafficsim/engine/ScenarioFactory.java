@@ -13,11 +13,21 @@ import edu.trafficsim.model.core.ModelInputException;
 
 public interface ScenarioFactory {
 
+	public SimulationScenario createSimulationScenario();
+
+	public SimulationScenario createSimulationScenario(String name);
+
 	public SimulationScenario createSimulationScenario(String name,
 			Simulator simulator, Network network, OdMatrix odMatrix,
 			Router router);
 
-	public OdMatrix createEmptyOdMatrix(String name);
+	public OdMatrix createOdMatrix();
+
+	public OdMatrix createOdMatrix(String name);
+
+	public Od createOd(String name, Node origin, Node destination,
+			VehicleTypeComposition vehicleTypeComposition,
+			DriverTypeComposition driverTypeComposition);
 
 	public Od createOd(String name, Node origin, Node destination,
 			VehicleTypeComposition vehicleTypeComposition,
@@ -26,5 +36,10 @@ public interface ScenarioFactory {
 
 	public Router createRouter();
 
+	public Simulator createSimulator();
+
+	public Simulator createSimulator(String name);
+
 	public Simulator createSimulator(String name, int duration, int stepSize);
+
 }

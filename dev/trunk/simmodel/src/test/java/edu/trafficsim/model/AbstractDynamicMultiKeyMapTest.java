@@ -12,7 +12,7 @@ import edu.trafficsim.model.core.MultiKey;
 
 public class AbstractDynamicMultiKeyMapTest {
 
-	private static final class DynamicMultiKeyMap extends AbstractDynamicMultiKeyMap<Integer, Boolean, Double> {
+	private static final class DynamicMultiKeyTestMap extends AbstractDynamicMultiKeyMap<Integer, Boolean, Double> {
 
 		private static final long serialVersionUID = 1L;
 
@@ -33,11 +33,11 @@ public class AbstractDynamicMultiKeyMapTest {
 		}
 	}
 	
-	DynamicMultiKeyMap map;
+	DynamicMultiKeyTestMap map;
 	
 	@Before
 	public void setUp() {
-		map = new DynamicMultiKeyMap();
+		map = new DynamicMultiKeyTestMap();
 	}
 	
 	@After
@@ -57,5 +57,8 @@ public class AbstractDynamicMultiKeyMapTest {
 		map.put(1, true, 0.02, 0.02);
 		assertTrue(0.01 == map.get(1, true, 0.01));
 		assertTrue(0.02 == map.get(1, true, 0.02));
+		
+		map.put(1, true, 0.01, 0.08);
+		assertTrue(0.08 == map.get(1, true, 0.01));
 	}
 }

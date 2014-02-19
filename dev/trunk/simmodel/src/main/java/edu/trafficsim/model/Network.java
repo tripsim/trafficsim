@@ -36,6 +36,10 @@ public interface Network {
 
 	public Coordinate center();
 
+	public boolean isSource(Node node);
+
+	public boolean isSink(Node node);
+
 	/**
 	 * discover its sources and sinks
 	 */

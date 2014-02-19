@@ -15,6 +15,7 @@ import edu.trafficsim.model.ConnectionLane;
 import edu.trafficsim.model.Lane;
 import edu.trafficsim.model.Link;
 import edu.trafficsim.model.Network;
+import edu.trafficsim.model.Node;
 import edu.trafficsim.web.service.ExtractOsmNetworkService.OsmHighwayValue;
 
 @Controller
@@ -102,9 +103,17 @@ public class GuiViewController {
 
 	@RequestMapping(value = "/node/{id}", method = RequestMethod.GET)
 	public String nodeView(@PathVariable long id, Model model) {
-		// TODO logic
+		Network network = project.getNetwork();
+		if (network == null)
+			return "components/empty";
+		Node node = network.getNode(id);
+		if (node == null)
+			return "components/empty";
 
-		return "components/empty";
+		model.addAttribute("network", network);
+		model.addAttribute("ods", project.getOdMatrix().getOdsFromNode(node));
+		model.addAttribute("node", node);
+		return "components/node";
 	}
 
 	@RequestMapping(value = "/vehiclecomposition", method = RequestMethod.GET)
