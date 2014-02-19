@@ -38,7 +38,7 @@ public class DefaultVehicleGenerator extends AbstractVehicleGenerator {
 		double stepSize = simulator.getStepSize();
 		Random rand = simulator.getRand();
 
-		int vph = od.getVph(time);
+		int vph = od.vph(time);
 		double arrivalRate = ((double) vph) / (3600 / stepSize);
 
 		PoissonDistribution dist = new PoissonDistribution(arrivalRate);

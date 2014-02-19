@@ -1,0 +1,46 @@
+<h2>Node Info</h2>
+<div id="user-configuration-buttons">
+	<span id="user-configuration-button-close" class="button">close</span>
+</div>
+<div>
+	<table>
+		<tbody>
+			<tr>
+				<td>Node Id</td>
+				<td data-th-text="${node.id}"></td>
+			</tr>
+			<tr>
+				<td>Node Name</td>
+				<td data-th-text="${node.name}"></td>
+			</tr>
+			<tr>
+				<td>Source</td>
+				<td data-th-text="${network.isSource(node)} ? 'Yes' : 'No'"></td>
+			</tr>
+			<tr>
+				<td>Sink</td>
+				<td data-th-text="${network.isSink(node)} ? 'Yes' : 'No'"></td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+<div data-th-if="${network.isSource(node)}">
+	<table>
+		<tbody id="user-configuration-ods-tbody">
+			<tr>
+				<td>Vehicle Inputs</td>
+			</tr>
+			<th:block data-th-each="od : ${ods}">
+				<tr data-th-include="components/od-fragments :: view(${od})">
+				</tr>
+			</th:block>
+		</tbody>
+		<tbody>
+			<tr>
+				<td><span data-th-attr="data-id=${node.id}"
+					class="user-configuration-od-new button">new od</span></td>
+			</tr>
+		</tbody>
+	</table>
+</div>

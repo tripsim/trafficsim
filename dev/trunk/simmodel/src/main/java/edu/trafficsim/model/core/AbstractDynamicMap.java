@@ -13,12 +13,9 @@ public abstract class AbstractDynamicMap<K, V> implements DataContainer {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private static final class DynamicProperty<V> extends
+	public static final class DynamicProperty<V> extends
 			AbstractDynamicProperty<V> {
 
-		/**
-		 * 
-		 */
 		private static final long serialVersionUID = 1L;
 
 	}
@@ -56,5 +53,10 @@ public abstract class AbstractDynamicMap<K, V> implements DataContainer {
 
 	protected final void removeProperty(K key) {
 		properties.remove(key);
+	}
+
+	@Override
+	public String toString() {
+		return properties.toString();
 	}
 }

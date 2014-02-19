@@ -18,8 +18,6 @@ import edu.trafficsim.model.Simulator;
 @Scope(value = "session", proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class SimulationProject {
 
-	private final static String ENTITY_NAME = "TEST";
-
 	// TODO set factory through settings
 	private NetworkFactory networkFactory;
 	private ScenarioFactory scenarioFactory;
@@ -32,14 +30,14 @@ public class SimulationProject {
 	public SimulationProject() {
 		networkFactory = DefaultNetworkFactory.getInstance();
 		scenarioFactory = DefaultScenarioFactory.getInstance();
-
 		reset();
 	}
 
 	public void reset() {
 		network = null;
-		odMatrix = scenarioFactory.createEmptyOdMatrix(ENTITY_NAME);
 		router = null;
+		odMatrix = null;
+		simulator = null;
 	}
 
 	public NetworkFactory getNetworkFactory() {
@@ -59,6 +57,8 @@ public class SimulationProject {
 	}
 
 	public Simulator getSimulator() {
+		if (simulator == null)
+			scenarioFactory.createSimulator();
 		return simulator;
 	}
 
@@ -75,6 +75,8 @@ public class SimulationProject {
 	}
 
 	public OdMatrix getOdMatrix() {
+		if (odMatrix == null)
+			odMatrix = scenarioFactory.createOdMatrix();
 		return odMatrix;
 	}
 
@@ -90,8 +92,8 @@ public class SimulationProject {
 		this.router = router;
 	}
 
-	public SimulationScenario getScenario() {
-		return scenarioFactory.createSimulationScenario(ENTITY_NAME, simulator,
+	public SimulationScenario createScenario(String name) {
+		return scenarioFactory.createSimulationScenario(name, simulator,
 				network, odMatrix, router);
 	}
 }

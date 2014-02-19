@@ -173,6 +173,93 @@ jQuery(document)
 								});
 							});
 					/***********************************************************
+					 * Panel, User Configuration, Node Ods
+					 **********************************************************/
+					/* edit od */
+					jQuery('#user-configuration').on(
+							'click',
+							'.user-configuration-od-edit',
+							function() {
+								var tr = jQuery(this).parent().parent();
+								simwebhelper.getHtml('edit/od-form/'
+										+ jQuery(this).attr('data-id'),
+										function(html) {
+											tr.html(html);
+										});
+							});
+					/* cancel edit od */
+					jQuery('#user-configuration').on(
+							'click',
+							'.user-configuration-od-cancel',
+							function() {
+								var tr = jQuery(this).parent().parent();
+								simwebhelper.getHtml('edit/od-view/'
+										+ jQuery(this).attr('data-id'),
+										function(html) {
+											tr.html(html);
+										});
+							});
+					/* add interval in od */
+					jQuery('#user-configuration').on('click',
+							'.user-configuration-od-add-int', function() {
+								// jQuery(this).parent().before(
+								// jQuery(this).parent().prev().clone());
+							});
+					/* remove interval in od */
+					jQuery('#user-configuration').on('click',
+							'.user-configuration-vehicle-od-remove-int',
+							function() {
+								// jQuery(this).parent().before(
+								// jQuery(this).parent().prev().clone());
+							});
+					/* save od */
+					jQuery('#user-configuration').on('click',
+							'.user-configuration-od-save', function() {
+						// TODO
+							});
+					/* remove od */
+					jQuery('#user-configuration').on('click',
+							'.user-configuration-od-remove', function() {
+								var tr = jQuery(this).parent().parent();
+								simwebhelper.action('action/removeod', {
+									id : jQuery(this).attr('data-id')
+								}, function() {
+									tr.remove();
+								});
+							});
+					/* create new od */
+					jQuery('#user-configuration')
+							.on(
+									'click',
+									'.user-configuration-od-new',
+									function() {
+										simwebhelper
+												.action(
+														'action/newod',
+														{
+															originId : jQuery(
+																	this).attr(
+																	'data-id'),
+															destinationId : 0
+														},
+														function(data) {
+															simwebhelper
+																	.getHtml(
+																			'edit/od-form/'
+																					+ data,
+																			function(
+																					html) {
+																				jQuery(
+																						'#user-configuration-ods-tbody')
+																						.append(
+																								'<tr>'
+																										+ html
+																										+ '</tr>');
+																			});
+
+														});
+									});
+					/***********************************************************
 					 * Panel, User Configuration, Vehicle Composition Edit
 					 **********************************************************/
 					/* edit vehicle composition */
@@ -294,7 +381,7 @@ jQuery(document)
 																			function(
 																					html) {
 																				jQuery(
-																						'#user-configuration-vehicle-comp-tbody')
+																						'#user-configuration-vehicle-compositions-tbody')
 																						.append(
 																								'<tr>'
 																										+ html

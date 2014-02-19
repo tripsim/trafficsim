@@ -181,7 +181,7 @@ public class DemoBuilder {
 		Od od = scenarioFactory.createOd("test", node1, null,
 				vehicleTypeComposition, driverTypeComposition, times, vphs);
 
-		odMatrix = scenarioFactory.createEmptyOdMatrix("test");
+		odMatrix = scenarioFactory.createOdMatrix("test");
 		odMatrix.add(od);
 
 		// Router

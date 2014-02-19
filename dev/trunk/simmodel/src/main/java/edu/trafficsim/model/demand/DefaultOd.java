@@ -1,5 +1,7 @@
 package edu.trafficsim.model.demand;
 
+import java.util.Collection;
+
 import edu.trafficsim.model.BaseEntity;
 import edu.trafficsim.model.DriverTypeComposition;
 import edu.trafficsim.model.Node;
@@ -61,10 +63,16 @@ public class DefaultOd extends BaseEntity<DefaultOd> implements Od {
 	}
 
 	@Override
-	public final int getVph(double time) {
+	public Collection<Double> getJumpTimes() {
+		return dynamicFlow.getJumpTimes();
+	}
+
+	@Override
+	public final int vph(double time) {
 		return dynamicFlow.getProperty(time);
 	}
 
+	@Override
 	public final void setVphs(double[] times, Integer[] vphs)
 			throws ModelInputException {
 		dynamicFlow.setProperties(times, vphs);

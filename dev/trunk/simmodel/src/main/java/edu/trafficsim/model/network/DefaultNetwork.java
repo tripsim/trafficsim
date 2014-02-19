@@ -63,4 +63,14 @@ public class DefaultNetwork extends AbstractNetwork<DefaultNetwork> implements
 		return center;
 	}
 
+	@Override
+	public boolean isSource(Node node) {
+		return sources.contains(node);
+	}
+
+	@Override
+	public boolean isSink(Node node) {
+		return sinks.contains(node);
+	}
+
 }

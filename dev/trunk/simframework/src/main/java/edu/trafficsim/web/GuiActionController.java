@@ -14,10 +14,12 @@ import edu.trafficsim.model.ConnectionLane;
 import edu.trafficsim.model.Lane;
 import edu.trafficsim.model.Link;
 import edu.trafficsim.model.Network;
+import edu.trafficsim.model.Node;
 import edu.trafficsim.model.core.ModelInputException;
 import edu.trafficsim.web.service.ActionJsonResponseService;
 import edu.trafficsim.web.service.JsonOutputService;
 import edu.trafficsim.web.service.NetworkEditService;
+import edu.trafficsim.web.service.ScenarioEditService;
 import edu.trafficsim.web.service.VehicleTypeEditService;
 
 @Controller
@@ -32,6 +34,8 @@ public class GuiActionController {
 	JsonOutputService jsonOutputService;
 	@Autowired
 	VehicleTypeEditService vehicleEdit;
+	@Autowired
+	ScenarioEditService scenarioEdit;
 	@Autowired
 	ActionJsonResponseService actionJsonResponse;
 
@@ -208,5 +212,34 @@ public class GuiActionController {
 		vehicleEdit.removeVehicleComposition(id);
 		return actionJsonResponse
 				.messageOnlySuccessResponse("Vehicle Composition removed.");
+	}
+
+	@RequestMapping(value = "/saveod", method = RequestMethod.POST)
+	public @ResponseBody
+	Map<String, Object> saveOd(@RequestParam("id") long id,
+			@RequestParam("destinatioid") long did,
+			@RequestParam("times[]") double[] times,
+			@RequestParam("vphs[]") Integer[] vphs) {
+		scenarioEdit.updateOd(id, did, times, vphs);
+		return actionJsonResponse.messageOnlySuccessResponse("Od saved.");
+	}
+
+	@RequestMapping(value = "/newod", method = RequestMethod.POST)
+	public @ResponseBody
+	Map<String, Object> newOd(@RequestParam("originId") long oid,
+			@RequestParam("destinationId") long did) {
+		Node origin = project.getNetwork().getNode(oid);
+		Node destination = project.getNetwork().getNode(did);
+
+		long id = scenarioEdit.createOd("New...", origin, destination).getId();
+		return actionJsonResponse.successResponse(
+				"Vehicle Composition created.", null, id);
+	}
+
+	@RequestMapping(value = "/removeod", method = RequestMethod.POST)
+	public @ResponseBody
+	Map<String, Object> removeOd(@RequestParam("id") long id) {
+		scenarioEdit.removeOd(id);
+		return actionJsonResponse.messageOnlySuccessResponse("Od removed.");
 	}
 }

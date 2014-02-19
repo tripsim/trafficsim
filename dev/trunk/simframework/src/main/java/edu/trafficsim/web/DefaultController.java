@@ -63,7 +63,11 @@ public class DefaultController {
 	String demoNetwork() {
 		String str = "";
 		try {
-			project.setNetwork(demoSimulationService.getNetwork());
+			project.setNetwork(demoSimulationService.getScenario().getNetwork());
+			project.setOdMatrix(demoSimulationService.getScenario()
+					.getOdMatrix());
+			project.setSimulator(demoSimulationService.getScenario()
+					.getSimulator());
 			str = jsonOutputService.getNetworkJson(project.getNetwork());
 		} catch (TransformException e) {
 			// TODO Auto-generated catch block
@@ -103,7 +107,6 @@ public class DefaultController {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return actionJsonResponse
-				.failureResponse("Network generation failed.");
+		return actionJsonResponse.failureResponse("Network generation failed.");
 	}
 }

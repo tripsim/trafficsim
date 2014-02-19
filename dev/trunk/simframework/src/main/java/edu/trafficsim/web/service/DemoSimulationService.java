@@ -8,8 +8,8 @@ import org.springframework.stereotype.Service;
 
 import edu.trafficsim.engine.StatisticsCollector;
 import edu.trafficsim.engine.StatisticsCollector.VehicleState;
-import edu.trafficsim.engine.demo.SimulationTest;
-import edu.trafficsim.model.Network;
+import edu.trafficsim.engine.demo.DemoSimulation;
+import edu.trafficsim.model.SimulationScenario;
 import edu.trafficsim.model.Vehicle;
 import edu.trafficsim.model.core.Colors;
 import edu.trafficsim.model.core.ModelInputException;
@@ -19,7 +19,7 @@ public class DemoSimulationService {
 
 	public String runSimulation() throws TransformException {
 		try {
-			StatisticsCollector statisticsCollector = SimulationTest
+			StatisticsCollector statisticsCollector = DemoSimulation
 					.getInstance().run();
 			StringBuffer vehicleSb = new StringBuffer();
 			StringBuffer frameSb = new StringBuffer();
@@ -72,8 +72,8 @@ public class DemoSimulationService {
 		return "{}";
 	}
 
-	public Network getNetwork() throws TransformException {
-		return SimulationTest.getInstance().getNetwork();
+	public SimulationScenario getScenario() throws TransformException {
+		return DemoSimulation.getInstance().getScenario();
 	}
 
 }

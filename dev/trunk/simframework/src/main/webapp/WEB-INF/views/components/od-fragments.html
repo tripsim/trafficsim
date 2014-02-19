@@ -1,0 +1,30 @@
+<th:block data-th-fragment="view(od)">
+	<td><span>Destination</span> <br /> <span
+		data-th-text="${od.destination} == null ? 'None' : ${od.destination.id}"></span></td>
+	<td data-th-each="time : ${od.jumpTimes}"><span
+		data-th-text="${time}"></span> <br /> <span
+		data-th-text="${od.vph(time)}"></span></td>
+	<td><span data-th-attr="data-id=${od.id}"
+		class="user-configuration-od-edit button">edit</span></td>
+	<td><span data-th-attr="data-id=${od.id}"
+		class="user-configuration-od-remove button">remove</span></td>
+</th:block>
+
+<th:block data-th-fragment="edit(od)">
+	<td><span>Destination</span> <br /> <span>Select Nodes</span></td>
+	<td data-th-each="time : ${od.jumpTimes}"><input type="text"
+		size="10" data-th-value="${time}" /> <br /> <input type="text"
+		size="10" data-th-value="${od.vph(time)}"/></td>
+	<td><span data-th-attr="data-id=${od.id}"
+		class="user-configuration-od-add-int button">add</span></td>
+	<td><span data-th-attr="data-id=${od.id}"
+		class="user-configuration-od-remove-int button">remove</span></td>
+	<td><span data-th-attr="data-id=${od.id}"
+		class="user-configuration-od-save button">save</span></td>
+	<td><span data-th-attr="data-id=${od.id}"
+		class="user-configuration-od-cancel button">cancel</span></td>
+</th:block>
+
+
+<th:block data-th-fragment="viewComposition(od)">
+</th:block>
