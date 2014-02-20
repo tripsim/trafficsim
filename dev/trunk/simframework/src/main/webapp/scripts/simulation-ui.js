@@ -184,7 +184,7 @@ jQuery(document)
 								simwebhelper.getHtml('edit/od-form/'
 										+ jQuery(this).attr('data-id'),
 										function(html) {
-											tr.html(html);
+											tr.replaceWith(html);
 										});
 							});
 					/* cancel edit od */
@@ -196,7 +196,7 @@ jQuery(document)
 								simwebhelper.getHtml('edit/od-view/'
 										+ jQuery(this).attr('data-id'),
 										function(html) {
-											tr.html(html);
+											tr.replaceWith(html);
 										});
 							});
 					/* add interval in od */
@@ -215,17 +215,7 @@ jQuery(document)
 					/* save od */
 					jQuery('#user-configuration').on('click',
 							'.user-configuration-od-save', function() {
-						// TODO
-							});
-					/* remove od */
-					jQuery('#user-configuration').on('click',
-							'.user-configuration-od-remove', function() {
-								var tr = jQuery(this).parent().parent();
-								simwebhelper.action('action/removeod', {
-									id : jQuery(this).attr('data-id')
-								}, function() {
-									tr.remove();
-								});
+								// TODO
 							});
 					/* create new od */
 					jQuery('#user-configuration')
@@ -252,13 +242,21 @@ jQuery(document)
 																				jQuery(
 																						'#user-configuration-ods-tbody')
 																						.append(
-																								'<tr>'
-																										+ html
-																										+ '</tr>');
+																								html);
 																			});
 
 														});
 									});
+					/* remove od */
+					jQuery('#user-configuration').on('click',
+							'.user-configuration-od-remove', function() {
+								var tr = jQuery(this).parent().parent();
+								simwebhelper.action('action/removeod', {
+									id : jQuery(this).attr('data-id')
+								}, function() {
+									tr.remove();
+								});
+							});
 					/***********************************************************
 					 * Panel, User Configuration, Vehicle Composition Edit
 					 **********************************************************/
@@ -272,7 +270,7 @@ jQuery(document)
 										'edit/vehiclecomposition-form/'
 												+ jQuery(this).attr('data-id'),
 										function(html) {
-											tr.html(html);
+											tr.replaceWith(html);
 										});
 							});
 					/* cancel edit vehicle composition */
@@ -285,7 +283,7 @@ jQuery(document)
 										'edit/vehiclecomposition-view/'
 												+ jQuery(this).attr('data-id'),
 										function(html) {
-											tr.html(html);
+											tr.replaceWith(html);
 										});
 							});
 					/* add vehicle type in vehicle composition */
@@ -359,7 +357,7 @@ jQuery(document)
 																			function(
 																					html) {
 																				tr
-																						.html(html);
+																						.replaceWith(html);
 																			});
 														});
 									});
@@ -383,9 +381,7 @@ jQuery(document)
 																				jQuery(
 																						'#user-configuration-vehicle-compositions-tbody')
 																						.append(
-																								'<tr>'
-																										+ html
-																										+ '</tr>');
+																								html);
 																			});
 
 														});
