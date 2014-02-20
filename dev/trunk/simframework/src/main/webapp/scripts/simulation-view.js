@@ -9,11 +9,12 @@ simwebhelper = {
 		jQuery('#user-configuration').hide();
 	},
 	feedback : function(message) {
-		jQuery('#user-feedback').html(message).show();
+		jQuery('#user-feedback')
+				.html('<div class="info">' + message + '</div>').show();
 	},
 	error : function(message) {
-		// TODO add styles
-		jQuery('#user-feedback').html(message).show();
+		jQuery('#user-feedback').html('<div class="err">' + message + '</div>')
+				.show();
 	},
 	hideFeedback : function() {
 		jQuery('#user-feedback').hide();
@@ -63,7 +64,7 @@ simwebhelper = {
 								if (data.status.panelUrl) {
 									simwebhelper.getPanel(data.status.panelUrl);
 								} else {
-									//simwebhelper.hidePanel();
+									// simwebhelper.hidePanel();
 								}
 							}
 							if (callback) {

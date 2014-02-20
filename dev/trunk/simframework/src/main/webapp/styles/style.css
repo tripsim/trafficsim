@@ -14,7 +14,9 @@ html,body,#map {
 	z-index: 100000;
 }
 
-/* Menu */
+/***********************************************************
+ * User Interface, Menu
+ **********************************************************/
 #user-interface {
 	position: absolute;
 	padding: 4px;
@@ -44,11 +46,9 @@ html,body,#map {
 	background-color: #ff5600;
 }
 
-#user-interface .buttons {
-	margin-top: 60px;
-	padding: 0;
+#user-interface .highlight {
 	cursor: auto;
-	background-color: transparent;
+	background-color: #ff5600;
 	cursor: auto;
 }
 
@@ -56,7 +56,9 @@ html,body,#map {
 	padding: 2px 6px;
 }
 
-/* Configuration Window */
+/***********************************************************
+ * Configuration Window
+ **********************************************************/
 #user-configuration {
 	position: absolute;
 	padding: 4px 4px 4px 10px;
@@ -109,7 +111,21 @@ html,body,#map {
 	padding: 2px 6px;
 }
 
-/* User Online JSON Editor */
+/***********************************************************
+ * Configuration Window Table
+ **********************************************************/
+#user-configuration td {
+	padding: 8px;
+	min-width: 80px;
+}
+
+#user-configuration td span {
+	margin: 0 2px;
+}
+
+/***********************************************************
+ * Configuration Window JSON Editor
+ **********************************************************/
 #user-editor {
 	position: absolute;
 	top: 64px;
@@ -129,7 +145,9 @@ html,body,#map {
 	background-color: #0d58a6
 }
 
-/* Feedback Info */
+/***********************************************************
+ *  Feedback Info Window 
+ **********************************************************/
 #user-feedback {
 	position: absolute;
 	top: 0;
@@ -146,4 +164,8 @@ html,body,#map {
 
 #user-feedback .info {
 	color: #ffffff;
+}
+
+#user-feedback .err {
+	color: #ff0000;
 }

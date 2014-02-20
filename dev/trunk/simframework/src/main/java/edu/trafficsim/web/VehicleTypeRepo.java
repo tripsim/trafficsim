@@ -48,8 +48,6 @@ public class VehicleTypeRepo {
 		vehicleCompositions = new HashMap<Long, VehicleTypeComposition>();
 		driverCompositions = new HashMap<Long, DriverTypeComposition>();
 
-		defaultVehicleTypeComposition = newDefaultVehicleComposition("Default");
-		defaultDriverTypeComposition = newDefaultDriverComposition("Test");
 		initVehicleSettings();
 	}
 
@@ -61,6 +59,7 @@ public class VehicleTypeRepo {
 				VehicleClass.Truck);
 		defaultVehTypes = new VehicleType[] { defaultCarType, defaultTruckType };
 		defaultVehPossibilities = new double[] { 0.8, 0.2 };
+		defaultVehicleTypeComposition = newDefaultVehicleComposition("Test");
 
 		addVehicleType(defaultCarType);
 		addVehicleType(defaultTruckType);
@@ -69,6 +68,7 @@ public class VehicleTypeRepo {
 		defaultDriverType = typesFactory.createDriverType("TestDriver");
 		defaultDriverTypes = new DriverType[] { defaultDriverType };
 		defaultDrivervPossibilities = new double[] { 1.0 };
+		defaultDriverTypeComposition = newDefaultDriverComposition("Test");
 
 		addDriverType(defaultDriverType);
 		addDriverComposition(defaultDriverTypeComposition);
