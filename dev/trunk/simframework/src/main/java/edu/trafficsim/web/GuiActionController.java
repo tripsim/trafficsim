@@ -233,7 +233,7 @@ public class GuiActionController {
 
 		long id = scenarioEdit.createOd("New...", origin, destination).getId();
 		return actionJsonResponse.successResponse(
-				"Vehicle Composition created.", null, id);
+				"New od created.", null, id);
 	}
 
 	@RequestMapping(value = "/removeod", method = RequestMethod.POST)

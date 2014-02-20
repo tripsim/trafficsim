@@ -26,6 +26,37 @@ public class MultiKeyTest {
 	}
 
 	@Test
+	public void testKey() {
+		MultiKey<String, String> key1 = new MultiKey<String, String>(null, null);
+		MultiKey<String, String> key2 = new MultiKey<String, String>(null, null);
+		MultiKey<String, String> key3 = new MultiKey<String, String>(null, "A");
+		assertTrue(key1.equals(key2));
+		assertTrue(!key1.equals(key3));
+	
+		key2 = new MultiKey<String, String>("A", null);
+		assertTrue(!key1.equals(key2));
+		assertTrue(!key1.equals(key3));
+		assertTrue(!key2.equals(key3));
+		
+		key1 = new MultiKey<String, String>(null, "A");
+		key3 = new MultiKey<String, String>("A", "A");
+		assertTrue(!key1.equals(key2));
+		assertTrue(!key1.equals(key3));
+		assertTrue(!key2.equals(key3));
+		
+		key1 = new MultiKey<String, String>("A", null);
+		assertTrue(key1.equals(key2));
+		
+
+		key1 = new MultiKey<String, String>(null, "A");
+		key2 = new MultiKey<String, String>(null, "A");
+		assertTrue(key1.equals(key2));
+		
+		key1 = new MultiKey<String, String>(null, null);
+		assertTrue(!key1.equals(key2));
+	}
+	
+	@Test
 	public void testGetterSetter() {
 		map.put(getKey("L", "R"), 0.01);
 		assertTrue(0.01 == map.get(getKey("L", "R")));

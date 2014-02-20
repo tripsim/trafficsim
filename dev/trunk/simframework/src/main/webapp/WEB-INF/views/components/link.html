@@ -53,7 +53,7 @@
 				<td>shift</td>
 				<td data-th-text="${lane.shift}"></td>
 				<td>length</td>
-				<td data-th-text="${lane.length}"></td>
+				<td data-th-text="${#numbers.formatDecimal(lane.length, 1, 4)}"></td>
 			</tr>
 		</tbody>
 	</table>
