@@ -46,6 +46,8 @@ public class GuiEditController {
 	public String odEdit(@PathVariable long id, Model model) {
 		Od od = project.getOdMatrix().getOd(id);
 
+		// TODO make it reachable sinks
+		model.addAttribute("destinations", project.getNetwork().getSinks());
 		model.addAttribute("od", od);
 		return "components/od-form";
 	}

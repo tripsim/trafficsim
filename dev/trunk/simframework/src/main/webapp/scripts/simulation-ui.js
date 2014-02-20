@@ -200,17 +200,18 @@ jQuery(document)
 										});
 							});
 					/* add interval in od */
-					jQuery('#user-configuration').on('click',
-							'.user-configuration-od-add-int', function() {
-								// jQuery(this).parent().before(
-								// jQuery(this).parent().prev().clone());
+					jQuery('#user-configuration').on(
+							'click',
+							'.user-configuration-od-add-int',
+							function() {
+								jQuery(this).parent().before(
+										jQuery(this).parent().prev().clone());
 							});
 					/* remove interval in od */
 					jQuery('#user-configuration').on('click',
-							'.user-configuration-vehicle-od-remove-int',
-							function() {
-								// jQuery(this).parent().before(
-								// jQuery(this).parent().prev().clone());
+							'.user-configuration-od-remove-int', function() {
+								if (jQuery(this).parent().index() > 3)
+									jQuery(this).parent().prev().remove();
 							});
 					/* save od */
 					jQuery('#user-configuration').on('click',

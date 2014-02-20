@@ -38,8 +38,14 @@ public class MultiKey<K1, K2> implements DataContainer,
 			return true;
 		if (!(o instanceof MultiKey))
 			return false;
-		if (key1 == null || key2 == null)
-			return false;
+		if (key1 == null)
+			return ((MultiKey) o).primaryKey() != null ? false
+					: key2 == null ? (((MultiKey) o).secondaryKey() == null ? true
+							: false)
+							: key2.equals(((MultiKey) o).secondaryKey());
+		if (key2 == null)
+			return ((MultiKey) o).secondaryKey() != null ? false : key1
+					.equals(((MultiKey) o).primaryKey());
 		return key1.equals(((MultiKey) o).primaryKey())
 				&& key2.equals(((MultiKey) o).secondaryKey()) ? true : false;
 	}

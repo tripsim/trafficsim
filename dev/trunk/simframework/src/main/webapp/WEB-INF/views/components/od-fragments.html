@@ -11,8 +11,10 @@
 		class="user-configuration-od-remove button">remove</span></td>
 </th:block>
 
-<th:block data-th-fragment="edit(od)">
-	<td><span>Destination</span> <br /> <span>Select Nodes</span></td>
+<th:block data-th-fragment="edit(od, destinations)">
+	<td><span>Destination</span> <br /> <span
+		data-th-include="components/od-fragments :: select(${destinations})"></span></td>
+	<td><span>End Time </span> <br /> <span>VPH</span></td>
 	<td data-th-each="time : ${od.jumpTimes}"><input type="text"
 		size="10" data-th-value="${time}" /> <br /> <input type="text"
 		size="10" data-th-value="${od.vph(time)}" /></td>
@@ -27,5 +29,12 @@
 </th:block>
 
 
-<th:block data-th-fragment="viewComposition(od)">
+<th:block data-th-fragment="select(destinations)">
+	<select>
+		<option selected="true" value="${destinations.size()}">None</option>
+		<th:block data-th-each="destination : ${destinations}">
+			<option data-th-attr="value=${destination.id}"
+				data-th-text="${destination.id}"></option>
+		</th:block>
+	</select>
 </th:block>
