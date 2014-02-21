@@ -52,21 +52,21 @@ public class GuiEditController {
 		return "components/od-form";
 	}
 
-	@RequestMapping(value = "/vehiclecomposition-form/{id}", method = RequestMethod.GET)
-	public String vehicleCompositionEdit(@PathVariable long id, Model model) {
+	@RequestMapping(value = "/vehiclecomposition-form/{name}", method = RequestMethod.GET)
+	public String vehicleCompositionEdit(@PathVariable String name, Model model) {
 		VehicleTypeComposition comp = vehicleTypeRepo
-				.getVehicleTypeComposition(id);
+				.getVehicleTypeComposition(name);
 
 		model.addAttribute("vehicleTypes", vehicleTypeRepo.getVehicleTypes());
 		model.addAttribute("vehicleComposition", comp);
 		return "components/vehiclecomposition-form";
 	}
 
-	@RequestMapping(value = "/vehiclecomposition-view/{id}", method = RequestMethod.GET)
-	public String vehicleCompositionEditCancel(@PathVariable long id,
+	@RequestMapping(value = "/vehiclecomposition-view/{name}", method = RequestMethod.GET)
+	public String vehicleCompositionEditCancel(@PathVariable String name,
 			Model model) {
 		VehicleTypeComposition comp = vehicleTypeRepo
-				.getVehicleTypeComposition(id);
+				.getVehicleTypeComposition(name);
 
 		model.addAttribute("vehicleTypes", vehicleTypeRepo.getVehicleTypes());
 		model.addAttribute("vehicleComposition", comp);

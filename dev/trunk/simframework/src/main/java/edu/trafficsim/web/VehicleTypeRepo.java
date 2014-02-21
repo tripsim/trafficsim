@@ -35,18 +35,18 @@ public class VehicleTypeRepo {
 	public VehicleTypeComposition defaultVehicleTypeComposition;
 	public DriverTypeComposition defaultDriverTypeComposition;
 
-	private final Map<Long, VehicleType> vehicleTypes;
-	private final Map<Long, DriverType> driverTypes;
-	private final Map<Long, VehicleTypeComposition> vehicleCompositions;
-	private final Map<Long, DriverTypeComposition> driverCompositions;
+	private final Map<String, VehicleType> vehicleTypes;
+	private final Map<String, DriverType> driverTypes;
+	private final Map<String, VehicleTypeComposition> vehicleCompositions;
+	private final Map<String, DriverTypeComposition> driverCompositions;
 
 	public VehicleTypeRepo() {
 		typesFactory = DefaultTypesFactory.getInstance();
 
-		vehicleTypes = new HashMap<Long, VehicleType>();
-		driverTypes = new HashMap<Long, DriverType>();
-		vehicleCompositions = new HashMap<Long, VehicleTypeComposition>();
-		driverCompositions = new HashMap<Long, DriverTypeComposition>();
+		vehicleTypes = new HashMap<String, VehicleType>();
+		driverTypes = new HashMap<String, DriverType>();
+		vehicleCompositions = new HashMap<String, VehicleTypeComposition>();
+		driverCompositions = new HashMap<String, DriverTypeComposition>();
 
 		initVehicleSettings();
 	}
@@ -82,24 +82,24 @@ public class VehicleTypeRepo {
 		return Collections.unmodifiableCollection(vehicleTypes.values());
 	}
 
-	public VehicleType getVehicleType(long id) {
-		return vehicleTypes.get(id);
+	public VehicleType getVehicleType(String name) {
+		return vehicleTypes.get(name);
 	}
 
 	public void addVehicleType(VehicleType vehicleType) {
-		vehicleTypes.put(vehicleType.getId(), vehicleType);
+		vehicleTypes.put(vehicleType.getName(), vehicleType);
 	}
 
-	public void removeVehicleType(long id) {
-		vehicleTypes.remove(id);
+	public void removeVehicleType(String name) {
+		vehicleTypes.remove(name);
 	}
 
 	public void addDriverType(DriverType driverType) {
-		driverTypes.put(driverType.getId(), driverType);
+		driverTypes.put(driverType.getName(), driverType);
 	}
 
-	public void removeDriverType(long id) {
-		driverTypes.remove(id);
+	public void removeDriverType(String name) {
+		driverTypes.remove(name);
 	}
 
 	public VehicleTypeComposition newDefaultVehicleComposition(String name) {
@@ -111,16 +111,17 @@ public class VehicleTypeRepo {
 		return Collections.unmodifiableCollection(vehicleCompositions.values());
 	}
 
-	public VehicleTypeComposition getVehicleTypeComposition(long id) {
-		return vehicleCompositions.get(id);
+	public VehicleTypeComposition getVehicleTypeComposition(String name) {
+		return vehicleCompositions.get(name);
 	}
 
 	public void addVehicleComposition(VehicleTypeComposition vehicleComposition) {
-		vehicleCompositions.put(vehicleComposition.getId(), vehicleComposition);
+		vehicleCompositions.put(vehicleComposition.getName(),
+				vehicleComposition);
 	}
 
-	public void removeVehicleComposition(long id) {
-		vehicleCompositions.remove(id);
+	public void removeVehicleComposition(String name) {
+		vehicleCompositions.remove(name);
 	}
 
 	public DriverTypeComposition newDefaultDriverComposition(String name) {
@@ -129,11 +130,11 @@ public class VehicleTypeRepo {
 	}
 
 	public void addDriverComposition(DriverTypeComposition driverComposition) {
-		driverCompositions.put(driverComposition.getId(), driverComposition);
+		driverCompositions.put(driverComposition.getName(), driverComposition);
 	}
 
-	public void removeDriverTypeComposition(long id) {
-		driverCompositions.remove(id);
+	public void removeDriverTypeComposition(String name) {
+		driverCompositions.remove(name);
 	}
 
 }

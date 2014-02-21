@@ -1,6 +1,8 @@
 package edu.trafficsim.model;
 
-public class RoadInfo implements DataContainer {
+import java.io.Serializable;
+
+public class RoadInfo implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

@@ -44,7 +44,7 @@ public class DefaultNetworkFactory extends AbstractFactory implements
 
 	@Override
 	public Network createEmptyNetwork(String name) {
-		return new DefaultNetwork(nextId(), name);
+		return new DefaultNetwork(newId, name);
 	}
 
 	// TODO set default types
@@ -73,7 +73,7 @@ public class DefaultNetworkFactory extends AbstractFactory implements
 	}
 
 	public DefaultNode createNode(String name, Point point) {
-		return new DefaultNode(nextId(), name, nodeType, point);
+		return new DefaultNode(newId, name, nodeType, point);
 	}
 
 	@Override
@@ -86,7 +86,7 @@ public class DefaultNetworkFactory extends AbstractFactory implements
 	public DefaultLink createLink(String name, Node startNode, Node endNode,
 			LineString lineString) throws ModelInputException,
 			TransformException {
-		DefaultLink link = new DefaultLink(nextId(), name, linkType, startNode,
+		DefaultLink link = new DefaultLink(newId, name, linkType, startNode,
 				endNode, lineString);
 		startNode.add(link);
 		endNode.add(link);
@@ -106,7 +106,7 @@ public class DefaultNetworkFactory extends AbstractFactory implements
 	@Override
 	public DefaultLane createLane(Link link, double start, double end,
 			double width) throws ModelInputException, TransformException {
-		return new DefaultLane(nextId(), link, start, end, width);
+		return new DefaultLane(newId, link, start, end, width);
 	}
 
 	@Override
@@ -127,7 +127,7 @@ public class DefaultNetworkFactory extends AbstractFactory implements
 	public ConnectionLane connect(Lane laneFrom, Lane laneTo)
 			throws ModelInputException, TransformException {
 		DefaultConnectionLane connectionLane = new DefaultConnectionLane(
-				nextId(), laneFrom, laneTo, DEFAULT_WIDTH);
+				newId, laneFrom, laneTo, DEFAULT_WIDTH);
 		return connectionLane;
 	}
 }

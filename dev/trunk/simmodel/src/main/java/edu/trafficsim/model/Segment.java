@@ -10,10 +10,6 @@ import com.vividsolutions.jts.geom.LineString;
  */
 public interface Segment extends GeoReferenced {
 
-	public Long getId();
-
-	public String getName();
-
 	public Location getStartLocation();
 
 	public Location getEndLocation();

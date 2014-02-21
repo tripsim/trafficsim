@@ -1,5 +1,6 @@
 package edu.trafficsim.model.core;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -9,9 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import edu.trafficsim.model.DataContainer;
-
-public class MultiValuedMap<K, V> implements DataContainer {
+public class MultiValuedMap<K, V> implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private final Map<K, Set<V>> map;

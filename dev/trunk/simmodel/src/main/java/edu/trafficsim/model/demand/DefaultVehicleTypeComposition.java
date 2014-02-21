@@ -23,4 +23,10 @@ public class DefaultVehicleTypeComposition extends
 		return keys();
 	}
 
+	@Override
+	public void setId(Long id) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

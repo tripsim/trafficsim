@@ -1,12 +1,11 @@
 package edu.trafficsim.model.core;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
-import edu.trafficsim.model.DataContainer;
-
 public abstract class AbstractDynamicMultiKeyMap<K1, K2, V> implements
-		DataContainer {
+		Serializable {
 
 	/**
 	 * 
