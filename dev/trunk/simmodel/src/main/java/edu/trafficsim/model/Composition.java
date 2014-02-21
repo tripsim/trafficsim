@@ -4,10 +4,6 @@ import java.util.Set;
 
 public interface Composition<T> extends DataContainer {
 
-	public Long getId();
-
-	public String getName();
-
 	public Set<T> keys();
 
 	public double total();

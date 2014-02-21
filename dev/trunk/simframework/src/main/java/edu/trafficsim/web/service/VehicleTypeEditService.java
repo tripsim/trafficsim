@@ -12,10 +12,10 @@ public class VehicleTypeEditService {
 	@Autowired
 	VehicleTypeRepo vehicleTypeRepo;
 
-	public VehicleTypeComposition updateVehicleComposition(Long id,
-			String name, Long[] types, Double[] values) {
+	public VehicleTypeComposition updateVehicleComposition(String name,
+			String[] types, Double[] values) {
 		VehicleTypeComposition composition = vehicleTypeRepo
-				.getVehicleTypeComposition(id);
+				.getVehicleTypeComposition(name);
 		composition.reset();
 		for (int i = 0; i < types.length; i++) {
 			composition.culmulate(vehicleTypeRepo.getVehicleType(types[i]),
@@ -31,7 +31,7 @@ public class VehicleTypeEditService {
 		return vehicleComposition;
 	}
 
-	public void removeVehicleComposition(long id) {
-		vehicleTypeRepo.removeVehicleComposition(id);
+	public void removeVehicleComposition(String name) {
+		vehicleTypeRepo.removeVehicleComposition(name);
 	}
 }

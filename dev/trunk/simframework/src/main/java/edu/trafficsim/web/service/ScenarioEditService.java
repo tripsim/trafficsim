@@ -21,6 +21,7 @@ public class ScenarioEditService {
 	}
 
 	public Od createOd(String name, Node origin, Node destination) {
+		// TODO redo creation.....throw exception
 		Od od = project.getScenarioFactory().createOd(name, origin,
 				destination, vehicleRepo.defaultVehicleTypeComposition,
 				vehicleRepo.defaultDriverTypeComposition);

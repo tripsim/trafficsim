@@ -116,6 +116,9 @@ public class DemoBuilder {
 				new Coordinate(coord1345424866));
 		Node node3 = networkFactory.createNode("Johnson at Charter",
 				new Coordinate(coord53607075));
+		node1.setId(1l);
+		node2.setId(2l);
+		node3.setId(3l);
 		// Node node4 = networkFactory.createNode("Johnson at Mill");
 		// Node node5 = networkFactory.createNode("Johnson at Park");
 		// Links
@@ -123,6 +126,8 @@ public class DemoBuilder {
 				.createLink("Johson1", node1, node2, coords1);
 		Link link2 = networkFactory
 				.createLink("Johson2", node2, node3, coords2);
+		link1.setId(1l);
+		link2.setId(2l);
 
 		// RoadInfo
 		RoadInfo info1 = networkFactory.createRoadInfo("Test name", 12345,

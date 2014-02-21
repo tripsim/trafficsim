@@ -188,12 +188,12 @@ public class GuiActionController {
 
 	@RequestMapping(value = "/savevehiclecomposition", method = RequestMethod.POST)
 	public @ResponseBody
-	Map<String, Object> saveVehicleComposition(@RequestParam("id") long id,
+	Map<String, Object> saveVehicleComposition(
 			@RequestParam("name") String name,
-			@RequestParam("types[]") Long[] vehicleTypes,
+			@RequestParam("types[]") String[] vehicleTypes,
 			@RequestParam("values[]") Double[] values) {
 
-		vehicleEdit.updateVehicleComposition(id, name, vehicleTypes, values);
+		vehicleEdit.updateVehicleComposition(name, vehicleTypes, values);
 		return actionJsonResponse
 				.messageOnlySuccessResponse("Vehicle Composition updated.");
 	}
@@ -208,8 +208,9 @@ public class GuiActionController {
 
 	@RequestMapping(value = "/removevehiclecomposition", method = RequestMethod.POST)
 	public @ResponseBody
-	Map<String, Object> removeVehicleComposition(@RequestParam("id") long id) {
-		vehicleEdit.removeVehicleComposition(id);
+	Map<String, Object> removeVehicleComposition(
+			@RequestParam("name") String name) {
+		vehicleEdit.removeVehicleComposition(name);
 		return actionJsonResponse
 				.messageOnlySuccessResponse("Vehicle Composition removed.");
 	}
@@ -232,8 +233,7 @@ public class GuiActionController {
 		Node destination = project.getNetwork().getNode(did);
 
 		long id = scenarioEdit.createOd("New...", origin, destination).getId();
-		return actionJsonResponse.successResponse(
-				"New od created.", null, id);
+		return actionJsonResponse.successResponse("New od created.", null, id);
 	}
 
 	@RequestMapping(value = "/removeod", method = RequestMethod.POST)

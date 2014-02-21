@@ -1,12 +1,11 @@
 package edu.trafficsim.model.core;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import edu.trafficsim.model.DataContainer;
-
-public abstract class AbstractDynamicMap<K, V> implements DataContainer {
+public abstract class AbstractDynamicMap<K, V> implements Serializable {
 
 	/**
 	 * 

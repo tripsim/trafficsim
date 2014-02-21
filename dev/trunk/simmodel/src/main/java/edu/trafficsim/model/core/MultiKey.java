@@ -1,8 +1,8 @@
 package edu.trafficsim.model.core;
 
-import edu.trafficsim.model.DataContainer;
+import java.io.Serializable;
 
-public class MultiKey<K1, K2> implements DataContainer,
+public class MultiKey<K1, K2> implements Serializable,
 		Comparable<MultiKey<K1, K2>> {
 
 	private static final long serialVersionUID = 1L;

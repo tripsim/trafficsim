@@ -48,7 +48,7 @@ public class DefaultScenarioFactory extends AbstractFactory implements
 	public DefaultSimulationScenario createSimulationScenario(String name,
 			Simulator simulator, Network network, OdMatrix odMatrix,
 			Router router) {
-		return new DefaultSimulationScenario(nextId(), name, simulator,
+		return new DefaultSimulationScenario(newId, name, simulator,
 				network, odMatrix, router);
 	}
 
@@ -59,7 +59,7 @@ public class DefaultScenarioFactory extends AbstractFactory implements
 
 	@Override
 	public DefaultOdMatrix createOdMatrix(String name) {
-		return new DefaultOdMatrix(nextId(), name);
+		return new DefaultOdMatrix(newId, name);
 	}
 
 	@Override
@@ -67,7 +67,7 @@ public class DefaultScenarioFactory extends AbstractFactory implements
 			VehicleTypeComposition vehicleTypeComposition,
 			DriverTypeComposition driverTypeComposition)
 			throws ModelInputException {
-		return new DefaultOd(nextId(), name, origin, destination,
+		return new DefaultOd(newId, name, origin, destination,
 				vehicleTypeComposition, driverTypeComposition,
 				new double[] { 100 }, new Integer[] { 1000 });
 	}
@@ -77,7 +77,7 @@ public class DefaultScenarioFactory extends AbstractFactory implements
 			VehicleTypeComposition vehicleTypeComposition,
 			DriverTypeComposition driverTypeComposition, double[] times,
 			Integer[] vphs) throws ModelInputException {
-		return new DefaultOd(nextId(), name, origin, destination,
+		return new DefaultOd(newId, name, origin, destination,
 				vehicleTypeComposition, driverTypeComposition, times, vphs);
 	}
 
@@ -100,7 +100,7 @@ public class DefaultScenarioFactory extends AbstractFactory implements
 	@Override
 	public DefaultSimulator createSimulator(String name, int duration,
 			int stepSize) {
-		return new DefaultSimulator(nextId(), name, duration, stepSize);
+		return new DefaultSimulator(newId, name, duration, stepSize);
 	}
 
 }

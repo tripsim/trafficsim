@@ -1,12 +1,11 @@
 package edu.trafficsim.model.core;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.NavigableMap;
 import java.util.TreeMap;
 
-import edu.trafficsim.model.DataContainer;
-
-public abstract class AbstractDynamicProperty<T> implements DataContainer {
+public abstract class AbstractDynamicProperty<T> implements Serializable {
 
 	/**
 	 * 
