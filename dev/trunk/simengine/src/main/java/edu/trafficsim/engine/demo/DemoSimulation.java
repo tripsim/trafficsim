@@ -7,8 +7,8 @@ import org.opengis.referencing.operation.TransformException;
 import edu.trafficsim.engine.StatisticsCollector;
 import edu.trafficsim.model.SimulationScenario;
 import edu.trafficsim.model.core.ModelInputException;
-import edu.trafficsim.plugin.ISimulation;
-import edu.trafficsim.plugin.core.DefaultSimulation;
+import edu.trafficsim.plugin.ISimulating;
+import edu.trafficsim.plugin.core.DefaultSimulating;
 
 public class DemoSimulation {
 
@@ -38,9 +38,9 @@ public class DemoSimulation {
 	public StatisticsCollector run() throws ModelInputException,
 			TransformException {
 		SimulationScenario scenario = builder.getScenario();
-		ISimulation simulation = new DefaultSimulation(scenario);
+		ISimulating simulation = new DefaultSimulating();
 
-		simulation.run();
+		simulation.run(scenario);
 		return simulation.statistics();
 	}
 

@@ -3,10 +3,12 @@ package edu.trafficsim.plugin;
 import org.opengis.referencing.operation.TransformException;
 
 import edu.trafficsim.engine.StatisticsCollector;
+import edu.trafficsim.model.SimulationScenario;
 
-public interface ISimulation {
+public interface ISimulating {
 
-	public void run() throws TransformException;
+	public void run(SimulationScenario simulationScenario)
+			throws TransformException;
 
 	public StatisticsCollector statistics();
 }

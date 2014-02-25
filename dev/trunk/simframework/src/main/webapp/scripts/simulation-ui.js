@@ -83,7 +83,10 @@ jQuery(document)
 								simwebhelper
 										.getPanel('vehiclecomposition/view');
 							});
-
+					/* simulator */
+					jQuery('#user-interface-simulator').click(function() {
+						simwebhelper.getPanel('simulator/view');
+					});
 					/* Create New Scenario */
 					jQuery('#user-interface-newScenario').click(function() {
 						simulation.clearLayers();

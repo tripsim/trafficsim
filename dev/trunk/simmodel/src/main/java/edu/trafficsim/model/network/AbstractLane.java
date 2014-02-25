@@ -54,8 +54,6 @@ public abstract class AbstractLane<T> extends AbstractSubsegment<T> implements
 
 	@Override
 	public final void add(Vehicle vehicle) {
-		if (vehicle.currentLane() != null)
-			vehicle.currentLane().remove(vehicle);
 		vehicles.add(vehicle);
 	}
 

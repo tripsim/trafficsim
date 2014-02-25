@@ -5,14 +5,9 @@ import java.util.NoSuchElementException;
 import org.opengis.referencing.operation.TransformException;
 
 import edu.trafficsim.engine.VehicleFactory;
-import edu.trafficsim.model.CarFollowingType;
-import edu.trafficsim.model.LaneChangingType;
-import edu.trafficsim.model.MovingType;
-import edu.trafficsim.model.Simulator;
+import edu.trafficsim.model.SimulationScenario;
 import edu.trafficsim.model.Vehicle;
-import edu.trafficsim.model.VehicleBehavior;
 import edu.trafficsim.model.roadusers.DefaultVehicle;
-import edu.trafficsim.model.roadusers.DefaultVehicleBehavior;
 
 public class DefaultVehicleFactory extends AbstractFactory implements
 		VehicleFactory {
@@ -34,13 +29,12 @@ public class DefaultVehicleFactory extends AbstractFactory implements
 	private static long vid = 0;
 
 	@Override
-	public Vehicle createVehicle(VehicleSpecs vehicleSpecs, Simulator simulator)
-			throws TransformException {
+	public Vehicle createVehicle(VehicleSpecs vehicleSpecs,
+			SimulationScenario scenario) throws TransformException {
+
 		count++;
 
-		double startTime = simulator.getForwardedTime();
-		double stepSize = simulator.getStepSize();
-		int initFrameId = (int) Math.round(startTime / stepSize);
+		int initFrameId = scenario.getSimulator().getForwardedSteps();
 
 		DefaultVehicle vehicle = new DefaultVehicle(vid,
 				vehicleSpecs.vehicleType, vehicleSpecs.driverType, initFrameId);
@@ -55,22 +49,15 @@ public class DefaultVehicleFactory extends AbstractFactory implements
 			position = position > 0 ? 0 : position;
 		} catch (NoSuchElementException e) {
 		}
-		vehicle.setVehicleBehavior(vehicleSpecs.vehicleBehavior);
 
 		vehicle.position(position);
 		String name = "vehicle" + count;
 		vehicle.setName(name);
+
+		// TODO routing
 		vehicle.currentLane(vehicleSpecs.lane);
 
 		vehicle.refresh();
 		return vehicle;
-	}
-
-	// TODO find a home for this
-	@Override
-	public VehicleBehavior createBehavior(String name, MovingType movingType,
-			CarFollowingType carFollowingType, LaneChangingType laneChangingType) {
-		return new DefaultVehicleBehavior(0, name, movingType,
-				carFollowingType, laneChangingType);
 	}
 }

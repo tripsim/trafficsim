@@ -1,6 +1,21 @@
 <h2>Simulator</h2>
+<div id="user-configuration-buttons">
+	<span id="user-configuration-button-close" class="button">close</span>
+</div>
 <p>
-	<span>WORK!!!</span>
+	Simulator: <span data-th-text="${simulator.name}"></span>
+</p>
+<p>
+	Duration: <span data-th-text="${simulator.duration}"></span>
+</p>
+<p>
+	Step size: <span data-th-text="${simulator.stepSize}"></span>
+</p>
+<p>
+	Warmup: <span data-th-text="${simulator.warmup}"></span>
+</p>
+<p>
+	Seed: <span data-th-text="${simulator.seed}"></span>
 </p>
 <div class="buttons">
 	<span onclick="simulation.load();">Run Simulation</span> <span

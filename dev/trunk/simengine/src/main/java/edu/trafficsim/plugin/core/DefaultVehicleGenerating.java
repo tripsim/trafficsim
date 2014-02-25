@@ -10,33 +10,26 @@ import org.opengis.referencing.operation.TransformException;
 
 import edu.trafficsim.engine.VehicleFactory;
 import edu.trafficsim.engine.VehicleFactory.VehicleSpecs;
-import edu.trafficsim.model.CarFollowingType;
 import edu.trafficsim.model.DriverType;
 import edu.trafficsim.model.Lane;
-import edu.trafficsim.model.LaneChangingType;
 import edu.trafficsim.model.Link;
-import edu.trafficsim.model.MovingType;
 import edu.trafficsim.model.Od;
-import edu.trafficsim.model.Simulator;
+import edu.trafficsim.model.SimulationScenario;
 import edu.trafficsim.model.Vehicle;
-import edu.trafficsim.model.VehicleBehavior;
 import edu.trafficsim.model.VehicleType;
 import edu.trafficsim.model.core.Randoms;
+import edu.trafficsim.plugin.IVehicleGenerating;
 
-public class DefaultVehicleGenerator extends AbstractVehicleGenerator {
+public class DefaultVehicleGenerating implements IVehicleGenerating {
 
-	public DefaultVehicleGenerator(VehicleFactory vehicleFactory) {
-		super(vehicleFactory);
-	}
-
-	// Based on arrival rate
-	// The other should be based on headway
+	// Based on arrival rate (possion dist)
+	// An alternative should be based on headway (negative exponential dist)
 	@Override
-	public final List<Vehicle> getVehicles(Od od, Simulator simulator)
-			throws TransformException {
-		double time = simulator.getForwardedTime();
-		double stepSize = simulator.getStepSize();
-		Random rand = simulator.getRand();
+	public final List<Vehicle> newVehicles(Od od, SimulationScenario scenario,
+			VehicleFactory vehicleFactory) throws TransformException {
+		double time = scenario.getSimulator().getForwardedTime();
+		double stepSize = scenario.getSimulator().getStepSize();
+		Random rand = scenario.getSimulator().getRand();
 
 		int vph = od.vph(time);
 		double arrivalRate = ((double) vph) / (3600 / stepSize);
@@ -46,32 +39,31 @@ public class DefaultVehicleGenerator extends AbstractVehicleGenerator {
 		int num = dist.inverseCumulativeProbability(prob);
 
 		List<Vehicle> vehicles = new ArrayList<Vehicle>();
+
 		for (int i = 0; i < num; i++) {
+
+			// random vehicle type and driver type
 			VehicleType vtypeToBuild = Randoms.randomElement(
 					od.getVehicleTypeComposition(time), rand);
 			DriverType dtypeToBuild = Randoms.randomElement(
 					od.getDriverTypeComposition(time), rand);
 
-			// TODO random vehicle behavior, speed and accel
-			MovingType movingType = new MovingType(0, "temp");
-			CarFollowingType carfollowingType = new CarFollowingType(0, "temp");
-			LaneChangingType laneChangingType = new LaneChangingType(0, "temp");
-			VehicleBehavior vehicleBehavior = vehicleFactory.createBehavior(
-					"temp", movingType, carfollowingType, laneChangingType);
+			// random initial speed and acceleration
 			double speed = Randoms.uniform(5, 30, rand);
 			double accel = 0.2;
 
-			// TODO setup routing
+			// random initial link and lane
 			List<Link> links = new ArrayList<Link>(od.getOrigin()
 					.getDownstreams());
 			Link link = links.get(rand.nextInt(links.size()));
 			List<Lane> lanes = Arrays.asList(link.getLanes());
 			Lane lane = lanes.get(rand.nextInt(lanes.size()));
 
+			// generate vehicle from spec
 			VehicleSpecs vehicleSpecs = new VehicleSpecs(vtypeToBuild,
-					dtypeToBuild, vehicleBehavior, lane, speed, accel);
+					dtypeToBuild, lane, speed, accel);
 			Vehicle vehicle = vehicleFactory.createVehicle(vehicleSpecs,
-					simulator);
+					scenario);
 			vehicles.add(vehicle);
 
 			// Test

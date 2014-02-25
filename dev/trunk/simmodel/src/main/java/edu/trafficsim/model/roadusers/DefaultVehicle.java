@@ -8,7 +8,6 @@ import edu.trafficsim.model.Node;
 import edu.trafficsim.model.Segment;
 import edu.trafficsim.model.Subsegment;
 import edu.trafficsim.model.Vehicle;
-import edu.trafficsim.model.VehicleBehavior;
 import edu.trafficsim.model.VehicleType;
 import edu.trafficsim.model.core.MovingObject;
 
@@ -19,10 +18,10 @@ public class DefaultVehicle extends MovingObject<DefaultVehicle> implements
 
 	private VehicleType vehicleType;
 	private DriverType driverType;
-	private VehicleBehavior vehicleBehavior;
 
 	private Node destination = null;
 	private Link targetLink = null;
+	private ConnectionLane preferredConnector = null;
 	private Lane currentLane = null;
 
 	// private Lane[] desiredLanes;
@@ -73,13 +72,8 @@ public class DefaultVehicle extends MovingObject<DefaultVehicle> implements
 	}
 
 	@Override
-	public final VehicleBehavior getVehicleBehavior() {
-		return vehicleBehavior;
-	}
-
-	@Override
-	public final void setVehicleBehavior(VehicleBehavior vehicleBehavior) {
-		this.vehicleBehavior = vehicleBehavior;
+	public final Link getLink() {
+		return (Link) getSegment();
 	}
 
 	@Override
@@ -89,12 +83,17 @@ public class DefaultVehicle extends MovingObject<DefaultVehicle> implements
 
 	@Override
 	public final void currentLane(Lane lane) {
+		if (currentLane != null)
+			currentLane.remove(this);
+		if (lane != null)
+			lane.add(this);
 		this.currentLane = lane;
 	}
 
 	@Override
 	public final boolean onConnector() {
-		return currentLane.getSegment() instanceof ConnectionLane;
+		return currentLane == null ? false
+				: currentLane.getSegment() instanceof ConnectionLane;
 	}
 
 	@Override
@@ -158,6 +157,16 @@ public class DefaultVehicle extends MovingObject<DefaultVehicle> implements
 
 	public final void getLength(double length) {
 		this.length = length;
+	}
+
+	@Override
+	public ConnectionLane preferredConnector() {
+		return preferredConnector;
+	}
+
+	@Override
+	public void preferredConnector(ConnectionLane lane) {
+		preferredConnector = lane;
 	}
 
 }

@@ -2,8 +2,6 @@ package edu.trafficsim.model;
 
 public interface Vehicle extends Movable, Agent {
 
-	public String getName();
-
 	public VehicleType getVehicleType();
 
 	public void setDriverType(VehicleType vehicleType);
@@ -12,9 +10,7 @@ public interface Vehicle extends Movable, Agent {
 
 	public void setDriverType(DriverType driverType);
 
-	public VehicleBehavior getVehicleBehavior();
-
-	public void setVehicleBehavior(VehicleBehavior vehicleBehavior);
+	public Link getLink();
 
 	public Lane currentLane();
 
@@ -25,6 +21,10 @@ public interface Vehicle extends Movable, Agent {
 	public Link targetLink();
 
 	public void targetLink(Link link);
+
+	public ConnectionLane preferredConnector();
+
+	public void preferredConnector(ConnectionLane lane);
 
 	public Node destination();
 
