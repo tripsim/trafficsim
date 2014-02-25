@@ -1,34 +1,44 @@
 package edu.trafficsim.model;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 
+import org.geotools.geometry.jts.JTSFactoryFinder;
 import org.junit.Test;
 import org.opengis.referencing.operation.TransformException;
 
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.GeometryFactory;
+
 import edu.trafficsim.model.VehicleType.VehicleClass;
+import edu.trafficsim.model.core.AbstractSegment;
+import edu.trafficsim.model.core.AbstractSubsegment;
 import edu.trafficsim.model.core.ModelInputException;
 import edu.trafficsim.model.network.DefaultLane;
 import edu.trafficsim.model.network.DefaultLink;
+import edu.trafficsim.model.network.DefaultNode;
 import edu.trafficsim.model.roadusers.DefaultVehicle;
 
 public class LaneTest {
+
+	GeometryFactory geometryFactory = JTSFactoryFinder.getGeometryFactory();
 
 	@Test
 	public void testNavigable() throws ModelInputException, TransformException,
 			NoSuchMethodException, SecurityException, NoSuchFieldException,
 			IllegalArgumentException, IllegalAccessException {
 
-		DefaultLink link = new DefaultLink(0, null, null, null, null, null);
+		DefaultLink link = new DefaultLink(0, null, null, new DefaultNode(0,
+				null, null, null), new DefaultNode(0, null, null, null),
+				geometryFactory.createLineString(new Coordinate[] {}));
 
-		Field f1 = DefaultLink.class.getDeclaredField("length");
+		Field f1 = AbstractSegment.class.getDeclaredField("length");
 		f1.setAccessible(true);
-		Field f2 = DefaultLane.class.getDeclaredField("length");
+		Field f2 = AbstractSubsegment.class.getDeclaredField("length");
 		f2.setAccessible(true);
 
 		f1.set(link, 5);
 
-		Lane lane = new DefaultLane(0, link, 4, 0, 0);
+		Lane lane = new DefaultLane(0, link, 0, 1, 2);
 		VehicleType vehicleType = new VehicleType(0, "Test", VehicleClass.Car);
 		DefaultVehicle vehicle1 = new DefaultVehicle(0, vehicleType, null, 0);
 		vehicle1.setName("first");

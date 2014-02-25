@@ -27,8 +27,8 @@ public class MapJsonService {
 		if (network == null)
 			return "{}";
 
-		return network.getLink(linkId) != null ? "{"
-				+ getLink(network.getLink(linkId)) + "}" : "{}";
+		return network.getLink(linkId) == null ? "{}" : "{"
+				+ getLink(network.getLink(linkId)) + "}";
 	}
 
 	/**
@@ -56,8 +56,8 @@ public class MapJsonService {
 		if (network == null)
 			return "{}";
 
-		return network.getNode(nodeId) != null ? "{"
-				+ getNode(network.getNode(nodeId)) + "}" : "{}";
+		return network.getNode(nodeId) == null ? "{}" : "{"
+				+ getNode(network.getNode(nodeId)) + "}";
 	}
 
 	/**
@@ -84,7 +84,8 @@ public class MapJsonService {
 	public String getLanesJson(Network network, long linkId) {
 		if (network == null)
 			return "{}";
-		return "{" + getLanes(network.getLink(linkId)) + "}";
+		return network.getLink(linkId) == null ? "{}" : "{"
+				+ getLanes(network.getLink(linkId)) + "}";
 	}
 
 	/**

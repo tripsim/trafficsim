@@ -55,7 +55,7 @@
 
 	<properties>
 		<org.springframework-version>4.0.1.RELEASE</org.springframework-version>
-		<org.thymeleaf>2.1.2.RELEASE</org.thymeleaf>
+		<org.thymeleaf-version>2.1.2.RELEASE</org.thymeleaf-version>
 		<org.slf4j-version>1.7.5</org.slf4j-version>
 		<geotools.version>8.4</geotools.version>
 		<jts.version>1.13</jts.version>

@@ -23,10 +23,10 @@ public class JsonOutputServiceTest {
 	public void test() throws TransformException {
 		String output;
 
-		output = jsonService.getLinkJson(network, 3);
+		output = jsonService.getLinkJson(network, 2);
 		System.out.println(output);
 
-		output = jsonService.getLanesJson(network, 3);
+		output = jsonService.getLanesJson(network, 2);
 		System.out.println(output);
 
 		output = jsonService.getNetworkJson(network);
