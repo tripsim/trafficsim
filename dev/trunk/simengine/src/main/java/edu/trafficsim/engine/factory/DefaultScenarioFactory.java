@@ -34,73 +34,75 @@ public class DefaultScenarioFactory extends AbstractFactory implements
 	}
 
 	@Override
-	public DefaultSimulationScenario createSimulationScenario() {
-		return createSimulationScenario(DEFAULT_NAME);
+	public DefaultSimulationScenario createSimulationScenario(Long id) {
+		return createSimulationScenario(id, DEFAULT_NAME);
 	}
 
 	@Override
-	public DefaultSimulationScenario createSimulationScenario(String name) {
-		return createSimulationScenario(name, createSimulator(DEFAULT_NAME),
-				null, createOdMatrix(DEFAULT_NAME), null);
+	public DefaultSimulationScenario createSimulationScenario(Long id,
+			String name) {
+		return createSimulationScenario(id, name,
+				createSimulator(id, DEFAULT_NAME), null,
+				createOdMatrix(id, DEFAULT_NAME), null);
 	}
 
 	@Override
-	public DefaultSimulationScenario createSimulationScenario(String name,
-			Simulator simulator, Network network, OdMatrix odMatrix,
-			Router router) {
-		return new DefaultSimulationScenario(newId, name, simulator,
-				network, odMatrix, router);
+	public DefaultSimulationScenario createSimulationScenario(Long id,
+			String name, Simulator simulator, Network network,
+			OdMatrix odMatrix, Router router) {
+		return new DefaultSimulationScenario(id, name, simulator, network,
+				odMatrix, router);
 	}
 
 	@Override
-	public DefaultOdMatrix createOdMatrix() {
-		return createOdMatrix(DEFAULT_NAME);
+	public DefaultOdMatrix createOdMatrix(Long id) {
+		return createOdMatrix(id, DEFAULT_NAME);
 	}
 
 	@Override
-	public DefaultOdMatrix createOdMatrix(String name) {
-		return new DefaultOdMatrix(newId, name);
+	public DefaultOdMatrix createOdMatrix(Long id, String name) {
+		return new DefaultOdMatrix(id, name);
 	}
 
 	@Override
-	public DefaultOd createOd(String name, Node origin, Node destination,
-			VehicleTypeComposition vehicleTypeComposition,
+	public DefaultOd createOd(Long id, String name, Node origin,
+			Node destination, VehicleTypeComposition vehicleTypeComposition,
 			DriverTypeComposition driverTypeComposition)
 			throws ModelInputException {
-		return new DefaultOd(newId, name, origin, destination,
+		return new DefaultOd(id, name, origin, destination,
 				vehicleTypeComposition, driverTypeComposition,
 				new double[] { 100 }, new Integer[] { 1000 });
 	}
 
 	@Override
-	public DefaultOd createOd(String name, Node origin, Node destination,
-			VehicleTypeComposition vehicleTypeComposition,
+	public DefaultOd createOd(Long id, String name, Node origin,
+			Node destination, VehicleTypeComposition vehicleTypeComposition,
 			DriverTypeComposition driverTypeComposition, double[] times,
 			Integer[] vphs) throws ModelInputException {
-		return new DefaultOd(newId, name, origin, destination,
+		return new DefaultOd(id, name, origin, destination,
 				vehicleTypeComposition, driverTypeComposition, times, vphs);
 	}
 
 	@Override
-	public Router createRouter() {
+	public Router createRouter(Long id) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public DefaultSimulator createSimulator() {
-		return createSimulator(DEFAULT_NAME);
+	public DefaultSimulator createSimulator(Long id) {
+		return createSimulator(id, DEFAULT_NAME);
 	}
 
 	@Override
-	public DefaultSimulator createSimulator(String name) {
-		return createSimulator(name, DEFAULT_DURATION, DEFAULT_STEPSIZE);
+	public DefaultSimulator createSimulator(Long id, String name) {
+		return createSimulator(id, name, DEFAULT_DURATION, DEFAULT_STEPSIZE);
 	}
 
 	@Override
-	public DefaultSimulator createSimulator(String name, int duration,
+	public DefaultSimulator createSimulator(Long id, String name, int duration,
 			int stepSize) {
-		return new DefaultSimulator(newId, name, duration, stepSize);
+		return new DefaultSimulator(id, name, duration, stepSize);
 	}
 
 }

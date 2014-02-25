@@ -12,26 +12,27 @@
 </th:block>
 
 <th:block data-th-fragment="edit(od, destinations)">
-	<td><span>Destination</span> <br /> <span
+	<td class="od-td-destination"><span>Destination</span> <br /> <span
 		data-th-include="components/od-fragments :: select(${destinations})"></span></td>
 	<td><span>End Time </span> <br /> <span>VPH</span></td>
-	<td data-th-each="time : ${od.jumpTimes}"><input type="text"
-		size="10" data-th-value="${time}" /> <br /> <input type="text"
-		size="10" data-th-value="${od.vph(time)}" /></td>
+	<td class="od-td" data-th-each="time : ${od.jumpTimes}"><input
+		type="text" name="time" size="10" data-th-value="${time}" /> <br />
+		<input type="text" name="vph" size="10"
+		data-th-value="${od.vph(time)}" /></td>
 	<td colspan="0"><span data-th-attr="data-id=${od.id}"
 		class="user-configuration-od-add-int button">add</span><span
 		data-th-attr="data-id=${od.id}"
 		class="user-configuration-od-remove-int button">remove</span><span
 		data-th-attr="data-id=${od.id}"
 		class="user-configuration-od-save button">save</span><span
-		data-th-attr="data-id=${od.id}"
+		data-th-attr="data-id=${od.id}, data-is-new=${isNew}"
 		class="user-configuration-od-cancel button">cancel</span></td>
 </th:block>
 
 
 <th:block data-th-fragment="select(destinations)">
 	<select>
-		<option selected="true" value="${destinations.size()}">None</option>
+		<option selected="true" value="-1">None</option>
 		<th:block data-th-each="destination : ${destinations}">
 			<option data-th-attr="value=${destination.id}"
 				data-th-text="${destination.id}"></option>

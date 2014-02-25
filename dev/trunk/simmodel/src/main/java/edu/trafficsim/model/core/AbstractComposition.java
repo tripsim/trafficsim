@@ -13,7 +13,7 @@ public abstract class AbstractComposition<K> extends BaseEntity<K> implements
 	private static final long serialVersionUID = 1L;
 
 	private Map<K, Double> map = new HashMap<K, Double>();
-	private double total;
+	private double total = 0;
 
 	public AbstractComposition(long id, String name, K[] keys,
 			double[] probabilities) throws ModelInputException {
@@ -25,7 +25,7 @@ public abstract class AbstractComposition<K> extends BaseEntity<K> implements
 			throw new ModelInputException(
 					"keys and composition need to have the same length!");
 		for (int i = 0; i < keys.length; i++)
-			put(keys[i], probabilities[i]);
+			culmulate(keys[i], probabilities[i]);
 	}
 
 	@Override

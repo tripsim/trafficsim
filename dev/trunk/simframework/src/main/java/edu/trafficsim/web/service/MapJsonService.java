@@ -11,7 +11,7 @@ import edu.trafficsim.model.Network;
 import edu.trafficsim.model.Node;
 
 @Service
-public class JsonOutputService {
+public class MapJsonService {
 
 	private double defaultCenterX = -9952964.247717002;
 	private double defaultCenterY = 5323065.604899759;

@@ -1,6 +1,6 @@
 package edu.trafficsim.model.core;
 
-public class ModelInputException extends IllegalArgumentException {
+public class ModelInputException extends Exception {
 
 	private static final long serialVersionUID = 1L;
 

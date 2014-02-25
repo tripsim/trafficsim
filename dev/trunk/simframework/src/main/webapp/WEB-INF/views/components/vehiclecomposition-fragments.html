@@ -5,9 +5,9 @@
 		data-th-text="${vehicleType.name}"></span> <br /> <span
 		data-th-text="${#numbers.formatDecimal(vehicleComposition.probability(vehicleType),1,4)}"></span></td>
 	<td colspan="0"><span
-		data-th-attr="data-id=${vehicleComposition.id}"
+		data-th-attr="data-name=${vehicleComposition.name}"
 		class="user-configuration-vehicle-comp-edit button">edit</span><span
-		data-th-attr="data-id=${vehicleComposition.id}"
+		data-th-attr="data-name=${vehicleComposition.name}"
 		class="user-configuration-vehicle-comp-remove button">remove</span></td>
 </th:block>
 
@@ -21,11 +21,11 @@
 		<br /> <input type="text" size="10"
 		data-th-value="${vehicleComposition.probability(vehicleType)}" /></td>
 	<td colspan="0"><span
-		data-th-attr="data-id=${vehicleComposition.id}"
+		data-th-attr="data-name=${vehicleComposition.name}"
 		class="user-configuration-vehicle-comp-add button">add</span><span
-		data-th-attr="data-id=${vehicleComposition.id}"
+		data-th-attr="data-name=${vehicleComposition.name}"
 		class="user-configuration-vehicle-comp-save button">save</span><span
-		data-th-attr="data-id=${vehicleComposition.id}"
+		data-th-attr="data-name=${vehicleComposition.name}, data-is-new=${isNew}"
 		class="user-configuration-vehicle-comp-cancel button">cancel</span></td>
 </th:block>
 
@@ -33,7 +33,7 @@
 	<select>
 		<th:block data-th-each="vehicleType : ${vehicleTypes}">
 			<option
-				data-th-attr="selected=${selectedVehicleType.equals(vehicleType)} ? 'true' :'false', value=${vehicleType.id}"
+				data-th-attr="selected=${selectedVehicleType.equals(vehicleType)} ? 'true' :'false', value=${vehicleType.name}"
 				data-th-text="${vehicleType.name}"></option>
 		</th:block>
 	</select>

@@ -1,7 +1,7 @@
 package edu.trafficsim.model;
 
 
-public interface SimulationScenario {
+public interface SimulationScenario extends DataContainer {
 
 	public Simulator getSimulator();
 
@@ -10,4 +10,5 @@ public interface SimulationScenario {
 	public OdMatrix getOdMatrix();
 
 	public Router getRouter();
+	
 }

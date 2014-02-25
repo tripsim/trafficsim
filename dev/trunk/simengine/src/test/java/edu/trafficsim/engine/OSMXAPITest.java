@@ -27,7 +27,7 @@ public class OSMXAPITest {
 	}
 
 	static NetworkFactory networkFactory = DefaultNetworkFactory.getInstance();
-	static OsmNetworkExtractor extractor = OsmNetworkExtractor.getInstance();
+	static OsmNetworkExtractor extractor = new OsmNetworkExtractor(1);
 
 	protected static void testExtractByReader() throws TransformException {
 

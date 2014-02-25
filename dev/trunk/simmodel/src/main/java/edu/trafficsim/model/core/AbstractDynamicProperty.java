@@ -3,6 +3,7 @@ package edu.trafficsim.model.core;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.NavigableMap;
+import java.util.Set;
 import java.util.TreeMap;
 
 public abstract class AbstractDynamicProperty<T> implements Serializable {
@@ -43,8 +44,12 @@ public abstract class AbstractDynamicProperty<T> implements Serializable {
 			setProperty(times[i], values[i]);
 	}
 
-	public final Collection<Double> getJumpTimes() {
+	public final Set<Double> getJumpTimes() {
 		return properties.keySet();
+	}
+
+	public final Collection<T> getValues() {
+		return properties.values();
 	}
 
 	@Override

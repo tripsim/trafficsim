@@ -13,33 +13,34 @@ import edu.trafficsim.model.core.ModelInputException;
 
 public interface ScenarioFactory {
 
-	public SimulationScenario createSimulationScenario();
+	public SimulationScenario createSimulationScenario(Long id);
 
-	public SimulationScenario createSimulationScenario(String name);
+	public SimulationScenario createSimulationScenario(Long id, String name);
 
-	public SimulationScenario createSimulationScenario(String name,
+	public SimulationScenario createSimulationScenario(Long id, String name,
 			Simulator simulator, Network network, OdMatrix odMatrix,
 			Router router);
 
-	public OdMatrix createOdMatrix();
+	public OdMatrix createOdMatrix(Long id);
 
-	public OdMatrix createOdMatrix(String name);
+	public OdMatrix createOdMatrix(Long id, String name);
 
-	public Od createOd(String name, Node origin, Node destination,
+	public Od createOd(Long id, String name, Node origin, Node destination,
 			VehicleTypeComposition vehicleTypeComposition,
-			DriverTypeComposition driverTypeComposition);
+			DriverTypeComposition driverTypeComposition) throws ModelInputException;
 
-	public Od createOd(String name, Node origin, Node destination,
+	public Od createOd(Long id, String name, Node origin, Node destination,
 			VehicleTypeComposition vehicleTypeComposition,
 			DriverTypeComposition driverTypeComposition, double[] times,
 			Integer[] vphs) throws ModelInputException;
 
-	public Router createRouter();
+	public Router createRouter(Long id);
 
-	public Simulator createSimulator();
+	public Simulator createSimulator(Long id);
 
-	public Simulator createSimulator(String name);
+	public Simulator createSimulator(Long id, String name);
 
-	public Simulator createSimulator(String name, int duration, int stepSize);
+	public Simulator createSimulator(Long id, String name, int duration,
+			int stepSize);
 
 }

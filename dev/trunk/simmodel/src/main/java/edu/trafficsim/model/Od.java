@@ -12,6 +12,8 @@ public interface Od extends DataContainer {
 
 	public Node getDestination();
 
+	public Node setDestination(Node destination);
+
 	public int vph(double time);
 
 	public Collection<Double> getJumpTimes();
@@ -21,4 +23,8 @@ public interface Od extends DataContainer {
 	public DriverTypeComposition getDriverTypeComposition(double time);
 
 	void setVphs(double[] times, Integer[] vphs) throws ModelInputException;
+
+	public Collection<VehicleTypeComposition> getVehicleCompositions();
+
+	public Collection<DriverTypeComposition> getDriverCompositions();
 }
