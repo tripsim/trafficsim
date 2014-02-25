@@ -103,7 +103,7 @@ public abstract class AbstractProject {
 
 	public Simulator getSimulator() {
 		if (simulator == null)
-			simulatorService.createSimulator();
+			simulator = simulatorService.createSimulator();
 		return simulator;
 	}
 

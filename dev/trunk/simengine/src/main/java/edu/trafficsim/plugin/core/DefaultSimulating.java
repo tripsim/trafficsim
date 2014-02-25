@@ -16,33 +16,31 @@ import edu.trafficsim.model.SimulationScenario;
 import edu.trafficsim.model.Simulator;
 import edu.trafficsim.model.Vehicle;
 import edu.trafficsim.plugin.IMoving;
-import edu.trafficsim.plugin.IVehicleGenerator;
+import edu.trafficsim.plugin.ISimulating;
+import edu.trafficsim.plugin.IVehicleGenerating;
 
-public class DefaultSimulation extends AbstractSimulation {
+public class DefaultSimulating implements ISimulating {
 
 	protected static VehicleFactory vehicleFactory = DefaultVehicleFactory
 			.getInstance();
 
 	// TODO hack for plugin management
+	// TODO get from plugin manager
 	protected static IMoving moving = new DefaultMoving();
-	protected static IVehicleGenerator vehicleGenerator = new DefaultVehicleGenerator(
-			vehicleFactory);
+	protected static IVehicleGenerating vehicleGenerator = new DefaultVehicleGenerating();
 
-	private final StatisticsCollector statisticsCollector;
-
-	public DefaultSimulation(SimulationScenario simulationScenario) {
-		super(simulationScenario);
-
-		statisticsCollector = DefaultStatisticsCollector
-				.create(simulationScenario.getSimulator());
-	}
+	private StatisticsCollector statisticsCollector;
 
 	public void runDev() {
 
 	}
 
 	@Override
-	public void run() throws TransformException {
+	public void run(SimulationScenario simulationScenario)
+			throws TransformException {
+		statisticsCollector = DefaultStatisticsCollector
+				.create(simulationScenario.getSimulator());
+
 		Simulator simulator = simulationScenario.getSimulator();
 		System.out.println("******** Simulation Demo ********");
 		System.out.println("---- Parameters ----");
@@ -74,8 +72,8 @@ public class DefaultSimulation extends AbstractSimulation {
 				}
 			}
 			for (Od od : simulationScenario.getOdMatrix().getOds()) {
-				List<Vehicle> newVehicles = vehicleGenerator.getVehicles(od,
-						simulator);
+				List<Vehicle> newVehicles = vehicleGenerator.newVehicles(od,
+						simulationScenario, vehicleFactory);
 				vehicles.addAll(newVehicles);
 			}
 			simulator.stepForward();
