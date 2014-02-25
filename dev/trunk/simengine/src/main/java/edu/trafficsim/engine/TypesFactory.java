@@ -9,15 +9,16 @@ import edu.trafficsim.model.core.ModelInputException;
 
 public interface TypesFactory {
 
-	public VehicleType createVechileType(String name, VehicleClass vehicleClass);
+	public VehicleType createVehicleType(Long id, String name,
+			VehicleClass vehicleClass);
 
-	public DriverType createDriverType(String name);
+	public DriverType createDriverType(Long id, String name);
 
-	public VehicleTypeComposition createVehicleTypeComposition(String name,
-			VehicleType[] vehicleTypes, double[] probabilities)
+	public VehicleTypeComposition createVehicleTypeComposition(Long id,
+			String name, VehicleType[] vehicleTypes, double[] probabilities)
 			throws ModelInputException;
 
-	public DriverTypeComposition createDriverTypeComposition(String name,
-			DriverType[] driverTypes, double[] probabilities)
+	public DriverTypeComposition createDriverTypeComposition(Long id,
+			String name, DriverType[] driverTypes, double[] probabilities)
 			throws ModelInputException;
 }

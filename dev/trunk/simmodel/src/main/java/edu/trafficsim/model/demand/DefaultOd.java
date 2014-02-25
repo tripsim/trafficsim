@@ -63,6 +63,11 @@ public class DefaultOd extends BaseEntity<DefaultOd> implements Od {
 	}
 
 	@Override
+	public Node setDestination(Node destination) {
+		return this.destination = destination;
+	}
+
+	@Override
 	public Collection<Double> getJumpTimes() {
 		return dynamicFlow.getJumpTimes();
 	}
@@ -96,6 +101,16 @@ public class DefaultOd extends BaseEntity<DefaultOd> implements Od {
 	public final void setDriverTypeComposition(double[] times,
 			DriverTypeComposition[] compositions) throws ModelInputException {
 		dynamicDriverTypeComposition.setProperties(times, compositions);
+	}
+
+	@Override
+	public Collection<VehicleTypeComposition> getVehicleCompositions() {
+		return dynamicVehicleTypeComposition.getValues();
+	}
+
+	@Override
+	public Collection<DriverTypeComposition> getDriverCompositions() {
+		return dynamicDriverTypeComposition.getValues();
 	}
 
 }

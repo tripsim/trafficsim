@@ -66,10 +66,11 @@ public class DefaultVehicleFactory extends AbstractFactory implements
 		return vehicle;
 	}
 
+	// TODO find a home for this
 	@Override
 	public VehicleBehavior createBehavior(String name, MovingType movingType,
 			CarFollowingType carFollowingType, LaneChangingType laneChangingType) {
-		return new DefaultVehicleBehavior(newId, name, movingType,
+		return new DefaultVehicleBehavior(0, name, movingType,
 				carFollowingType, laneChangingType);
 	}
 }

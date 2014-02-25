@@ -25,28 +25,29 @@ public class DefaultTypesFactory extends AbstractFactory implements
 	}
 
 	@Override
-	public VehicleType createVechileType(String name, VehicleClass vehicleClass) {
-		return new VehicleType(newId, name, vehicleClass);
+	public VehicleType createVehicleType(Long id, String name,
+			VehicleClass vehicleClass) {
+		return new VehicleType(id, name, vehicleClass);
 	}
 
 	@Override
-	public DriverType createDriverType(String name) {
-		return new DriverType(newId, name);
+	public DriverType createDriverType(Long id, String name) {
+		return new DriverType(id, name);
 	}
 
 	@Override
-	public VehicleTypeComposition createVehicleTypeComposition(String name,
-			VehicleType[] vehicleTypes, double[] probabilities)
+	public VehicleTypeComposition createVehicleTypeComposition(Long id,
+			String name, VehicleType[] vehicleTypes, double[] probabilities)
 			throws ModelInputException {
-		return new DefaultVehicleTypeComposition(newId, name, vehicleTypes,
+		return new DefaultVehicleTypeComposition(id, name, vehicleTypes,
 				probabilities);
 	}
 
 	@Override
-	public DriverTypeComposition createDriverTypeComposition(String name,
-			DriverType[] driverTypes, double[] probabilities)
+	public DriverTypeComposition createDriverTypeComposition(Long id,
+			String name, DriverType[] driverTypes, double[] probabilities)
 			throws ModelInputException {
-		return new DefaultDriverTypeComposition(newId, name, driverTypes,
+		return new DefaultDriverTypeComposition(id, name, driverTypes,
 				probabilities);
 	}
 

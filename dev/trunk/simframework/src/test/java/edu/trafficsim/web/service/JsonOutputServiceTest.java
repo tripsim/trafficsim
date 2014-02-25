@@ -10,13 +10,13 @@ public class JsonOutputServiceTest {
 
 	DemoSimulationService demo;
 	Network network;
-	JsonOutputService jsonService;
+	MapJsonService jsonService;
 
 	@Before
 	public void setUp() throws Exception {
 		demo = new DemoSimulationService();
 		network = demo.getScenario().getNetwork();
-		jsonService = new JsonOutputService();
+		jsonService = new MapJsonService();
 	}
 
 	@Test

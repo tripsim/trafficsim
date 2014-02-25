@@ -1,26 +1,17 @@
 package edu.trafficsim.web;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
-import java.util.Map;
-
 import org.opengis.referencing.operation.TransformException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.fasterxml.jackson.core.JsonParseException;
-
-import edu.trafficsim.model.Network;
 import edu.trafficsim.model.core.ModelInputException;
-import edu.trafficsim.web.service.ActionJsonResponseService;
 import edu.trafficsim.web.service.DemoSimulationService;
-import edu.trafficsim.web.service.ExtractOsmNetworkService;
-import edu.trafficsim.web.service.JsonOutputService;
+import edu.trafficsim.web.service.ImportScenarioService;
+import edu.trafficsim.web.service.MapJsonService;
+import edu.trafficsim.web.service.entity.OsmImportService;
 
 @Controller
 public class DefaultController {
@@ -31,11 +22,11 @@ public class DefaultController {
 	@Autowired
 	DemoSimulationService demoSimulationService;
 	@Autowired
-	ExtractOsmNetworkService extractOsmNetworkService;
+	ImportScenarioService importScenarioService;
 	@Autowired
-	JsonOutputService jsonOutputService;
+	OsmImportService extractOsmNetworkService;
 	@Autowired
-	ActionJsonResponseService actionJsonResponse;
+	MapJsonService mapJsonService;
 
 	@RequestMapping(value = "/")
 	public String home() {
@@ -60,15 +51,12 @@ public class DefaultController {
 	// TODO remove it
 	@RequestMapping(value = "/getdemonetwork", method = RequestMethod.GET)
 	public @ResponseBody
-	String demoNetwork() {
+	String demoNetwork() throws ModelInputException, UserInterfaceException {
 		String str = "";
 		try {
-			project.setNetwork(demoSimulationService.getScenario().getNetwork());
-			project.setOdMatrix(demoSimulationService.getScenario()
-					.getOdMatrix());
-			project.setSimulator(demoSimulationService.getScenario()
-					.getSimulator());
-			str = jsonOutputService.getNetworkJson(project.getNetwork());
+			importScenarioService.updateProject(demoSimulationService
+					.getScenario());
+			str = mapJsonService.getNetworkJson(project.getNetwork());
 		} catch (TransformException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -76,37 +64,4 @@ public class DefaultController {
 		return str;
 	}
 
-	@RequestMapping(value = "/createnetwork", method = RequestMethod.POST)
-	public @ResponseBody
-	Map<String, Object> createNetwork(@RequestParam("bbox") String bbox,
-			@RequestParam("highway") String highway) {
-		Network network;
-		// TODO build feedbacks
-		try {
-			network = extractOsmNetworkService.createNetwork(bbox, highway,
-					project.getNetworkFactory());
-			project.setNetwork(network);
-			return actionJsonResponse.successResponse("network created",
-					"view/network", jsonOutputService.getNetworkJson(network));
-		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ModelInputException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (JsonParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ProtocolException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (TransformException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return actionJsonResponse.failureResponse("Network generation failed.");
-	}
 }

@@ -47,9 +47,8 @@ html,body,#map {
 }
 
 #user-interface .highlight {
-	cursor: auto;
+	cursor: pointer;
 	background-color: #ff5600;
-	cursor: auto;
 }
 
 #user-interface .buttons span {

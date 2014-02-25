@@ -19,10 +19,12 @@ jQuery(document)
 
 					that.initMap();
 
-					simwebhelper.getJson('json/network',
+					simwebhelper.getJson('map/network',
 							function(data) {
-								if (data['links'] != null)
-									that.reDrawNetwork(data['links']);
+								if (data['links'] != null
+										|| data['nodes'] != null)
+									that.reDrawNetwork(data['links'],
+											data['nodes']);
 								if (data['lanes'] != null
 										&& data['connectors'] != null)
 									that.reDrawAllLanes(data['lanes'],
@@ -41,11 +43,11 @@ jQuery(document)
 									function() {
 										simwebhelper
 												.getPanel(
-														'view/network',
+														'network/view',
 														function() {
 															simwebhelper
 																	.getJson(
-																			'json/center',
+																			'map/center',
 																			function(
 																					data) {
 																				if (data['center'] != null)
@@ -79,14 +81,14 @@ jQuery(document)
 					jQuery('#user-interface-vehicle-composition').click(
 							function() {
 								simwebhelper
-										.getPanel('view/vehiclecomposition');
+										.getPanel('vehiclecomposition/view');
 							});
 
 					/* Create New Scenario */
 					jQuery('#user-interface-newScenario').click(function() {
 						simulation.clearLayers();
 						// TODO initiate objects
-						simwebhelper.getPanel('view/scenario-new');
+						simwebhelper.getPanel('scenario/new');
 					});
 
 					/* json editor example */
@@ -118,7 +120,7 @@ jQuery(document)
 					jQuery('#user-configuration').on('click',
 							'.user-configuration-link-edit', function() {
 								var id = jQuery(this).attr('data-id');
-								simwebhelper.getPanel('edit/link/' + id);
+								simwebhelper.getPanel('link/edit/' + id);
 							});
 					/***********************************************************
 					 * Panel, User Configuration, Link Edit
@@ -129,7 +131,7 @@ jQuery(document)
 							'.user-configuration-link-add-lane',
 							function() {
 								var id = jQuery(this).attr('data-id');
-								simwebhelper.action('action/addlanetolink', {
+								simwebhelper.action('lane/addtolink', {
 									id : id
 								}, function(data) {
 									that.reDrawLanes(data.lanes,
@@ -143,14 +145,13 @@ jQuery(document)
 							function() {
 								var ids = jQuery(this).attr('data-id').split(
 										'-');
-								simwebhelper.action(
-										'action/removelanefromlink', {
-											laneId : ids[1],
-											linkId : ids[0]
-										}, function(data) {
-											that.reDrawLanes(data.lanes,
-													data.connectors);
-										});
+								simwebhelper.action('lane/removefromlink', {
+									laneId : ids[1],
+									linkId : ids[0]
+								}, function(data) {
+									that.reDrawLanes(data.lanes,
+											data.connectors);
+								});
 							});
 					/***********************************************************
 					 * Panel, User Configuration, Connector Edit
@@ -162,7 +163,7 @@ jQuery(document)
 							function() {
 								var ids = jQuery(this).attr('data-id').split(
 										'-');
-								simwebhelper.action('action/removeconnector', {
+								simwebhelper.action('connector/remove', {
 									fromLink : ids[0],
 									fromLane : ids[1],
 									toLink : ids[2],
@@ -181,23 +182,44 @@ jQuery(document)
 							'.user-configuration-od-edit',
 							function() {
 								var tr = jQuery(this).parent().parent();
-								simwebhelper.getHtml('edit/od-form/'
+								simwebhelper.getHtml('od/form/'
 										+ jQuery(this).attr('data-id'),
 										function(html) {
 											tr.replaceWith(html);
 										});
 							});
 					/* cancel edit od */
-					jQuery('#user-configuration').on(
-							'click',
-							'.user-configuration-od-cancel',
-							function() {
+					jQuery('#user-configuration')
+							.on(
+									'click',
+									'.user-configuration-od-cancel',
+									function() {
+										var tr = jQuery(this).parent().parent();
+										if (jQuery(this).attr('data-is-new') === 'true') {
+											simwebhelper.action('od/remove', {
+												id : jQuery(this).attr(
+														'data-id')
+											}, function() {
+												tr.remove();
+											});
+										} else {
+											simwebhelper.getHtml('od/view/'
+													+ jQuery(this).attr(
+															'data-id'),
+													function(html) {
+														tr.replaceWith(html);
+													});
+										}
+									});
+					/* remove od */
+					jQuery('#user-configuration').on('click',
+							'.user-configuration-od-remove', function() {
 								var tr = jQuery(this).parent().parent();
-								simwebhelper.getHtml('edit/od-view/'
-										+ jQuery(this).attr('data-id'),
-										function(html) {
-											tr.replaceWith(html);
-										});
+								simwebhelper.action('od/remove', {
+									id : jQuery(this).attr('data-id')
+								}, function() {
+									tr.remove();
+								});
 							});
 					/* add interval in od */
 					jQuery('#user-configuration').on(
@@ -214,48 +236,89 @@ jQuery(document)
 									jQuery(this).parent().prev().remove();
 							});
 					/* save od */
-					jQuery('#user-configuration').on('click',
-							'.user-configuration-od-save', function() {
-								// TODO
-							});
-					/* create new od */
 					jQuery('#user-configuration')
 							.on(
 									'click',
-									'.user-configuration-od-new',
+									'.user-configuration-od-save',
 									function() {
+
+										var postData = {
+											times : [],
+											vphs : []
+										};
+										var error = '';
+										jQuery(this)
+												.parent()
+												.parent()
+												.find('td.od-td')
+												.each(
+														function(i, element) {
+															var time = jQuery(
+																	element)
+																	.find(
+																			'input[name="time"]')
+																	.val();
+															var vph = jQuery(
+																	element)
+																	.find(
+																			'input[name="vph"]')
+																	.val();
+															if (isNaN(vph)) {
+																error = value
+																		+ ' is not a number!';
+																return false;
+															}
+															postData.times
+																	.push(time);
+															postData.vphs
+																	.push(vph);
+														});
+
+										if (error) {
+											simwebhelper.error(error);
+											return;
+										}
+										postData.id = jQuery(this).attr(
+												'data-id');
+										postData.destinatioid = jQuery(this)
+												.parent()
+												.parent()
+												.find(
+														'td.od-td-destination select')
+												.val();
+										var tr = jQuery(this).parent().parent();
 										simwebhelper
 												.action(
-														'action/newod',
-														{
-															originId : jQuery(
-																	this).attr(
-																	'data-id'),
-															destinationId : 0
-														},
-														function(data) {
+														'od/save',
+														postData,
+														function() {
 															simwebhelper
 																	.getHtml(
-																			'edit/od-form/'
-																					+ data,
+																			'od/view/'
+																					+ postData.id,
 																			function(
 																					html) {
-																				jQuery(
-																						'#user-configuration-ods-tbody')
-																						.append(
-																								html);
+																				tr
+																						.replaceWith(html);
 																			});
-
 														});
+
 									});
-					/* remove od */
-					jQuery('#user-configuration').on('click',
-							'.user-configuration-od-remove', function() {
-								var tr = jQuery(this).parent().parent();
-								simwebhelper.action('action/removeod', {
-									id : jQuery(this).attr('data-id')
-								}, function() {
-									tr.remove();
+					/* create new od */
+					jQuery('#user-configuration').on(
+							'click',
+							'.user-configuration-od-new',
+							function() {
+								simwebhelper.action('od/new', {
+									originId : jQuery(this).attr('data-id'),
+									destinationId : 0
+								}, function(data) {
+									simwebhelper.getHtml('od/form/' + data
+											+ ";isNew=true", function(html) {
+										jQuery('#user-configuration-ods-tbody')
+												.append(html);
+									});
+
 								});
 							});
 					/***********************************************************
@@ -267,24 +330,57 @@ jQuery(document)
 							'.user-configuration-vehicle-comp-edit',
 							function() {
 								var tr = jQuery(this).parent().parent();
-								simwebhelper.getHtml(
-										'edit/vehiclecomposition-form/'
-												+ jQuery(this).attr('data-id'),
+								simwebhelper.getHtml('vehiclecomposition/form/'
+										+ jQuery(this).attr('data-name'),
 										function(html) {
 											tr.replaceWith(html);
 										});
 							});
 					/* cancel edit vehicle composition */
+					jQuery('#user-configuration')
+							.on(
+									'click',
+									'.user-configuration-vehicle-comp-cancel',
+									function() {
+										var tr = jQuery(this).parent().parent();
+										if (jQuery(this).attr('data-is-new') === 'true') {
+											simwebhelper
+													.action(
+															'vehiclecomposition/remove',
+															{
+																name : jQuery(
+																		this)
+																		.attr(
+																				'data-name')
+															}, function() {
+																tr.remove();
+															});
+										} else {
+											simwebhelper
+													.getHtml(
+															'vehiclecomposition/view/'
+																	+ jQuery(
+																			this)
+																			.attr(
+																					'data-name'),
+															function(html) {
+																tr
+																		.replaceWith(html);
+															});
+										}
+									});
+					/* remove vehicle composition */
 					jQuery('#user-configuration').on(
 							'click',
-							'.user-configuration-vehicle-comp-cancel',
+							'.user-configuration-vehicle-comp-remove',
 							function() {
 								var tr = jQuery(this).parent().parent();
-								simwebhelper.getHtml(
-										'edit/vehiclecomposition-view/'
-												+ jQuery(this).attr('data-id'),
-										function(html) {
-											tr.replaceWith(html);
+								simwebhelper.action(
+										'vehiclecomposition/remove', {
+											name : jQuery(this).attr(
+													'data-name')
+										}, function() {
+											tr.remove();
 										});
 							});
 					/* add vehicle type in vehicle composition */
@@ -337,9 +433,9 @@ jQuery(document)
 										if (error) {
 											simwebhelper.error(error);
 										}
-										postData.id = jQuery(this).attr(
-												'data-id');
-										postData.name = jQuery(this)
+										postData.oldName = jQuery(this).attr(
+												'data-name');
+										postData.newName = jQuery(this)
 												.parent()
 												.parent()
 												.find(
@@ -348,13 +444,13 @@ jQuery(document)
 										var tr = jQuery(this).parent().parent();
 										simwebhelper
 												.action(
-														'action/savevehiclecomposition',
+														'vehiclecomposition/save',
 														postData,
 														function() {
 															simwebhelper
 																	.getHtml(
-																			'edit/vehiclecomposition-view/'
-																					+ postData.id,
+																			'vehiclecomposition/info/'
+																					+ postData.newName,
 																			function(
 																					html) {
 																				tr
@@ -370,13 +466,14 @@ jQuery(document)
 									function() {
 										simwebhelper
 												.action(
-														'action/newvehiclecomposition',
+														'vehiclecomposition/new',
 														{},
 														function(data) {
 															simwebhelper
 																	.getHtml(
-																			'edit/vehiclecomposition-form/'
-																					+ data,
+																			'vehiclecomposition/form/'
+																					+ data
+																					+ ";isNew=true",
 																			function(
 																					html) {
 																				jQuery(
@@ -387,19 +484,6 @@ jQuery(document)
 
 														});
 									});
-					/* remove vehicle composition */
-					jQuery('#user-configuration').on(
-							'click',
-							'.user-configuration-vehicle-comp-remove',
-							function() {
-								var tr = jQuery(this).parent().parent();
-								simwebhelper.action(
-										'action/removevehiclecomposition', {
-											id : jQuery(this).attr('data-id')
-										}, function() {
-											tr.remove();
-										});
-							});
 					/***********************************************************
 					 * Panel, User Configuration, New Scenario
 					 **********************************************************/
@@ -439,7 +523,8 @@ jQuery(document)
 							function() {
 								jQuery.get('getdemonetwork', function(data) {
 									data = eval('(' + data + ')');
-									if (data['links'] != null)
+									if (data['links'] != null
+											|| data['nodes'] != null)
 										that.reDrawNetwork(data['links'],
 												data['nodes']);
 									if (data['lanes'] != null

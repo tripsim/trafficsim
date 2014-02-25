@@ -14,24 +14,25 @@ import edu.trafficsim.model.core.ModelInputException;
 
 public interface NetworkFactory {
 
-	public Network createEmptyNetwork(String name);
+	public Network createEmptyNetwork(Long id, String name);
 
-	public Node createNode(String name, Coordinate coord);
+	public Node createNode(Long id, String name, Coordinate coord);
 
-	public Link createLink(String name, Node startNode, Node endNode,
+	public Link createLink(Long id, String name, Node startNode, Node endNode,
 			Coordinate[] coords) throws ModelInputException, TransformException;
 
-	public Link createReverseLink(String name, Link link)
+	public Link createReverseLink(Long id, String name, Link link)
 			throws ModelInputException, TransformException;
 
-	public Lane createLane(Link link, double start, double end, double width)
+	public Lane createLane(Long id, Link link, double start, double end,
+			double width) throws ModelInputException, TransformException;
+
+	public Lane[] createLanes(Long[] ids, Link link)
 			throws ModelInputException, TransformException;
 
-	public Lane[] createLanes(Link link, int num) throws ModelInputException,
-			TransformException;
+	public RoadInfo createRoadInfo(Long id, String roadName, long osmId,
+			String highway);
 
-	public RoadInfo createRoadInfo(String roadName, long osmId, String highway);
-
-	public ConnectionLane connect(Lane laneFrom, Lane laneTo)
+	public ConnectionLane connect(Long id, Lane laneFrom, Lane laneTo)
 			throws ModelInputException, TransformException;
 }

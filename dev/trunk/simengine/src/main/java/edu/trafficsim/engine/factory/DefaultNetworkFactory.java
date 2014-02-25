@@ -43,8 +43,8 @@ public class DefaultNetworkFactory extends AbstractFactory implements
 	}
 
 	@Override
-	public Network createEmptyNetwork(String name) {
-		return new DefaultNetwork(newId, name);
+	public Network createEmptyNetwork(Long id, String name) {
+		return new DefaultNetwork(id, name);
 	}
 
 	// TODO set default types
@@ -63,30 +63,31 @@ public class DefaultNetworkFactory extends AbstractFactory implements
 		return geometryFactory.createLineString(coords);
 	}
 
-	public DefaultNode createNode(String name, double x, double y) {
-		return createNode(name, createPoint(x, y));
+	public DefaultNode createNode(Long id, String name, double x, double y) {
+		return createNode(id, name, createPoint(x, y));
 	}
 
 	@Override
-	public DefaultNode createNode(String name, Coordinate coord) {
-		return createNode(name, createPoint(coord));
+	public DefaultNode createNode(Long id, String name, Coordinate coord) {
+		return createNode(id, name, createPoint(coord));
 	}
 
-	public DefaultNode createNode(String name, Point point) {
-		return new DefaultNode(newId, name, nodeType, point);
+	public DefaultNode createNode(Long id, String name, Point point) {
+		return new DefaultNode(id, name, nodeType, point);
 	}
 
 	@Override
-	public DefaultLink createLink(String name, Node startNode, Node endNode,
-			Coordinate[] coords) throws ModelInputException, TransformException {
-		LineString lineString = createLineString(coords);
-		return createLink(name, startNode, endNode, lineString);
-	}
-
-	public DefaultLink createLink(String name, Node startNode, Node endNode,
-			LineString lineString) throws ModelInputException,
+	public DefaultLink createLink(Long id, String name, Node startNode,
+			Node endNode, Coordinate[] coords) throws ModelInputException,
 			TransformException {
-		DefaultLink link = new DefaultLink(newId, name, linkType, startNode,
+		LineString lineString = createLineString(coords);
+		return createLink(id, name, startNode, endNode, lineString);
+	}
+
+	public DefaultLink createLink(Long id, String name, Node startNode,
+			Node endNode, LineString lineString) throws ModelInputException,
+			TransformException {
+		DefaultLink link = new DefaultLink(id, name, linkType, startNode,
 				endNode, lineString);
 		startNode.add(link);
 		endNode.add(link);
@@ -94,9 +95,9 @@ public class DefaultNetworkFactory extends AbstractFactory implements
 	}
 
 	@Override
-	public DefaultLink createReverseLink(String name, Link link)
+	public DefaultLink createReverseLink(Long id, String name, Link link)
 			throws ModelInputException, TransformException {
-		DefaultLink newLink = createLink(name, link.getEndNode(),
+		DefaultLink newLink = createLink(id, name, link.getEndNode(),
 				link.getStartNode(), (LineString) link.getLinearGeom()
 						.reverse());
 		link.setReverseLink(newLink);
@@ -104,30 +105,31 @@ public class DefaultNetworkFactory extends AbstractFactory implements
 	}
 
 	@Override
-	public DefaultLane createLane(Link link, double start, double end,
+	public DefaultLane createLane(Long id, Link link, double start, double end,
 			double width) throws ModelInputException, TransformException {
-		return new DefaultLane(newId, link, start, end, width);
+		return new DefaultLane(id, link, start, end, width);
 	}
 
 	@Override
-	public Lane[] createLanes(Link link, int num) throws ModelInputException,
-			TransformException {
-		for (int i = 0; i < num; i++) {
-			createLane(link, 0, 1, DEFAULT_WIDTH);
+	public Lane[] createLanes(Long[] ids, Link link)
+			throws ModelInputException, TransformException {
+		for (Long id : ids) {
+			createLane(id, link, 0, 1, DEFAULT_WIDTH);
 		}
 		return link.getLanes();
 	}
 
 	@Override
-	public RoadInfo createRoadInfo(String roadName, long osmId, String highway) {
+	public RoadInfo createRoadInfo(Long id, String roadName, long osmId,
+			String highway) {
 		return new RoadInfo(roadName, osmId, highway);
 	}
 
 	@Override
-	public ConnectionLane connect(Lane laneFrom, Lane laneTo)
+	public ConnectionLane connect(Long id, Lane laneFrom, Lane laneTo)
 			throws ModelInputException, TransformException {
-		DefaultConnectionLane connectionLane = new DefaultConnectionLane(
-				newId, laneFrom, laneTo, DEFAULT_WIDTH);
+		DefaultConnectionLane connectionLane = new DefaultConnectionLane(id,
+				laneFrom, laneTo, DEFAULT_WIDTH);
 		return connectionLane;
 	}
 }

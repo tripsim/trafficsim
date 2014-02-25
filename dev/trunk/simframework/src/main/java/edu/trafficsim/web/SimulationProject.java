@@ -1,99 +1,115 @@
 package edu.trafficsim.web;
 
+import java.util.Arrays;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Component;
 
-import edu.trafficsim.engine.NetworkFactory;
-import edu.trafficsim.engine.ScenarioFactory;
-import edu.trafficsim.engine.factory.DefaultNetworkFactory;
-import edu.trafficsim.engine.factory.DefaultScenarioFactory;
-import edu.trafficsim.model.Network;
-import edu.trafficsim.model.OdMatrix;
-import edu.trafficsim.model.Router;
-import edu.trafficsim.model.SimulationScenario;
-import edu.trafficsim.model.Simulator;
+import edu.trafficsim.model.DriverType;
+import edu.trafficsim.model.DriverTypeComposition;
+import edu.trafficsim.model.VehicleType;
+import edu.trafficsim.model.VehicleType.VehicleClass;
+import edu.trafficsim.model.VehicleTypeComposition;
+import edu.trafficsim.model.core.ModelInputException;
+import edu.trafficsim.web.service.entity.CompositionService;
+import edu.trafficsim.web.service.entity.TypeService;
 
 @Component
 @Scope(value = "session", proxyMode = ScopedProxyMode.TARGET_CLASS)
-public class SimulationProject {
+public class SimulationProject extends AbstractProject {
 
-	// TODO set factory through settings
-	private NetworkFactory networkFactory;
-	private ScenarioFactory scenarioFactory;
+	@Autowired
+	CompositionService compositionService;
+	@Autowired
+	TypeService typeService;
 
-	private Simulator simulator;
-	private Network network;
-	private OdMatrix odMatrix;
-	private Router router;
+	private static final String DEFAULT_CAR = "Default Car";
+	private static final String DEFAULT_TRUCK = "Default Truck";
+	private static final String DEFAULT_DRIVER = "Default Driver";
+	private static final String DEFAULT_COMPOSITION = "Default";
+	private String[] defaultVehTypes;
+	private double[] defaultVehComp;
 
-	public SimulationProject() {
-		networkFactory = DefaultNetworkFactory.getInstance();
-		scenarioFactory = DefaultScenarioFactory.getInstance();
-		reset();
+	private String[] defaultDriverTypes;
+	private double[] defaultDriverComp;
+
+	public SimulationProject() throws UserInterfaceException {
+		setDefaultVehComp(new String[] { DEFAULT_CAR, DEFAULT_TRUCK },
+				new double[] { 0.2, 0.8 });
+		setDefaultDriverComp(new String[] { DEFAULT_DRIVER },
+				new double[] { 1.0 });
+
+		// put it in service
+		// scenarioFactory.createSimulationScenario(name, simulator,
+		// network, odMatrix, router);
+		//
+		//
+		//
 	}
 
-	public void reset() {
-		network = null;
-		router = null;
-		odMatrix = null;
-		simulator = null;
+	public VehicleType[] getDefaultVehTypes() throws UserInterfaceException {
+		VehicleType[] vehicleTypes = new VehicleType[defaultVehTypes.length];
+		for (int i = 0; i < defaultVehTypes.length; i++) {
+			VehicleType vehicleType = getVehicleType(defaultVehTypes[i]) != null ? getVehicleType(defaultVehTypes[i])
+					: typeService.createVehicleType(defaultVehTypes[i],
+							VehicleClass.Car);
+			vehicleTypes[i] = vehicleType;
+
+		}
+		return vehicleTypes;
 	}
 
-	public NetworkFactory getNetworkFactory() {
-		return networkFactory;
+	public double[] getDefaultVehComp() {
+		return Arrays.copyOf(defaultVehComp, defaultVehComp.length);
 	}
 
-	public void setNetworkFactory(NetworkFactory networkFactory) {
-		this.networkFactory = networkFactory;
+	public void setDefaultVehComp(String[] defaultVehTypes,
+			double[] defaultVehComp) throws UserInterfaceException {
+		if (defaultVehTypes.length != defaultVehComp.length)
+			throw new UserInterfaceException("TODO");
+		this.defaultVehTypes = Arrays.copyOf(defaultVehTypes,
+				defaultVehTypes.length);
+		this.defaultVehComp = Arrays.copyOf(defaultVehComp,
+				defaultVehComp.length);
+
 	}
 
-	public ScenarioFactory getScenarioFactory() {
-		return scenarioFactory;
+	public DriverType[] getDefaultDriverTypes() throws UserInterfaceException {
+		DriverType[] driverTypes = new DriverType[defaultDriverTypes.length];
+		for (int i = 0; i < defaultDriverTypes.length; i++) {
+			DriverType driverType = getDriverType(defaultDriverTypes[i]) != null ? getDriverType(defaultDriverTypes[i])
+					: typeService.createDriverType(defaultDriverTypes[i]);
+			driverTypes[i] = driverType;
+		}
+		return driverTypes;
 	}
 
-	public void setScenarioFactory(ScenarioFactory scenarioFactory) {
-		this.scenarioFactory = scenarioFactory;
+	public double[] getDefaultDrivervComp() {
+		return Arrays.copyOf(defaultDriverComp, defaultDriverComp.length);
 	}
 
-	public Simulator getSimulator() {
-		if (simulator == null)
-			scenarioFactory.createSimulator();
-		return simulator;
+	public void setDefaultDriverComp(String[] defaultDriverTypes,
+			double[] defaultDriverComp) throws UserInterfaceException {
+		if (defaultDriverTypes.length != defaultDriverComp.length)
+			throw new UserInterfaceException("TODO");
+		this.defaultDriverTypes = Arrays.copyOf(defaultDriverTypes,
+				defaultDriverTypes.length);
+		this.defaultDriverComp = Arrays.copyOf(defaultDriverComp,
+				defaultDriverComp.length);
 	}
 
-	public void setSimulator(Simulator simulator) {
-		this.simulator = simulator;
+	@Override
+	public VehicleTypeComposition getDefaultVehicleComposition()
+			throws ModelInputException, UserInterfaceException {
+		return compositionService.createVehicleComposition(DEFAULT_COMPOSITION);
 	}
 
-	public Network getNetwork() {
-		return network;
+	@Override
+	public DriverTypeComposition getDefaultDriverComposition()
+			throws ModelInputException, UserInterfaceException {
+		return compositionService.createDriverComposition(DEFAULT_COMPOSITION);
 	}
 
-	public void setNetwork(Network network) {
-		this.network = network;
-	}
-
-	public OdMatrix getOdMatrix() {
-		if (odMatrix == null)
-			odMatrix = scenarioFactory.createOdMatrix();
-		return odMatrix;
-	}
-
-	public void setOdMatrix(OdMatrix odMatrix) {
-		this.odMatrix = odMatrix;
-	}
-
-	public Router getRouter() {
-		return router;
-	}
-
-	public void setRouter(Router router) {
-		this.router = router;
-	}
-
-	public SimulationScenario createScenario(String name) {
-		return scenarioFactory.createSimulationScenario(name, simulator,
-				network, odMatrix, router);
-	}
 }
