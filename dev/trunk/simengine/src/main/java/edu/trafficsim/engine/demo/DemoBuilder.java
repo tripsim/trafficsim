@@ -203,9 +203,10 @@ public class DemoBuilder {
 		TurnPercentage[] turnPercentages = new TurnPercentage[] { turnPercentage1 };
 		turnPercentageRouter.setTurnPercentage(link1, VehicleClass.Car, times1,
 				turnPercentages);
+		router = turnPercentageRouter;
 
 		// Simulator
-		simulator = scenarioFactory.createSimulator(seq++, "test", 500, 1);
+		simulator = scenarioFactory.createSimulator(seq++, "test", 500, 0.1);
 	}
 
 	public SimulationScenario getScenario() {

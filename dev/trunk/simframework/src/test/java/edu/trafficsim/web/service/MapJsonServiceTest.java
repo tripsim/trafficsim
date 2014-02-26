@@ -6,7 +6,7 @@ import org.opengis.referencing.operation.TransformException;
 
 import edu.trafficsim.model.Network;
 
-public class JsonOutputServiceTest {
+public class MapJsonServiceTest {
 
 	DemoSimulationService demo;
 	Network network;

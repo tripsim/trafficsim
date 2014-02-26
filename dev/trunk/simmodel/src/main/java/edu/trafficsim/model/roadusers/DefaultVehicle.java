@@ -93,7 +93,7 @@ public class DefaultVehicle extends MovingObject<DefaultVehicle> implements
 	@Override
 	public final boolean onConnector() {
 		return currentLane == null ? false
-				: currentLane.getSegment() instanceof ConnectionLane;
+				: currentLane instanceof ConnectionLane;
 	}
 
 	@Override

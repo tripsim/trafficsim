@@ -1,7 +1,5 @@
 package edu.trafficsim.engine.factory;
 
-import java.util.NoSuchElementException;
-
 import org.opengis.referencing.operation.TransformException;
 
 import edu.trafficsim.engine.VehicleFactory;
@@ -32,29 +30,34 @@ public class DefaultVehicleFactory extends AbstractFactory implements
 	public Vehicle createVehicle(VehicleSpecs vehicleSpecs,
 			SimulationScenario scenario) throws TransformException {
 
+		// tracking total vehicle num
+		// TODO find a better place for this
 		count++;
 
+		// statistics init frame
 		int initFrameId = scenario.getSimulator().getForwardedSteps();
 
+		// create vehicle, with types, speed, and accel from spec
 		DefaultVehicle vehicle = new DefaultVehicle(vid,
 				vehicleSpecs.vehicleType, vehicleSpecs.driverType, initFrameId);
 		vehicle.speed(vehicleSpecs.initSpeed);
 		vehicle.acceleration(vehicleSpecs.initAccel);
+		// set vehicle initial position, keep a min headway (gap) from the last
+		// vehicle in lane
 		double position = 0;
-		try {
-			Vehicle tailVehicle = vehicleSpecs.lane.getTailVehicle();
+		Vehicle tailVehicle = vehicleSpecs.lane.getTailVehicle();
+		if (tailVehicle != null) {
 			position = tailVehicle.position()
 					- vehicle.getDriverType().getMinHeadway()
 					* vehicleSpecs.initSpeed;
 			position = position > 0 ? 0 : position;
-		} catch (NoSuchElementException e) {
 		}
-
 		vehicle.position(position);
+		// set vehicle name
 		String name = "vehicle" + count;
 		vehicle.setName(name);
 
-		// TODO routing
+		// add vehicle to the current lane
 		vehicle.currentLane(vehicleSpecs.lane);
 
 		vehicle.refresh();
