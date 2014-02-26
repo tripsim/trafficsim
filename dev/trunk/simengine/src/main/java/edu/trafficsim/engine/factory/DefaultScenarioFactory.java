@@ -19,7 +19,7 @@ public class DefaultScenarioFactory extends AbstractFactory implements
 
 	private static final String DEFAULT_NAME = "Default";
 	private static final int DEFAULT_DURATION = 1000;
-	private static final int DEFAULT_STEPSIZE = 1;
+	private static final double DEFAULT_STEPSIZE = 0.5;
 
 	private static DefaultScenarioFactory factory;
 
@@ -101,7 +101,7 @@ public class DefaultScenarioFactory extends AbstractFactory implements
 
 	@Override
 	public DefaultSimulator createSimulator(Long id, String name, int duration,
-			int stepSize) {
+			double stepSize) {
 		return new DefaultSimulator(id, name, duration, stepSize);
 	}
 

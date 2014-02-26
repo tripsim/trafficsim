@@ -64,6 +64,16 @@ public class DefaultVehicleGenerating implements IVehicleGenerating {
 					dtypeToBuild, lane, speed, accel);
 			Vehicle vehicle = vehicleFactory.createVehicle(vehicleSpecs,
 					scenario);
+
+			// update routing info
+			Link targetLink = scenario.getRouter() == null ? null : scenario
+					.getRouter().getSucceedingLink(link,
+							vehicle.getVehicleType().getVehicleClass(),
+							scenario.getSimulator().getForwardedTime(),
+							scenario.getSimulator().getRand());
+			vehicle.targetLink(targetLink);
+
+			// add vehicle to the simulation
 			vehicles.add(vehicle);
 
 			// Test

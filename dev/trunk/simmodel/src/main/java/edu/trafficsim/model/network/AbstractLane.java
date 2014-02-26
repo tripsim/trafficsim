@@ -34,12 +34,12 @@ public abstract class AbstractLane<T> extends AbstractSubsegment<T> implements
 
 	@Override
 	public final Vehicle getHeadVehicle() {
-		return vehicles.last();
+		return vehicles.isEmpty() ? null : vehicles.last();
 	}
 
 	@Override
 	public final Vehicle getTailVehicle() {
-		return vehicles.first();
+		return vehicles.isEmpty() ? null : vehicles.first();
 	}
 
 	@Override

@@ -1,7 +1,7 @@
 var simulation = {}; // attach simulation to somewhere for navigation
 var map = {};
 
-simulation.defaultRefreshInterval = 400;
+simulation.defaultRefreshInterval = 500;
 
 simulation.network = {}; // {links : {linkId : feature}, lanes: {linkId:
 // [features]}}

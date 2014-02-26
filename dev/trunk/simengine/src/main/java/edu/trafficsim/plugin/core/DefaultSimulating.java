@@ -27,7 +27,7 @@ public class DefaultSimulating implements ISimulating {
 	// TODO hack for plugin management
 	// TODO get from plugin manager
 	protected static IMoving moving = new DefaultMoving();
-	protected static IVehicleGenerating vehicleGenerator = new DefaultVehicleGenerating();
+	protected static IVehicleGenerating vehicleGenerating = new DefaultVehicleGenerating();
 
 	private StatisticsCollector statisticsCollector;
 
@@ -72,7 +72,7 @@ public class DefaultSimulating implements ISimulating {
 				}
 			}
 			for (Od od : simulationScenario.getOdMatrix().getOds()) {
-				List<Vehicle> newVehicles = vehicleGenerator.newVehicles(od,
+				List<Vehicle> newVehicles = vehicleGenerating.newVehicles(od,
 						simulationScenario, vehicleFactory);
 				vehicles.addAll(newVehicles);
 			}

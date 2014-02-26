@@ -27,7 +27,8 @@ public interface ScenarioFactory {
 
 	public Od createOd(Long id, String name, Node origin, Node destination,
 			VehicleTypeComposition vehicleTypeComposition,
-			DriverTypeComposition driverTypeComposition) throws ModelInputException;
+			DriverTypeComposition driverTypeComposition)
+			throws ModelInputException;
 
 	public Od createOd(Long id, String name, Node origin, Node destination,
 			VehicleTypeComposition vehicleTypeComposition,
@@ -41,6 +42,6 @@ public interface ScenarioFactory {
 	public Simulator createSimulator(Long id, String name);
 
 	public Simulator createSimulator(Long id, String name, int duration,
-			int stepSize);
+			double stepSize);
 
 }
