@@ -1,4 +1,4 @@
-package edu.trafficsim.model.core;
+package edu.trafficsim.model.util;
 
 import java.util.ArrayList;
 import java.util.HashMap;

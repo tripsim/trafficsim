@@ -1,11 +1,11 @@
-package edu.trafficsim.model.core;
+package edu.trafficsim.model.util;
 
 import java.awt.Color;
 
 public class Colors {
 
 	private static final int minSpeed = 0;
-	private static final int maxSpeed = 30;
+	private static final int maxSpeed = 40;
 
 	public static final String getVehicleColor(double speed) {
 		return scaleColorAsHex(Color.red, Color.green, minSpeed, maxSpeed,

@@ -11,8 +11,8 @@ import edu.trafficsim.engine.StatisticsCollector.VehicleState;
 import edu.trafficsim.engine.demo.DemoSimulation;
 import edu.trafficsim.model.SimulationScenario;
 import edu.trafficsim.model.Vehicle;
-import edu.trafficsim.model.core.Colors;
 import edu.trafficsim.model.core.ModelInputException;
+import edu.trafficsim.model.util.Colors;
 
 @Service
 public class DemoSimulationService {
@@ -62,8 +62,10 @@ public class DemoSimulationService {
 					frameSb.append(",");
 				}
 			}
-			vehicleSb.deleteCharAt(vehicleSb.length() - 1);
-			frameSb.deleteCharAt(frameSb.length() - 1);
+			if (vehicleSb.length() > 0)
+				vehicleSb.deleteCharAt(vehicleSb.length() - 1);
+			if (frameSb.length() > 0)
+				frameSb.deleteCharAt(frameSb.length() - 1);
 			return "{vehicles:[" + vehicleSb.toString() + "], elements:["
 					+ frameSb.toString() + "]}";
 		} catch (ModelInputException e) {

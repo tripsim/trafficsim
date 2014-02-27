@@ -2,10 +2,10 @@ package edu.trafficsim.model.demand;
 
 import java.util.Set;
 
-import edu.trafficsim.model.VehicleType;
 import edu.trafficsim.model.VehicleTypeComposition;
 import edu.trafficsim.model.core.AbstractComposition;
 import edu.trafficsim.model.core.ModelInputException;
+import edu.trafficsim.model.roadusers.VehicleType;
 
 public class DefaultVehicleTypeComposition extends
 		AbstractComposition<VehicleType> implements VehicleTypeComposition {

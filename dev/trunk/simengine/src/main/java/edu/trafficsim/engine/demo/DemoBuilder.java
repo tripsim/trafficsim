@@ -18,7 +18,6 @@ import edu.trafficsim.engine.factory.DefaultNetworkFactory;
 import edu.trafficsim.engine.factory.DefaultScenarioFactory;
 import edu.trafficsim.engine.factory.DefaultTypesFactory;
 import edu.trafficsim.engine.osm.OsmNetworkExtractor;
-import edu.trafficsim.model.DriverType;
 import edu.trafficsim.model.DriverTypeComposition;
 import edu.trafficsim.model.Lane;
 import edu.trafficsim.model.Link;
@@ -30,14 +29,15 @@ import edu.trafficsim.model.RoadInfo;
 import edu.trafficsim.model.Router;
 import edu.trafficsim.model.SimulationScenario;
 import edu.trafficsim.model.Simulator;
-import edu.trafficsim.model.VehicleType;
-import edu.trafficsim.model.VehicleType.VehicleClass;
 import edu.trafficsim.model.VehicleTypeComposition;
-import edu.trafficsim.model.core.GeoReferencing;
-import edu.trafficsim.model.core.GeoReferencing.TransformCoordinateFilter;
 import edu.trafficsim.model.core.ModelInputException;
 import edu.trafficsim.model.network.TurnPercentage;
 import edu.trafficsim.model.network.TurnPercentageRouter;
+import edu.trafficsim.model.roadusers.DriverType;
+import edu.trafficsim.model.roadusers.VehicleType;
+import edu.trafficsim.model.roadusers.VehicleType.VehicleClass;
+import edu.trafficsim.model.util.GeoReferencing;
+import edu.trafficsim.model.util.GeoReferencing.TransformCoordinateFilter;
 import edu.trafficsim.utility.CoordinateTransformer;
 
 // Hack to create nodes links...
@@ -187,7 +187,7 @@ public class DemoBuilder {
 		// no destination 0s ~ 100s 1000vph
 		// no destination 100s~200s 800vph
 		double[] times = new double[] { 300, 500 };
-		Integer[] vphs = new Integer[] { 1600, 1000 };
+		Integer[] vphs = new Integer[] { 4000, 4800 };
 		Od od = scenarioFactory.createOd(seq++, "test", node1, null,
 				vehicleTypeComposition, driverTypeComposition, times, vphs);
 
@@ -206,7 +206,7 @@ public class DemoBuilder {
 		router = turnPercentageRouter;
 
 		// Simulator
-		simulator = scenarioFactory.createSimulator(seq++, "test", 500, 0.1);
+		simulator = scenarioFactory.createSimulator(seq++, "test", 100, 0.1);
 	}
 
 	public SimulationScenario getScenario() {

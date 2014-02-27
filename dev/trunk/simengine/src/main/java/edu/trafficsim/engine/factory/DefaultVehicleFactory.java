@@ -1,11 +1,15 @@
 package edu.trafficsim.engine.factory;
 
+import org.apache.commons.math3.random.RandomGenerator;
 import org.opengis.referencing.operation.TransformException;
 
 import edu.trafficsim.engine.VehicleFactory;
 import edu.trafficsim.model.SimulationScenario;
 import edu.trafficsim.model.Vehicle;
 import edu.trafficsim.model.roadusers.DefaultVehicle;
+import edu.trafficsim.model.roadusers.DriverType;
+import edu.trafficsim.model.roadusers.VehicleType;
+import edu.trafficsim.model.util.Randoms;
 
 public class DefaultVehicleFactory extends AbstractFactory implements
 		VehicleFactory {
@@ -25,42 +29,39 @@ public class DefaultVehicleFactory extends AbstractFactory implements
 
 	// TODO complete the creation
 	private static long vid = 0;
+	private static double cv = 0.25;
 
 	@Override
-	public Vehicle createVehicle(VehicleSpecs vehicleSpecs,
-			SimulationScenario scenario) throws TransformException {
-
+	public Vehicle createVehicle(VehicleType vehicleType,
+			DriverType driverType, SimulationScenario scenario)
+			throws TransformException {
 		// tracking total vehicle num
 		// TODO find a better place for this
 		count++;
-
-		// statistics init frame
-		int initFrameId = scenario.getSimulator().getForwardedSteps();
-
-		// create vehicle, with types, speed, and accel from spec
-		DefaultVehicle vehicle = new DefaultVehicle(vid,
-				vehicleSpecs.vehicleType, vehicleSpecs.driverType, initFrameId);
-		vehicle.speed(vehicleSpecs.initSpeed);
-		vehicle.acceleration(vehicleSpecs.initAccel);
-		// set vehicle initial position, keep a min headway (gap) from the last
-		// vehicle in lane
-		double position = 0;
-		Vehicle tailVehicle = vehicleSpecs.lane.getTailVehicle();
-		if (tailVehicle != null) {
-			position = tailVehicle.position()
-					- vehicle.getDriverType().getMinHeadway()
-					* vehicleSpecs.initSpeed;
-			position = position > 0 ? 0 : position;
-		}
-		vehicle.position(position);
-		// set vehicle name
+		vid++;
+		// vehicle name
 		String name = "vehicle" + count;
-		vehicle.setName(name);
+		// statistics initial frame
+		int startFrame = scenario.getSimulator().getForwardedSteps();
 
-		// add vehicle to the current lane
-		vehicle.currentLane(vehicleSpecs.lane);
+		// Normal distribution for desired values
+		RandomGenerator rng = scenario.getSimulator().getRand()
+				.getRandomGenerator();
+		double width = Randoms.normal(vehicleType.getWidth(), cv, rng);
+		double length = Randoms.normal(vehicleType.getLength(), cv, rng);
+		double maxSpeed = Randoms.normal(vehicleType.getMaxSpeed(), cv, rng);
+		double desiredSpeed = Randoms.normal(driverType.getDesiredSpeed(), cv,
+				rng);
+		double desiredHeadway = Randoms.normal(driverType.getDesiredHeadway(),
+				cv, rng);
+		double reactionTime = Randoms.normal(driverType.getReactionTime(), cv,
+				rng);
 
-		vehicle.refresh();
+		// create vehicle
+		DefaultVehicle vehicle = new DefaultVehicle(vid, name, startFrame,
+				vehicleType, driverType, width, length, maxSpeed, desiredSpeed,
+				desiredHeadway, reactionTime);
+
 		return vehicle;
 	}
 }

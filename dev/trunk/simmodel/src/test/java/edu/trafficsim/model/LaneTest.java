@@ -9,7 +9,6 @@ import org.opengis.referencing.operation.TransformException;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
 
-import edu.trafficsim.model.VehicleType.VehicleClass;
 import edu.trafficsim.model.core.AbstractSegment;
 import edu.trafficsim.model.core.AbstractSubsegment;
 import edu.trafficsim.model.core.ModelInputException;
@@ -17,6 +16,8 @@ import edu.trafficsim.model.network.DefaultLane;
 import edu.trafficsim.model.network.DefaultLink;
 import edu.trafficsim.model.network.DefaultNode;
 import edu.trafficsim.model.roadusers.DefaultVehicle;
+import edu.trafficsim.model.roadusers.VehicleType;
+import edu.trafficsim.model.roadusers.VehicleType.VehicleClass;
 
 public class LaneTest {
 
@@ -40,10 +41,12 @@ public class LaneTest {
 
 		Lane lane = new DefaultLane(0, link, 0, 1, 2);
 		VehicleType vehicleType = new VehicleType(0, "Test", VehicleClass.Car);
-		DefaultVehicle vehicle1 = new DefaultVehicle(0, vehicleType, null, 0);
+		DefaultVehicle vehicle1 = new DefaultVehicle(0, null, 0, vehicleType,
+				null);
 		vehicle1.setName("first");
 		vehicle1.position(10);
-		DefaultVehicle vehicle2 = new DefaultVehicle(1, vehicleType, null, 0);
+		DefaultVehicle vehicle2 = new DefaultVehicle(1, null, 0, vehicleType,
+				null);
 		vehicle2.setName("second");
 		vehicle2.position(2);
 

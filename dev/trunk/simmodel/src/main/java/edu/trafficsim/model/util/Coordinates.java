@@ -1,4 +1,4 @@
-package edu.trafficsim.model.core;
+package edu.trafficsim.model.util;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -112,30 +112,43 @@ public class Coordinates {
 		GeoReferencing geo = getGeoReferencing(crs);
 		Coordinate[] coords = Arrays.copyOf(linearGeom.getCoordinates(),
 				linearGeom.getCoordinates().length);
-		Coordinate newStart = getTrimedStartCooridnate(geo, coords[0],
-				coords[1], head);
-		Coordinate newEnd = getTrimedStartCooridnate(geo,
-				coords[coords.length - 1], coords[coords.length - 2], tail);
+		int iStart = 0, iEnd = coords.length;
+
+		Coordinate newStart = getTrimedStartCooridnate(geo, coords[iStart],
+				coords[iStart + 1], head);
+		while (newStart == null && iEnd - iStart > 3) {
+			iStart += 1;
+			newStart = getTrimedStartCooridnate(geo, coords[iStart],
+					coords[iStart + 1], head);
+		}
+		Coordinate newEnd = getTrimedStartCooridnate(geo, coords[iEnd - 1],
+				coords[iEnd - 2], tail);
+		while (newEnd == null && iEnd - iStart > 3) {
+			iEnd -= 1;
+			newEnd = getTrimedStartCooridnate(geo, coords[iEnd - 1],
+					coords[iEnd - 2], tail);
+		}
 
 		if (newStart != null) {
-			coords[0] = newStart;
-			if (newEnd != null) {
-				coords[coords.length - 1] = newEnd;
-			} else {
-				coords = Arrays.copyOfRange(coords, 0, coords.length - 1);
-			}
-		} else {
-			if (newEnd != null) {
-				coords[coords.length - 1] = newEnd;
-				coords = Arrays.copyOfRange(coords, 1, coords.length);
-			} else {
-				coords = Arrays.copyOfRange(coords, 1, coords.length - 1);
-			}
+			coords[iStart] = newStart;
 		}
+		if (newEnd != null) {
+			coords[iEnd - 1] = newEnd;
+		}
+		coords = Arrays.copyOfRange(coords, iStart, iEnd);
 
 		return getLineString(coords);
 	}
 
+	/**
+	 * @param geo
+	 * @param startCoord
+	 * @param endCoord
+	 * @param trimSize
+	 * @return if trimSize < distance, the coordinate start from start goes
+	 *         trimSize along the line else null
+	 * @throws TransformException
+	 */
 	protected static Coordinate getTrimedStartCooridnate(GeoReferencing geo,
 			Coordinate startCoord, Coordinate endCoord, double trimSize)
 			throws TransformException {

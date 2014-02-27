@@ -13,15 +13,15 @@ import edu.trafficsim.engine.TypesFactory;
 import edu.trafficsim.engine.factory.DefaultNetworkFactory;
 import edu.trafficsim.engine.factory.DefaultScenarioFactory;
 import edu.trafficsim.engine.factory.DefaultTypesFactory;
-import edu.trafficsim.model.DriverType;
 import edu.trafficsim.model.DriverTypeComposition;
 import edu.trafficsim.model.Network;
 import edu.trafficsim.model.OdMatrix;
 import edu.trafficsim.model.Router;
 import edu.trafficsim.model.Simulator;
-import edu.trafficsim.model.VehicleType;
 import edu.trafficsim.model.VehicleTypeComposition;
 import edu.trafficsim.model.core.ModelInputException;
+import edu.trafficsim.model.roadusers.DriverType;
+import edu.trafficsim.model.roadusers.VehicleType;
 import edu.trafficsim.web.service.entity.OdService;
 import edu.trafficsim.web.service.entity.SimulatorService;
 

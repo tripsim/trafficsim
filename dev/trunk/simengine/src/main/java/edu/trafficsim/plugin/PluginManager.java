@@ -3,7 +3,7 @@ package edu.trafficsim.plugin;
 import java.util.HashMap;
 import java.util.Map;
 
-import edu.trafficsim.plugin.core.DefaultCarFollowing;
+import edu.trafficsim.plugin.core.PipesCarFollowing;
 import edu.trafficsim.plugin.core.DefaultLaneChanging;
 import edu.trafficsim.plugin.core.DefaultMoving;
 import edu.trafficsim.plugin.core.DefaultSimulating;
@@ -23,7 +23,7 @@ public class PluginManager {
 		simulatings.put(DEFAULT_KEY, new DefaultSimulating());
 		vehicleGeneratings.put(DEFAULT_KEY, new DefaultVehicleGenerating());
 		movings.put(DEFAULT_KEY, new DefaultMoving());
-		carFollowings.put(DEFAULT_KEY, new DefaultCarFollowing());
+		carFollowings.put(DEFAULT_KEY, new PipesCarFollowing());
 		laneChangings.put(DEFAULT_KEY, new DefaultLaneChanging());
 	}
 

@@ -8,6 +8,7 @@ import com.vividsolutions.jts.geom.LineString;
 import edu.trafficsim.model.BaseEntity;
 import edu.trafficsim.model.Segment;
 import edu.trafficsim.model.Subsegment;
+import edu.trafficsim.model.util.Coordinates;
 
 public abstract class AbstractSubsegment<T> extends BaseEntity<T> implements
 		Subsegment {

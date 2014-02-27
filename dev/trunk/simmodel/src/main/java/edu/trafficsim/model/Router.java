@@ -2,7 +2,7 @@ package edu.trafficsim.model;
 
 import java.util.Random;
 
-import edu.trafficsim.model.VehicleType.VehicleClass;
+import edu.trafficsim.model.roadusers.VehicleType.VehicleClass;
 
 public interface Router extends DataContainer {
 

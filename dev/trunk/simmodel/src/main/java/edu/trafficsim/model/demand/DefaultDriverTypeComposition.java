@@ -2,10 +2,10 @@ package edu.trafficsim.model.demand;
 
 import java.util.Set;
 
-import edu.trafficsim.model.DriverType;
 import edu.trafficsim.model.DriverTypeComposition;
 import edu.trafficsim.model.core.AbstractComposition;
 import edu.trafficsim.model.core.ModelInputException;
+import edu.trafficsim.model.roadusers.DriverType;
 
 public class DefaultDriverTypeComposition extends
 		AbstractComposition<DriverType> implements DriverTypeComposition {
