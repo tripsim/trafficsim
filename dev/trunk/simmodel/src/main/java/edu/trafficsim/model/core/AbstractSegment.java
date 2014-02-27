@@ -13,6 +13,7 @@ import edu.trafficsim.model.BaseEntity;
 import edu.trafficsim.model.Location;
 import edu.trafficsim.model.Segment;
 import edu.trafficsim.model.Subsegment;
+import edu.trafficsim.model.util.Coordinates;
 
 public abstract class AbstractSegment<T> extends BaseEntity<T> implements
 		Segment {

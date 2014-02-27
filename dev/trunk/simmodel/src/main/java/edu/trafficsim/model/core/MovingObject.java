@@ -8,6 +8,7 @@ import com.vividsolutions.jts.geom.Coordinate;
 import edu.trafficsim.model.Agent;
 import edu.trafficsim.model.BaseEntity;
 import edu.trafficsim.model.Movable;
+import edu.trafficsim.model.util.Coordinates;
 
 public abstract class MovingObject<T> extends BaseEntity<T> implements Movable,
 		Agent {
@@ -38,7 +39,6 @@ public abstract class MovingObject<T> extends BaseEntity<T> implements Movable,
 
 		this.angle = 0;
 		this.coord = new Coordinate();
-		;
 
 		this.active = true;
 	}
@@ -107,7 +107,8 @@ public abstract class MovingObject<T> extends BaseEntity<T> implements Movable,
 	@Override
 	public final void refresh() throws TransformException {
 		Coordinate newCoord = computeCoord();
-		this.angle = Angle.toDegrees(Angle.angle(coord, newCoord));
+		if (speed > 0)
+			this.angle = Angle.toDegrees(Angle.angle(coord, newCoord));
 		this.coord = newCoord;
 		onRefresh();
 	}

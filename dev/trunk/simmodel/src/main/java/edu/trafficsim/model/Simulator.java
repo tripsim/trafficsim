@@ -1,7 +1,8 @@
 package edu.trafficsim.model;
 
 import java.util.Date;
-import java.util.Random;
+
+import edu.trafficsim.model.core.Rand;
 
 public interface Simulator extends DataContainer {
 
@@ -17,10 +18,10 @@ public interface Simulator extends DataContainer {
 
 	public long getSeed();
 
-	public Random getRand();
+	public Rand getRand();
 
 	public double getForwardedTime();
-	
+
 	public int getForwardedSteps();
 
 	public boolean isFinished();

@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Random;
 
-import edu.trafficsim.model.core.Randoms;
+import edu.trafficsim.model.util.Randoms;
 
 public class RandomsTest {
 

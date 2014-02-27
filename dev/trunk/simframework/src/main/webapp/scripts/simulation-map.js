@@ -1,7 +1,7 @@
 var simulation = {}; // attach simulation to somewhere for navigation
 var map = {};
 
-simulation.defaultRefreshInterval = 500;
+simulation.defaultRefreshInterval = 100;
 
 simulation.network = {}; // {links : {linkId : feature}, lanes: {linkId:
 // [features]}}
@@ -116,8 +116,8 @@ simulation.initMap = function() {
 			var width = frame[i].vehicle.width;
 			var x = frame[i].x;
 			var y = frame[i].y;
-			var geom = new OpenLayers.Bounds(x - length / 2, y - width / 2, x
-					+ length / 2, y + width / 2).toGeometry();
+			var geom = new OpenLayers.Bounds(x - length, y - width / 2, x, y
+					+ width / 2).toGeometry();
 			var center = new OpenLayers.Geometry.Point(x, y);
 			geom.rotate(frame[i].angle, center);
 			var feature = new OpenLayers.Feature.Vector(geom, {

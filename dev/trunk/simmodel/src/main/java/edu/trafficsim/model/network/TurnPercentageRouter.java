@@ -7,11 +7,11 @@ import java.util.Random;
 import edu.trafficsim.model.BaseEntity;
 import edu.trafficsim.model.Link;
 import edu.trafficsim.model.Router;
-import edu.trafficsim.model.VehicleType.VehicleClass;
 import edu.trafficsim.model.core.AbstractDynamicProperty;
 import edu.trafficsim.model.core.ModelInputException;
 import edu.trafficsim.model.core.MultiKey;
-import edu.trafficsim.model.core.Randoms;
+import edu.trafficsim.model.roadusers.VehicleType.VehicleClass;
+import edu.trafficsim.model.util.Randoms;
 
 public class TurnPercentageRouter extends BaseEntity<TurnPercentageRouter>
 		implements Router {

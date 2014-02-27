@@ -21,9 +21,9 @@ import edu.trafficsim.model.Link;
 import edu.trafficsim.model.Network;
 import edu.trafficsim.model.Node;
 import edu.trafficsim.model.RoadInfo;
-import edu.trafficsim.model.core.GeoReferencing;
-import edu.trafficsim.model.core.GeoReferencing.TransformCoordinateFilter;
 import edu.trafficsim.model.core.ModelInputException;
+import edu.trafficsim.model.util.GeoReferencing;
+import edu.trafficsim.model.util.GeoReferencing.TransformCoordinateFilter;
 import edu.trafficsim.utility.CoordinateTransformer;
 
 public class OsmNetworkExtractor {

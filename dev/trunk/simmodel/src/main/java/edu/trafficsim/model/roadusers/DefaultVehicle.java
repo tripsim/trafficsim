@@ -1,14 +1,12 @@
 package edu.trafficsim.model.roadusers;
 
 import edu.trafficsim.model.ConnectionLane;
-import edu.trafficsim.model.DriverType;
 import edu.trafficsim.model.Lane;
 import edu.trafficsim.model.Link;
 import edu.trafficsim.model.Node;
 import edu.trafficsim.model.Segment;
 import edu.trafficsim.model.Subsegment;
 import edu.trafficsim.model.Vehicle;
-import edu.trafficsim.model.VehicleType;
 import edu.trafficsim.model.core.MovingObject;
 
 public class DefaultVehicle extends MovingObject<DefaultVehicle> implements
@@ -24,21 +22,34 @@ public class DefaultVehicle extends MovingObject<DefaultVehicle> implements
 	private ConnectionLane preferredConnector = null;
 	private Lane currentLane = null;
 
-	// private Lane[] desiredLanes;
-	// private double desiredSpeed = 0;
-
 	private double width;
 	private double length;
-
 	// private double height;
+	private double maxSpeed;
+	private double desiredSpeed;
+	private double desiredHeadway;
+	private double reactionTime;
 
-	public DefaultVehicle(long id, VehicleType vehicleType,
-			DriverType driverType, int startFrame) {
-		super(id, null, startFrame);
+	public DefaultVehicle(long id, String name, int startFrame,
+			VehicleType vehicleType, DriverType driverType) {
+		this(id, name, startFrame, vehicleType, driverType, vehicleType.width,
+				vehicleType.length, vehicleType.maxSpeed,
+				driverType.desiredSpeed, driverType.desiredHeadway,
+				driverType.reactionTime);
+	}
+
+	public DefaultVehicle(long id, String name, int startFrame,
+			VehicleType vehicleType, DriverType driverType, double width,
+			double length, double maxSpeed, double desiredSpeed,
+			double desiredHeadway, double reactionTime) {
+		super(id, name, startFrame);
 		this.vehicleType = vehicleType;
 		this.driverType = driverType;
-		this.width = vehicleType.minWidth;
-		this.length = vehicleType.minLength;
+		this.width = width;
+		this.length = length;
+		this.maxSpeed = maxSpeed;
+		this.desiredSpeed = desiredSpeed;
+		this.desiredHeadway = desiredHeadway;
 	}
 
 	@Override
@@ -169,4 +180,23 @@ public class DefaultVehicle extends MovingObject<DefaultVehicle> implements
 		preferredConnector = lane;
 	}
 
+	@Override
+	public double getDesiredSpeed() {
+		return desiredSpeed;
+	}
+
+	@Override
+	public double getMaxSpeed() {
+		return maxSpeed;
+	}
+
+	@Override
+	public double getDesiredHeadway() {
+		return desiredHeadway;
+	}
+
+	@Override
+	public double getReactionTime() {
+		return reactionTime;
+	}
 }

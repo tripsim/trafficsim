@@ -14,8 +14,8 @@ import org.opengis.referencing.operation.TransformException;
 
 import com.vividsolutions.jts.geom.Coordinate;
 
-import edu.trafficsim.model.core.Coordinates;
 import edu.trafficsim.model.core.ModelInputException;
+import edu.trafficsim.model.util.Coordinates;
 
 public class DemoTest {
 

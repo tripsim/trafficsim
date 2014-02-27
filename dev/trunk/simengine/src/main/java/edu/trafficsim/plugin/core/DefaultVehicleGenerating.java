@@ -5,19 +5,18 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
-import org.apache.commons.math3.distribution.PoissonDistribution;
+import org.apache.commons.math3.random.RandomGenerator;
 import org.opengis.referencing.operation.TransformException;
 
 import edu.trafficsim.engine.VehicleFactory;
-import edu.trafficsim.engine.VehicleFactory.VehicleSpecs;
-import edu.trafficsim.model.DriverType;
 import edu.trafficsim.model.Lane;
 import edu.trafficsim.model.Link;
 import edu.trafficsim.model.Od;
 import edu.trafficsim.model.SimulationScenario;
 import edu.trafficsim.model.Vehicle;
-import edu.trafficsim.model.VehicleType;
-import edu.trafficsim.model.core.Randoms;
+import edu.trafficsim.model.roadusers.DriverType;
+import edu.trafficsim.model.roadusers.VehicleType;
+import edu.trafficsim.model.util.Randoms;
 import edu.trafficsim.plugin.IVehicleGenerating;
 
 public class DefaultVehicleGenerating implements IVehicleGenerating {
@@ -29,28 +28,27 @@ public class DefaultVehicleGenerating implements IVehicleGenerating {
 			VehicleFactory vehicleFactory) throws TransformException {
 		double time = scenario.getSimulator().getForwardedTime();
 		double stepSize = scenario.getSimulator().getStepSize();
-		Random rand = scenario.getSimulator().getRand();
+		RandomGenerator rng = scenario.getSimulator().getRand()
+				.getRandomGenerator();
+		Random rand = scenario.getSimulator().getRand().getRandom();
 
+		// calculate arrival rate
 		int vph = od.vph(time);
 		double arrivalRate = ((double) vph) / (3600 / stepSize);
 
-		PoissonDistribution dist = new PoissonDistribution(arrivalRate);
-		double prob = rand.nextDouble();
-		int num = dist.inverseCumulativeProbability(prob);
+		// random num
+		int num = Randoms.poission(arrivalRate, rng);
 
 		List<Vehicle> vehicles = new ArrayList<Vehicle>();
-
 		for (int i = 0; i < num; i++) {
 
-			// random vehicle type and driver type
+			// create vehicle with random vehicle type and driver type
 			VehicleType vtypeToBuild = Randoms.randomElement(
 					od.getVehicleTypeComposition(time), rand);
 			DriverType dtypeToBuild = Randoms.randomElement(
 					od.getDriverTypeComposition(time), rand);
-
-			// random initial speed and acceleration
-			double speed = Randoms.uniform(5, 30, rand);
-			double accel = 0.2;
+			Vehicle vehicle = vehicleFactory.createVehicle(vtypeToBuild,
+					dtypeToBuild, scenario);
 
 			// random initial link and lane
 			List<Link> links = new ArrayList<Link>(od.getOrigin()
@@ -59,18 +57,32 @@ public class DefaultVehicleGenerating implements IVehicleGenerating {
 			List<Lane> lanes = Arrays.asList(link.getLanes());
 			Lane lane = lanes.get(rand.nextInt(lanes.size()));
 
-			// generate vehicle from spec
-			VehicleSpecs vehicleSpecs = new VehicleSpecs(vtypeToBuild,
-					dtypeToBuild, lane, speed, accel);
-			Vehicle vehicle = vehicleFactory.createVehicle(vehicleSpecs,
-					scenario);
+			// random initial speed and acceleration
+			double speed = Randoms.uniform(5, 30, rng);
+			double accel = Randoms.uniform(0, 1, rng);
+			vehicle.speed(speed);
+			vehicle.acceleration(accel);
+			// set vehicle initial position, keep a min headway (gap) from the
+			// last
+			// vehicle in lane
+			double position = 0;
+			Vehicle tailVehicle = lane.getTailVehicle();
+			if (tailVehicle != null) {
+				position = tailVehicle.position() - (3600 / vph / lanes.size())
+						* speed;
+				position = position > 0 ? 0 : position;
+			}
+			vehicle.position(position);
+
+			// add vehicle to the current lane
+			vehicle.currentLane(lane);
+			vehicle.refresh();
 
 			// update routing info
 			Link targetLink = scenario.getRouter() == null ? null : scenario
 					.getRouter().getSucceedingLink(link,
 							vehicle.getVehicleType().getVehicleClass(),
-							scenario.getSimulator().getForwardedTime(),
-							scenario.getSimulator().getRand());
+							scenario.getSimulator().getForwardedTime(), rand);
 			vehicle.targetLink(targetLink);
 
 			// add vehicle to the simulation
@@ -79,6 +91,8 @@ public class DefaultVehicleGenerating implements IVehicleGenerating {
 			// Test
 			StringBuffer sb = new StringBuffer();
 			sb.append("Time: " + time + "s -- " + "New Vehicle: ");
+			sb.append(vehicle.getName());
+			sb.append(" || ");
 			sb.append("VehicleType -> ");
 			sb.append(vtypeToBuild.getName());
 			sb.append(" || ");
@@ -89,5 +103,4 @@ public class DefaultVehicleGenerating implements IVehicleGenerating {
 
 		return vehicles;
 	}
-
 }

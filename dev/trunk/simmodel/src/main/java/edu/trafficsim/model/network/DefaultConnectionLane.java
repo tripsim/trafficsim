@@ -8,8 +8,8 @@ import org.opengis.referencing.operation.TransformException;
 import edu.trafficsim.model.ConnectionLane;
 import edu.trafficsim.model.Lane;
 import edu.trafficsim.model.Node;
-import edu.trafficsim.model.core.Coordinates;
 import edu.trafficsim.model.core.ModelInputException;
+import edu.trafficsim.model.util.Coordinates;
 
 public class DefaultConnectionLane extends AbstractLane<DefaultConnectionLane>
 		implements ConnectionLane {

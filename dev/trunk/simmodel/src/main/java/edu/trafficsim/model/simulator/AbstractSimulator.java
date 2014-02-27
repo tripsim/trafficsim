@@ -1,10 +1,10 @@
 package edu.trafficsim.model.simulator;
 
 import java.util.Date;
-import java.util.Random;
 
 import edu.trafficsim.model.BaseEntity;
 import edu.trafficsim.model.Simulator;
+import edu.trafficsim.model.core.Rand;
 
 public abstract class AbstractSimulator<T> extends BaseEntity<T> implements
 		Simulator {
@@ -21,7 +21,7 @@ public abstract class AbstractSimulator<T> extends BaseEntity<T> implements
 	protected double stepSize; // in seconds
 
 	private long seed;
-	private Random rand;
+	private Rand rand;
 
 	private int forwardedSteps;
 
@@ -87,7 +87,7 @@ public abstract class AbstractSimulator<T> extends BaseEntity<T> implements
 	}
 
 	@Override
-	public Random getRand() {
+	public Rand getRand() {
 		return rand;
 	}
 
@@ -95,7 +95,7 @@ public abstract class AbstractSimulator<T> extends BaseEntity<T> implements
 	public double getForwardedTime() {
 		return stepSize * (double) forwardedSteps;
 	}
-	
+
 	@Override
 	public int getForwardedSteps() {
 		return forwardedSteps;
@@ -103,7 +103,7 @@ public abstract class AbstractSimulator<T> extends BaseEntity<T> implements
 
 	@Override
 	public boolean isFinished() {
-		return duration < forwardedSteps;
+		return duration < forwardedSteps * stepSize;
 	}
 
 	@Override
@@ -113,6 +113,6 @@ public abstract class AbstractSimulator<T> extends BaseEntity<T> implements
 
 	private void ready() {
 		forwardedSteps = 0;
-		rand = new Random(seed);
+		rand = new Rand(seed);
 	}
 }

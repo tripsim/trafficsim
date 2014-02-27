@@ -1,5 +1,8 @@
 package edu.trafficsim.model;
 
+import edu.trafficsim.model.roadusers.DriverType;
+import edu.trafficsim.model.roadusers.VehicleType;
+
 public interface Vehicle extends Movable, Agent {
 
 	public VehicleType getVehicleType();
@@ -32,9 +35,15 @@ public interface Vehicle extends Movable, Agent {
 
 	public Vehicle precedingVehicle();
 
-	// TODO remove
 	public double getWidth();
 
 	public double getLength();
 
+	public double getDesiredSpeed();
+
+	public double getMaxSpeed();
+
+	public double getDesiredHeadway();
+
+	public double getReactionTime();
 }

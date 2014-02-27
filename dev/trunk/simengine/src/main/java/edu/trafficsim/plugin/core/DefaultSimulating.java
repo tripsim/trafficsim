@@ -15,6 +15,7 @@ import edu.trafficsim.model.Od;
 import edu.trafficsim.model.SimulationScenario;
 import edu.trafficsim.model.Simulator;
 import edu.trafficsim.model.Vehicle;
+import edu.trafficsim.plugin.ICarFollowing;
 import edu.trafficsim.plugin.IMoving;
 import edu.trafficsim.plugin.ISimulating;
 import edu.trafficsim.plugin.IVehicleGenerating;
@@ -27,6 +28,7 @@ public class DefaultSimulating implements ISimulating {
 	// TODO hack for plugin management
 	// TODO get from plugin manager
 	protected static IMoving moving = new DefaultMoving();
+	protected static ICarFollowing carFollowing = new PipesCarFollowing();
 	protected static IVehicleGenerating vehicleGenerating = new DefaultVehicleGenerating();
 
 	private StatisticsCollector statisticsCollector;
@@ -63,6 +65,7 @@ public class DefaultSimulating implements ISimulating {
 			for (Iterator<Vehicle> iterator = vehicles.iterator(); iterator
 					.hasNext();) {
 				Vehicle v = iterator.next();
+				carFollowing.update(v, simulationScenario);
 				moving.update(v, simulationScenario);
 				System.out.println("Time: " + time + "s: " + v.getName() + " "
 						+ v.position());

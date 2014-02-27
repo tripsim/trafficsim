@@ -44,12 +44,12 @@ public abstract class AbstractLane<T> extends AbstractSubsegment<T> implements
 
 	@Override
 	public final Vehicle getLeadingVehicle(Vehicle v) {
-		return vehicles.ceiling(v);
+		return vehicles.higher(v);
 	}
 
 	@Override
 	public final Vehicle getPrecedingVehicle(Vehicle v) {
-		return vehicles.floor(v);
+		return vehicles.lower(v);
 	}
 
 	@Override
