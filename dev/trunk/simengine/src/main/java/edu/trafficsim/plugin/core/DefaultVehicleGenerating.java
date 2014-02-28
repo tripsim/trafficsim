@@ -9,15 +9,17 @@ import org.apache.commons.math3.random.RandomGenerator;
 import org.opengis.referencing.operation.TransformException;
 
 import edu.trafficsim.engine.VehicleFactory;
+import edu.trafficsim.model.DriverType;
 import edu.trafficsim.model.Lane;
 import edu.trafficsim.model.Link;
 import edu.trafficsim.model.Od;
 import edu.trafficsim.model.SimulationScenario;
 import edu.trafficsim.model.Vehicle;
-import edu.trafficsim.model.roadusers.DriverType;
-import edu.trafficsim.model.roadusers.VehicleType;
+import edu.trafficsim.model.VehicleType;
 import edu.trafficsim.model.util.Randoms;
+import edu.trafficsim.plugin.IRouting;
 import edu.trafficsim.plugin.IVehicleGenerating;
+import edu.trafficsim.plugin.PluginManager;
 
 public class DefaultVehicleGenerating implements IVehicleGenerating {
 
@@ -47,6 +49,9 @@ public class DefaultVehicleGenerating implements IVehicleGenerating {
 					od.getVehicleTypeComposition(time), rand);
 			DriverType dtypeToBuild = Randoms.randomElement(
 					od.getDriverTypeComposition(time), rand);
+			if (vtypeToBuild == null || dtypeToBuild == null)
+				continue;
+
 			Vehicle vehicle = vehicleFactory.createVehicle(vtypeToBuild,
 					dtypeToBuild, scenario);
 
@@ -79,10 +84,11 @@ public class DefaultVehicleGenerating implements IVehicleGenerating {
 			vehicle.refresh();
 
 			// update routing info
-			Link targetLink = scenario.getRouter() == null ? null : scenario
-					.getRouter().getSucceedingLink(link,
-							vehicle.getVehicleType().getVehicleClass(),
-							scenario.getSimulator().getForwardedTime(), rand);
+			IRouting routing = PluginManager.getRoutingImpl(scenario
+					.getRoutingType(vtypeToBuild));
+			Link targetLink = routing.getSucceedingLink(link, vehicle
+					.getVehicleType().getVehicleClass(), scenario
+					.getSimulator().getForwardedTime(), rand);
 			vehicle.targetLink(targetLink);
 
 			// add vehicle to the simulation

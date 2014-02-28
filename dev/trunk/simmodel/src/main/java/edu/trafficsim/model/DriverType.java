@@ -1,6 +1,5 @@
-package edu.trafficsim.model.roadusers;
+package edu.trafficsim.model;
 
-import edu.trafficsim.model.Type;
 
 public class DriverType extends Type<DriverType> {
 

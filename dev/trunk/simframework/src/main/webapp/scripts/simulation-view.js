@@ -1,4 +1,4 @@
-simwebhelper = {
+var simwebhelper = {
 	/***************************************************************************
 	 * DOM Manipulation
 	 **************************************************************************/
@@ -31,10 +31,10 @@ simwebhelper = {
 	/***************************************************************************
 	 * Request (Server Interaction)
 	 **************************************************************************/
-	getHtml : function(url, callback) {
-		jQuery.get(url, function(html) {
+	getStr : function(url, callback) {
+		jQuery.get(url, function(str) {
 			if (callback)
-				callback(html);
+				callback(str);
 		});
 	},
 	getPanel : function(url, callback) {

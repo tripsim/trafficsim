@@ -100,8 +100,8 @@ public class Coordinates {
 		// based on start node and end node radius, trim the lineargeom
 		// only trim the lanes not the links
 		// ajust start and end but not the actual lineargeom
-		if (linearGeom.getNumPoints() < 3)
-			return linearGeom;
+		// if (linearGeom.getNumPoints() < 3)
+		// return linearGeom;
 
 		GeoReferencing geo = getGeoReferencing(crs);
 		Coordinate[] coords = Arrays.copyOf(linearGeom.getCoordinates(),
@@ -110,7 +110,7 @@ public class Coordinates {
 		int iStart = 0, iEnd = coords.length;
 		double distance = geo.orthodromicDistance(coords[iStart],
 				coords[iStart + 1]);
-		while (distance < head && iEnd - iStart > 3) {
+		while (distance < head && iEnd - iStart > 1) {
 			head = head - distance;
 			iStart += 1;
 			distance = geo.orthodromicDistance(coords[iStart],
@@ -120,7 +120,7 @@ public class Coordinates {
 				coords[iStart + 1], head);
 
 		distance = geo.orthodromicDistance(coords[iEnd - 1], coords[iEnd - 2]);
-		while (distance < tail && iEnd - iStart > 3) {
+		while (distance < tail && iEnd - iStart > 1) {
 			tail = tail - distance;
 			iEnd -= 1;
 			distance = geo.orthodromicDistance(coords[iEnd - 1],

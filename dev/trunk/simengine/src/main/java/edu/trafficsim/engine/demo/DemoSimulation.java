@@ -5,6 +5,7 @@ import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.opengis.referencing.operation.TransformException;
 
 import edu.trafficsim.engine.StatisticsCollector;
+import edu.trafficsim.engine.statistics.DefaultStatisticsCollector;
 import edu.trafficsim.model.SimulationScenario;
 import edu.trafficsim.model.core.ModelInputException;
 import edu.trafficsim.plugin.ISimulating;
@@ -38,10 +39,13 @@ public class DemoSimulation {
 	public StatisticsCollector run() throws ModelInputException,
 			TransformException {
 		SimulationScenario scenario = builder.getScenario();
+		StatisticsCollector statistics = DefaultStatisticsCollector
+				.create(scenario.getSimulator());
+
 		ISimulating simulation = new DefaultSimulating();
 
-		simulation.run(scenario);
-		return simulation.statistics();
+		simulation.run(scenario, statistics);
+		return statistics;
 	}
 
 	public SimulationScenario getScenario() {

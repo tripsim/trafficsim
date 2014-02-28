@@ -1,14 +1,14 @@
 package edu.trafficsim.engine.factory;
 
 import edu.trafficsim.engine.TypesFactory;
+import edu.trafficsim.model.DriverType;
 import edu.trafficsim.model.DriverTypeComposition;
+import edu.trafficsim.model.VehicleType;
 import edu.trafficsim.model.VehicleTypeComposition;
+import edu.trafficsim.model.VehicleType.VehicleClass;
 import edu.trafficsim.model.core.ModelInputException;
 import edu.trafficsim.model.demand.DefaultDriverTypeComposition;
 import edu.trafficsim.model.demand.DefaultVehicleTypeComposition;
-import edu.trafficsim.model.roadusers.DriverType;
-import edu.trafficsim.model.roadusers.VehicleType;
-import edu.trafficsim.model.roadusers.VehicleType.VehicleClass;
 
 public class DefaultTypesFactory extends AbstractFactory implements
 		TypesFactory {

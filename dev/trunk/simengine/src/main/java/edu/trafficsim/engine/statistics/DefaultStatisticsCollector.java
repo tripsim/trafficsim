@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import edu.trafficsim.engine.StatisticsCollector;
 import edu.trafficsim.model.Link;
@@ -16,55 +18,99 @@ import edu.trafficsim.model.Vehicle;
 public class DefaultStatisticsCollector implements StatisticsCollector {
 
 	private final List<StatisticsFrame> frames;
-	private final Simulator simulator;
 	private DefaultStatisticsFrame currentFrame;
 
+	private final Map<Long, Vehicle> vehicles;
+	private final Set<Long> links;
+
+	private double stepSize;
+
 	public static class DefaultStatisticsFrame implements StatisticsFrame {
-		int id;
+		double time;
 
-		Map<Vehicle, VehicleState> vehicleStates;
+		Map<Long, VehicleState> vehicleStates;
+		Map<Long, LinkState> linkStates;
 
-		public DefaultStatisticsFrame(int id) {
-			this.id = id;
-			vehicleStates = new HashMap<Vehicle, VehicleState>();
+		public DefaultStatisticsFrame(double time) {
+			this.time = time;
+			vehicleStates = new HashMap<Long, VehicleState>();
+			linkStates = new HashMap<Long, LinkState>();
 		}
 
 		@Override
-		public int getFrameId() {
-			return id;
+		public double getTime() {
+			return time;
 		}
 
 		@Override
-		public VehicleState getVehicleState(Vehicle vehicle) {
-			return vehicleStates.get(vehicle);
+		public VehicleState getVehicleState(Long vid) {
+			return vehicleStates.get(vid);
 		}
 
 		@Override
-		public Collection<Vehicle> getVehicles() {
+		public Collection<Long> getVehicleIds() {
 			return vehicleStates.keySet();
+		}
+
+		@Override
+		public LinkState getLinkState(Long id) {
+			return linkStates.get(id);
+		}
+
+		@Override
+		public Collection<Long> getLinkIds() {
+			return linkStates.keySet();
 		}
 
 	}
 
 	public static StatisticsCollector create(Simulator simulator) {
-		return new DefaultStatisticsCollector(simulator);
+		StatisticsCollector statistics = new DefaultStatisticsCollector(
+				simulator.getTotalSteps());
+		statistics.reset(simulator);
+		return statistics;
 	}
 
-	protected DefaultStatisticsCollector(Simulator simulator) {
-		this.simulator = simulator;
-		frames = new ArrayList<StatisticsFrame>(simulator.getTotalSteps());
-		stepForward();
+	protected DefaultStatisticsCollector(int totalSteps) {
+		frames = new ArrayList<StatisticsFrame>(totalSteps);
+		vehicles = new HashMap<Long, Vehicle>();
+		links = new HashSet<Long>();
 	}
 
 	@Override
-	public void stepForward() {
-		currentFrame = new DefaultStatisticsFrame(simulator.getForwardedSteps());
+	public void reset(Simulator simulator) {
+		stepSize = simulator.getStepSize();
+		frames.clear();
+		vehicles.clear();
+		links.clear();
+		stepForward(0);
+	}
+
+	@Override
+	public void stepForward(int forwardedSteps) {
+		currentFrame = new DefaultStatisticsFrame(forwardedSteps * stepSize);
 		frames.add(currentFrame);
 	}
 
 	@Override
 	public void visit(Vehicle vehicle) {
-		currentFrame.vehicleStates.put(vehicle, new VehicleState(vehicle));
+		if (vehicle.position() <= 0)
+			return;
+
+		if (!vehicles.containsKey(vehicle.getId()))
+			vehicles.put(vehicle.getId(), vehicle);
+		currentFrame.vehicleStates.put(vehicle.getId(), new VehicleState(
+				currentFrame.time, vehicle));
+
+		LinkState linkState = currentFrame.linkStates.get(vehicle.getLink()
+				.getId());
+		if (linkState == null) {
+			currentFrame.linkStates.put(vehicle.getLink().getId(),
+					linkState = new LinkState(currentFrame.time));
+			links.add(vehicle.getLink().getId());
+		}
+		if (!vehicle.onConnector())
+			linkState.update(vehicle);
 	}
 
 	@Override
@@ -79,15 +125,30 @@ public class DefaultStatisticsCollector implements StatisticsCollector {
 	}
 
 	@Override
+	public Vehicle getVehicle(Long vid) {
+		return vehicles.get(vid);
+	}
+
+	@Override
+	public Collection<Long> getVehicleIds() {
+		return vehicles.keySet();
+	}
+
+	@Override
+	public Collection<Long> getLinkIds() {
+		return links;
+	}
+
+	@Override
 	public List<StatisticsFrame> getFrames() {
 		return Collections.unmodifiableList(frames);
 	}
 
 	@Override
-	public VehicleState[] trajectory(Vehicle vehicle) {
+	public VehicleState[] trajectory(Long vid) {
 		List<VehicleState> trajectory = new ArrayList<VehicleState>();
 		for (StatisticsFrame frame : frames) {
-			VehicleState state = frame.getVehicleState(vehicle);
+			VehicleState state = frame.getVehicleState(vid);
 			if (state == null)
 				continue;
 			trajectory.add(state);
@@ -96,15 +157,27 @@ public class DefaultStatisticsCollector implements StatisticsCollector {
 	}
 
 	@Override
-	public Map<Vehicle, List<VehicleState>> trajectories() {
-		Map<Vehicle, List<VehicleState>> trajectories = new HashMap<Vehicle, List<VehicleState>>();
+	public LinkState[] linkStats(Long id) {
+		List<LinkState> linkStats = new ArrayList<LinkState>();
 		for (StatisticsFrame frame : frames) {
-			for (Vehicle v : frame.getVehicles()) {
-				List<VehicleState> trajectory = trajectories.get(v);
+			LinkState state = frame.getLinkState(id);
+			if (state == null)
+				continue;
+			linkStats.add(state);
+		}
+		return linkStats.toArray(new LinkState[0]);
+	}
+
+	@Override
+	public Map<Long, List<VehicleState>> trajectories() {
+		Map<Long, List<VehicleState>> trajectories = new HashMap<Long, List<VehicleState>>();
+		for (StatisticsFrame frame : frames) {
+			for (Long vid : frame.getVehicleIds()) {
+				List<VehicleState> trajectory = trajectories.get(vid);
 				if (trajectory == null)
-					trajectories.put(v,
+					trajectories.put(vid,
 							trajectory = new ArrayList<VehicleState>());
-				trajectory.add(frame.getVehicleState(v));
+				trajectory.add(frame.getVehicleState(vid));
 			}
 		}
 		return trajectories;

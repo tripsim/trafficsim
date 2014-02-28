@@ -7,8 +7,8 @@ simulation.network = {}; // {links : {linkId : feature}, lanes: {linkId:
 // [features]}}
 simulation.vehicles = {}; // key: vid value: vehicle
 simulation.frames = {}; // key: fid values: {vid: record}
-simulation.totalF = 0;
-simulation.f = 0; // current frame id
+simulation.totalF = null;
+simulation.f = null; // current frame id
 simulation.vehicle = function(vid, width, length) {
 	this.vid = vid;
 	this.width = width;
@@ -77,11 +77,16 @@ simulation.initMap = function() {
 	 **************************************************************************/
 	var vehicleTemplate = {
 		strokeOpacity : 0.8,
-		strokeWidth : 0.1,
+		strokeWidth : '${strokeWidth}',
 		strokeColor : '${strokeColor}',
 		fillColor : '${getColor}' // using context.getColor(feature)
 	};
 	var vehicleContext = {
+		strokeWidth : function(feature) {
+			if (feature.attributes['trajectory'])
+				return 3;
+			return 0.1;
+		},
 		strokeColor : function(feature) {
 			return feature.attributes['color'];
 		},
@@ -107,6 +112,7 @@ simulation.initMap = function() {
 	vehicleLayer.events.register('refresh', vehicleLayer, function() {
 		if (that.totalF == that.f) {
 			that.refreshStrategy.deactivate();
+			vehicleLayer.setVisibility(false);
 		}
 		var frame = that.frames[that.f++];
 		var features = [];
@@ -127,6 +133,20 @@ simulation.initMap = function() {
 		}
 		vehicleLayer.addFeatures(features);
 	});
+	this.drawTrajectory = function(trj) {
+		vehicleLayer.removeAllFeatures();
+		var features = [];
+		var geom = OpenLayers.Geometry.fromWKT(trj);
+		var feature = new OpenLayers.Feature.Vector(geom, {
+			trajectory : true,
+			color : 'red'
+		});
+		features.push(feature);
+		vehicleLayer.addFeatures(features);
+		vehicleLayer.setVisibility(true);
+		networkLayer.setVisibility(false);
+		lanesLayer.setVisibility(false);
+	};
 	map.addLayer(vehicleLayer);
 
 	/***************************************************************************
@@ -338,7 +358,6 @@ simulation.initMap = function() {
 	 * Mouse Position Control, for developing only
 	 **************************************************************************/
 	var mp900913 = new OpenLayers.Control.MousePosition({
-		div : $('proj-900913'),
 		prefix : 'Coordinates: ',
 		suffix : ' (in ' + map.getProjectionObject() + ')'
 	});
@@ -348,7 +367,7 @@ simulation.initMap = function() {
 		prefix : 'Coordinates: ',
 		suffix : ' (in ' + that.proj4326 + ')'
 	});
-	map.addControls([ mp900913, mp4326 ]);
+	map.addControls([ mp900913 ]);
 
 	/***************************************************************************
 	 * Events, Network Layer
@@ -456,6 +475,7 @@ simulation.initMap = function() {
 		selectLaneControl.deactivate();
 		networkLayer.setVisibility(true);
 		lanesLayer.setVisibility(false);
+		vehicleLayer.setVisibility(false);
 	};
 	/* activate lane selection */
 	this.editLanes = function() {
@@ -463,41 +483,47 @@ simulation.initMap = function() {
 		selectLaneControl.activate();
 		networkLayer.setVisibility(false);
 		lanesLayer.setVisibility(true);
+		vehicleLayer.setVisibility(false);
 	};
-
-};
-
-simulation.load = function() {
-	var that = this;
-	that.totalF = 0;
-	that.vehicles = {};
-	that.frames = {};
-	jQuery.get('loaddemo', function(data) {
-		var obj = eval('(' + data + ')');
-		for ( var i in obj['vehicles']) {
-			var vs = obj.vehicles[i].split(',');
-			var v = new that.vehicle(vs[0], vs[1], vs[2]);
-			that.vehicles[v.vid] = v;
-		}
-		for ( var i in obj['elements']) {
-			var es = obj.elements[i].split(',');
-			var v = that.vehicles[es[1]];
-			if (!v)
-				continue;
-			var e = new that.element(es[0], v, es[2], es[3], es[4], es[5]);
-			var frame = that.frames[es[0]];
-			if (!frame) {
-				that.frames[es[0]] = frame = [];
-				that.totalF++;
+	/* load all frames */
+	this.loadFrames = function() {
+		var that = this;
+		that.totalF = 0;
+		that.vehicles = {};
+		that.frames = {};
+		jQuery.get('results/frames', function(data) {
+			var obj = eval('(' + data + ')');
+			for ( var i in obj['vehicles']) {
+				var vs = obj.vehicles[i].split(',');
+				var v = new that.vehicle(vs[0], vs[1], vs[2]);
+				that.vehicles[v.vid] = v;
 			}
-			frame.push(e);
-		}
-
-		simulation.animate();
-	});
-};
-
-simulation.animate = function() {
-	this.f = 0;
-	this.refreshStrategy.activate();
+			for ( var i in obj['elements']) {
+				var es = obj.elements[i].split(',');
+				var v = that.vehicles[es[1]];
+				if (!v)
+					continue;
+				var e = new that.element(es[0], v, es[2], es[3], es[4], es[5]);
+				var frame = that.frames[es[0]];
+				if (!frame) {
+					that.frames[es[0]] = frame = [];
+					that.totalF++;
+				}
+				frame.push(e);
+			}
+		});
+	};
+	/* start animation */
+	this.startAnimation = function() {
+		if (!that.totalF)
+			that.loadFrames();
+		this.f = 0;
+		vehicleLayer.setVisibility(true);
+		this.refreshStrategy.activate();
+	};
+	/* stop animation */
+	this.stopAnimation = function() {
+		vehicleLayer.setVisibility(false);
+		this.refreshStrategy.deactivate();
+	};
 };

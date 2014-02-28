@@ -8,13 +8,13 @@ import edu.trafficsim.model.Network;
 
 public class MapJsonServiceTest {
 
-	DemoSimulationService demo;
+	DemoService demo;
 	Network network;
 	MapJsonService jsonService;
 
 	@Before
 	public void setUp() throws Exception {
-		demo = new DemoSimulationService();
+		demo = new DemoService();
 		network = demo.getScenario().getNetwork();
 		jsonService = new MapJsonService();
 	}

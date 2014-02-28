@@ -1,0 +1,33 @@
+<h2>Results</h2>
+<div id="user-configuration-buttons">
+	<span id="user-configuration-button-close"
+		class="user-configuration-results-tsd-close button">close</span>
+</div>
+<div>
+	<p>
+		<span class="user-configuration-results-start-animation button">Animate</span>
+		<span class="user-configuration-results-stop-animation button">Stop</span>
+	</p>
+	<table>
+		<tr>
+			<td>Vehicle Trajectory</td>
+			<td><th:block data-th-fragment="select(vehicleIds)">
+					<select>
+						<th:block data-th-each="id : ${vehicleIds}">
+							<option data-th-attr="value=${id}" data-th-text="${id}"></option>
+						</th:block>
+					</select>
+				</th:block></td>
+			<td><span class="user-configuration-results-trajectory button">draw</span></td>
+		</tr>
+
+		<tr>
+			<td>Link Time-space Diagram</td>
+			<td><span
+				data-th-include="components/results :: select(${linkIds})"></span></td>
+			<td><span class="user-configuration-results-tsd-plot button">plot</span><span
+				class="user-configuration-results-tsd-close button">close</span></td>
+		</tr>
+	</table>
+</div>
+

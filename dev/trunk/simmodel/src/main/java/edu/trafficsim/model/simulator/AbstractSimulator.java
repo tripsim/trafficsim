@@ -4,6 +4,7 @@ import java.util.Date;
 
 import edu.trafficsim.model.BaseEntity;
 import edu.trafficsim.model.Simulator;
+import edu.trafficsim.model.SimulatorType;
 import edu.trafficsim.model.core.Rand;
 
 public abstract class AbstractSimulator<T> extends BaseEntity<T> implements
@@ -13,6 +14,8 @@ public abstract class AbstractSimulator<T> extends BaseEntity<T> implements
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+
+	private SimulatorType type;
 
 	private Date startTime;
 	private int warmup; // in seconds
@@ -25,15 +28,22 @@ public abstract class AbstractSimulator<T> extends BaseEntity<T> implements
 
 	private int forwardedSteps;
 
-	public AbstractSimulator(long id, String name, int duration,
-			double stepSize, long seed) {
+	public AbstractSimulator(long id, String name, SimulatorType type,
+			int duration, double stepSize, long seed) {
 		super(id, name);
+		this.type = type;
 		this.duration = duration;
 		this.stepSize = stepSize;
 		this.seed = seed;
 
 		this.warmup = 0;
-		ready();
+		reset();
+	}
+
+	@Override
+	public SimulatorType getSimulatorType() {
+		// TODO
+		return type;
 	}
 
 	@Override
@@ -111,7 +121,8 @@ public abstract class AbstractSimulator<T> extends BaseEntity<T> implements
 		forwardedSteps++;
 	}
 
-	private void ready() {
+	@Override
+	public void reset() {
 		forwardedSteps = 0;
 		rand = new Rand(seed);
 	}

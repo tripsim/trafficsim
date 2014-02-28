@@ -1,7 +1,5 @@
 package edu.trafficsim.model;
 
-import edu.trafficsim.model.roadusers.DriverType;
-import edu.trafficsim.model.roadusers.VehicleType;
 
 public interface Vehicle extends Movable, Agent {
 

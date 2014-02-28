@@ -7,7 +7,7 @@ jQuery(document).ajaxComplete(function() {
 	simwebhelper.hideIndicator();
 });
 
-jQuery(document).ajaxError(function() {
+jQuery(document).ajaxError(function(event, jqxhr, settings, exception) {
 	simwebhelper.error('Request failed!');
 });
 
@@ -72,10 +72,9 @@ jQuery(document)
 						simulation.editLanes();
 					});
 
-					/* nodes */
-					jQuery('#user-interface-nodes').click(function() {
-						simwebhelper.hidePanel();
-						simulation.editNodes();
+					/* list */
+					jQuery('#user-interface-list').click(function() {
+						// TODO show list of nodes, links, ods
 					});
 
 					/* vehicle composition */
@@ -84,10 +83,22 @@ jQuery(document)
 								simwebhelper
 										.getPanel('vehiclecomposition/view');
 							});
+
 					/* simulator */
 					jQuery('#user-interface-simulator').click(function() {
 						simwebhelper.getPanel('simulator/view');
 					});
+
+					/* router */
+					jQuery('#user-interface-router').click(function() {
+						simwebhelper.getPanel('router/view');
+					});
+
+					/* simulation result */
+					jQuery('#user-interface-results').click(function() {
+						simwebhelper.getPanel('results/view');
+					});
+
 					/* Create New Scenario */
 					jQuery('#user-interface-newScenario').click(function() {
 						simulation.clearLayers();
@@ -169,7 +180,7 @@ jQuery(document)
 								var ids = jQuery(this).closest('td').attr(
 										'data-id').split('-');
 								var tr = jQuery(this).closest('tr');
-								simwebhelper.getHtml('lane/form/' + ids[0]
+								simwebhelper.getStr('lane/form/' + ids[0]
 										+ ";laneId=" + ids[1], function(data) {
 									tr.replaceWith(data);
 								});
@@ -182,7 +193,7 @@ jQuery(document)
 								var ids = jQuery(this).closest('td').attr(
 										'data-id').split('-');
 								var tr = jQuery(this).closest('tr');
-								simwebhelper.getHtml('lane/info/' + ids[0]
+								simwebhelper.getStr('lane/info/' + ids[0]
 										+ ";laneId=" + ids[1], function(data) {
 									tr.replaceWith(data);
 								});
@@ -206,7 +217,7 @@ jQuery(document)
 								};
 								simwebhelper.action('lane/save', postData,
 										function(data) {
-											simwebhelper.getHtml('lane/info/'
+											simwebhelper.getStr('lane/info/'
 													+ ids[0] + ";laneId="
 													+ ids[1], function(data) {
 												tr.replaceWith(data);
@@ -244,7 +255,7 @@ jQuery(document)
 							'.user-configuration-od-edit',
 							function() {
 								var tr = jQuery(this).closest('tr');
-								simwebhelper.getHtml('od/form/'
+								simwebhelper.getStr('od/form/'
 										+ jQuery(this).closest('td').attr(
 												'data-id'), function(html) {
 									tr.replaceWith(html);
@@ -265,7 +276,7 @@ jQuery(document)
 										tr.remove();
 									});
 								} else {
-									simwebhelper.getHtml('od/info/'
+									simwebhelper.getStr('od/info/'
 											+ jQuery(this).closest('td').attr(
 													'data-id'), function(html) {
 										tr.replaceWith(html);
@@ -353,7 +364,7 @@ jQuery(document)
 														postData,
 														function() {
 															simwebhelper
-																	.getHtml(
+																	.getStr(
 																			'od/info/'
 																					+ postData.id,
 																			function(
@@ -374,7 +385,7 @@ jQuery(document)
 											'data-id'),
 									destinationId : 0
 								}, function(data) {
-									simwebhelper.getHtml('od/form/' + data
+									simwebhelper.getStr('od/form/' + data
 											+ ";isNew=true", function(html) {
 										jQuery('#user-configuration-ods-tbody')
 												.append(html);
@@ -391,7 +402,7 @@ jQuery(document)
 							'.user-configuration-vehicle-comp-edit',
 							function() {
 								var tr = jQuery(this).closest('tr');
-								simwebhelper.getHtml('vehiclecomposition/form/'
+								simwebhelper.getStr('vehiclecomposition/form/'
 										+ jQuery(this).closest('td').attr(
 												'data-name'), function(html) {
 									tr.replaceWith(html);
@@ -413,7 +424,7 @@ jQuery(document)
 												tr.remove();
 											});
 								} else {
-									simwebhelper.getHtml(
+									simwebhelper.getStr(
 											'vehiclecomposition/info/'
 													+ jQuery(this)
 															.closest('td')
@@ -500,7 +511,7 @@ jQuery(document)
 														postData,
 														function() {
 															simwebhelper
-																	.getHtml(
+																	.getStr(
 																			'vehiclecomposition/info/'
 																					+ postData.newName,
 																			function(
@@ -522,7 +533,7 @@ jQuery(document)
 														{},
 														function(data) {
 															simwebhelper
-																	.getHtml(
+																	.getStr(
 																			'vehiclecomposition/form/'
 																					+ data
 																					+ ";isNew=true",
@@ -536,6 +547,62 @@ jQuery(document)
 
 														});
 									});
+					/***********************************************************
+					 * Panel, User Configuration, Simulator
+					 **********************************************************/
+					/* run simulation */
+					jQuery('#user-configuration').on('click',
+							'.user-configuration-run-simulation', function() {
+								simwebhelper.action("simulator/run");
+								simwebhelper.hidePanel();
+							});
+					/***********************************************************
+					 * Panel, User Configuration, Simulation Result
+					 **********************************************************/
+					/* start simulation */
+					jQuery('#user-configuration').on('click',
+							'.user-configuration-results-start-animation',
+							function() {
+								simwebhelper.hidePanel();
+								that.startAnimation();
+							});
+					/* stop simulation */
+					jQuery('#user-configuration').on('click',
+							'.user-configuration-results-stop-animation',
+							function() {
+								that.stopAnimation();
+							});
+					/* draw trajectory */
+					jQuery('#user-configuration').on(
+							'click',
+							'.user-configuration-results-trajectory',
+							function() {
+								that.stopAnimation();
+								simwebhelper.getStr('results/trajectory/'
+										+ jQuery(this).closest('tr').find(
+												'select').val(), function(trj) {
+									that.drawTrajectory(trj);
+								});
+							});
+					/* link stat plot */
+					jQuery('#user-configuration').on(
+							'click',
+							'.user-configuration-results-tsd-plot',
+							function() {
+								that.stopAnimation();
+								simwebhelper.getJson('results/tsd/'
+										+ jQuery(this).closest('tr').find(
+												'select').val(),
+										function(data) {
+											simplot.plot(data);
+										});
+							});
+					/* link stat close plot */
+					jQuery('#user-configuration').on('click',
+							'.user-configuration-results-tsd-close',
+							function() {
+								simplot.close();
+							});
 					/***********************************************************
 					 * Panel, User Configuration, New Scenario
 					 **********************************************************/

@@ -45,9 +45,9 @@ public abstract class AbstractSubsegment<T> extends BaseEntity<T> implements
 
 	private void checkStartEnd(double start, double end)
 			throws ModelInputException {
-		if (start < 0 || end > 0)
-			throw new ModelInputException(
-					"Segment element exceeds its containing segment.");
+		// if (start < 0 || end > 0)
+		// throw new ModelInputException(
+		// "Segment element exceeds its containing segment.");
 		if (start - end > segment.getLength())
 			throw new ModelInputException("Segment element has negative length");
 	}

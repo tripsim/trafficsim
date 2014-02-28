@@ -158,6 +158,23 @@ html,body,#map {
 }
 
 /***********************************************************
+ * jqplot 
+ **********************************************************/
+#plot {
+	padding: 8px;
+	z-index: 20000;
+	position: fixed;
+	top: 64px;
+	left: 720px;
+	width: 800px;
+	height: 600px;
+	background-color: #ffffff;
+	opacity: 0.9;
+	display: none;
+	z-index: 20000;
+}
+
+/***********************************************************
  *  Feedback Info Window 
  **********************************************************/
 #user-feedback {
