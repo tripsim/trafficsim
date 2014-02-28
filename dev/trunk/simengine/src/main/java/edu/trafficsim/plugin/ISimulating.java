@@ -7,8 +7,7 @@ import edu.trafficsim.model.SimulationScenario;
 
 public interface ISimulating {
 
-	public void run(SimulationScenario simulationScenario)
-			throws TransformException;
+	public void run(SimulationScenario simulationScenario,
+			StatisticsCollector statistics) throws TransformException;
 
-	public StatisticsCollector statistics();
 }

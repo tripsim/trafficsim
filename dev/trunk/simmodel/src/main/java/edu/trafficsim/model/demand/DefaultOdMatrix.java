@@ -8,9 +8,14 @@ import java.util.Map;
 import java.util.Set;
 
 import edu.trafficsim.model.BaseEntity;
+import edu.trafficsim.model.Link;
 import edu.trafficsim.model.Node;
 import edu.trafficsim.model.Od;
 import edu.trafficsim.model.OdMatrix;
+import edu.trafficsim.model.TurnPercentage;
+import edu.trafficsim.model.VehicleType.VehicleClass;
+import edu.trafficsim.model.core.AbstractDynamicProperty;
+import edu.trafficsim.model.core.ModelInputException;
 import edu.trafficsim.model.core.MultiKey;
 import edu.trafficsim.model.core.MultiValuedMap;
 
@@ -51,7 +56,7 @@ public class DefaultOdMatrix extends BaseEntity<DefaultOdMatrix> implements
 
 	@Override
 	public void add(Od od) {
-		ods.add(key(od), od);
+		ods.add(odKey(od), od);
 		odsById.put(od.getId(), od);
 	}
 
@@ -59,10 +64,10 @@ public class DefaultOdMatrix extends BaseEntity<DefaultOdMatrix> implements
 	public void remove(long id) {
 		Od od = odsById.remove(id);
 		if (od != null)
-			ods.remove(key(od), od);
+			ods.remove(odKey(od), od);
 	}
 
-	private static final OdKey key(Od od) {
+	private static final OdKey odKey(Od od) {
 		return new OdKey(od.getOrigin(), od.getDestination());
 	}
 
@@ -75,4 +80,49 @@ public class DefaultOdMatrix extends BaseEntity<DefaultOdMatrix> implements
 
 	}
 
+	// turn percentage
+	static final class DynamicTurnPercentage extends
+			AbstractDynamicProperty<TurnPercentage> {
+
+		private static final long serialVersionUID = 1L;
+
+	}
+
+	static final class TurnKey extends MultiKey<Link, VehicleClass> {
+
+		private static final long serialVersionUID = 1L;
+
+		public TurnKey(Link link, VehicleClass vehicleClass) {
+			super(link, vehicleClass);
+		}
+
+	}
+
+	private static final TurnKey turnKey(Link link, VehicleClass vehicleClass) {
+		return new TurnKey(link, vehicleClass);
+	}
+
+	private Map<TurnKey, DynamicTurnPercentage> dynamicTurnPercentages = new HashMap<TurnKey, DynamicTurnPercentage>();
+
+	@Override
+	public TurnPercentage getTurnPercentage(Link link,
+			VehicleClass vehicleClass, double time) {
+		TurnKey key = turnKey(link, vehicleClass);
+		return dynamicTurnPercentages.get(key) == null ? null
+				: dynamicTurnPercentages.get(key).getProperty(time);
+	}
+
+	@Override
+	public void setTurnPercentage(Link link, VehicleClass vehicleClass,
+			double[] times, TurnPercentage[] turnPercentages)
+			throws ModelInputException {
+		TurnKey key = turnKey(link, vehicleClass);
+		DynamicTurnPercentage dynamicTurnPercentage = dynamicTurnPercentages
+				.get(key);
+		if (dynamicTurnPercentage == null) {
+			dynamicTurnPercentage = new DynamicTurnPercentage();
+			dynamicTurnPercentages.put(key, dynamicTurnPercentage);
+		}
+		dynamicTurnPercentage.setProperties(times, turnPercentages);
+	}
 }

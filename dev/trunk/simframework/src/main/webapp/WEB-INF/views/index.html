@@ -6,6 +6,8 @@
 
 <link rel="stylesheet" type="text/css"
 	href="resources/scripts/lib/jsoneditor/jsoneditor-min.css"></link>
+<link rel="stylesheet" type="text/css"
+	href="resources/scripts/lib/jqplot/jquery.jqplot.css" />
 <link rel="stylesheet" type="text/css" href="resources/styles/style.css"></link>
 <link rel="stylesheet" type="text/css"
 	href="resources/styles/style-dev.css"></link>
@@ -19,9 +21,17 @@
 <script type="text/javascript"
 	src="resources/scripts/lib/jquery-2.0.3.min.js"></script>
 <script type="text/javascript"
+	src="resources/scripts/lib/jqplot/jquery.jqplot.min.js"></script>
+<script type="text/javascript"
+	src="resources/scripts/lib/jqplot/plugins/jqplot.canvasTextRenderer.min.js"></script>
+<script type="text/javascript"
+	src="resources/scripts/lib/jqplot/plugins/jqplot.canvasAxisLabelRenderer.min.js"></script>
+<script type="text/javascript"
 	src="resources/scripts/lib/jsoneditor/jsoneditor-min.js"></script>
 <script type="text/javascript"
 	src="resources/scripts/simulation-view.js"></script>
+<script type="text/javascript"
+	src="resources/scripts/simulation-plot.js"></script>
 <script type="text/javascript" src="resources/scripts/simulation-map.js"></script>
 <script type="text/javascript" src="resources/scripts/simulation-ui.js"></script>
 
@@ -34,16 +44,17 @@
 
 	<div id="user-interface">
 		<div id="user-interface-network">Network Panel</div>
-		<div id="user-interface-links" class="sub">Edit Links</div>
-		<div id="user-interface-lanes" class="sub">Edit Connection</div>
-		<div id="user-interface-nodes" class="sub">Nodes</div>
-		<div class="sub">ODs</div>
+		<div id="user-interface-links" class="sub">Edit Link-Node</div>
+		<div id="user-interface-lanes" class="sub">Edit Lane-Connection</div>
+		<div id="user-interface-router" class="sub">Router</div>
+		<div id="user-interface-list" class="sub">List</div>
 		<div>Vehicle Panel</div>
-		<div class="sub">Vehicle Type</div>
+		<div id="user-interface-vehicleType" class="sub">Vehicle Type</div>
 		<div id="user-interface-vehicle-composition" class="sub">Vehicle
 			Composition</div>
-		<div id="user-interface-simulator">Simulator Panel</div>
-		<div>Online Coding</div>
+		<div id="user-interface-simulator">Simulator</div>
+		<div id="user-interface-results">Results</div>
+		<!-- 		<div>Online Coding</div> -->
 		<div id="test">TEST</div>
 		<!-- 		<div id="test-anim">TEST Animation</div> -->
 		<div id="user-interface-newScenario" class="highlight">Create
@@ -56,5 +67,6 @@
 		<div id="user-json-editor"></div>
 	</div>
 	<div id="ajax-indicator"></div>
+	<div id="plot"></div>
 </body>
 </html>

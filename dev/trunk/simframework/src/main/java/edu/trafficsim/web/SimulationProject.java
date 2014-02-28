@@ -7,12 +7,12 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Component;
 
+import edu.trafficsim.model.DriverType;
 import edu.trafficsim.model.DriverTypeComposition;
+import edu.trafficsim.model.VehicleType;
 import edu.trafficsim.model.VehicleTypeComposition;
+import edu.trafficsim.model.VehicleType.VehicleClass;
 import edu.trafficsim.model.core.ModelInputException;
-import edu.trafficsim.model.roadusers.DriverType;
-import edu.trafficsim.model.roadusers.VehicleType;
-import edu.trafficsim.model.roadusers.VehicleType.VehicleClass;
 import edu.trafficsim.web.service.entity.CompositionService;
 import edu.trafficsim.web.service.entity.TypeService;
 
@@ -40,13 +40,6 @@ public class SimulationProject extends AbstractProject {
 				new double[] { 0.2, 0.8 });
 		setDefaultDriverComp(new String[] { DEFAULT_DRIVER },
 				new double[] { 1.0 });
-
-		// put it in service
-		// scenarioFactory.createSimulationScenario(name, simulator,
-		// network, odMatrix, router);
-		//
-		//
-		//
 	}
 
 	public VehicleType[] getDefaultVehTypes() throws UserInterfaceException {

@@ -18,6 +18,7 @@ import edu.trafficsim.engine.factory.DefaultNetworkFactory;
 import edu.trafficsim.engine.factory.DefaultScenarioFactory;
 import edu.trafficsim.engine.factory.DefaultTypesFactory;
 import edu.trafficsim.engine.osm.OsmNetworkExtractor;
+import edu.trafficsim.model.DriverType;
 import edu.trafficsim.model.DriverTypeComposition;
 import edu.trafficsim.model.Lane;
 import edu.trafficsim.model.Link;
@@ -26,16 +27,13 @@ import edu.trafficsim.model.Node;
 import edu.trafficsim.model.Od;
 import edu.trafficsim.model.OdMatrix;
 import edu.trafficsim.model.RoadInfo;
-import edu.trafficsim.model.Router;
 import edu.trafficsim.model.SimulationScenario;
 import edu.trafficsim.model.Simulator;
+import edu.trafficsim.model.TurnPercentage;
+import edu.trafficsim.model.VehicleType;
 import edu.trafficsim.model.VehicleTypeComposition;
+import edu.trafficsim.model.VehicleType.VehicleClass;
 import edu.trafficsim.model.core.ModelInputException;
-import edu.trafficsim.model.network.TurnPercentage;
-import edu.trafficsim.model.network.TurnPercentageRouter;
-import edu.trafficsim.model.roadusers.DriverType;
-import edu.trafficsim.model.roadusers.VehicleType;
-import edu.trafficsim.model.roadusers.VehicleType.VehicleClass;
 import edu.trafficsim.model.util.GeoReferencing;
 import edu.trafficsim.model.util.GeoReferencing.TransformCoordinateFilter;
 import edu.trafficsim.utility.CoordinateTransformer;
@@ -46,7 +44,6 @@ public class DemoBuilder {
 	private Simulator simulator;
 	private Network network;
 	private OdMatrix odMatrix;
-	private Router router;
 
 	long seq = 0;
 
@@ -153,13 +150,13 @@ public class DemoBuilder {
 
 		// Lanes
 		Lane[] lanes1 = networkFactory.createLanes(new Long[] { seq++, seq++,
-				seq++ }, link1);
+				seq++ }, link1, 10, -10, 4);
 		Lane[] lanes2 = networkFactory.createLanes(new Long[] { seq++, seq++,
-				seq++ }, link2);
+				seq++ }, link2, 10, -10, 4);
 		// Connectors
-		networkFactory.connect(seq++, lanes1[0], lanes2[0]);
-		networkFactory.connect(seq++, lanes1[1], lanes2[1]);
-		networkFactory.connect(seq++, lanes1[2], lanes2[2]);
+		networkFactory.connect(seq++, lanes1[0], lanes2[0], 4);
+		networkFactory.connect(seq++, lanes1[1], lanes2[1], 4);
+		networkFactory.connect(seq++, lanes1[2], lanes2[2], 4);
 
 		// create types and
 		VehicleType vehicleTypeCar = typesFactory.createVehicleType(seq++,
@@ -188,22 +185,20 @@ public class DemoBuilder {
 		// no destination 100s~200s 800vph
 		double[] times = new double[] { 300, 500 };
 		Integer[] vphs = new Integer[] { 4000, 4800 };
-		Od od = scenarioFactory.createOd(seq++, "test", node1, null,
+		Od od = scenarioFactory.createOd(seq++, "od", node1, null,
 				vehicleTypeComposition, driverTypeComposition, times, vphs);
 
-		odMatrix = scenarioFactory.createOdMatrix(seq++, "test");
+		odMatrix = scenarioFactory.createOdMatrix(seq++, "odm");
 		odMatrix.add(od);
 
 		// Router
-		TurnPercentageRouter turnPercentageRouter = new TurnPercentageRouter(0,
-				"test");
 		double[] times1 = new double[] { 500 };
-		TurnPercentage turnPercentage1 = new TurnPercentage(0, "test", link1);
-		turnPercentage1.put(link2, 1.0);
+		TurnPercentage turnPercentage1 = scenarioFactory
+				.createTurnPercentage(seq++, "tp1", link1,
+						new Link[] { link2 }, new double[] { 1.0 });
 		TurnPercentage[] turnPercentages = new TurnPercentage[] { turnPercentage1 };
-		turnPercentageRouter.setTurnPercentage(link1, VehicleClass.Car, times1,
+		odMatrix.setTurnPercentage(link1, VehicleClass.Car, times1,
 				turnPercentages);
-		router = turnPercentageRouter;
 
 		// Simulator
 		simulator = scenarioFactory.createSimulator(seq++, "test", 100, 0.1);
@@ -211,7 +206,7 @@ public class DemoBuilder {
 
 	public SimulationScenario getScenario() {
 		return scenarioFactory.createSimulationScenario(seq++, "demo",
-				simulator, network, odMatrix, router);
+				simulator, network, odMatrix);
 	}
 
 	public Long getSeq() {

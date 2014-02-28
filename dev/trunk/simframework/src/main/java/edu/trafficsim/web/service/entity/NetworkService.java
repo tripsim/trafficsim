@@ -20,12 +20,15 @@ public class NetworkService extends EntityService {
 	@Autowired
 	SimulationProject project;
 
-	private static final double DEFAULT_LANE_START = 0.0d;
-	private static final double DEFAULT_LANE_END = 1.0d;
+	private static final double DEFAULT_LANE_START = 10.0d;
+	private static final double DEFAULT_LANE_END = -10.0d;
 	private static final double DEFAULT_LANE_WIDTH = 4.0d;
 
 	public Lane addLane(Link link, NetworkFactory factory)
 			throws ModelInputException, TransformException {
+		if (link.getLength() < DEFAULT_LANE_START - DEFAULT_LANE_END)
+			factory.createLane(project.nextSeq(), link, 0, 0,
+					DEFAULT_LANE_WIDTH);
 		return factory.createLane(project.nextSeq(), link, DEFAULT_LANE_START,
 				DEFAULT_LANE_END, DEFAULT_LANE_WIDTH);
 	}
@@ -56,7 +59,8 @@ public class NetworkService extends EntityService {
 	public ConnectionLane connectLanes(Lane laneFrom, Lane laneTo,
 			NetworkFactory factory) throws ModelInputException,
 			TransformException {
-		return factory.connect(project.nextSeq(), laneFrom, laneTo);
+		return factory.connect(project.nextSeq(), laneFrom, laneTo,
+				DEFAULT_LANE_WIDTH);
 	}
 
 	public void removeConnector(ConnectionLane connector) {

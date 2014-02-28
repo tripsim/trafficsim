@@ -3,9 +3,9 @@ package edu.trafficsim.web.service.entity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import edu.trafficsim.model.roadusers.DriverType;
-import edu.trafficsim.model.roadusers.VehicleType;
-import edu.trafficsim.model.roadusers.VehicleType.VehicleClass;
+import edu.trafficsim.model.DriverType;
+import edu.trafficsim.model.VehicleType;
+import edu.trafficsim.model.VehicleType.VehicleClass;
 import edu.trafficsim.web.SimulationProject;
 import edu.trafficsim.web.UserInterfaceException;
 

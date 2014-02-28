@@ -74,7 +74,8 @@ public class DefaultOd extends BaseEntity<DefaultOd> implements Od {
 
 	@Override
 	public final int vph(double time) {
-		return dynamicFlow.getProperty(time);
+		return dynamicFlow.getProperty(time) == null ? 0 : dynamicFlow
+				.getProperty(time);
 	}
 
 	@Override

@@ -1,12 +1,14 @@
 package edu.trafficsim.model.roadusers;
 
 import edu.trafficsim.model.ConnectionLane;
+import edu.trafficsim.model.DriverType;
 import edu.trafficsim.model.Lane;
 import edu.trafficsim.model.Link;
 import edu.trafficsim.model.Node;
 import edu.trafficsim.model.Segment;
 import edu.trafficsim.model.Subsegment;
 import edu.trafficsim.model.Vehicle;
+import edu.trafficsim.model.VehicleType;
 import edu.trafficsim.model.core.MovingObject;
 
 public class DefaultVehicle extends MovingObject<DefaultVehicle> implements
@@ -32,10 +34,10 @@ public class DefaultVehicle extends MovingObject<DefaultVehicle> implements
 
 	public DefaultVehicle(long id, String name, int startFrame,
 			VehicleType vehicleType, DriverType driverType) {
-		this(id, name, startFrame, vehicleType, driverType, vehicleType.width,
-				vehicleType.length, vehicleType.maxSpeed,
-				driverType.desiredSpeed, driverType.desiredHeadway,
-				driverType.reactionTime);
+		this(id, name, startFrame, vehicleType, driverType, vehicleType
+				.getWidth(), vehicleType.getLength(),
+				vehicleType.getMaxSpeed(), driverType.getDesiredSpeed(),
+				driverType.getDesiredHeadway(), driverType.getReactionTime());
 	}
 
 	public DefaultVehicle(long id, String name, int startFrame,

@@ -33,19 +33,19 @@ public abstract class AbstractComposition<K> extends BaseEntity<K> implements
 		return map.keySet();
 	}
 
-	public final double get(K key) {
+	public final Double get(K key) {
 		return map.get(key);
 	}
 
 	@Override
-	public final void put(K key, double value) {
+	public void put(K key, double value) throws ModelInputException {
 		total -= map.get(key) != null ? map.get(key) : 0;
 		map.put(key, value);
 		total += value;
 	}
 
 	@Override
-	public final void culmulate(K key, double value) {
+	public void culmulate(K key, double value) throws ModelInputException {
 		total += value;
 		value += map.get(key) != null ? map.get(key) : 0;
 		map.put(key, value);

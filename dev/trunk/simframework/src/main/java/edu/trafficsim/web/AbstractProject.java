@@ -13,15 +13,15 @@ import edu.trafficsim.engine.TypesFactory;
 import edu.trafficsim.engine.factory.DefaultNetworkFactory;
 import edu.trafficsim.engine.factory.DefaultScenarioFactory;
 import edu.trafficsim.engine.factory.DefaultTypesFactory;
+import edu.trafficsim.model.DriverType;
 import edu.trafficsim.model.DriverTypeComposition;
 import edu.trafficsim.model.Network;
 import edu.trafficsim.model.OdMatrix;
-import edu.trafficsim.model.Router;
 import edu.trafficsim.model.Simulator;
+import edu.trafficsim.model.VehicleType;
 import edu.trafficsim.model.VehicleTypeComposition;
 import edu.trafficsim.model.core.ModelInputException;
-import edu.trafficsim.model.roadusers.DriverType;
-import edu.trafficsim.model.roadusers.VehicleType;
+import edu.trafficsim.plugin.IRouting;
 import edu.trafficsim.web.service.entity.OdService;
 import edu.trafficsim.web.service.entity.SimulatorService;
 
@@ -40,7 +40,7 @@ public abstract class AbstractProject {
 	Simulator simulator;
 	Network network;
 	OdMatrix odMatrix;
-	Router router;
+	IRouting iRouting;
 
 	private long sequence = 1l;
 
@@ -57,7 +57,7 @@ public abstract class AbstractProject {
 		simulator = null;
 		network = null;
 		odMatrix = null;
-		router = null;
+		iRouting = null;
 
 		vehicleTypes = new HashMap<String, VehicleType>();
 		driverTypes = new HashMap<String, DriverType>();
@@ -69,7 +69,7 @@ public abstract class AbstractProject {
 		simulator = null;
 		network = null;
 		odMatrix = null;
-		router = null;
+		iRouting = null;
 
 		vehicleTypes.clear();
 		driverTypes.clear();
@@ -129,12 +129,13 @@ public abstract class AbstractProject {
 		this.odMatrix = odMatrix;
 	}
 
-	public Router getRouter() {
-		return router;
+	public IRouting getRouter() {
+		// TODO change router type
+		return iRouting;
 	}
 
-	public void setRouter(Router router) {
-		this.router = router;
+	public void setRouter(IRouting iRouting) {
+		this.iRouting = iRouting;
 	}
 
 	public Collection<VehicleType> getVehicleTypes() {

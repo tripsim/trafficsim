@@ -11,6 +11,8 @@ import edu.trafficsim.model.Vehicle;
 import edu.trafficsim.model.util.Randoms;
 import edu.trafficsim.plugin.AbstractPlugin;
 import edu.trafficsim.plugin.IMoving;
+import edu.trafficsim.plugin.IRouting;
+import edu.trafficsim.plugin.PluginManager;
 
 // TODO move to a seperate project
 public class DefaultMoving extends AbstractPlugin implements IMoving {
@@ -57,13 +59,16 @@ public class DefaultMoving extends AbstractPlugin implements IMoving {
 			return;
 		}
 
+		IRouting routing = PluginManager.getRoutingImpl(scenario
+				.getRoutingType(vehicle.getVehicleType()));
+
 		System.out.println("------- Debug Convey --------");
 		if (vehicle.onConnector()) {
-			Link link = scenario.getRouter() == null ? null : scenario
-					.getRouter().getSucceedingLink(vehicle.getLink(),
-							vehicle.getVehicleType().getVehicleClass(),
-							scenario.getSimulator().getForwardedTime(),
-							scenario.getSimulator().getRand().getRandom());
+			Link link = routing.getSucceedingLink(scenario.getOdMatrix(),
+					vehicle.getLink(), vehicle.getVehicleType()
+							.getVehicleClass(), scenario.getSimulator()
+							.getForwardedTime(), scenario.getSimulator()
+							.getRand().getRandom());
 			vehicle.currentLane(((ConnectionLane) vehicle.currentLane())
 					.getToLane());
 			vehicle.targetLink(link);

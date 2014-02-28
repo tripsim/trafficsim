@@ -11,6 +11,7 @@ public class ScenarioController extends AbstractController {
 	@RequestMapping(value = "/new", method = RequestMethod.GET)
 	public String newScenarioView() {
 		project.clear();
+		result.clear();
 		return "components/scenario-new";
 	}
 }

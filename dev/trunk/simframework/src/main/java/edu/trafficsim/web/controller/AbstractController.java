@@ -6,12 +6,15 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import edu.trafficsim.web.SimulationProject;
+import edu.trafficsim.web.SimulationResult;
 import edu.trafficsim.web.model.ActionResponse;
 
 public abstract class AbstractController {
 
 	@Autowired
 	SimulationProject project;
+	@Autowired
+	SimulationResult result;
 
 	private static final String ACTION_RESPONSE_STATUS_KEY = "status";
 	private static final String ACTION_RESPONSE_DATA_KEY = "data";

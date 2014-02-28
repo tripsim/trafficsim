@@ -2,15 +2,25 @@ package edu.trafficsim.model;
 
 import java.util.Collection;
 
+import edu.trafficsim.model.VehicleType.VehicleClass;
+import edu.trafficsim.model.core.ModelInputException;
+
 public interface OdMatrix extends DataContainer {
 
-	public Collection<Od> getOdsFromNode(Node node);
+	Collection<Od> getOdsFromNode(Node node);
 
-	public Od getOd(long id);
+	Od getOd(long id);
 
-	public Collection<Od> getOds();
+	Collection<Od> getOds();
 
-	public void add(Od od);
+	void add(Od od);
 
-	public void remove(long id);
+	void remove(long id);
+
+	TurnPercentage getTurnPercentage(Link link, VehicleClass vehicleClass,
+			double time);
+
+	void setTurnPercentage(Link link, VehicleClass vehicleClass,
+			double[] times, TurnPercentage[] turnPercentages)
+			throws ModelInputException;
 }

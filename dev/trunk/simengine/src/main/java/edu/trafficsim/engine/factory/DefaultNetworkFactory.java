@@ -30,10 +30,6 @@ public class DefaultNetworkFactory extends AbstractFactory implements
 	private static DefaultNetworkFactory factory;
 	private GeometryFactory geometryFactory;
 
-	private final static double DEFAULT_WIDTH = 4.0d;
-	private final static double DEFAULT_START = 10.0d;
-	private final static double DEFAULT_END = -10.0d;
-
 	private DefaultNetworkFactory() {
 		geometryFactory = JTSFactoryFinder.getGeometryFactory();
 	}
@@ -53,14 +49,17 @@ public class DefaultNetworkFactory extends AbstractFactory implements
 	private static NodeType nodeType = new NodeType(0, "temp");
 	private static LinkType linkType = new LinkType(0, "temp");
 
+	@Override
 	public Point createPoint(double x, double y) {
 		return geometryFactory.createPoint(new Coordinate(x, y));
 	}
 
+	@Override
 	public Point createPoint(Coordinate coord) {
 		return geometryFactory.createPoint(coord);
 	}
 
+	@Override
 	public LineString createLineString(Coordinate[] coords) {
 		return geometryFactory.createLineString(coords);
 	}
@@ -113,10 +112,11 @@ public class DefaultNetworkFactory extends AbstractFactory implements
 	}
 
 	@Override
-	public Lane[] createLanes(Long[] ids, Link link)
+	public Lane[] createLanes(Long[] ids, Link link, double start, double end,
+			double width)
 			throws ModelInputException, TransformException {
 		for (Long id : ids) {
-			createLane(id, link, DEFAULT_START, DEFAULT_END, DEFAULT_WIDTH);
+			createLane(id, link, start, end, width);
 		}
 		return link.getLanes();
 	}
@@ -128,10 +128,10 @@ public class DefaultNetworkFactory extends AbstractFactory implements
 	}
 
 	@Override
-	public ConnectionLane connect(Long id, Lane laneFrom, Lane laneTo)
+	public ConnectionLane connect(Long id, Lane laneFrom, Lane laneTo, double width)
 			throws ModelInputException, TransformException {
 		DefaultConnectionLane connectionLane = new DefaultConnectionLane(id,
-				laneFrom, laneTo, DEFAULT_WIDTH);
+				laneFrom, laneTo, width);
 		return connectionLane;
 	}
 }

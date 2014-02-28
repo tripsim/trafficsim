@@ -21,7 +21,11 @@ public abstract class AbstractDynamicProperty<T> implements Serializable {
 	}
 
 	public final T getProperty(double time) {
-		return properties.ceilingEntry(time).getValue();
+		try {
+			return properties.ceilingEntry(time).getValue();
+		} catch (NullPointerException e) {
+			return null;
+		}
 	}
 
 	public final void setProperty(double time, T value) {

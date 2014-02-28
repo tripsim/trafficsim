@@ -7,10 +7,8 @@ import java.util.List;
 import org.opengis.referencing.operation.TransformException;
 
 import edu.trafficsim.engine.StatisticsCollector;
-import edu.trafficsim.engine.StatisticsCollector.VehicleState;
 import edu.trafficsim.engine.VehicleFactory;
 import edu.trafficsim.engine.factory.DefaultVehicleFactory;
-import edu.trafficsim.engine.statistics.DefaultStatisticsCollector;
 import edu.trafficsim.model.Od;
 import edu.trafficsim.model.SimulationScenario;
 import edu.trafficsim.model.Simulator;
@@ -19,31 +17,28 @@ import edu.trafficsim.plugin.ICarFollowing;
 import edu.trafficsim.plugin.IMoving;
 import edu.trafficsim.plugin.ISimulating;
 import edu.trafficsim.plugin.IVehicleGenerating;
+import edu.trafficsim.plugin.PluginManager;
 
 public class DefaultSimulating implements ISimulating {
 
 	protected static VehicleFactory vehicleFactory = DefaultVehicleFactory
 			.getInstance();
 
-	// TODO hack for plugin management
-	// TODO get from plugin manager
-	protected static IMoving moving = new DefaultMoving();
-	protected static ICarFollowing carFollowing = new PipesCarFollowing();
-	protected static IVehicleGenerating vehicleGenerating = new DefaultVehicleGenerating();
-
-	private StatisticsCollector statisticsCollector;
-
 	public void runDev() {
 
 	}
 
 	@Override
-	public void run(SimulationScenario simulationScenario)
-			throws TransformException {
-		statisticsCollector = DefaultStatisticsCollector
-				.create(simulationScenario.getSimulator());
+	public void run(SimulationScenario simulationScenario,
+			StatisticsCollector statistics) throws TransformException {
+
+		IMoving moving = PluginManager.getMovingImpl(null);
+		ICarFollowing carFollowing = PluginManager.getCarFollowingImpl(null);
+		IVehicleGenerating vehicleGenerating = PluginManager
+				.getVehicleGenerating(null);
 
 		Simulator simulator = simulationScenario.getSimulator();
+		statistics.reset(simulator);
 		System.out.println("******** Simulation Demo ********");
 		System.out.println("---- Parameters ----");
 		System.out.println("Random Seed: " + simulator.getSeed());
@@ -71,7 +66,7 @@ public class DefaultSimulating implements ISimulating {
 						+ v.position());
 				if (v.active()) {
 					// iterator.remove();
-					statisticsCollector.visit(v);
+					statistics.visit(v);
 				}
 			}
 			for (Od od : simulationScenario.getOdMatrix().getOds()) {
@@ -80,22 +75,19 @@ public class DefaultSimulating implements ISimulating {
 				vehicles.addAll(newVehicles);
 			}
 			simulator.stepForward();
-			statisticsCollector.stepForward();
+			statistics.stepForward(simulator.getForwardedSteps());
 		}
 
-		System.out.println("---- Output ----");
-		for (Vehicle v : vehicles) {
-			System.out.print(v.getName() + ": ");
-
-			for (VehicleState vs : statisticsCollector.trajectory(v)) {
-				System.out.print("(" + vs.coord.x + "," + vs.coord.y + ") ");
-			}
-			System.out.println();
-		}
+		// System.out.println("---- Output ----");
+		// for (Vehicle v : vehicles) {
+		// System.out.print(v.getName() + ": ");
+		//
+		// for (VehicleState vs : statistics.trajectory(v.getId())) {
+		// System.out.print("(" + vs.coord.x + "," + vs.coord.y + ") ");
+		// }
+		// System.out.println();
+		// }
+		simulator.reset();
 	}
 
-	@Override
-	public StatisticsCollector statistics() {
-		return statisticsCollector;
-	}
 }

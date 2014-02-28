@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.opengis.referencing.operation.TransformException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import edu.trafficsim.engine.StatisticsCollector;
@@ -15,19 +16,26 @@ import edu.trafficsim.model.core.ModelInputException;
 import edu.trafficsim.model.util.Colors;
 
 @Service
-public class DemoSimulationService {
+public class DemoService {
 
+	@Autowired
+	SimulationService simulationService;
+
+	// DELETE this
 	public String runSimulation() throws TransformException {
+
+		simulationService.runSimulation();
 		try {
 			StatisticsCollector statisticsCollector = DemoSimulation
 					.getInstance().run();
 			StringBuffer vehicleSb = new StringBuffer();
 			StringBuffer frameSb = new StringBuffer();
 
-			for (Map.Entry<Vehicle, List<VehicleState>> entry : statisticsCollector
+			for (Map.Entry<Long, List<VehicleState>> entry : statisticsCollector
 					.trajectories().entrySet()) {
 
-				Vehicle vehicle = entry.getKey();
+				Vehicle vehicle = statisticsCollector
+						.getVehicle(entry.getKey());
 
 				String name = vehicle.getName();
 				int initFrameId = vehicle.getStartFrame();

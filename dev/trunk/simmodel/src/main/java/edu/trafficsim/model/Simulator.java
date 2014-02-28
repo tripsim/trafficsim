@@ -28,4 +28,8 @@ public interface Simulator extends DataContainer {
 
 	public void stepForward();
 
+	public void reset();
+	
+	public SimulatorType getSimulatorType();
+
 }

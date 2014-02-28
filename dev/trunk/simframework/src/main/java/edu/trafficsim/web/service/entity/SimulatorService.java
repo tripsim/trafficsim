@@ -8,11 +8,15 @@ import edu.trafficsim.web.SimulationProject;
 
 @Service
 public class SimulatorService extends EntityService {
-	
+
+	private static final int DEFAULT_DURATION = 100;
+	private static final double DEFAULT_STEPSIZE = 0.5;
+
 	@Autowired
 	SimulationProject project;
 
 	public Simulator createSimulator() {
-		return project.getScenarioFactory().createSimulator(project.nextSeq());
+		return project.getScenarioFactory().createSimulator(project.nextSeq(),
+				"", DEFAULT_DURATION, DEFAULT_STEPSIZE);
 	}
 }

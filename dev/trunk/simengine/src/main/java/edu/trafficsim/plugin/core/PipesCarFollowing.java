@@ -19,8 +19,7 @@ public class PipesCarFollowing extends AbstractCarFollowingImpl {
 		double safeSpacing = (speed / baseSpeed) * length + leadLength;
 
 		// make sure it is within stoppable distance
-		double accel = ((spacing - safeSpacing) / stepSize - speed)
-				/ stepSize;
+		double accel = ((spacing - safeSpacing) / stepSize - speed) / stepSize;
 		accel = accel > maxAccel ? maxAccel : accel < maxDecel ? maxDecel
 				: accel;
 
