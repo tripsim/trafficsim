@@ -33,7 +33,7 @@ public class ImportScenarioService {
 				project.addVehicleTypes(composition.getVehicleTypes());
 			}
 			for (DriverTypeComposition composition : project
-					.getDriverTypeCompositions()) {
+					.getDriverCompositions()) {
 				project.addDriverTypes(composition.getDriverTypes());
 			}
 		}

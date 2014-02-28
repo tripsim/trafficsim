@@ -46,10 +46,8 @@ public class DefaultOd extends BaseEntity<DefaultOd> implements Od {
 		this.origin = origin;
 		this.destination = destination;
 		setVphs(times, vphs);
-		dynamicVehicleTypeComposition.setProperty(Double.POSITIVE_INFINITY,
-				vehicleTypeComposition);
-		dynamicDriverTypeComposition.setProperty(Double.POSITIVE_INFINITY,
-				driverTypeComposition);
+		setVehicleComposiion(vehicleTypeComposition);
+		setDriverComposition(driverTypeComposition);
 	}
 
 	@Override
@@ -85,7 +83,7 @@ public class DefaultOd extends BaseEntity<DefaultOd> implements Od {
 	}
 
 	@Override
-	public VehicleTypeComposition getVehicleTypeComposition(double time) {
+	public VehicleTypeComposition getVehicleComposition(double time) {
 		return dynamicVehicleTypeComposition.getProperty(time);
 	}
 
@@ -95,7 +93,7 @@ public class DefaultOd extends BaseEntity<DefaultOd> implements Od {
 	}
 
 	@Override
-	public DriverTypeComposition getDriverTypeComposition(double time) {
+	public DriverTypeComposition getDriverComposition(double time) {
 		return dynamicDriverTypeComposition.getProperty(time);
 	}
 
@@ -114,4 +112,15 @@ public class DefaultOd extends BaseEntity<DefaultOd> implements Od {
 		return dynamicDriverTypeComposition.getValues();
 	}
 
+	@Override
+	public void setVehicleComposiion(VehicleTypeComposition vehicleComposition) {
+		dynamicVehicleTypeComposition.setProperty(Double.POSITIVE_INFINITY,
+				vehicleComposition);
+	}
+
+	@Override
+	public void setDriverComposition(DriverTypeComposition driverComposition) {
+		dynamicDriverTypeComposition.setProperty(Double.POSITIVE_INFINITY,
+				driverComposition);
+	}
 }

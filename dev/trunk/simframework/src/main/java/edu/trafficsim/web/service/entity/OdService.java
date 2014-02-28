@@ -18,10 +18,12 @@ public class OdService extends EntityService {
 	@Autowired
 	CompositionService compositionService;
 
-	public void updateOd(Long id, Long did, double[] times, Integer[] vphs)
-			throws ModelInputException {
+	public void updateOd(Long id, Long dId, String vcName, double[] times,
+			Integer[] vphs) throws ModelInputException {
 		project.getOdMatrix().getOd(id)
-				.setDestination(project.getNetwork().getNode(did));
+				.setDestination(project.getNetwork().getNode(dId));
+		project.getOdMatrix().getOd(id)
+				.setVehicleComposiion(project.getVehicleComposition(vcName));
 		project.getOdMatrix().getOd(id).setVphs(times, vphs);
 	}
 

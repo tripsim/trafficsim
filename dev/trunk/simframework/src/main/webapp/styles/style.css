@@ -97,7 +97,7 @@ html,body,#map {
 }
 
 #user-configuration-buttons span {
-	padding:
+	
 }
 
 .button {
@@ -122,7 +122,7 @@ html,body,#map {
 	min-width: 80px;
 }
 
-#user-configuration td span {
+#user-configuration td span.button {
 	margin: 0 2px;
 }
 

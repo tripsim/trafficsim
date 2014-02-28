@@ -355,8 +355,12 @@ jQuery(document)
 										}
 										postData.id = jQuery(this)
 												.closest('td').attr('data-id');
-										postData.destinatioid = tr.find(
+										postData.destinatioId = tr.find(
 												'td.od-td-destination select')
+												.val();
+										postData.vehicleCompositionName = tr
+												.find(
+														'td.od-td-vehiclecomposition select')
 												.val();
 										simwebhelper
 												.action(
