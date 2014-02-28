@@ -1,6 +1,8 @@
 <th:block data-th-fragment="info(od)">
 	<td><span>Destination</span> <br /> <span
 		data-th-text="${od.destination} == null ? 'None' : ${od.destination.id}"></span></td>
+	<td><span>Composition</span> <br /> <span
+		data-th-text="${od.getVehicleComposition(0).name}"></span></td>
 	<td><span>End Time </span> <br /> <span>VPH</span></td>
 	<td data-th-each="time : ${od.jumpTimes}"><span
 		data-th-text="${time}"></span> <br /> <span
@@ -12,7 +14,10 @@
 
 <th:block data-th-fragment="form(od, destinations)">
 	<td class="od-td-destination"><span>Destination</span> <br /> <span
-		data-th-include="components/od-fragments :: select(${destinations})"></span></td>
+		data-th-include="components/od-fragments :: selectDestination(${destinations})"></span></td>
+	<td class="od-td-vehiclecomposition"><span>Composition</span> <br />
+		<span
+		data-th-include="components/od-fragments :: selectComposition(${od.getVehicleComposition(0).name}, ${vehiclecompositions})"></span></td>
 	<td><span>End Time </span> <br /> <span>VPH</span></td>
 	<td class="od-td" data-th-each="time : ${od.jumpTimes}"><input
 		type="text" name="time" data-th-value="${time}" /> <br /> <input
@@ -25,12 +30,22 @@
 </th:block>
 
 
-<th:block data-th-fragment="select(destinations)">
+<th:block data-th-fragment="selectDestination(destinations)">
 	<select>
 		<option selected="true" value="-1">None</option>
 		<th:block data-th-each="destination : ${destinations}">
 			<option data-th-attr="value=${destination.id}"
 				data-th-text="${destination.id}"></option>
+		</th:block>
+	</select>
+</th:block>
+
+<th:block data-th-fragment="selectComposition(current, compositions)">
+	<select>
+		<th:block data-th-each="composition : ${compositions}">
+			<option
+				data-th-attr="selected=${current.equals(composition)} ? 'true' :'false', value=${composition.name}"
+				data-th-text="${composition.name}"></option>
 		</th:block>
 	</select>
 </th:block>

@@ -41,6 +41,12 @@ public class OdController extends AbstractController {
 		Od od = project.getOdMatrix().getOd(id);
 
 		// TODO make it reachable sinks
+		try {
+			model.addAttribute("vehiclecompositions",
+					project.getVehicleCompositions());
+		} catch (ModelInputException | UserInterfaceException e) {
+			return "components/empty";
+		}
 		model.addAttribute("destinations", project.getNetwork().getSinks());
 		model.addAttribute("od", od);
 		model.addAttribute("isNew", isNew);
@@ -50,11 +56,12 @@ public class OdController extends AbstractController {
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
 	public @ResponseBody
 	Map<String, Object> saveOd(@RequestParam("id") long id,
-			@RequestParam("destinatioid") long did,
+			@RequestParam("destinatioId") long dId,
+			@RequestParam("vehicleCompositionName") String vcName,
 			@RequestParam("times[]") double[] times,
 			@RequestParam("vphs[]") Integer[] vphs) {
 		try {
-			odService.updateOd(id, did, times, vphs);
+			odService.updateOd(id, dId, vcName, times, vphs);
 		} catch (ModelInputException e) {
 			return failureResponse(e.getMessage());
 		}

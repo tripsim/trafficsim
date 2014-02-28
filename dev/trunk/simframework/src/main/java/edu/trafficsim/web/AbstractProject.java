@@ -207,7 +207,7 @@ public abstract class AbstractProject {
 		vehicleCompositions.remove(name);
 	}
 
-	public Collection<DriverTypeComposition> getDriverTypeCompositions()
+	public Collection<DriverTypeComposition> getDriverCompositions()
 			throws ModelInputException, UserInterfaceException {
 		if (driverCompositions.isEmpty())
 			addDriverComposition(getDefaultDriverComposition());

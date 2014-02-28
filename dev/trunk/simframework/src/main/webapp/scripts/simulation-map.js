@@ -231,6 +231,13 @@ simulation.initMap = function() {
 		fillColor : '${color}',
 		fillOpacity : 0.8
 	};
+	var lanesSelectTemplate = {
+		strokeWidth : 8,
+		strokeColor : 'blue',
+		strokeOpacity : 0.8,
+		fillColor : 'blue',
+		fillOpacity : 0.75
+	};
 	var lanesContext = {
 		color : function(feature) {
 			return feature.attributes['cid'] ? 'blue' : 'black';
@@ -240,6 +247,9 @@ simulation.initMap = function() {
 		projection : that.proj900913,
 		styleMap : new OpenLayers.StyleMap({
 			'default' : new OpenLayers.Style(lanesTemplate, {
+				context : lanesContext
+			}),
+			'select' : new OpenLayers.Style(lanesSelectTemplate, {
 				context : lanesContext
 			})
 		}),
@@ -443,6 +453,16 @@ simulation.initMap = function() {
 				},
 				"featureunselected" : function(e) {
 					simwebhelper.hidePanel();
+				},
+				"featureover" : function(e) {
+					e.feature.renderIntent = 'select';
+					e.feature.layer.drawFeature(e.feature);
+				},
+				"featureout" : function(e) {
+					if (lanesLayer.selectedFeatures.indexOf(e.feature) > -1)
+						return;
+					e.feature.renderIntent = 'default';
+					e.feature.layer.drawFeature(e.feature);
 				}
 			});
 	/***************************************************************************

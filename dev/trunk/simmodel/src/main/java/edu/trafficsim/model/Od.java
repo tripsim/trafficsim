@@ -6,25 +6,29 @@ import edu.trafficsim.model.core.ModelInputException;
 
 public interface Od extends DataContainer {
 
-	public Long getId();
+	Long getId();
 
-	public Node getOrigin();
+	Node getOrigin();
 
-	public Node getDestination();
+	Node getDestination();
 
-	public Node setDestination(Node destination);
+	Node setDestination(Node destination);
 
-	public int vph(double time);
+	Collection<Double> getJumpTimes();
 
-	public Collection<Double> getJumpTimes();
-
-	public VehicleTypeComposition getVehicleTypeComposition(double time);
-
-	public DriverTypeComposition getDriverTypeComposition(double time);
+	int vph(double time);
 
 	void setVphs(double[] times, Integer[] vphs) throws ModelInputException;
 
-	public Collection<VehicleTypeComposition> getVehicleCompositions();
+	VehicleTypeComposition getVehicleComposition(double time);
 
-	public Collection<DriverTypeComposition> getDriverCompositions();
+	DriverTypeComposition getDriverComposition(double time);
+
+	Collection<VehicleTypeComposition> getVehicleCompositions();
+
+	Collection<DriverTypeComposition> getDriverCompositions();
+
+	void setVehicleComposiion(VehicleTypeComposition vehicleComposition);
+
+	void setDriverComposition(DriverTypeComposition driverComposition);
 }
