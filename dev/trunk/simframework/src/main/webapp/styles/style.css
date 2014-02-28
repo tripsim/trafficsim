@@ -109,13 +109,30 @@ html,body,#map {
 /***********************************************************
  * Configuration Window Table
  **********************************************************/
+#user-configuration th {
+	text-align: left;
+	min-width: 80px;
+}
+
+#user-configuration tr {
+	
+}
+
 #user-configuration td {
-	padding: 8px;
 	min-width: 80px;
 }
 
 #user-configuration td span {
 	margin: 0 2px;
+}
+
+#user-configuration td select {
+	width: 80px;
+}
+
+#user-configuration td input {
+	margin: 0 2px;
+	width: 80px;
 }
 
 /***********************************************************

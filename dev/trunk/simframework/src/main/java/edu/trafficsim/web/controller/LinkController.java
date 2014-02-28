@@ -33,6 +33,7 @@ public class LinkController extends AbstractController {
 		return "components/link";
 	}
 
+	// TODO currently not calling from anybody
 	@RequestMapping(value = "/edit/{id}", method = RequestMethod.GET)
 	public String linkEdit(@PathVariable long id, Model model) {
 		Network network = project.getNetwork();

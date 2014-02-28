@@ -25,7 +25,8 @@
 			</tr>
 			<tr>
 				<td>Length</td>
-				<td colspan="2" data-th-text="${link.length}"></td>
+				<td colspan="2"
+					data-th-text="${#numbers.formatDecimal(link.length, 1, 4)}"></td>
 			</tr>
 			<tr>
 				<td>Highway</td>
@@ -38,23 +39,25 @@
 		</tbody>
 	</table>
 	<table>
-		<tbody data-th-each="lane : ${link.lanes}">
+		<thead>
 			<tr>
-				<td>Lane</td>
-				<td colspan="9" data-th-text="${lane.laneId}"></td>
+				<th>Lanes</th>
 			</tr>
 			<tr>
-				<td>width</td>
-				<td data-th-text="${lane.width}"></td>
-				<td>start</td>
-				<td data-th-text="${lane.start}"></td>
-				<td>end</td>
-				<td data-th-text="${lane.end}"></td>
-				<td>shift</td>
-				<td data-th-text="${lane.shift}"></td>
-				<td>length</td>
-				<td data-th-text="${#numbers.formatDecimal(lane.length, 1, 4)}"></td>
+				<th>Lane Id</th>
+				<th>width</th>
+				<th>start</th>
+				<th>end</th>
+				<th>shift</th>
 			</tr>
-		</tbody>
+		</thead>
+		<th:block data-th-each="lane : ${link.lanes}">
+			<tr data-th-include="components/lane-fragments :: info(${lane})">
+			</tr>
+		</th:block>
+		<tr>
+			<td colspan="8" data-th-attr="data-id=${link.id}"><span
+				class="user-configuration-link-add-lane button">add lane</span></td>
+		</tr>
 	</table>
 </div>

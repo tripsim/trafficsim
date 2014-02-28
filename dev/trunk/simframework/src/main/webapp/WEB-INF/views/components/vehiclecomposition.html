@@ -8,7 +8,7 @@
 		<tbody id="user-configuration-vehicle-compositions-tbody">
 			<th:block data-th-each="vehicleComposition : ${vehicleCompositions}">
 				<tr
-					data-th-include="components/vehiclecomposition-fragments :: view(${vehicleComposition})">
+					data-th-include="components/vehiclecomposition-fragments :: info(${vehicleComposition})">
 				</tr>
 			</th:block>
 		</tbody>

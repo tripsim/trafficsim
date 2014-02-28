@@ -1,31 +1,26 @@
-<th:block data-th-fragment="view(vehicleComposition)">
+<th:block data-th-fragment="info(vehicleComposition)">
 	<td><span>Name</span> <br /> <span
 		data-th-text="${vehicleComposition.name}"></span></td>
 	<td data-th-each="vehicleType : ${vehicleComposition.vehicleTypes}"><span
 		data-th-text="${vehicleType.name}"></span> <br /> <span
 		data-th-text="${#numbers.formatDecimal(vehicleComposition.probability(vehicleType),1,4)}"></span></td>
-	<td colspan="0"><span
-		data-th-attr="data-name=${vehicleComposition.name}"
+	<td colspan="0" data-th-attr="data-name=${vehicleComposition.name}"><span
 		class="user-configuration-vehicle-comp-edit button">edit</span><span
-		data-th-attr="data-name=${vehicleComposition.name}"
 		class="user-configuration-vehicle-comp-remove button">remove</span></td>
 </th:block>
 
-<th:block data-th-fragment="edit(vehicleComposition, vehicleTypes)">
+<th:block data-th-fragment="form(vehicleComposition, vehicleTypes)">
 	<td class="vehiclecomposition-td-name"><span>Name</span> <br /> <input
-		type="text" size="10" name="name"
-		data-th-value="${vehicleComposition.name}" /></td>
+		type="text" name="name" data-th-value="${vehicleComposition.name}" /></td>
 	<td class="vehiclecomposition-td"
 		data-th-each="vehicleType : ${vehicleComposition.vehicleTypes}"><span
 		data-th-include="components/vehiclecomposition-fragments :: select(${vehicleTypes}, ${vehicleType})"></span>
-		<br /> <input type="text" size="10"
+		<br /> <input type="text"
 		data-th-value="${vehicleComposition.probability(vehicleType)}" /></td>
-	<td colspan="0"><span
-		data-th-attr="data-name=${vehicleComposition.name}"
+	<td colspan="0"
+		data-th-attr="data-name=${vehicleComposition.name}, data-is-new=${isNew}"><span
 		class="user-configuration-vehicle-comp-add button">add</span><span
-		data-th-attr="data-name=${vehicleComposition.name}"
 		class="user-configuration-vehicle-comp-save button">save</span><span
-		data-th-attr="data-name=${vehicleComposition.name}, data-is-new=${isNew}"
 		class="user-configuration-vehicle-comp-cancel button">cancel</span></td>
 </th:block>
 

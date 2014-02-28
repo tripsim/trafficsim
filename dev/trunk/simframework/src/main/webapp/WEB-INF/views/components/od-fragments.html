@@ -1,31 +1,26 @@
-<th:block data-th-fragment="view(od)">
+<th:block data-th-fragment="info(od)">
 	<td><span>Destination</span> <br /> <span
 		data-th-text="${od.destination} == null ? 'None' : ${od.destination.id}"></span></td>
 	<td><span>End Time </span> <br /> <span>VPH</span></td>
 	<td data-th-each="time : ${od.jumpTimes}"><span
 		data-th-text="${time}"></span> <br /> <span
 		data-th-text="${od.vph(time)}"></span></td>
-	<td colspan="0"><span data-th-attr="data-id=${od.id}"
+	<td colspan="0" data-th-attr="data-id=${od.id}"><span
 		class="user-configuration-od-edit button">edit</span><span
-		data-th-attr="data-id=${od.id}"
 		class="user-configuration-od-remove button">remove</span></td>
 </th:block>
 
-<th:block data-th-fragment="edit(od, destinations)">
+<th:block data-th-fragment="form(od, destinations)">
 	<td class="od-td-destination"><span>Destination</span> <br /> <span
 		data-th-include="components/od-fragments :: select(${destinations})"></span></td>
 	<td><span>End Time </span> <br /> <span>VPH</span></td>
 	<td class="od-td" data-th-each="time : ${od.jumpTimes}"><input
-		type="text" name="time" size="10" data-th-value="${time}" /> <br />
-		<input type="text" name="vph" size="10"
-		data-th-value="${od.vph(time)}" /></td>
-	<td colspan="0"><span data-th-attr="data-id=${od.id}"
+		type="text" name="time" data-th-value="${time}" /> <br /> <input
+		type="text" name="vph" data-th-value="${od.vph(time)}" /></td>
+	<td data-th-attr="data-id=${od.id}, data-is-new=${isNew}" colspan="0"><span
 		class="user-configuration-od-add-int button">add</span><span
-		data-th-attr="data-id=${od.id}"
 		class="user-configuration-od-remove-int button">remove</span><span
-		data-th-attr="data-id=${od.id}"
 		class="user-configuration-od-save button">save</span><span
-		data-th-attr="data-id=${od.id}, data-is-new=${isNew}"
 		class="user-configuration-od-cancel button">cancel</span></td>
 </th:block>
 

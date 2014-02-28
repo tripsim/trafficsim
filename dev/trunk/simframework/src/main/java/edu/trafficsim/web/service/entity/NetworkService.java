@@ -19,7 +19,7 @@ public class NetworkService extends EntityService {
 
 	@Autowired
 	SimulationProject project;
-	
+
 	private static final double DEFAULT_LANE_START = 0.0d;
 	private static final double DEFAULT_LANE_END = 1.0d;
 	private static final double DEFAULT_LANE_WIDTH = 4.0d;
@@ -44,6 +44,13 @@ public class NetworkService extends EntityService {
 			connector.getNode().remove(connector);
 		}
 		link.remove(laneId);
+	}
+
+	public void saveLane(Lane lane, double start, double end, double width)
+			throws TransformException, ModelInputException {
+		lane.setStart(start);
+		lane.setEnd(end);
+		lane.setWidth(width, true);
 	}
 
 	public ConnectionLane connectLanes(Lane laneFrom, Lane laneTo,

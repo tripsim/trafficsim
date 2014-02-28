@@ -16,6 +16,6 @@ public class VehicleImpl extends AbstractPlugin implements IVehicle {
 	@Override
 	public double getMaxDecel(double speed) {
 
-		return speed > 2.8 ? -2.8 : -speed;
+		return speed > 7 ? -7 : -speed;
 	}
 }

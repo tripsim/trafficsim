@@ -29,6 +29,7 @@ jQuery(document)
 										&& data['connectors'] != null)
 									that.reDrawAllLanes(data['lanes'],
 											data['connectors']);
+								that.editLinks();
 								var center = new OpenLayers.LonLat(
 										data.center[0], data.center[1]);
 								map.setCenter(center, map.numZoomLevels);
@@ -123,7 +124,7 @@ jQuery(document)
 					jQuery('#user-configuration').on('click',
 							'.user-configuration-link-edit', function() {
 								var id = jQuery(this).attr('data-id');
-								simwebhelper.getPanel('link/edit/' + id);
+								// TODO work on link edit
 							});
 					/***********************************************************
 					 * Panel, User Configuration, Link Edit
@@ -133,7 +134,8 @@ jQuery(document)
 							'click',
 							'.user-configuration-link-add-lane',
 							function() {
-								var id = jQuery(this).attr('data-id');
+								var id = jQuery(this).closest('td').attr(
+										'data-id');
 								simwebhelper.action('lane/addtolink', {
 									id : id
 								}, function(data) {
@@ -146,8 +148,8 @@ jQuery(document)
 							'click',
 							'.user-configuration-link-remove-lane',
 							function() {
-								var ids = jQuery(this).attr('data-id').split(
-										'-');
+								var ids = jQuery(this).closest('td').attr(
+										'data-id').split('-');
 								simwebhelper.action('lane/removefromlink', {
 									laneId : ids[1],
 									linkId : ids[0]
@@ -155,6 +157,63 @@ jQuery(document)
 									that.reDrawLanes(data.lanes,
 											data.connectors);
 								});
+							});
+					/* edit lane */
+					jQuery('#user-configuration').on(
+							'click',
+							'.user-configuration-link-edit-lane',
+							function() {
+								jQuery(this).closest('table').find(
+										'.user-configuration-link-cancel-lane')
+										.click();
+								var ids = jQuery(this).closest('td').attr(
+										'data-id').split('-');
+								var tr = jQuery(this).closest('tr');
+								simwebhelper.getHtml('lane/form/' + ids[0]
+										+ ";laneId=" + ids[1], function(data) {
+									tr.replaceWith(data);
+								});
+							});
+					/* cancel edit lane */
+					jQuery('#user-configuration').on(
+							'click',
+							'.user-configuration-link-cancel-lane',
+							function() {
+								var ids = jQuery(this).closest('td').attr(
+										'data-id').split('-');
+								var tr = jQuery(this).closest('tr');
+								simwebhelper.getHtml('lane/info/' + ids[0]
+										+ ";laneId=" + ids[1], function(data) {
+									tr.replaceWith(data);
+								});
+							});
+					/* save edit lane */
+					jQuery('#user-configuration').on(
+							'click',
+							'.user-configuration-link-save-lane',
+							function() {
+								var ids = jQuery(this).closest('td').attr(
+										'data-id').split('-');
+								var tr = jQuery(this).closest('tr');
+								postData = {
+									linkId : ids[0],
+									laneId : ids[1],
+									start : tr.find('input[name="start"]')
+											.val(),
+									end : tr.find('input[name="end"]').val(),
+									width : tr.find('input[name="width"]')
+											.val()
+								};
+								simwebhelper.action('lane/save', postData,
+										function(data) {
+											simwebhelper.getHtml('lane/info/'
+													+ ids[0] + ";laneId="
+													+ ids[1], function(data) {
+												tr.replaceWith(data);
+											});
+											that.reDrawLanes(data.lanes,
+													data.connectors);
+										});
 							});
 					/***********************************************************
 					 * Panel, User Configuration, Connector Edit
@@ -184,42 +243,44 @@ jQuery(document)
 							'click',
 							'.user-configuration-od-edit',
 							function() {
-								var tr = jQuery(this).parent().parent();
+								var tr = jQuery(this).closest('tr');
 								simwebhelper.getHtml('od/form/'
-										+ jQuery(this).attr('data-id'),
-										function(html) {
-											tr.replaceWith(html);
-										});
+										+ jQuery(this).closest('td').attr(
+												'data-id'), function(html) {
+									tr.replaceWith(html);
+								});
 							});
 					/* cancel edit od */
-					jQuery('#user-configuration')
-							.on(
-									'click',
-									'.user-configuration-od-cancel',
-									function() {
-										var tr = jQuery(this).parent().parent();
-										if (jQuery(this).attr('data-is-new') === 'true') {
-											simwebhelper.action('od/remove', {
-												id : jQuery(this).attr(
-														'data-id')
-											}, function() {
-												tr.remove();
-											});
-										} else {
-											simwebhelper.getHtml('od/view/'
-													+ jQuery(this).attr(
-															'data-id'),
-													function(html) {
-														tr.replaceWith(html);
-													});
-										}
+					jQuery('#user-configuration').on(
+							'click',
+							'.user-configuration-od-cancel',
+							function() {
+								var tr = jQuery(this).closest('tr');
+								if (jQuery(this).closest('td').attr(
+										'data-is-new') === 'true') {
+									simwebhelper.action('od/remove', {
+										id : jQuery(this).closest('td').attr(
+												'data-id')
+									}, function() {
+										tr.remove();
 									});
+								} else {
+									simwebhelper.getHtml('od/info/'
+											+ jQuery(this).closest('td').attr(
+													'data-id'), function(html) {
+										tr.replaceWith(html);
+									});
+								}
+							});
 					/* remove od */
-					jQuery('#user-configuration').on('click',
-							'.user-configuration-od-remove', function() {
-								var tr = jQuery(this).parent().parent();
+					jQuery('#user-configuration').on(
+							'click',
+							'.user-configuration-od-remove',
+							function() {
+								var tr = jQuery(this).closest('tr');
 								simwebhelper.action('od/remove', {
-									id : jQuery(this).attr('data-id')
+									id : jQuery(this).closest('td').attr(
+											'data-id')
 								}, function() {
 									tr.remove();
 								});
@@ -229,14 +290,15 @@ jQuery(document)
 							'click',
 							'.user-configuration-od-add-int',
 							function() {
-								jQuery(this).parent().before(
-										jQuery(this).parent().prev().clone());
+								jQuery(this).closest('td').before(
+										jQuery(this).closest('td').prev()
+												.clone());
 							});
 					/* remove interval in od */
 					jQuery('#user-configuration').on('click',
 							'.user-configuration-od-remove-int', function() {
-								if (jQuery(this).parent().index() > 3)
-									jQuery(this).parent().prev().remove();
+								if (jQuery(this).closest('td').index() > 3)
+									jQuery(this).closest('td').prev().remove();
 							});
 					/* save od */
 					jQuery('#user-configuration')
@@ -250,9 +312,8 @@ jQuery(document)
 											vphs : []
 										};
 										var error = '';
-										jQuery(this)
-												.parent()
-												.parent()
+										var tr = jQuery(this).closest('tr');
+										tr
 												.find('td.od-td')
 												.each(
 														function(i, element) {
@@ -281,15 +342,11 @@ jQuery(document)
 											simwebhelper.error(error);
 											return;
 										}
-										postData.id = jQuery(this).attr(
-												'data-id');
-										postData.destinatioid = jQuery(this)
-												.parent()
-												.parent()
-												.find(
-														'td.od-td-destination select')
+										postData.id = jQuery(this)
+												.closest('td').attr('data-id');
+										postData.destinatioid = tr.find(
+												'td.od-td-destination select')
 												.val();
-										var tr = jQuery(this).parent().parent();
 										simwebhelper
 												.action(
 														'od/save',
@@ -297,7 +354,7 @@ jQuery(document)
 														function() {
 															simwebhelper
 																	.getHtml(
-																			'od/view/'
+																			'od/info/'
 																					+ postData.id,
 																			function(
 																					html) {
@@ -313,7 +370,8 @@ jQuery(document)
 							'.user-configuration-od-new',
 							function() {
 								simwebhelper.action('od/new', {
-									originId : jQuery(this).attr('data-id'),
+									originId : jQuery(this).closest('td').attr(
+											'data-id'),
 									destinationId : 0
 								}, function(data) {
 									simwebhelper.getHtml('od/form/' + data
@@ -332,56 +390,49 @@ jQuery(document)
 							'click',
 							'.user-configuration-vehicle-comp-edit',
 							function() {
-								var tr = jQuery(this).parent().parent();
+								var tr = jQuery(this).closest('tr');
 								simwebhelper.getHtml('vehiclecomposition/form/'
-										+ jQuery(this).attr('data-name'),
-										function(html) {
-											tr.replaceWith(html);
-										});
+										+ jQuery(this).closest('td').attr(
+												'data-name'), function(html) {
+									tr.replaceWith(html);
+								});
 							});
 					/* cancel edit vehicle composition */
-					jQuery('#user-configuration')
-							.on(
-									'click',
-									'.user-configuration-vehicle-comp-cancel',
-									function() {
-										var tr = jQuery(this).parent().parent();
-										if (jQuery(this).attr('data-is-new') === 'true') {
-											simwebhelper
-													.action(
-															'vehiclecomposition/remove',
-															{
-																name : jQuery(
-																		this)
-																		.attr(
-																				'data-name')
-															}, function() {
-																tr.remove();
-															});
-										} else {
-											simwebhelper
-													.getHtml(
-															'vehiclecomposition/view/'
-																	+ jQuery(
-																			this)
-																			.attr(
-																					'data-name'),
-															function(html) {
-																tr
-																		.replaceWith(html);
-															});
-										}
-									});
+					jQuery('#user-configuration').on(
+							'click',
+							'.user-configuration-vehicle-comp-cancel',
+							function() {
+								var tr = jQuery(this).closest('tr');
+								if (jQuery(this).closest('td').attr(
+										'data-is-new') === 'true') {
+									simwebhelper.action(
+											'vehiclecomposition/remove', {
+												name : jQuery(this).closest(
+														'td').attr('data-name')
+											}, function() {
+												tr.remove();
+											});
+								} else {
+									simwebhelper.getHtml(
+											'vehiclecomposition/info/'
+													+ jQuery(this)
+															.closest('td')
+															.attr('data-name'),
+											function(html) {
+												tr.replaceWith(html);
+											});
+								}
+							});
 					/* remove vehicle composition */
 					jQuery('#user-configuration').on(
 							'click',
 							'.user-configuration-vehicle-comp-remove',
 							function() {
-								var tr = jQuery(this).parent().parent();
+								var tr = jQuery(this).closest('tr');
 								simwebhelper.action(
 										'vehiclecomposition/remove', {
-											name : jQuery(this).attr(
-													'data-name')
+											name : jQuery(this).closest('td')
+													.attr('data-name')
 										}, function() {
 											tr.remove();
 										});
@@ -391,8 +442,9 @@ jQuery(document)
 							'click',
 							'.user-configuration-vehicle-comp-add',
 							function() {
-								jQuery(this).parent().before(
-										jQuery(this).parent().prev().clone());
+								jQuery(this).closest('td').before(
+										jQuery(this).closest('td').prev()
+												.clone());
 							});
 					/* save vehicle composition */
 					jQuery('#user-configuration')
@@ -405,9 +457,8 @@ jQuery(document)
 											values : []
 										};
 										var error = '';
-										jQuery(this)
-												.parent()
-												.parent()
+										var tr = jQuery(this).closest('tr');
+										tr
 												.find(
 														'td.vehiclecomposition-td')
 												.each(
@@ -436,15 +487,13 @@ jQuery(document)
 										if (error) {
 											simwebhelper.error(error);
 										}
-										postData.oldName = jQuery(this).attr(
-												'data-name');
-										postData.newName = jQuery(this)
-												.parent()
-												.parent()
+										postData.oldName = jQuery(this)
+												.closest('td')
+												.attr('data-name');
+										postData.newName = tr
 												.find(
 														'td.vehiclecomposition-td-name input:text')
 												.val();
-										var tr = jQuery(this).parent().parent();
 										simwebhelper
 												.action(
 														'vehiclecomposition/save',

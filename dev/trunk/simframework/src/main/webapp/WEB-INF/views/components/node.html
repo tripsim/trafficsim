@@ -32,7 +32,7 @@
 				<td colspan="0">Vehicle Inputs</td>
 			</tr>
 			<th:block data-th-each="od : ${ods}">
-				<tr data-th-include="components/od-fragments :: view(${od})">
+				<tr data-th-include="components/od-fragments :: info(${od})">
 				</tr>
 			</th:block>
 		</tbody>
