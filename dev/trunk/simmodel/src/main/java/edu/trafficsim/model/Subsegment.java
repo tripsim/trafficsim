@@ -34,8 +34,8 @@ public interface Subsegment extends GeoReferenced {
 
 	void setEnd(double end) throws ModelInputException, TransformException;
 
-	void setShift(double shift) throws TransformException;
+	void setShift(double shift, boolean update) throws TransformException;
 
-	void setWidth(double width) throws TransformException;
+	void setWidth(double width, boolean update) throws TransformException;
 
 }

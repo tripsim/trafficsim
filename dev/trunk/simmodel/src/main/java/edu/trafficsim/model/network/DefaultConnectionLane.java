@@ -21,7 +21,7 @@ public class DefaultConnectionLane extends AbstractLane<DefaultConnectionLane>
 
 	public DefaultConnectionLane(long id, Lane fromLane, Lane toLane,
 			double width) throws ModelInputException, TransformException {
-		super(id, toLane.getSegment(), 1.0, 1.0, width, 0.0);
+		super(id, toLane.getSegment(), 0.0, 0.0, width, 0.0);
 		this.fromLane = fromLane;
 		this.toLane = toLane;
 		getNode().add(this);
@@ -34,7 +34,7 @@ public class DefaultConnectionLane extends AbstractLane<DefaultConnectionLane>
 	}
 
 	@Override
-	public int getLaneId() {
+	public final int getLaneId() {
 		return -1;
 	}
 
@@ -73,6 +73,14 @@ public class DefaultConnectionLane extends AbstractLane<DefaultConnectionLane>
 	@Override
 	public Collection<ConnectionLane> getFromConnectors() {
 		return Collections.emptyList();
+	}
+
+	@Override
+	protected final void onShiftUpdate(double offset) {
+	}
+
+	@Override
+	protected final void onWidthUpdate(double offset) {
 	}
 
 }

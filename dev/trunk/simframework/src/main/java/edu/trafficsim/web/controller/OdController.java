@@ -25,7 +25,7 @@ public class OdController extends AbstractController {
 	@Autowired
 	OdService odService;
 
-	@RequestMapping(value = "/view/{id}", method = RequestMethod.GET)
+	@RequestMapping(value = "/info/{id}", method = RequestMethod.GET)
 	public String odView(@PathVariable long id, Model model) {
 		Od od = project.getOdMatrix().getOd(id);
 

@@ -5,6 +5,7 @@ import java.util.Collection;
 import org.opengis.referencing.operation.TransformException;
 
 import edu.trafficsim.model.ConnectionLane;
+import edu.trafficsim.model.Lane;
 import edu.trafficsim.model.Link;
 import edu.trafficsim.model.core.ModelInputException;
 
@@ -71,5 +72,25 @@ public class DefaultLane extends AbstractLane<DefaultLane> {
 	@Override
 	public Collection<ConnectionLane> getFromConnectors() {
 		return getLink().getStartNode().getOutConnectors(this);
+	}
+
+	@Override
+	protected void onShiftUpdate(double offset) throws TransformException {
+
+	}
+
+	@Override
+	protected void onWidthUpdate(double offset) throws TransformException {
+		this.setShift(shift + offset / 2, false);
+		Lane[] lanes = getLink().getLanes();
+		if (getLink().getReverseLink() == null) {
+			for (int i = laneId + 1; i < lanes.length; i++) {
+				lanes[i].setShift(lanes[i].getShift() + offset, false);
+			}
+		} else {
+			for (int i = laneId + 1; i < lanes.length; i++) {
+				lanes[i].setShift(lanes[i].getShift() + offset / 2, false);
+			}
+		}
 	}
 }

@@ -31,6 +31,8 @@ public class DefaultNetworkFactory extends AbstractFactory implements
 	private GeometryFactory geometryFactory;
 
 	private final static double DEFAULT_WIDTH = 4.0d;
+	private final static double DEFAULT_START = 10.0d;
+	private final static double DEFAULT_END = -10.0d;
 
 	private DefaultNetworkFactory() {
 		geometryFactory = JTSFactoryFinder.getGeometryFactory();
@@ -114,7 +116,7 @@ public class DefaultNetworkFactory extends AbstractFactory implements
 	public Lane[] createLanes(Long[] ids, Link link)
 			throws ModelInputException, TransformException {
 		for (Long id : ids) {
-			createLane(id, link, 0, 1, DEFAULT_WIDTH);
+			createLane(id, link, DEFAULT_START, DEFAULT_END, DEFAULT_WIDTH);
 		}
 		return link.getLanes();
 	}

@@ -94,12 +94,6 @@ public class Coordinates {
 	 * @throws TransformException
 	 ********************************************************************************/
 	public static LineString trimLinearGeom(CoordinateReferenceSystem crs,
-			LineString linearGeom) throws TransformException {
-		// TODO set default value somewhere else
-		return trimLinearGeom(crs, linearGeom, 10, 10);
-	}
-
-	public static LineString trimLinearGeom(CoordinateReferenceSystem crs,
 			LineString linearGeom, double head, double tail)
 			throws TransformException {
 		// cut the part of linearGeom within the node' radius
@@ -112,29 +106,31 @@ public class Coordinates {
 		GeoReferencing geo = getGeoReferencing(crs);
 		Coordinate[] coords = Arrays.copyOf(linearGeom.getCoordinates(),
 				linearGeom.getCoordinates().length);
-		int iStart = 0, iEnd = coords.length;
 
+		int iStart = 0, iEnd = coords.length;
+		double distance = geo.orthodromicDistance(coords[iStart],
+				coords[iStart + 1]);
+		while (distance < head && iEnd - iStart > 3) {
+			head = head - distance;
+			iStart += 1;
+			distance = geo.orthodromicDistance(coords[iStart],
+					coords[iStart + 1]);
+		}
 		Coordinate newStart = getTrimedStartCooridnate(geo, coords[iStart],
 				coords[iStart + 1], head);
-		while (newStart == null && iEnd - iStart > 3) {
-			iStart += 1;
-			newStart = getTrimedStartCooridnate(geo, coords[iStart],
-					coords[iStart + 1], head);
+
+		distance = geo.orthodromicDistance(coords[iEnd - 1], coords[iEnd - 2]);
+		while (distance < tail && iEnd - iStart > 3) {
+			tail = tail - distance;
+			iEnd -= 1;
+			distance = geo.orthodromicDistance(coords[iEnd - 1],
+					coords[iEnd - 2]);
 		}
 		Coordinate newEnd = getTrimedStartCooridnate(geo, coords[iEnd - 1],
 				coords[iEnd - 2], tail);
-		while (newEnd == null && iEnd - iStart > 3) {
-			iEnd -= 1;
-			newEnd = getTrimedStartCooridnate(geo, coords[iEnd - 1],
-					coords[iEnd - 2], tail);
-		}
 
-		if (newStart != null) {
-			coords[iStart] = newStart;
-		}
-		if (newEnd != null) {
-			coords[iEnd - 1] = newEnd;
-		}
+		coords[iStart] = newStart;
+		coords[iEnd - 1] = newEnd;
 		coords = Arrays.copyOfRange(coords, iStart, iEnd);
 
 		return getLineString(coords);
@@ -152,13 +148,9 @@ public class Coordinates {
 	protected static Coordinate getTrimedStartCooridnate(GeoReferencing geo,
 			Coordinate startCoord, Coordinate endCoord, double trimSize)
 			throws TransformException {
-		double distance = geo.orthodromicDistance(startCoord, endCoord);
-		if (distance > trimSize) {
-			double azimuth = geo.azimuth(startCoord, endCoord);
-			return geo.getOffsetCoordinate(startCoord, azimuth, trimSize);
-		} else {
-			return null;
-		}
+		double azimuth = geo.azimuth(startCoord, endCoord);
+		return geo.getOffsetCoordinate(startCoord, azimuth, trimSize);
+
 	}
 
 	/********************************************************************************

@@ -1,0 +1,21 @@
+<th:block data-th-fragment="info(lane)">
+	<td data-th-text="${lane.laneId}"></td>
+	<td data-th-text="${lane.width}"></td>
+	<td data-th-text="${lane.start}"></td>
+	<td data-th-text="${lane.end}"></td>
+	<td data-th-text="${lane.shift}"></td>
+	<td data-th-attr="data-id=${lane.link.id} + '-' + ${lane.laneId}"><span
+		class="user-configuration-link-edit-lane button">edit</span><span
+		class="user-configuration-link-remove-lane button">remove</span></td>
+</th:block>
+
+<th:block data-th-fragment="form(lane)">
+	<td data-th-text="${lane.laneId}"></td>
+	<td><input type="text" name="width" data-th-value="${lane.width}" /></td>
+	<td><input type="text" name="start" data-th-value="${lane.start}" /></td>
+	<td><input type="text" name="end" data-th-value="${lane.end}" /></td>
+	<td><input type="text" name="shift" data-th-value="${lane.shift}" /></td>
+	<td data-th-attr="data-id=${lane.link.id} + '-' + ${lane.laneId}"><span
+		class="user-configuration-link-save-lane button">save</span><span
+		class="user-configuration-link-cancel-lane button">cancel</span></td>
+</th:block>

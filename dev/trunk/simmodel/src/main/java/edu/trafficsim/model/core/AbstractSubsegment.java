@@ -38,13 +38,18 @@ public abstract class AbstractSubsegment<T> extends BaseEntity<T> implements
 		this.width = width;
 		this.shift = shift;
 
-		if (start < 0 || start > 1 || end < 0 || end > 1)
-			throw new ModelInputException(
-					"Segment element exceeds its containing segment.");
-		if (end < start)
-			throw new ModelInputException("Segment element has negative length");
+		checkStartEnd(start, end);
 		this.start = start;
 		this.end = end;
+	}
+
+	private void checkStartEnd(double start, double end)
+			throws ModelInputException {
+		if (start < 0 || end > 0)
+			throw new ModelInputException(
+					"Segment element exceeds its containing segment.");
+		if (start - end > segment.getLength())
+			throw new ModelInputException("Segment element has negative length");
 	}
 
 	@Override
@@ -72,9 +77,7 @@ public abstract class AbstractSubsegment<T> extends BaseEntity<T> implements
 			TransformException {
 		if (this.start == start)
 			return;
-		if (start < 0 || start > 1)
-			throw new ModelInputException(
-					"Segment element start should be within 0 ~ 1");
+		checkStartEnd(start, end);
 		this.start = start;
 		onGeomUpdated();
 	}
@@ -89,9 +92,8 @@ public abstract class AbstractSubsegment<T> extends BaseEntity<T> implements
 			TransformException {
 		if (this.end == end)
 			return;
-		if (end < 0 || end > 1)
-			throw new ModelInputException(
-					"Segment element end should be within 0 ~ 1");
+
+		checkStartEnd(start, end);
 		this.end = end;
 		onGeomUpdated();
 	}
@@ -102,7 +104,11 @@ public abstract class AbstractSubsegment<T> extends BaseEntity<T> implements
 	}
 
 	@Override
-	public final void setShift(double shift) throws TransformException {
+	public final void setShift(double shift, boolean update)
+			throws TransformException {
+		if (update) {
+			onShiftUpdate(shift - this.shift);
+		}
 		if (this.shift == shift)
 			return;
 		this.shift = shift;
@@ -115,7 +121,13 @@ public abstract class AbstractSubsegment<T> extends BaseEntity<T> implements
 	}
 
 	@Override
-	public final void setWidth(double width) throws TransformException {
+	public final void setWidth(double width, boolean update)
+			throws TransformException {
+		if (update) {
+			onWidthUpdate(width - this.width);
+		}
+		if (this.width == width)
+			return;
 		this.width = width;
 		onGeomUpdated();
 	}
@@ -130,7 +142,14 @@ public abstract class AbstractSubsegment<T> extends BaseEntity<T> implements
 		// TODO update linearGeom according to start, end, shift
 		linearGeom = Coordinates.getOffSetLineString(getCrs(),
 				segment.getLinearGeom(), shift);
-		linearGeom = Coordinates.trimLinearGeom(getCrs(), linearGeom);
+		linearGeom = Coordinates.trimLinearGeom(getCrs(), linearGeom, start,
+				-end);
 		length = Coordinates.orthodromicDistance(getCrs(), linearGeom);
 	}
+
+	abstract protected void onShiftUpdate(double offset)
+			throws TransformException;
+
+	abstract protected void onWidthUpdate(double offset)
+			throws TransformException;
 }

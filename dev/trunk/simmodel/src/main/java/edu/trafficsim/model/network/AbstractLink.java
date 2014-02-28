@@ -61,12 +61,12 @@ public abstract class AbstractLink<T> extends AbstractSegment<T> implements
 		subsegments.add(lane);
 		if (reverseLink == null) {
 			for (int i = 0; i < subsegments.size() - 1; i++)
-				getLane(i)
-						.setShift(getLane(i).getShift() - lane.getWidth() / 2);
+				getLane(i).setShift(
+						getLane(i).getShift() - lane.getWidth() / 2, false);
 
-			lane.setShift(getWidth() / 2 - lane.getWidth() / 2);
+			lane.setShift(getWidth() / 2 - lane.getWidth() / 2, false);
 		} else {
-			lane.setShift(getWidth() - lane.getWidth() / 2);
+			lane.setShift(getWidth() - lane.getWidth() / 2, false);
 		}
 		// Collections.sort(subsegments, null);
 	}
@@ -77,18 +77,18 @@ public abstract class AbstractLink<T> extends AbstractSegment<T> implements
 		if (reverseLink == null) {
 			for (int i = 0; i < laneId; i++) {
 				Lane l = getLane(i);
-				l.setShift(l.getShift() + removed.getWidth() / 2);
+				l.setShift(l.getShift() + removed.getWidth() / 2, false);
 			}
 			for (int i = laneId; i < subsegments.size(); i++) {
 				Lane l = getLane(i);
 				l.setLaneId(i);
-				l.setShift(l.getShift() - removed.getWidth() / 2);
+				l.setShift(l.getShift() - removed.getWidth() / 2, false);
 			}
 		} else {
 			for (int i = laneId; i < subsegments.size(); i++) {
 				Lane l = getLane(i);
 				l.setLaneId(i);
-				l.setShift(l.getShift() - removed.getWidth());
+				l.setShift(l.getShift() - removed.getWidth(), false);
 			}
 		}
 	}
