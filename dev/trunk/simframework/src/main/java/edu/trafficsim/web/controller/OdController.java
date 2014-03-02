@@ -30,7 +30,7 @@ public class OdController extends AbstractController {
 		Od od = project.getOdMatrix().getOd(id);
 
 		model.addAttribute("od", od);
-		return "components/od-info";
+		return "components/od-fragments :: info";
 	}
 
 	@RequestMapping(value = "/form/{id}", method = RequestMethod.GET)
@@ -50,7 +50,7 @@ public class OdController extends AbstractController {
 		model.addAttribute("destinations", project.getNetwork().getSinks());
 		model.addAttribute("od", od);
 		model.addAttribute("isNew", isNew);
-		return "components/od-form";
+		return "components/od-fragments :: form";
 	}
 
 	@RequestMapping(value = "/save", method = RequestMethod.POST)

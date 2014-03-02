@@ -29,6 +29,19 @@ public class LaneController extends AbstractController {
 	@Autowired
 	MapJsonService mapJsonService;
 
+	@RequestMapping(value = "/{linkId}", method = RequestMethod.GET)
+	public String lanes(@PathVariable long linkId, Model model) {
+		Network network = project.getNetwork();
+		if (network == null)
+			return "components/empty";
+		Link link = network.getLink(linkId);
+		if (link == null)
+			return "components/empty";
+
+		model.addAttribute("link", link);
+		return "components/link :: lanes";
+	}
+
 	@RequestMapping(value = "/info/{linkId}", method = RequestMethod.GET)
 	public String laneInfo(@PathVariable long linkId,
 			@MatrixVariable int laneId, Model model) {
@@ -41,7 +54,7 @@ public class LaneController extends AbstractController {
 		Lane lane = link.getLane(laneId);
 
 		model.addAttribute("lane", lane);
-		return "components/lane-info";
+		return "components/lane-fragments :: info";
 	}
 
 	@RequestMapping(value = "/form/{linkId}", method = RequestMethod.GET)
@@ -60,7 +73,7 @@ public class LaneController extends AbstractController {
 
 		model.addAttribute("lane", lane);
 		model.addAttribute("isNew", isNew);
-		return "components/lane-form";
+		return "components/lane-fragments :: form";
 	}
 
 	@RequestMapping(value = "/addtolink", method = RequestMethod.POST)
@@ -139,7 +152,7 @@ public class LaneController extends AbstractController {
 	}
 
 	private Map<String, Object> laneUpdatedResponse(Network network, long linkId) {
-		return successResponse("lane updated.", "link/view/" + linkId,
+		return successResponse("lane updated.", null,
 				mapJsonService.getLanesConnectorsJson(network, linkId));
 	}
 

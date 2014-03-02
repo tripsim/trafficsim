@@ -32,14 +32,14 @@
 				<td colspan="0">Vehicle Inputs</td>
 			</tr>
 			<th:block data-th-each="od : ${ods}">
-				<tr data-th-include="components/od-fragments :: info(${od})">
+				<tr data-th-replace="components/od-fragments :: info(${od})">
 				</tr>
 			</th:block>
 		</tbody>
 		<tbody>
-			<tr>
-				<td data-th-attr="data-id=${node.id}"><span
-					class="user-configuration-od-new button">new od</span></td>
+			<tr data-th-attr="data-id=${node.id}">
+				<td><span class="user-configuration-od-new button">new
+						od</span></td>
 			</tr>
 		</tbody>
 	</table>
