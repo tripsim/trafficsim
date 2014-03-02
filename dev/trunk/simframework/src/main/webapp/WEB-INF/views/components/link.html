@@ -38,7 +38,7 @@
 			</tr>
 		</tbody>
 	</table>
-	<table>
+	<table data-th-fragment="lanes(link)" data-th-attr="data-id=${link.id}">
 		<thead>
 			<tr>
 				<th>Lanes</th>
@@ -52,11 +52,11 @@
 			</tr>
 		</thead>
 		<th:block data-th-each="lane : ${link.lanes}">
-			<tr data-th-include="components/lane-fragments :: info(${lane})">
+			<tr data-th-replace="components/lane-fragments :: info(${lane})">
 			</tr>
 		</th:block>
 		<tr>
-			<td colspan="8" data-th-attr="data-id=${link.id}"><span
+			<td colspan="8"><span
 				class="user-configuration-link-add-lane button">add lane</span></td>
 		</tr>
 	</table>

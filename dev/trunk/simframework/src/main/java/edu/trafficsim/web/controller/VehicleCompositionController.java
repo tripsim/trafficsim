@@ -41,7 +41,7 @@ public class VehicleCompositionController extends AbstractController {
 
 		model.addAttribute("vehicleTypes", project.getVehicleTypes());
 		model.addAttribute("vehicleComposition", comp);
-		return "components/vehiclecomposition-info";
+		return "components/vehiclecomposition-fragments :: info";
 	}
 
 	@RequestMapping(value = "/form/{name}", method = RequestMethod.GET)
@@ -54,7 +54,7 @@ public class VehicleCompositionController extends AbstractController {
 		model.addAttribute("vehicleTypes", project.getVehicleTypes());
 		model.addAttribute("vehicleComposition", comp);
 		model.addAttribute("isNew", isNew);
-		return "components/vehiclecomposition-form";
+		return "components/vehiclecomposition-fragments :: form";
 	}
 
 	@RequestMapping(value = "/save", method = RequestMethod.POST)

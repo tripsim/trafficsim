@@ -5,10 +5,10 @@
 
 <div>
 	<table>
-		<tbody id="user-configuration-vehicle-compositions-tbody">
+		<tbody id="user-configuration-vehicle-compositions">
 			<th:block data-th-each="vehicleComposition : ${vehicleCompositions}">
 				<tr
-					data-th-include="components/vehiclecomposition-fragments :: info(${vehicleComposition})">
+					data-th-replace="components/vehiclecomposition-fragments :: info(${vehicleComposition})">
 				</tr>
 			</th:block>
 		</tbody>
