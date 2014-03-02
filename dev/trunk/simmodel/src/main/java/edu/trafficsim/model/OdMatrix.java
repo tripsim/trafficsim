@@ -7,15 +7,21 @@ import edu.trafficsim.model.core.ModelInputException;
 
 public interface OdMatrix extends DataContainer {
 
+	Od getOd(long id);
+
 	Collection<Od> getOdsFromNode(Node node);
 
-	Od getOd(long id);
+	Collection<Od> getOdsToNode(Node node);
 
 	Collection<Od> getOds();
 
 	void add(Od od);
 
-	void remove(long id);
+	Od remove(long id);
+
+	void remove(Od od);
+
+	void remove(Collection<Od> ods);
 
 	TurnPercentage getTurnPercentage(Link link, VehicleClass vehicleClass,
 			double time);
@@ -23,4 +29,6 @@ public interface OdMatrix extends DataContainer {
 	void setTurnPercentage(Link link, VehicleClass vehicleClass,
 			double[] times, TurnPercentage[] turnPercentages)
 			throws ModelInputException;
+
+	void removeTurnPercentage(Link link);
 }

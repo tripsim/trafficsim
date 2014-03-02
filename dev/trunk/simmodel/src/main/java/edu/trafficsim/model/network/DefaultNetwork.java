@@ -37,7 +37,10 @@ public class DefaultNetwork extends AbstractNetwork<DefaultNetwork> implements
 	public void discover() {
 		sources.clear();
 		sinks.clear();
-		double x = 0, y = 0;
+		double x = 0, y = 0, n = (double) nodes.size();
+		if (n == 0)
+			return;
+
 		for (Node node : nodes.values()) {
 			x += node.getPoint().getX();
 			y += node.getPoint().getY();
@@ -54,7 +57,6 @@ public class DefaultNetwork extends AbstractNetwork<DefaultNetwork> implements
 				sources.add(node);
 			}
 		}
-		double n = (double) nodes.size();
 		center = new Coordinate(x / n, y / n);
 	}
 

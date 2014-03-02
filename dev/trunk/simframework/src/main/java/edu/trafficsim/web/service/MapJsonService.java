@@ -231,9 +231,9 @@ public class MapJsonService {
 	 * @return "center" : [x , y]
 	 */
 	private String getCenter(Network network) {
-		return network == null ? "\"center\":[" + defaultCenterX + ","
-				+ defaultCenterY + "]" : "\"center\":[" + network.center().x
-				+ "," + network.center().y + "]";
+		return network == null || network.center() == null ? "\"center\":["
+				+ defaultCenterX + "," + defaultCenterY + "]" : "\"center\":["
+				+ network.center().x + "," + network.center().y + "]";
 	}
 
 	/**

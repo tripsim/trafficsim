@@ -201,7 +201,7 @@ public class DemoBuilder {
 				turnPercentages);
 
 		// Simulator
-		simulator = scenarioFactory.createSimulator(seq++, "test", 100, 0.1);
+		simulator = scenarioFactory.createSimulator(seq++, 100, 0.1);
 	}
 
 	public SimulationScenario getScenario() {

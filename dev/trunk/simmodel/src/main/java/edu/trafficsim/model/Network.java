@@ -30,6 +30,14 @@ public interface Network {
 
 	public void add(Link link);
 
+	public Node removeNode(long id);
+
+	public Link removeLink(long id);
+
+	public Node removeNode(Node node);
+
+	public Link removeLink(Link link);
+
 	public void add(Node... nodes);
 
 	public void add(Link... links);

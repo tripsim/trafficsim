@@ -2,22 +2,37 @@
 <div id="user-configuration-buttons">
 	<span id="user-configuration-button-close" class="button">close</span>
 </div>
-<p>
-	Simulator: <span data-th-text="${simulator.name}"></span>
-</p>
-<p>
-	Duration: <span data-th-text="${simulator.duration}"></span>
-</p>
-<p>
-	Step size: <span data-th-text="${simulator.stepSize}"></span>
-</p>
-<p>
-	Warmup: <span data-th-text="${simulator.warmup}"></span>
-</p>
-<p>
-	Seed: <span data-th-text="${simulator.seed}"></span>
-</p>
 <div>
-	<span class="user-configuration-run-simulation button">Run
-		Simulation</span>
+	<table>
+		<tbody data-th-fragment="form(simulator)">
+			<tr>
+				<td>Simulation</td>
+				<td data-th-text="${simulator.simulatorType.name}"></td>
+			</tr>
+			<tr>
+				<td>Step Size</td>
+				<td><input type="text" name="stepSize"
+					data-th-value="${simulator.stepSize}" /></td>
+			</tr>
+			<tr>
+				<td>Duration</td>
+				<td><input type="text" name="duration"
+					data-th-value="${simulator.duration}" /></td>
+			</tr>
+			<tr>
+				<td>Warmup</td>
+				<td><input type="text" name="warmup"
+					data-th-value="${simulator.warmup}" /></td>
+			</tr>
+			<tr>
+				<td>Random Seed</td>
+				<td><input type="text" name="seed"
+					data-th-value="${simulator.seed}" /></td>
+			</tr>
+			<tr>
+				<td><span class="user-configuration-run-simulation button">Run
+						Simulation</span></td>
+			</tr>
+		</tbody>
+	</table>
 </div>

@@ -16,10 +16,7 @@ jQuery(document).ready(
 				function(data) {
 				    simulation.reDrawLanes(data.lanes,
 					    data.connectors);
-				    simwebhelper.getStr('lane/' + id, function(
-					    data) {
-					table.replaceWith(data);
-				    });
+				    simwebhelper.fillHtml('lane/' + id, table);
 				});
 		    });
 	    /* remove lane */
@@ -37,10 +34,8 @@ jQuery(document).ready(
 				function(data) {
 				    simulation.reDrawLanes(data.lanes,
 					    data.connectors);
-				    simwebhelper.getStr('lane/' + ids[0],
-					    function(data) {
-						table.replaceWith(data);
-					    });
+				    simwebhelper.fillHtml('lane/' + ids[0],
+					    table);
 				});
 		    });
 	    /* edit lane */
@@ -54,10 +49,8 @@ jQuery(document).ready(
 					.click();
 				var tr = jQuery(this).closest('tr');
 				var ids = tr.attr('data-id').split('-');
-				simwebhelper.getStr('lane/form/' + ids[0]
-					+ ";laneId=" + ids[1], function(data) {
-				    tr.replaceWith(data);
-				});
+				simwebhelper.fillHtml('lane/form/' + ids[0]
+					+ ";laneId=" + ids[1], tr);
 			    });
 	    /* cancel edit lane */
 	    jQuery('#user-configuration').on(
@@ -66,10 +59,8 @@ jQuery(document).ready(
 		    function() {
 			var tr = jQuery(this).closest('tr');
 			var ids = tr.attr('data-id').split('-');
-			simwebhelper.getStr('lane/info/' + ids[0] + ";laneId="
-				+ ids[1], function(data) {
-			    tr.replaceWith(data);
-			});
+			simwebhelper.fillHtml('lane/info/' + ids[0]
+				+ ";laneId=" + ids[1], tr);
 		    });
 	    /* save edit lane */
 	    jQuery('#user-configuration').on(
@@ -87,11 +78,8 @@ jQuery(document).ready(
 			};
 			simwebhelper.action('lane/save', postData,
 				function(data) {
-				    simwebhelper.getStr('lane/info/' + ids[0]
-					    + ";laneId=" + ids[1], function(
-					    data) {
-					tr.replaceWith(data);
-				    });
+				    simwebhelper.fillHtml('lane/info/' + ids[0]
+					    + ";laneId=" + ids[1], tr);
 				    simulation.reDrawLanes(data.lanes,
 					    data.connectors);
 				});

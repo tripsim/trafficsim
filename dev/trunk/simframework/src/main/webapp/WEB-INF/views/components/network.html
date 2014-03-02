@@ -2,18 +2,27 @@
 <div id="user-configuration-buttons">
 	<span id="user-configuration-button-close" class="button">close</span>
 </div>
-<p>
-	Network: <span data-th-text="${network.name}"></span>
-</p>
-<p>
-	Links: <span data-th-text="${linkCount}"></span>
-</p>
-<p>
-	Nodes: <span data-th-text="${nodeCount}"></span>
-</p>
-<p>
-	Sources: <span data-th-text="${sourceCount}"></span>
-</p>
-<p>
-	Sinks: <span data-th-text="${sinkCount}"></span>
-</p>
+<div>
+	<table>
+		<tr>
+			<td>Network</td>
+			<td><span data-th-text="${network.name}"></span></td>
+		</tr>
+		<tr>
+			<td>Links</td>
+			<td><span data-th-text="${linkCount}"></span></td>
+		</tr>
+		<tr>
+			<td>Nodes</td>
+			<td><span data-th-text="${nodeCount}"></span></td>
+		</tr>
+		<tr>
+			<td>Sources</td>
+			<td><span data-th-text="${sourceCount}"></span></td>
+		</tr>
+		<tr>
+			<td>Sinks</td>
+			<td><span data-th-text="${sinkCount}"></span></td>
+		</tr>
+	</table>
+</div>
