@@ -82,4 +82,27 @@ public abstract class AbstractNetwork<T> extends BaseEntity<T> implements
 			add(link);
 	}
 
+	@Override
+	public Node removeNode(long id) {
+		return nodes.remove(id);
+	}
+
+	@Override
+	public Link removeLink(long id) {
+		Link link = links.remove(id);
+		link.getStartNode().remove(link);
+		link.getEndNode().remove(link);
+		return link;
+	}
+
+	@Override
+	public Node removeNode(Node node) {
+		return removeNode(node.getId());
+	}
+
+	@Override
+	public Link removeLink(Link link) {
+		return removeLink(link.getId());
+	}
+
 }

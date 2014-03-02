@@ -42,8 +42,13 @@ public abstract class AbstractSimulator<T> extends BaseEntity<T> implements
 
 	@Override
 	public SimulatorType getSimulatorType() {
-		// TODO
 		return type;
+	}
+
+	@Override
+	public void setSimulatorType(SimulatorType type) {
+		this.type = type;
+
 	}
 
 	@Override
@@ -126,4 +131,5 @@ public abstract class AbstractSimulator<T> extends BaseEntity<T> implements
 		forwardedSteps = 0;
 		rand = new Rand(seed);
 	}
+
 }

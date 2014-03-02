@@ -12,10 +12,8 @@ jQuery(document).ready(
 		    '.user-configuration-od-edit',
 		    function() {
 			var tr = jQuery(this).closest('tr');
-			simwebhelper.getStr('od/form/' + tr.attr('data-id'),
-				function(html) {
-				    tr.replaceWith(html);
-				});
+			simwebhelper.fillHtml('od/form/' + tr.attr('data-id'),
+				tr);
 		    });
 	    /* remove od */
 	    jQuery('#user-configuration').on('click',
@@ -43,11 +41,8 @@ jQuery(document).ready(
 				tr.remove();
 			    });
 			} else {
-			    simwebhelper.getStr(
-				    'od/info/' + tr.attr('data-id'), function(
-					    html) {
-					tr.replaceWith(html);
-				    });
+			    simwebhelper.fillHtml('od/info/'
+				    + tr.attr('data-id'), tr);
 			}
 		    });
 	    /* add interval in od */
@@ -99,10 +94,7 @@ jQuery(document).ready(
 			postData.vehicleCompositionName = tr.find(
 				'select[name="composition"]').val();
 			simwebhelper.action('od/save', postData, function() {
-			    simwebhelper.getStr('od/info/' + postData.id,
-				    function(html) {
-					tr.replaceWith(html);
-				    });
+			    simwebhelper.fillHtml('od/info/' + postData.id, tr);
 			});
 
 		    });

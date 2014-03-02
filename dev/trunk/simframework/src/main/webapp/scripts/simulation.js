@@ -6,7 +6,7 @@
                     'ui/general.js',
                     'ui/menu.js',
                     'ui/scenario-network.js',
-                    'ui/link.js', 'ui/link.js',
+                    'ui/link.js',
                     'ui/lane-connection.js',
                     'ui/od.js',
                     'ui/vehiclecomposition.js',

@@ -33,6 +33,11 @@ public abstract class AbstractController {
 	}
 
 	public static Map<String, Object> successResponse(String message,
+			Object data) {
+		return response(true, message, null, data);
+	}
+
+	public static Map<String, Object> successResponse(String message,
 			String panelUrl, Object data) {
 		return response(true, message, panelUrl, data);
 	}

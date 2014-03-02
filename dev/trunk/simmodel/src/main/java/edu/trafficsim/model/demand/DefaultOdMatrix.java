@@ -35,10 +35,25 @@ public class DefaultOdMatrix extends BaseEntity<DefaultOdMatrix> implements
 	}
 
 	@Override
+	public Od getOd(long id) {
+		return odsById.get(id);
+	}
+
+	@Override
 	public Collection<Od> getOdsFromNode(Node node) {
 		Set<Od> newOds = new HashSet<Od>();
 		for (OdKey odKey : ods.keys()) {
 			if (odKey.primaryKey() == node)
+				newOds.addAll(ods.get(odKey));
+		}
+		return Collections.unmodifiableCollection(newOds);
+	}
+
+	@Override
+	public Collection<Od> getOdsToNode(Node node) {
+		Set<Od> newOds = new HashSet<Od>();
+		for (OdKey odKey : ods.keys()) {
+			if (odKey.secondaryKey() == node)
 				newOds.addAll(ods.get(odKey));
 		}
 		return Collections.unmodifiableCollection(newOds);
@@ -50,21 +65,28 @@ public class DefaultOdMatrix extends BaseEntity<DefaultOdMatrix> implements
 	}
 
 	@Override
-	public Od getOd(long id) {
-		return odsById.get(id);
-	}
-
-	@Override
 	public void add(Od od) {
 		ods.add(odKey(od), od);
 		odsById.put(od.getId(), od);
 	}
 
 	@Override
-	public void remove(long id) {
+	public Od remove(long id) {
 		Od od = odsById.remove(id);
 		if (od != null)
 			ods.remove(odKey(od), od);
+		return od;
+	}
+
+	@Override
+	public void remove(Od od) {
+		remove(od.getId());
+	}
+
+	@Override
+	public void remove(Collection<Od> ods) {
+		for (Od od : ods)
+			remove(od);
 	}
 
 	private static final OdKey odKey(Od od) {
@@ -125,4 +147,20 @@ public class DefaultOdMatrix extends BaseEntity<DefaultOdMatrix> implements
 		}
 		dynamicTurnPercentage.setProperties(times, turnPercentages);
 	}
+
+	@Override
+	public void removeTurnPercentage(Link link) {
+		for (TurnKey key : dynamicTurnPercentages.keySet()) {
+			if (key.primaryKey() == link) {
+				dynamicTurnPercentages.remove(key);
+			} else {
+				for (TurnPercentage turnPercentage : dynamicTurnPercentages
+						.get(key).getValues()) {
+					turnPercentage.remove(link);
+				}
+			}
+		}
+
+	}
+
 }

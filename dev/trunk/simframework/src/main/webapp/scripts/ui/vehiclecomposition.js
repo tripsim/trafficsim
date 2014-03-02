@@ -13,10 +13,9 @@ jQuery(document)
 			    '.user-configuration-vehicle-comp-edit',
 			    function() {
 				var tr = jQuery(this).closest('tr');
-				simwebhelper.getStr('vehiclecomposition/form/'
-					+ tr.attr('data-name'), function(html) {
-				    tr.replaceWith(html);
-				});
+				simwebhelper.fillHtml(
+					'vehiclecomposition/form/'
+						+ tr.attr('data-name'), tr);
 			    });
 
 		    /* remove vehicle composition */
@@ -36,27 +35,31 @@ jQuery(document)
 		     * buttons for form
 		     */
 		    /* cancel edit vehicle composition */
-		    jQuery('#user-configuration').on(
-			    'click',
-			    '.user-configuration-vehicle-comp-cancel',
-			    function() {
-				var tr = jQuery(this).closest('tr');
-				if (tr.attr('data-is-new') === 'true') {
-				    simwebhelper.action(
-					    'vehiclecomposition/remove', {
-						name : tr.attr('data-name')
-					    }, function() {
-						tr.remove();
-					    });
-				} else {
-				    simwebhelper.getStr(
-					    'vehiclecomposition/info/'
-						    + tr.attr('data-name'),
-					    function(html) {
-						tr.replaceWith(html);
-					    });
-				}
-			    });
+		    jQuery('#user-configuration')
+			    .on(
+				    'click',
+				    '.user-configuration-vehicle-comp-cancel',
+				    function() {
+					var tr = jQuery(this).closest('tr');
+					if (tr.attr('data-is-new') === 'true') {
+					    simwebhelper
+						    .action(
+							    'vehiclecomposition/remove',
+							    {
+								name : tr
+									.attr('data-name')
+							    }, function() {
+								tr.remove();
+							    });
+					} else {
+					    simwebhelper
+						    .fillHtml(
+							    'vehiclecomposition/info/'
+								    + tr
+									    .attr('data-name'),
+							    tr);
+					}
+				    });
 		    /* add vehicle type in vehicle composition */
 		    jQuery('#user-configuration').on(
 			    'click',
@@ -100,12 +103,10 @@ jQuery(document)
 					.find('input[name="name"]').val();
 				simwebhelper.action('vehiclecomposition/save',
 					postData, function() {
-					    simwebhelper.getStr(
+					    simwebhelper.fillHtml(
 						    'vehiclecomposition/info/'
 							    + postData.newName,
-						    function(html) {
-							tr.replaceWith(html);
-						    });
+						    tr);
 					});
 			    });
 		    /**

@@ -50,6 +50,7 @@ public abstract class AbstractNode<T> extends AbstractLocation<T> implements
 					"The link doesn't start or end from the node.");
 	}
 
+	@Override
 	public final void remove(Link link) {
 		upstreams.remove(link);
 		downstreams.remove(link);
@@ -94,6 +95,24 @@ public abstract class AbstractNode<T> extends AbstractLocation<T> implements
 	}
 
 	@Override
+	public Collection<ConnectionLane> getInConnectors(Link fromLink) {
+		List<ConnectionLane> allConnectors = new ArrayList<ConnectionLane>();
+		for (Lane lane : fromLink.getLanes()) {
+			allConnectors.addAll(inConnectors.get(lane));
+		}
+		return allConnectors;
+	}
+
+	@Override
+	public Collection<ConnectionLane> getOutConnectors(Link toLink) {
+		List<ConnectionLane> allConnectors = new ArrayList<ConnectionLane>();
+		for (Lane lane : toLink.getLanes()) {
+			allConnectors.addAll(outConnectors.get(lane));
+		}
+		return allConnectors;
+	}
+
+	@Override
 	public ConnectionLane getConnector(Lane fromLane, Lane toLane) {
 		for (ConnectionLane connector : inConnectors.get(fromLane)) {
 			if (connector.getToLane() == toLane)
@@ -127,6 +146,12 @@ public abstract class AbstractNode<T> extends AbstractLocation<T> implements
 	@Override
 	public boolean isConnected(Lane fromLane, Lane toLane) {
 		return getConnector(fromLane, toLane) != null;
+	}
+
+	@Override
+	public boolean isEmpty() {
+		return upstreams.isEmpty() ? downstreams.isEmpty() ? true : false
+				: false;
 	}
 
 	@Override

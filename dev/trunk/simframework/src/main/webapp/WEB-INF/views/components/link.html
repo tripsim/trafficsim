@@ -4,45 +4,36 @@
 </div>
 <div data-th-each="link : ${links}">
 	<table>
-		<tbody>
+		<tbody data-th-fragment="info(link)" data-th-attr="data-id=${link.id}">
 			<tr>
 				<td>Link Id</td>
-				<td data-th-text="${link.id}"></td>
-				<td><span data-th-attr="data-id=${link.id}"
-					class="user-configuration-link-edit button">edit</span></td>
+				<td colspan="0" data-th-text="${link.id}"></td>
 			</tr>
 			<tr>
 				<td>Link Name</td>
 				<td colspan="2" data-th-text="${link.name}"></td>
 			</tr>
 			<tr>
-				<td>Start Node</td>
-				<td colspan="2" data-th-text="${link.startNode.name}"></td>
-			</tr>
-			<tr>
-				<td>End Node</td>
-				<td colspan="2" data-th-text="${link.endNode.name}"></td>
-			</tr>
-			<tr>
 				<td>Length</td>
-				<td colspan="2"
+				<td colspan="0"
 					data-th-text="${#numbers.formatDecimal(link.length, 1, 4)}"></td>
 			</tr>
 			<tr>
 				<td>Highway</td>
-				<td colspan="2" data-th-text="${link.roadInfo.highway}"></td>
+				<td colspan="0" data-th-text="${link.roadInfo.highway}"></td>
 			</tr>
 			<tr>
 				<td>Road Name</td>
-				<td colspan="2" data-th-text="${link.roadInfo.roadName}"></td>
+				<td colspan="0" data-th-text="${link.roadInfo.roadName}"></td>
+			</tr>
+			<tr>
+				<td><span class="user-configuration-link-edit button">edit</span><span
+					class="user-configuration-link-remove button">remove</span></td>
 			</tr>
 		</tbody>
 	</table>
 	<table data-th-fragment="lanes(link)" data-th-attr="data-id=${link.id}">
 		<thead>
-			<tr>
-				<th>Lanes</th>
-			</tr>
 			<tr>
 				<th>Lane Id</th>
 				<th>width</th>

@@ -35,7 +35,6 @@ public interface ScenarioFactory {
 			Link[] downstreams, double[] percentages)
 			throws ModelInputException;
 
-	Simulator createSimulator(Long id, String name, int duration,
-			double stepSize);
+	Simulator createSimulator(Long id, int duration, double stepSize);
 
 }

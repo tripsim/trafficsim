@@ -6,32 +6,40 @@ import edu.trafficsim.model.core.ModelInputException;
 
 public interface Node extends Location {
 
-	public NodeType getNodeType();
+	NodeType getNodeType();
 
-	public boolean upstream(Link link);
+	boolean upstream(Link link);
 
-	public boolean downstream(Link link);
+	boolean downstream(Link link);
 
-	public Collection<Link> getUpstreams();
+	Collection<Link> getUpstreams();
 
-	public Collection<Link> getDownstreams();
+	Collection<Link> getDownstreams();
 
-	public Collection<ConnectionLane> getConnectors();
+	Collection<ConnectionLane> getConnectors();
 
-	public ConnectionLane getConnector(Lane fromLane, Lane toLane);
+	ConnectionLane getConnector(Lane fromLane, Lane toLane);
 
 	// TODO make connectors cached in links
-	public Collection<ConnectionLane> getInConnectors(Lane fromLane);
+	Collection<ConnectionLane> getInConnectors(Lane fromLane);
 
-	public Collection<ConnectionLane> getOutConnectors(Lane toLane);
+	Collection<ConnectionLane> getOutConnectors(Lane toLane);
 
-	public Collection<ConnectionLane> getConnectors(Lane fromLane, Link toLink);
+	Collection<ConnectionLane> getConnectors(Lane fromLane, Link toLink);
 
-	public boolean isConnected(Lane fromLane, Lane toLane);
+	boolean isConnected(Lane fromLane, Lane toLane);
 
-	public void add(Link link) throws ModelInputException;
+	void add(Link link) throws ModelInputException;
 
-	public void add(ConnectionLane connector) throws ModelInputException;
+	void add(ConnectionLane connector) throws ModelInputException;
 
-	public void remove(ConnectionLane connector);
+	void remove(Link link);
+
+	void remove(ConnectionLane connector);
+
+	Collection<ConnectionLane> getOutConnectors(Link toLink);
+
+	Collection<ConnectionLane> getInConnectors(Link fromLink);
+
+	boolean isEmpty();
 }

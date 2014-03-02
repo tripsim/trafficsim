@@ -23,7 +23,7 @@
 			</tr>
 			<tr>
 				<td>Length</td>
-				<td data-th-text="${connector.length}"></td>
+				<td data-th-text="${#numbers.formatDecimal(connector.length, 1, 4)}"></td>
 			</tr>
 			<tr>
 				<td colspan="2"><span

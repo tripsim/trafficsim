@@ -6,30 +6,40 @@ import edu.trafficsim.model.core.Rand;
 
 public interface Simulator extends DataContainer {
 
-	public Date getStartTime();
+	SimulatorType getSimulatorType();
 
-	public int getWarmup();
+	void setSimulatorType(SimulatorType type);
 
-	public int getDuration();
+	Date getStartTime();
 
-	public double getStepSize();
+	int getWarmup();
 
-	public int getTotalSteps();
+	void setWarmup(int warmup);
 
-	public long getSeed();
+	int getDuration();
 
-	public Rand getRand();
+	void setDuration(int duration);
 
-	public double getForwardedTime();
+	double getStepSize();
 
-	public int getForwardedSteps();
+	void setStepSize(double stepSize);
 
-	public boolean isFinished();
+	long getSeed();
 
-	public void stepForward();
+	void setSeed(long seed);
 
-	public void reset();
-	
-	public SimulatorType getSimulatorType();
+	int getTotalSteps();
+
+	Rand getRand();
+
+	double getForwardedTime();
+
+	int getForwardedSteps();
+
+	boolean isFinished();
+
+	void stepForward();
+
+	void reset();
 
 }

@@ -78,12 +78,14 @@ public class DefaultScenarioFactory extends AbstractFactory implements
 	}
 
 	// TODO set default types
-	private static SimulatorType simulatorType = new SimulatorType(0, "temp");
+	private static SimulatorType simulatorType = new SimulatorType(0,
+			"Microscopic");
 
 	@Override
-	public DefaultSimulator createSimulator(Long id, String name, int duration,
+	public DefaultSimulator createSimulator(Long id, int duration,
 			double stepSize) {
-		return new DefaultSimulator(id, name, simulatorType, duration, stepSize);
+		return new DefaultSimulator(id, DEFAULT_NAME, simulatorType, duration,
+				stepSize);
 	}
 
 }

@@ -37,6 +37,11 @@ var simwebhelper = {
 		callback(str);
 	});
     },
+    fillHtml : function(url, container) {
+	jQuery.get(url, function(str) {
+	    container.replaceWith(str);
+	});
+    },
     getPanel : function(url, callback) {
 	jQuery.get(url, function(html) {
 	    simwebhelper.panel(html);

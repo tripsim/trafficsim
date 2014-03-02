@@ -17,6 +17,14 @@ public class SimulatorService extends EntityService {
 
 	public Simulator createSimulator() {
 		return project.getScenarioFactory().createSimulator(project.nextSeq(),
-				"", DEFAULT_DURATION, DEFAULT_STEPSIZE);
+				DEFAULT_DURATION, DEFAULT_STEPSIZE);
+	}
+
+	public void save(double stepSize, int duration, int warmup, long seed) {
+		Simulator simulator = project.getSimulator();
+		simulator.setStepSize(stepSize);
+		simulator.setDuration(duration);
+		simulator.setWarmup(warmup);
+		simulator.setSeed(seed);
 	}
 }

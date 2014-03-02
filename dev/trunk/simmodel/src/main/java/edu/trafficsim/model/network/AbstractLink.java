@@ -101,7 +101,7 @@ public abstract class AbstractLink<T> extends AbstractSegment<T> implements
 	@Override
 	public void setReverseLink(Link reverseLink) {
 		this.reverseLink = reverseLink;
-		if (reverseLink.getReverseLink() != this)
+		if (reverseLink != null && reverseLink.getReverseLink() != this)
 			reverseLink.setReverseLink(this);
 	}
 

@@ -2,6 +2,8 @@ package edu.trafficsim.web.service.entity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.opengis.referencing.operation.TransformException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +13,11 @@ import edu.trafficsim.engine.NetworkFactory;
 import edu.trafficsim.model.ConnectionLane;
 import edu.trafficsim.model.Lane;
 import edu.trafficsim.model.Link;
+import edu.trafficsim.model.Network;
+import edu.trafficsim.model.Node;
+import edu.trafficsim.model.OdMatrix;
 import edu.trafficsim.model.core.ModelInputException;
+import edu.trafficsim.model.core.MultiValuedMap;
 import edu.trafficsim.web.SimulationProject;
 
 @Service
@@ -23,6 +29,51 @@ public class NetworkService extends EntityService {
 	private static final double DEFAULT_LANE_START = 10.0d;
 	private static final double DEFAULT_LANE_END = -10.0d;
 	private static final double DEFAULT_LANE_WIDTH = 4.0d;
+
+	public void saveLink(Link link, String name, String highway, String roadName) {
+		link.setName(name);
+		link.getRoadInfo().setHighway(highway);
+		link.getRoadInfo().setRoadName(roadName);
+	}
+
+	public Map<String, Set<String>> removeLink(long id) {
+		Network network = project.getNetwork();
+		Link link = network.removeLink(id);
+		if (link.getReverseLink() != null)
+			link.getReverseLink().setReverseLink(null);
+
+		MultiValuedMap<String, String> map = new MultiValuedMap<String, String>();
+		Node node = link.getStartNode();
+		if (node.isEmpty()) {
+			removeNode(node, map);
+		} else {
+			for (ConnectionLane connector : node.getOutConnectors(link)) {
+				node.remove(connector);
+			}
+		}
+		node = link.getEndNode();
+		if (node.isEmpty()) {
+			removeNode(node, map);
+		} else {
+			for (ConnectionLane connector : node.getInConnectors(link)) {
+				node.remove(connector);
+			}
+		}
+
+		project.getOdMatrix().removeTurnPercentage(link);
+
+		network.discover();
+		return map.asMap();
+	}
+
+	protected void removeNode(Node node, MultiValuedMap<String, String> map) {
+		Network network = project.getNetwork();
+		OdMatrix odMatrix = project.getOdMatrix();
+		network.removeNode(node);
+		odMatrix.remove(odMatrix.getOdsFromNode(node));
+		odMatrix.remove(odMatrix.getOdsToNode(node));
+		map.add("nodeIds", node.getId().toString());
+	}
 
 	public Lane addLane(Link link, NetworkFactory factory)
 			throws ModelInputException, TransformException {

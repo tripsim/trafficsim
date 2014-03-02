@@ -60,4 +60,8 @@ public class MultiValuedMap<K, V> implements Serializable {
 			return map.get(key);
 		return Collections.emptySet();
 	}
+
+	public Map<K, Set<V>> asMap() {
+		return Collections.unmodifiableMap(map);
+	}
 }

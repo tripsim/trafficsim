@@ -1,0 +1,37 @@
+<tbody data-th-fragment="form(link)" data-th-attr="data-id=${link.id}">
+	<tr>
+		<td>Link Id</td>
+		<td colspan="0" data-th-text="${link.id}"></td>
+	</tr>
+	<tr>
+		<td>Link Name</td>
+		<td><input type="text" name="name" data-th-value="${link.name}" /></td>
+	</tr>
+	<tr>
+		<td>Length</td>
+		<td colspan="0"
+			data-th-text="${#numbers.formatDecimal(link.length, 1, 4)}"></td>
+	</tr>
+	<tr>
+		<td>Highway</td>
+		<td><span
+			data-th-replace="components/link-fragments ::
+				select(${link.roadInfo.highway}, ${highways})"></span></td>
+	</tr>
+	<tr>
+		<td>Road Name</td>
+		<td><input type="text" name="roadName"
+			data-th-value="${link.roadInfo.roadName}" /></td>
+	</tr>
+	<tr>
+		<td colspan="0"><span class="user-configuration-link-save button">save</span><span
+			class="user-configuration-link-cancel button">cancel</span></td>
+	</tr>
+</tbody>
+
+<select data-th-fragment="select(selectedHihway, highways)"
+	name="highway">
+	<option data-th-each="highway : ${highways}"
+		data-th-attr="selected=${selectedHihway.equals(highway)} ? 'true' :'false', value=${highway}"
+		data-th-text="${highway}"></option>
+</select>
