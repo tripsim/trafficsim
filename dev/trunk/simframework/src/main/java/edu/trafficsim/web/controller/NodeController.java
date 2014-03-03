@@ -22,6 +22,8 @@ public class NodeController extends AbstractController {
 		if (node == null)
 			return "components/empty";
 
+		if (network.isDirty())
+			network.discover();
 		model.addAttribute("network", network);
 		model.addAttribute("ods", project.getOdMatrix().getOdsFromNode(node));
 		model.addAttribute("node", node);

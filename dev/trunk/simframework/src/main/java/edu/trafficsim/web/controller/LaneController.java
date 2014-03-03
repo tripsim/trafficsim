@@ -89,7 +89,7 @@ public class LaneController extends AbstractController {
 		}
 
 		try {
-			networkService.addLane(link, project.getNetworkFactory());
+			networkService.addLane(link);
 		} catch (ModelInputException e) {
 			return failureResponse(e.toString());
 		} catch (TransformException e) {

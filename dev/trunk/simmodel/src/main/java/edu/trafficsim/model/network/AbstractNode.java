@@ -67,6 +67,22 @@ public abstract class AbstractNode<T> extends AbstractLocation<T> implements
 	}
 
 	@Override
+	public Link getFromNode(Node node) {
+		for (Link link : upstreams)
+			if (link.getStartNode() == node)
+				return link;
+		return null;
+	}
+
+	@Override
+	public Link getToNode(Node node) {
+		for (Link link : downstreams)
+			if (link.getEndNode() == node)
+				return link;
+		return null;
+	}
+
+	@Override
 	public final Collection<Link> getUpstreams() {
 		return Collections.unmodifiableCollection(upstreams);
 	}

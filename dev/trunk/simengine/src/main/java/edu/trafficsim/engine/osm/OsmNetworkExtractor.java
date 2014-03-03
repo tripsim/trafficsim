@@ -69,7 +69,7 @@ public class OsmNetworkExtractor {
 	protected Network createNetwork(Highways highways,
 			NetworkFactory networkFactory) throws ModelInputException,
 			TransformException {
-		Network network = networkFactory.createEmptyNetwork(nextSeq(),
+		Network network = networkFactory.createNetwork(nextSeq(),
 				NETWORK_NAME);
 
 		Map<OsmNode, Node> nodes = new HashMap<OsmNode, Node>(highways

@@ -12,7 +12,6 @@ import edu.trafficsim.model.Link;
 import edu.trafficsim.model.Segment;
 import edu.trafficsim.model.Vehicle;
 import edu.trafficsim.model.core.AbstractSubsegment;
-import edu.trafficsim.model.core.ModelInputException;
 
 public abstract class AbstractLane<T> extends AbstractSubsegment<T> implements
 		Lane {
@@ -22,8 +21,7 @@ public abstract class AbstractLane<T> extends AbstractSubsegment<T> implements
 	private final NavigableSet<Vehicle> vehicles = new TreeSet<Vehicle>();
 
 	public AbstractLane(long id, Segment segment, double start, double end,
-			double width, double shift) throws TransformException,
-			ModelInputException {
+			double width, double shift) throws TransformException {
 		super(id, null, segment, start, end, width, shift);
 	}
 

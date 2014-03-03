@@ -13,14 +13,20 @@ jQuery(document).ready(function() {
 	});
     });
 
+    /* draw */
+    jQuery('#user-interface-draw').click(function() {
+	simwebhelper.hidePanel();
+	simulation.drawLinks();
+    });
+
     /* links */
-    jQuery('#user-interface-links').click(function() {
+    jQuery('#user-interface-link').click(function() {
 	simwebhelper.hidePanel();
 	simulation.editLinks();
     });
 
     /* lanes */
-    jQuery('#user-interface-lanes').click(function() {
+    jQuery('#user-interface-lane').click(function() {
 	simwebhelper.hidePanel();
 	simulation.editLanes();
     });
@@ -76,10 +82,8 @@ jQuery(document).ready(function() {
     jQuery('#test').click(function() {
 	jQuery.get('getdemonetwork', function(data) {
 	    data = eval('(' + data + ')');
-	    if (data['links'] != null || data['nodes'] != null)
-		simulation.reDrawNetwork(data['links'], data['nodes']);
-	    if (data['lanes'] != null || data['connectors'] != null)
-		simulation.reDrawAllLanes(data['lanes'], data['connectors']);
+
+	    simulation.reDrawAllFeatures(data);
 	    var center = new OpenLayers.LonLat(data.center[0], data.center[1]);
 	    map.setCenter(center, map.numZoomLevels);
 	});

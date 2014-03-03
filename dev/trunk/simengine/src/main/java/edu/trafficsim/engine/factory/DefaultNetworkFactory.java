@@ -4,6 +4,7 @@ import org.geotools.geometry.jts.JTSFactoryFinder;
 import org.opengis.referencing.operation.TransformException;
 
 import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.CoordinateSequence;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.Point;
@@ -41,7 +42,7 @@ public class DefaultNetworkFactory extends AbstractFactory implements
 	}
 
 	@Override
-	public Network createEmptyNetwork(Long id, String name) {
+	public Network createNetwork(Long id, String name) {
 		return new DefaultNetwork(id, name);
 	}
 
@@ -64,6 +65,12 @@ public class DefaultNetworkFactory extends AbstractFactory implements
 		return geometryFactory.createLineString(coords);
 	}
 
+	@Override
+	public LineString createLineString(CoordinateSequence points) {
+		return geometryFactory.createLineString(points);
+	}
+
+	@Override
 	public DefaultNode createNode(Long id, String name, double x, double y) {
 		return createNode(id, name, createPoint(x, y));
 	}
@@ -81,18 +88,24 @@ public class DefaultNetworkFactory extends AbstractFactory implements
 	public DefaultLink createLink(Long id, String name, Node startNode,
 			Node endNode, Coordinate[] coords) throws ModelInputException,
 			TransformException {
-		LineString lineString = createLineString(coords);
-		return createLink(id, name, startNode, endNode, lineString);
+		return createLink(id, name, startNode, endNode,
+				createLineString(coords));
 	}
 
+	@Override
+	public Link createLink(Long id, String name, Node startNode, Node endNode,
+			CoordinateSequence points) throws ModelInputException,
+			TransformException {
+		return createLink(id, name, startNode, endNode,
+				createLineString(points));
+	}
+
+	@Override
 	public DefaultLink createLink(Long id, String name, Node startNode,
 			Node endNode, LineString lineString) throws ModelInputException,
 			TransformException {
-		DefaultLink link = new DefaultLink(id, name, linkType, startNode,
-				endNode, lineString);
-		startNode.add(link);
-		endNode.add(link);
-		return link;
+		return new DefaultLink(id, name, linkType, startNode, endNode,
+				lineString);
 	}
 
 	@Override
@@ -113,8 +126,7 @@ public class DefaultNetworkFactory extends AbstractFactory implements
 
 	@Override
 	public Lane[] createLanes(Long[] ids, Link link, double start, double end,
-			double width)
-			throws ModelInputException, TransformException {
+			double width) throws ModelInputException, TransformException {
 		for (Long id : ids) {
 			createLane(id, link, start, end, width);
 		}
@@ -128,10 +140,11 @@ public class DefaultNetworkFactory extends AbstractFactory implements
 	}
 
 	@Override
-	public ConnectionLane connect(Long id, Lane laneFrom, Lane laneTo, double width)
-			throws ModelInputException, TransformException {
+	public ConnectionLane connect(Long id, Lane laneFrom, Lane laneTo,
+			double width) throws ModelInputException, TransformException {
 		DefaultConnectionLane connectionLane = new DefaultConnectionLane(id,
 				laneFrom, laneTo, width);
 		return connectionLane;
 	}
+
 }

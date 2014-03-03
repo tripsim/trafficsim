@@ -90,14 +90,14 @@ public class ConnectorController extends AbstractController {
 					return failureResponse("already connected");
 				}
 				ConnectionLane connector = networkService.connectLanes(lane1,
-						lane2, project.getNetworkFactory());
+						lane2);
 				return connectSuccessResponse(connector, "Success 1!");
 			} else if (link1.getStartNode() == link2.getEndNode()) {
 				if (link1.getStartNode().isConnected(lane2, lane1)) {
 					return failureResponse("already connected");
 				}
 				ConnectionLane connector = networkService.connectLanes(lane2,
-						lane1, project.getNetworkFactory());
+						lane1);
 				return connectSuccessResponse(connector, "Success 2!");
 			} else {
 				return failureResponse("no connection");

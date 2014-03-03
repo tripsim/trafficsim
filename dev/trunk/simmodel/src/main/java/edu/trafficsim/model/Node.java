@@ -12,6 +12,10 @@ public interface Node extends Location {
 
 	boolean downstream(Link link);
 
+	Link getToNode(Node node);
+
+	Link getFromNode(Node node);
+
 	Collection<Link> getUpstreams();
 
 	Collection<Link> getDownstreams();

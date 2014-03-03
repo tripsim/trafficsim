@@ -30,11 +30,25 @@ public abstract class AbstractSegment<T> extends BaseEntity<T> implements
 	private LineString linearGeom;
 	private double length;
 
-	public AbstractSegment(long id, String name, LineString linearGeom)
-			throws TransformException {
+	public AbstractSegment(long id, String name, Location startLocation,
+			Location endLocation, LineString linearGeom)
+			throws TransformException, ModelInputException {
 		super(id, name);
+		checkStartEnd(startLocation, endLocation, linearGeom);
 		this.linearGeom = linearGeom;
+		this.startLocation = startLocation;
+		this.endLocation = endLocation;
 		this.subsegments = new ArrayList<Subsegment>(DEFAULT_SUBSEGMENTS_SIZE);
+	}
+
+	private void checkStartEnd(Location startLocation, Location endLocation,
+			LineString linearGeom) throws ModelInputException {
+		if (!linearGeom.getStartPoint().getCoordinate()
+				.equals(startLocation.getPoint().getCoordinate())
+				|| !linearGeom.getEndPoint().getCoordinate()
+						.equals(endLocation.getPoint().getCoordinate()))
+			throw new ModelInputException(
+					"Nodes and linear geometry doesn't match");
 	}
 
 	@Override
@@ -55,6 +69,17 @@ public abstract class AbstractSegment<T> extends BaseEntity<T> implements
 	@Override
 	public final LineString getLinearGeom() {
 		return linearGeom;
+	}
+
+	@Override
+	public void setLinearGeom(Location startLocation,
+			Location endLocation, LineString linearGeom)
+			throws TransformException, ModelInputException {
+		checkStartEnd(startLocation, endLocation, linearGeom);
+		this.linearGeom = linearGeom;
+		this.startLocation = startLocation;
+		this.endLocation = endLocation;
+		onGeomUpdated();
 	}
 
 	@Override

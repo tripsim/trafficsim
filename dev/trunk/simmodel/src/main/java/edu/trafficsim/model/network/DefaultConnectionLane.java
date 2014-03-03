@@ -20,7 +20,7 @@ public class DefaultConnectionLane extends AbstractLane<DefaultConnectionLane>
 	private Lane toLane;
 
 	public DefaultConnectionLane(long id, Lane fromLane, Lane toLane,
-			double width) throws ModelInputException, TransformException {
+			double width) throws TransformException, ModelInputException {
 		super(id, toLane.getSegment(), 0.0, 0.0, width, 0.0);
 		this.fromLane = fromLane;
 		this.toLane = toLane;

@@ -23,6 +23,10 @@ public abstract class AbstractController {
 		return response(false, message, null, null);
 	}
 
+	public static Map<String, Object> failureResponse(Exception e) {
+		return failureResponse(e.getMessage());
+	}
+
 	public static Map<String, Object> messageOnlySuccessResponse(String message) {
 		return response(true, message, null, null);
 	}
@@ -30,11 +34,6 @@ public abstract class AbstractController {
 	public static Map<String, Object> successResponse(String message,
 			String panelUrl) {
 		return response(true, message, panelUrl, null);
-	}
-
-	public static Map<String, Object> successResponse(String message,
-			Object data) {
-		return response(true, message, null, data);
 	}
 
 	public static Map<String, Object> successResponse(String message,

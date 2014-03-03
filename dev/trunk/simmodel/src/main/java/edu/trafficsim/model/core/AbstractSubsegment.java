@@ -31,16 +31,24 @@ public abstract class AbstractSubsegment<T> extends BaseEntity<T> implements
 
 	public AbstractSubsegment(long id, String name, Segment segment,
 			double start, double end, double width, double shift)
-			throws ModelInputException, TransformException {
+			throws TransformException {
 
 		super(id, name);
 		this.segment = segment;
+		this.start = start;
+		this.end = end;
 		this.width = width;
 		this.shift = shift;
 
-		checkStartEnd(start, end);
-		this.start = start;
-		this.end = end;
+		fixkStartEnd(start, end);
+	}
+
+	private void fixkStartEnd(double start, double end) {
+		try {
+			checkStartEnd(start, end);
+		} catch (ModelInputException e) {
+			this.start = this.end = 0;
+		}
 	}
 
 	private void checkStartEnd(double start, double end)
@@ -139,9 +147,9 @@ public abstract class AbstractSubsegment<T> extends BaseEntity<T> implements
 
 	@Override
 	public void onGeomUpdated() throws TransformException {
-		// TODO update linearGeom according to start, end, shift
 		linearGeom = Coordinates.getOffSetLineString(getCrs(),
 				segment.getLinearGeom(), shift);
+		fixkStartEnd(start, end);
 		linearGeom = Coordinates.trimLinearGeom(getCrs(), linearGeom, start,
 				-end);
 		length = Coordinates.orthodromicDistance(getCrs(), linearGeom);

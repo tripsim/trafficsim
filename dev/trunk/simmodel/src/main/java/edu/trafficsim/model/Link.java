@@ -6,32 +6,36 @@ import org.opengis.referencing.operation.TransformException;
 
 public interface Link extends Segment {
 
-	public LinkType getLinkType();
+	LinkType getLinkType();
 
-	public Node getStartNode();
+	Node getStartNode();
 
-	public Node getEndNode();
+	Node getEndNode();
 
-	public Lane getLane(int index);
+	Lane getLane(int index);
 
-	public Lane[] getLanes();
+	Lane[] getLanes();
 
-	public int numOfLanes();
+	int numOfLanes();
 
-	public void add(Lane lane) throws TransformException;
+	void add(Lane lane) throws TransformException;
 
-	public void remove(int laneId) throws TransformException;
+	void remove(int laneId) throws TransformException;
 
-	public Collection<ConnectionLane> getConnectionLanes(Link destLink);
+	Collection<ConnectionLane> getConnectors(Link destLink);
 
-	public Link getReverseLink();
+	Collection<ConnectionLane> getToConnectors();
 
-	public void setReverseLink(Link reverseLink);
+	Collection<ConnectionLane> getFromConnectors();
 
-	public void removeReverseLink();
+	Link getReverseLink();
 
-	public RoadInfo getRoadInfo();
+	void setReverseLink(Link reverseLink);
 
-	public void setRoadInfo(RoadInfo roadInfo);
+	void removeReverseLink();
+
+	RoadInfo getRoadInfo();
+
+	void setRoadInfo(RoadInfo roadInfo);
 
 }

@@ -7,6 +7,7 @@ import com.vividsolutions.jts.geom.LineString;
 import edu.trafficsim.model.LinkType;
 import edu.trafficsim.model.Node;
 import edu.trafficsim.model.RoadInfo;
+import edu.trafficsim.model.core.ModelInputException;
 
 public class DefaultLink extends AbstractLink<DefaultLink> {
 
@@ -17,9 +18,11 @@ public class DefaultLink extends AbstractLink<DefaultLink> {
 	private RoadInfo roadInfo;
 
 	public DefaultLink(long id, String name, LinkType linkType, Node startNode,
-			Node endNode, LineString linearGeom) throws TransformException {
+			Node endNode, LineString linearGeom) throws TransformException,
+			ModelInputException {
 		super(id, name, startNode, endNode, linearGeom);
 		this.linkType = linkType;
+		this.roadInfo = null;
 		onGeomUpdated();
 	}
 
@@ -34,6 +37,8 @@ public class DefaultLink extends AbstractLink<DefaultLink> {
 
 	@Override
 	public RoadInfo getRoadInfo() {
+		if (roadInfo == null)
+			this.roadInfo = new RoadInfo();
 		return roadInfo;
 	}
 

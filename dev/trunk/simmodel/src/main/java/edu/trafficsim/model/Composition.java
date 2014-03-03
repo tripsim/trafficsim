@@ -14,9 +14,11 @@ public interface Composition<T> extends DataContainer {
 
 	void put(T key, double value) throws ModelInputException;
 
-	void remove(T key);
+	Double remove(T key);
 
 	void culmulate(T key, double value) throws ModelInputException;
 
 	void reset();
+
+	boolean isEmpty();
 }
