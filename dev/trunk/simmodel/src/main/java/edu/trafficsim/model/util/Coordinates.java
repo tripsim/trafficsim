@@ -14,6 +14,7 @@ import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.LineSegment;
 import com.vividsolutions.jts.geom.LineString;
+import com.vividsolutions.jts.linearref.LengthIndexedLine;
 import com.vividsolutions.jts.linearref.LengthLocationMap;
 import com.vividsolutions.jts.linearref.LinearLocation;
 
@@ -45,7 +46,7 @@ public class Coordinates {
 	}
 
 	/********************************************************************************
-	 * Helper Method to Calculate Geodetic Parameters
+	 * Helper Method to for Geodetic Operation
 	 ********************************************************************************/
 
 	/**
@@ -89,10 +90,18 @@ public class Coordinates {
 	}
 
 	/********************************************************************************
-	 * Unimplemented Helper Method
+	 * Trim Linear Geometry
 	 * 
 	 * @throws TransformException
 	 ********************************************************************************/
+	/**
+	 * @param crs
+	 * @param linearGeom
+	 * @param head
+	 * @param tail
+	 * @return
+	 * @throws TransformException
+	 */
 	public static LineString trimLinearGeom(CoordinateReferenceSystem crs,
 			LineString linearGeom, double head, double tail)
 			throws TransformException {
@@ -154,12 +163,12 @@ public class Coordinates {
 	}
 
 	/********************************************************************************
-	 * Helper Method to Calculate Geometric Operations
+	 * Helper Method for Geometric Operations
 	 ********************************************************************************/
 
 	/**
-	 * This is WRONG: because this transformation doesn't consider the actual
-	 * distance, use geodetic calculations in @link GeoReferencing
+	 * This transformation doesn't consider the actual distance, use geodetic
+	 * calculations in @link GeoReferencing
 	 * 
 	 * @param linearGeom
 	 * @param position
@@ -206,5 +215,24 @@ public class Coordinates {
 		return getLineString(new Coordinate[] {
 				from.getCoordinateN(from.getNumPoints() - 1),
 				to.getCoordinateN(0) });
+	}
+
+	/**
+	 * @param linearGeom
+	 * @param coord
+	 * @return split linear geometries
+	 */
+	public static LineString[] splitLinearGeom(LineString linearGeom,
+			Coordinate coord) {
+		LengthIndexedLine line = new LengthIndexedLine(linearGeom);
+		double index = line.project(coord);
+
+		LineString[] linearGeoms = new LineString[2];
+		linearGeoms[0] = (LineString) line.extractLine(line.getStartIndex(),
+				index);
+		linearGeoms[1] = (LineString) line.extractLine(index,
+				line.getEndIndex());
+
+		return linearGeoms;
 	}
 }

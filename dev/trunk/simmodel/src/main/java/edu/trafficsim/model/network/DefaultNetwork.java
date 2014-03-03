@@ -19,6 +19,7 @@ public class DefaultNetwork extends AbstractNetwork<DefaultNetwork> implements
 		super(id, name);
 	}
 
+	private boolean dirty = true;
 	private final Set<Node> sources = new HashSet<Node>();
 	private final Set<Node> sinks = new HashSet<Node>();
 	private Coordinate center = null;
@@ -58,6 +59,7 @@ public class DefaultNetwork extends AbstractNetwork<DefaultNetwork> implements
 			}
 		}
 		center = new Coordinate(x / n, y / n);
+		dirty = false;
 	}
 
 	@Override
@@ -73,6 +75,16 @@ public class DefaultNetwork extends AbstractNetwork<DefaultNetwork> implements
 	@Override
 	public boolean isSink(Node node) {
 		return sinks.contains(node);
+	}
+
+	@Override
+	public void dirty() {
+		dirty = true;
+	}
+
+	@Override
+	public boolean isDirty() {
+		return dirty;
 	}
 
 }

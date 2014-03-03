@@ -10,5 +10,5 @@ public interface TurnPercentage extends Composition<Link> {
 
 	Collection<Link> getDownstreams();
 
-	void remove(Link link);
+	Double remove(Link link);
 }

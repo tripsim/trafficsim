@@ -232,8 +232,15 @@ public abstract class AbstractProject {
 		driverCompositions.remove(name);
 	}
 
-	public final long nextSeq() {
+	public final Long nextSeq() {
 		return sequence++;
+	}
+
+	public final Long[] nextSeqs(int num) {
+		Long[] seqs = new Long[num];
+		for (int i = 0; i < num; i++)
+			seqs[i] = sequence++;
+		return seqs;
 	}
 
 	public final void setSeq(long sequence) {

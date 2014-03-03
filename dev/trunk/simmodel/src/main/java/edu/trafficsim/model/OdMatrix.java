@@ -31,4 +31,8 @@ public interface OdMatrix extends DataContainer {
 			throws ModelInputException;
 
 	void removeTurnPercentage(Link link);
+
+	void updateFromLink(Link source, Link target);
+
+	void updateToLink(Link source, Link target) throws ModelInputException;
 }

@@ -157,10 +157,37 @@ public class DefaultOdMatrix extends BaseEntity<DefaultOdMatrix> implements
 				for (TurnPercentage turnPercentage : dynamicTurnPercentages
 						.get(key).getValues()) {
 					turnPercentage.remove(link);
+					if (turnPercentage.isEmpty())
+						dynamicTurnPercentages.remove(key);
 				}
 			}
 		}
+	}
 
+	@Override
+	public void updateFromLink(Link source, Link target) {
+		for (TurnKey key : dynamicTurnPercentages.keySet()) {
+			if (key.primaryKey() == source) {
+				DynamicTurnPercentage t = dynamicTurnPercentages.remove(key);
+				dynamicTurnPercentages.put(turnKey(target, key.secondaryKey()),
+						t);
+			}
+		}
+	}
+
+	@Override
+	public void updateToLink(Link source, Link target)
+			throws ModelInputException {
+		for (TurnKey key : dynamicTurnPercentages.keySet()) {
+			if (key.primaryKey() != source) {
+				for (TurnPercentage turnPercentage : dynamicTurnPercentages
+						.get(key).getValues()) {
+					Double value = turnPercentage.remove(source);
+					if (value != null)
+						turnPercentage.put(target, value.doubleValue());
+				}
+			}
+		}
 	}
 
 }

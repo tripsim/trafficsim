@@ -52,9 +52,10 @@ public abstract class AbstractComposition<K> extends BaseEntity<K> implements
 	}
 
 	@Override
-	public final void remove(K key) {
+	public final Double remove(K key) {
 		Double value = map.remove(key);
 		total -= value != null ? value : 0;
+		return value;
 	}
 
 	@Override
@@ -76,6 +77,11 @@ public abstract class AbstractComposition<K> extends BaseEntity<K> implements
 	@Override
 	public String toString() {
 		return super.toString() + ":" + map.toString();
+	}
+
+	@Override
+	public boolean isEmpty() {
+		return map.isEmpty();
 	}
 
 }

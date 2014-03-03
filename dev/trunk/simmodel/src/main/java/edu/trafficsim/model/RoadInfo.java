@@ -10,6 +10,10 @@ public class RoadInfo implements Serializable {
 	private long osmId;
 	private String highway;
 
+	public RoadInfo() {
+		this("", -1, "");
+	}
+
 	public RoadInfo(String roadName, long osmId, String highway) {
 		this.roadName = roadName;
 		this.osmId = osmId;

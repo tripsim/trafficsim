@@ -6,80 +6,84 @@ import com.vividsolutions.jts.geom.Coordinate;
 
 public interface Network {
 
-	public Collection<Node> getSources();
+	Collection<Node> getSources();
 
-	public Collection<Node> getSinks();
+	Collection<Node> getSinks();
 
-	public Collection<Node> getNodes();
+	Collection<Node> getNodes();
 
-	public Collection<Link> getLinks();
+	Collection<Link> getLinks();
 
-	public Node getNode(long id);
+	Node getNode(long id);
 
-	public Link getLink(long id);
+	Link getLink(long id);
 
-	public boolean contains(Node node);
+	boolean contains(Node node);
 
-	public boolean contains(Link link);
+	boolean contains(Link link);
 
-	public boolean containsNode(long id);
+	boolean containsNode(long id);
 
-	public boolean containsLink(long id);
+	boolean containsLink(long id);
 
-	public void add(Node node);
+	void add(Node node);
 
-	public void add(Link link);
+	void add(Link link);
 
-	public Node removeNode(long id);
+	Node removeNode(long id);
 
-	public Link removeLink(long id);
+	Link removeLink(long id);
 
-	public Node removeNode(Node node);
+	Node removeNode(Node node);
 
-	public Link removeLink(Link link);
+	Link removeLink(Link link);
 
-	public void add(Node... nodes);
+	void add(Node... nodes);
 
-	public void add(Link... links);
+	void add(Link... links);
 
-	public Coordinate center();
+	Coordinate center();
 
-	public boolean isSource(Node node);
+	boolean isSource(Node node);
 
-	public boolean isSink(Node node);
+	boolean isSink(Node node);
+
+	void dirty();
+
+	boolean isDirty();
 
 	/**
 	 * discover its sources and sinks
 	 */
-	public void discover();
+	void discover();
 
 	// TODO implement as needed
 
-	// public Set<Route> getRoutes(Node start, Node end);
+	// Set<Route> getRoutes(Node start, Node end);
 	//
-	// public static Set<Route> getRoutes(Node start, Node end);
+	// static Set<Route> getRoutes(Node start, Node end);
 	//
-	// public static Set<Link> getDownstreamLinks(Node node);
+	// static Set<Link> getDownstreamLinks(Node node);
 	//
-	// public static Set<Link> getDownstreamLinks(Link link);
+	// static Set<Link> getDownstreamLinks(Link link);
 	//
-	// public static Set<Node> getDownstreamNodes(Node node);
+	// static Set<Node> getDownstreamNodes(Node node);
 	//
-	// public static Set<Node> getDownstreamNodes(Link link);
+	// static Set<Node> getDownstreamNodes(Link link);
 	//
-	// public static Set<Link> getUpstreamLinks(Node node);
+	// static Set<Link> getUpstreamLinks(Node node);
 	//
-	// public static Set<Link> getUpstreamLinks(Link link);
+	// static Set<Link> getUpstreamLinks(Link link);
 	//
-	// public static Set<Node> getUpstreamNodes(Node node);
+	// static Set<Node> getUpstreamNodes(Node node);
 	//
-	// public static Set<Node> getUpstreamNodes(Link link);
+	// static Set<Node> getUpstreamNodes(Link link);
 	//
-	// public static Network getDownstreamSubnetwork(Node node);
+	// static Network getDownstreamSubnetwork(Node node);
 	//
-	// public static Network getDownstreamSubnetwork(Link link);
+	// static Network getDownstreamSubnetwork(Link link);
 	//
-	// public static Network getUpstreamSubnetwork(Node node);
+	// static Network getUpstreamSubnetwork(Node node);
 	//
-	// public static Network getUpstreamSubnetwork(Link link);
+	// static Network getUpstreamSubnetwork(Link link);
 }

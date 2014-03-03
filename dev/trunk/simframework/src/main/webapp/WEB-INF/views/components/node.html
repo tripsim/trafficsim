@@ -21,6 +21,16 @@
 				<td>Sink</td>
 				<td data-th-text="${network.isSink(node)} ? 'Yes' : 'No'"></td>
 			</tr>
+			<tr data-th-if="${node.upstreams.isEmpty()} == false">
+				<td>Upstream Links</td>
+				<td data-th-each="us : ${node.upstreams}"><span
+					data-th-text="${us.id}"></span></td>
+			</tr>
+			<tr data-th-if="${node.downstreams.isEmpty()} == false">
+				<td>Downstream Links</td>
+				<td data-th-each="ds : ${node.downstreams}"><span
+					data-th-text="${ds.id}"></span></td>
+			</tr>
 		</tbody>
 	</table>
 </div>

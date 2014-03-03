@@ -28,7 +28,10 @@
 			</tr>
 			<tr>
 				<td><span class="user-configuration-link-edit button">edit</span><span
-					class="user-configuration-link-remove button">remove</span></td>
+					class="user-configuration-link-remove button">remove</span><span
+					data-th-if="${link.reverseLink} == null"
+					class="user-configuration-link-create-reverse button">create
+						reverse link</span></td>
 			</tr>
 		</tbody>
 	</table>

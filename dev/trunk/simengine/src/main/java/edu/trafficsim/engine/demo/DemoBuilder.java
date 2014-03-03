@@ -137,7 +137,7 @@ public class DemoBuilder {
 		link2.setRoadInfo(info2);
 
 		// Network
-		network = networkFactory.createEmptyNetwork(seq++, "test");
+		network = networkFactory.createNetwork(seq++, "test");
 		network.add(node1, node2, node3);
 		network.add(link1, link2);
 		network.discover();

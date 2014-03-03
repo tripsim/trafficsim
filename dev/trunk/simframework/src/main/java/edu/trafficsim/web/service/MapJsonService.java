@@ -1,7 +1,12 @@
 package edu.trafficsim.web.service;
 
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+
 import org.springframework.stereotype.Service;
 
+import com.vividsolutions.jts.io.WKTReader;
 import com.vividsolutions.jts.io.WKTWriter;
 
 import edu.trafficsim.model.ConnectionLane;
@@ -16,7 +21,8 @@ public class MapJsonService {
 	private double defaultCenterX = -9952964.247717002;
 	private double defaultCenterY = 5323065.604899759;
 
-	private static WKTWriter writer = new WKTWriter();
+	public static WKTWriter writer = new WKTWriter();
+	public static WKTReader reader = new WKTReader();
 
 	/**
 	 * @param network
@@ -247,41 +253,87 @@ public class MapJsonService {
 	/**
 	 * @param network
 	 * @return { "center" : [x, y] , "links" : { linkId : link WKT String } ,
-	 *         "lanes" : { linkId : [lane WKT Strings] }}
+	 *         "nodes": {nodeId: node WKT String}, "lanes" : { linkId : [lane
+	 *         WKT Strings] } , "connectors" : {connectorId :connector WKT
+	 *         String} }
 	 */
 	public String getNetworkJson(Network network) {
+		String str = network == null ? "" : ","
+				+ getNetworkJson(network.getLinks(), network.getNodes());
+		return "{" + getCenter(network) + str + "}";
+	}
+
+	private String getNetworkJson(Collection<Link> links, Collection<Node> nodes) {
 		StringBuffer linkSb = new StringBuffer();
 		StringBuffer laneSb = new StringBuffer();
 		StringBuffer connectorSb = new StringBuffer();
 		StringBuffer nodeSb = new StringBuffer();
-		if (network != null) {
-			for (Link link : network.getLinks()) {
-				linkSb.append(getLink(link));
-				linkSb.append(",");
-				laneSb.append(getLanes(link));
-				laneSb.append(",");
-			}
-			for (Node node : network.getNodes()) {
-				for (ConnectionLane connector : node.getConnectors()) {
-					connectorSb.append(getConnector(connector));
-					connectorSb.append(",");
-				}
-				nodeSb.append(getNode(node));
-				nodeSb.append(",");
-			}
 
-			if (linkSb.length() > 0)
-				linkSb.deleteCharAt(linkSb.length() - 1);
-			if (laneSb.length() > 0)
-				laneSb.deleteCharAt(laneSb.length() - 1);
-			if (connectorSb.length() > 0)
-				connectorSb.deleteCharAt(connectorSb.length() - 1);
-			if (nodeSb.length() > 0)
-				nodeSb.deleteCharAt(nodeSb.length() - 1);
+		for (Link link : links) {
+			linkSb.append(getLink(link));
+			linkSb.append(",");
+			laneSb.append(getLanes(link));
+			laneSb.append(",");
 		}
-		return "{" + getCenter(network) + ", \"links\": {" + linkSb.toString()
-				+ "}, \"lanes\":{" + laneSb.toString() + "}, \"connectors\":{"
+		for (Node node : nodes) {
+			for (ConnectionLane connector : node.getConnectors()) {
+				connectorSb.append(getConnector(connector));
+				connectorSb.append(",");
+			}
+			nodeSb.append(getNode(node));
+			nodeSb.append(",");
+		}
+
+		if (linkSb.length() > 0)
+			linkSb.deleteCharAt(linkSb.length() - 1);
+		if (laneSb.length() > 0)
+			laneSb.deleteCharAt(laneSb.length() - 1);
+		if (connectorSb.length() > 0)
+			connectorSb.deleteCharAt(connectorSb.length() - 1);
+		if (nodeSb.length() > 0)
+			nodeSb.deleteCharAt(nodeSb.length() - 1);
+
+		return "\"links\": {" + linkSb.toString() + "}, \"lanes\":{"
+				+ laneSb.toString() + "}, \"connectors\":{"
 				+ connectorSb.toString() + "}, \"nodes\":{" + nodeSb.toString()
-				+ "}}";
+				+ "}";
+	}
+
+	/**
+	 * @param Link
+	 *            newly created link
+	 * @return { "links" : { linkId : link WKT String } , "nodes": {nodeId: node
+	 *         WKT String}, "lanes" : { linkId : [lane WKT Strings] } ,
+	 *         "connectors" : {connectorId :connector WKT String} }
+	 */
+	public String getNewLinkJson(Link link) {
+		Set<Link> links = new HashSet<Link>(5);
+		Set<Node> nodes = new HashSet<Node>(6);
+
+		links.add(link);
+		nodes.add(link.getStartNode());
+		nodes.add(link.getEndNode());
+		Collection<Link> streams = link.getStartNode().getDownstreams();
+		links.addAll(streams);
+		for (Link stream : streams) {
+			nodes.add(stream.getEndNode());
+		}
+		streams = link.getStartNode().getUpstreams();
+		links.addAll(streams);
+		for (Link stream : streams) {
+			nodes.add(stream.getStartNode());
+		}
+		streams = link.getEndNode().getDownstreams();
+		links.addAll(streams);
+		for (Link stream : streams) {
+			nodes.add(stream.getEndNode());
+		}
+		streams = link.getEndNode().getUpstreams();
+		links.addAll(streams);
+		for (Link stream : streams) {
+			nodes.add(stream.getEndNode());
+		}
+
+		return "{" + getNetworkJson(links, nodes) + "}";
 	}
 }

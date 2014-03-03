@@ -12,8 +12,10 @@ import com.vividsolutions.jts.geom.LineString;
 import edu.trafficsim.model.ConnectionLane;
 import edu.trafficsim.model.Lane;
 import edu.trafficsim.model.Link;
+import edu.trafficsim.model.Location;
 import edu.trafficsim.model.Node;
 import edu.trafficsim.model.core.AbstractSegment;
+import edu.trafficsim.model.core.ModelInputException;
 
 public abstract class AbstractLink<T> extends AbstractSegment<T> implements
 		Link {
@@ -23,10 +25,11 @@ public abstract class AbstractLink<T> extends AbstractSegment<T> implements
 	private Link reverseLink = null;
 
 	public AbstractLink(long id, String name, Node startNode, Node endNode,
-			LineString linearGeom) throws TransformException {
-		super(id, name, linearGeom);
-		startLocation = startNode;
-		endLocation = endNode;
+			LineString linearGeom) throws TransformException,
+			ModelInputException {
+		super(id, name, startNode, endNode, linearGeom);
+		startNode.add(this);
+		endNode.add(this);
 	}
 
 	@Override
@@ -37,6 +40,23 @@ public abstract class AbstractLink<T> extends AbstractSegment<T> implements
 	@Override
 	public Node getEndNode() {
 		return (Node) endLocation;
+	}
+
+	@Override
+	public final void setLinearGeom(Location startLocation,
+			Location endLocation, LineString linearGeom)
+			throws TransformException, ModelInputException {
+		Node oldStart = getStartNode() == startLocation ? null : getStartNode();
+		Node oldEnd = getEndNode() == endLocation ? null : getEndNode();
+		super.setLinearGeom(startLocation, endLocation, linearGeom);
+		if (oldStart != null) {
+			oldStart.remove(this);
+			getStartNode().add(this);
+		}
+		if (oldEnd != null) {
+			oldEnd.remove(this);
+			getEndNode().add(this);
+		}
 	}
 
 	@Override
@@ -113,13 +133,23 @@ public abstract class AbstractLink<T> extends AbstractSegment<T> implements
 	}
 
 	@Override
-	public Collection<ConnectionLane> getConnectionLanes(Link destLink) {
+	public Collection<ConnectionLane> getConnectors(Link destLink) {
 		List<ConnectionLane> connectionLanes = new ArrayList<ConnectionLane>();
 		for (Lane fromLane : getLanes()) {
 			connectionLanes.addAll(getEndNode().getConnectors(fromLane,
 					destLink));
 		}
 		return Collections.unmodifiableCollection(connectionLanes);
+	}
+
+	@Override
+	public Collection<ConnectionLane> getToConnectors() {
+		return getEndNode().getInConnectors(this);
+	}
+
+	@Override
+	public Collection<ConnectionLane> getFromConnectors() {
+		return getStartNode().getOutConnectors(this);
 	}
 
 }

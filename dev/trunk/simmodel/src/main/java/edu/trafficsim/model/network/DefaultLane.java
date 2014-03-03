@@ -7,24 +7,15 @@ import org.opengis.referencing.operation.TransformException;
 import edu.trafficsim.model.ConnectionLane;
 import edu.trafficsim.model.Lane;
 import edu.trafficsim.model.Link;
-import edu.trafficsim.model.core.ModelInputException;
 
 public class DefaultLane extends AbstractLane<DefaultLane> {
 
 	private static final long serialVersionUID = 1L;
 
-	private static final double DEFAULT_START = 0.0;
-	private static final double DEFAULT_END = 1.0;
-
 	private int laneId;
 
-	public DefaultLane(long id, Link link, double width)
-			throws TransformException, ModelInputException {
-		this(id, link, DEFAULT_START, DEFAULT_END, width);
-	}
-
 	public DefaultLane(long id, Link link, double start, double end,
-			double width) throws ModelInputException, TransformException {
+			double width) throws TransformException {
 		super(id, link, start, end, width, 0);
 		this.laneId = -2;
 		link.add(this);

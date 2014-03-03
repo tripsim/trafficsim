@@ -15,10 +15,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.fasterxml.jackson.core.JsonParseException;
+import com.vividsolutions.jts.geom.CoordinateSequence;
+import com.vividsolutions.jts.geom.LineString;
+import com.vividsolutions.jts.io.ParseException;
 
+import edu.trafficsim.model.Link;
 import edu.trafficsim.model.Network;
+import edu.trafficsim.model.Node;
 import edu.trafficsim.model.core.ModelInputException;
 import edu.trafficsim.web.service.MapJsonService;
+import edu.trafficsim.web.service.entity.NetworkService;
 import edu.trafficsim.web.service.entity.OsmImportService;
 import edu.trafficsim.web.service.entity.OsmImportService.OsmHighwayValue;
 
@@ -26,6 +32,8 @@ import edu.trafficsim.web.service.entity.OsmImportService.OsmHighwayValue;
 @RequestMapping(value = "/network")
 public class NetworkController extends AbstractController {
 
+	@Autowired
+	NetworkService networkService;
 	@Autowired
 	OsmImportService extractOsmNetworkService;
 	@Autowired
@@ -36,6 +44,9 @@ public class NetworkController extends AbstractController {
 		Network network = project.getNetwork();
 		if (network == null)
 			return "components/empty";
+
+		if (network.isDirty())
+			network.discover();
 		model.addAttribute("network", network);
 		model.addAttribute("linkCount", network.getLinks().size());
 		model.addAttribute("nodeCount", network.getNodes().size());
@@ -82,5 +93,89 @@ public class NetworkController extends AbstractController {
 			e.printStackTrace();
 		}
 		return failureResponse("Network generation failed.");
+	}
+
+	@RequestMapping(value = "/draw", method = RequestMethod.POST)
+	public @ResponseBody
+	Map<String, Object> breakLink(
+			@RequestParam("startCoordX") Double startCoordX,
+			@RequestParam("startCoordY") Double startCoordY,
+			@RequestParam("endCoordX") Double endCoordX,
+			@RequestParam("endCoordY") Double endCoordY,
+			@RequestParam("startLink") Long startLinkId,
+			@RequestParam("endLink") Long endLinkId,
+			@RequestParam("startNode") Long startNodeId,
+			@RequestParam("endNode") Long endNodeId,
+			@RequestParam("linearGeom") String linearGeomWkt) {
+		Network network = project.getNetwork();
+		if (network == null)
+			networkService.createNetwork();
+
+		try {
+			CoordinateSequence points = ((LineString) MapJsonService.reader
+					.read(linearGeomWkt)).getCoordinateSequence();
+
+			// get start node
+			Node startNode;
+			if (startLinkId != null && startCoordX != null
+					&& startCoordY != null) {
+				Link link = network.getLink(startLinkId);
+				startNode = networkService.breakLink(link, startCoordX,
+						startCoordY);
+				points.setOrdinate(0, CoordinateSequence.X, startNode
+						.getPoint().getX());
+				points.setOrdinate(0, CoordinateSequence.Y, startNode
+						.getPoint().getY());
+			} else if (startNodeId != null) {
+				startNode = network.getNode(startNodeId);
+				points.setOrdinate(0, CoordinateSequence.X, startNode
+						.getPoint().getX());
+				points.setOrdinate(0, CoordinateSequence.Y, startNode
+						.getPoint().getY());
+			} else
+				startNode = networkService.createNode(points
+						.getCoordinateCopy(0));
+			if (startNode == null)
+				return failureResponse("No starting node.");
+
+			// get end node
+			Node endNode;
+			if (endLinkId != null && endCoordX != null && endCoordY != null) {
+				Link link = network.getLink(endLinkId);
+				endNode = networkService.breakLink(link, endCoordX, endCoordY);
+				points.setOrdinate(points.size() - 1, CoordinateSequence.X,
+						endNode.getPoint().getX());
+				points.setOrdinate(points.size() - 1, CoordinateSequence.Y,
+						endNode.getPoint().getY());
+			} else if (endNodeId != null) {
+				endNode = network.getNode(endNodeId);
+				points.setOrdinate(points.size() - 1, CoordinateSequence.X,
+						endNode.getPoint().getX());
+				points.setOrdinate(points.size() - 1, CoordinateSequence.Y,
+						endNode.getPoint().getY());
+			} else
+				endNode = networkService.createNode(points
+						.getCoordinateCopy(points.size() - 1));
+			if (endNode == null)
+				return failureResponse("No ending node.");
+
+			if (startNode.getToNode(endNode) != null)
+				return failureResponse("Link already exists.");
+			Link link = networkService.createLink(startNode, endNode, points);
+			if (startNode.getFromNode(endNode) != null) {
+				link.setReverseLink(startNode.getFromNode(endNode));
+				networkService.shiftLanes(startNode.getFromNode(endNode));
+			}
+
+			return successResponse("Link(s) created.", null,
+					mapJsonService.getNewLinkJson(link));
+
+		} catch (TransformException e) {
+			return failureResponse("Transformation issues!");
+		} catch (ModelInputException e) {
+			return failureResponse(e);
+		} catch (ParseException e) {
+			return failureResponse(e);
+		}
 	}
 }

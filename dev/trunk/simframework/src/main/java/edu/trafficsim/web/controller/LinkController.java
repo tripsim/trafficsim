@@ -1,9 +1,12 @@
 package edu.trafficsim.web.controller;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import org.opengis.referencing.operation.TransformException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,6 +18,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import edu.trafficsim.model.Link;
 import edu.trafficsim.model.Network;
+import edu.trafficsim.model.core.ModelInputException;
+import edu.trafficsim.web.UserInterfaceException;
+import edu.trafficsim.web.service.MapJsonService;
 import edu.trafficsim.web.service.entity.NetworkService;
 import edu.trafficsim.web.service.entity.OsmImportService.OsmHighwayValue;
 
@@ -24,6 +30,8 @@ public class LinkController extends AbstractController {
 
 	@Autowired
 	NetworkService networkService;
+	@Autowired
+	MapJsonService mapJsonService;
 
 	@RequestMapping(value = "view/{id}", method = RequestMethod.GET)
 	public String linkView(@PathVariable long id, Model model) {
@@ -85,6 +93,44 @@ public class LinkController extends AbstractController {
 	@RequestMapping(value = "/remove", method = RequestMethod.POST)
 	public @ResponseBody
 	Map<String, Object> removeLink(@RequestParam("id") long id) {
-		return successResponse("Link removed.", networkService.removeLink(id));
+		try {
+			Link reverse = project.getNetwork().getLink(id).getReverseLink();
+			Map<String, Object> data = new HashMap<String, Object>();
+			for (Map.Entry<String, Set<String>> entry : networkService
+					.removeLink(id).entrySet()) {
+				data.put(entry.getKey(), entry.getValue());
+			}
+			if (reverse != null) {
+				data.put(
+						"lanesconnectors",
+						mapJsonService.getLanesConnectorsJson(
+								project.getNetwork(), reverse.getId()));
+			}
+			return successResponse("Link removed.", null, data);
+		} catch (TransformException e) {
+			return failureResponse("Transformation issues!");
+		}
+	}
+
+	@RequestMapping(value = "/createreverse", method = RequestMethod.POST)
+	public @ResponseBody
+	Map<String, Object> createReverseLink(@RequestParam("id") long id) {
+		try {
+			Link reverse = networkService.createReverseLink(id);
+			Map<String, Object> data = new HashMap<String, Object>();
+			data.put(
+					"link",
+					mapJsonService.getLinkJson(project.getNetwork(),
+							reverse.getId()));
+			data.put("lanesconnectors", mapJsonService.getLanesConnectorsJson(
+					project.getNetwork(), id));
+			return successResponse("Link removed.", "link/view/" + id, data);
+		} catch (TransformException e) {
+			return failureResponse("Transformation issues!");
+		} catch (UserInterfaceException e) {
+			return failureResponse(e);
+		} catch (ModelInputException e) {
+			return failureResponse(e);
+		}
 	}
 }
