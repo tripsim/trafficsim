@@ -46,9 +46,9 @@ public class DefaultVehicleGenerating implements IVehicleGenerating {
 
 			// create vehicle with random vehicle type and driver type
 			VehicleType vtypeToBuild = Randoms.randomElement(
-					od.getVehicleComposition(time), rand);
+					od.getVehicleComposition(), rand);
 			DriverType dtypeToBuild = Randoms.randomElement(
-					od.getDriverComposition(time), rand);
+					od.getDriverComposition(), rand);
 			if (vtypeToBuild == null || dtypeToBuild == null)
 				continue;
 
