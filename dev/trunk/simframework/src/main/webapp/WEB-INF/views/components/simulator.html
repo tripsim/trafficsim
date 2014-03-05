@@ -4,30 +4,26 @@
 </div>
 <div>
 	<table>
-		<tbody data-th-fragment="form(simulator)">
-			<tr>
-				<td>Simulation</td>
-				<td data-th-text="${simulator.simulatorType.name}"></td>
-			</tr>
+		<tbody data-th-fragment="form(timer)">
 			<tr>
 				<td>Step Size</td>
 				<td><input type="text" name="stepSize"
-					data-th-value="${simulator.stepSize}" /></td>
+					data-th-value="${timer.stepSize}" /></td>
 			</tr>
 			<tr>
 				<td>Duration</td>
 				<td><input type="text" name="duration"
-					data-th-value="${simulator.duration}" /></td>
+					data-th-value="${timer.duration}" /></td>
 			</tr>
 			<tr>
 				<td>Warmup</td>
 				<td><input type="text" name="warmup"
-					data-th-value="${simulator.warmup}" /></td>
+					data-th-value="${timer.warmup}" /></td>
 			</tr>
 			<tr>
 				<td>Random Seed</td>
 				<td><input type="text" name="seed"
-					data-th-value="${simulator.seed}" /></td>
+					data-th-value="${timer.seed}" /></td>
 			</tr>
 			<tr>
 				<td><span class="user-configuration-run-simulation button">Run

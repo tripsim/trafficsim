@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.net.ProtocolException;
 
 import org.opengis.referencing.operation.TransformException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonParseException;
@@ -13,29 +12,26 @@ import edu.trafficsim.engine.NetworkFactory;
 import edu.trafficsim.engine.osm.OsmNetworkExtractor;
 import edu.trafficsim.model.Network;
 import edu.trafficsim.model.core.ModelInputException;
-import edu.trafficsim.web.SimulationProject;
+import edu.trafficsim.utility.Sequence;
 
 @Service
 public class OsmImportService extends EntityService {
 	
-	@Autowired
-	SimulationProject project;
 
 	// "/way[highway=*][bbox=-89.4114,43.0707,-89.3955,43.0753]"
 	private static final String url = "http://jxapi.openstreetmap.org/xapi/api/0.6";
 	private static final String queryTemplate = "/way[highway=%s][bbox=%s]";
 
-	public Network createNetwork(String bbox, String highway,
+	public Network createNetwork(Sequence seq, String bbox, String highway,
 			NetworkFactory factory) throws ModelInputException,
 			JsonParseException, ProtocolException, IOException,
 			TransformException {
-		OsmNetworkExtractor extractor = new OsmNetworkExtractor(project.nextSeq());
+		OsmNetworkExtractor extractor = new OsmNetworkExtractor(seq);
 
 		String highwayQuery = OsmHighwayValue.valueOf(highway) == null ? OsmHighwayValue.All.queryValue
 				: OsmHighwayValue.valueOf(highway).queryValue;
 		String query = String.format(queryTemplate, highwayQuery, bbox);
 		Network network = extractor.extract(url + query, factory);
-		project.setSeq(extractor.currentSeq());
 		return network;
 	}
 

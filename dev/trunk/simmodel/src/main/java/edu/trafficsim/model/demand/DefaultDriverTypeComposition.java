@@ -5,7 +5,6 @@ import java.util.Set;
 import edu.trafficsim.model.DriverType;
 import edu.trafficsim.model.DriverTypeComposition;
 import edu.trafficsim.model.core.AbstractComposition;
-import edu.trafficsim.model.core.ModelInputException;
 
 public class DefaultDriverTypeComposition extends
 		AbstractComposition<DriverType> implements DriverTypeComposition {
@@ -13,8 +12,7 @@ public class DefaultDriverTypeComposition extends
 	private static final long serialVersionUID = 1L;
 
 	public DefaultDriverTypeComposition(long id, String name,
-			DriverType[] driverTypes, double[] probabilities)
-			throws ModelInputException {
+			DriverType[] driverTypes, Double[] probabilities) {
 		super(id, name, driverTypes, probabilities);
 	}
 

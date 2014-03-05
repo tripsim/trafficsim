@@ -1,5 +1,6 @@
 package edu.trafficsim.model;
 
+import java.util.Collection;
 import java.util.Set;
 
 import edu.trafficsim.model.core.ModelInputException;
@@ -7,6 +8,8 @@ import edu.trafficsim.model.core.ModelInputException;
 public interface Composition<T> extends DataContainer {
 
 	Set<T> keys();
+
+	Collection<Double> values();
 
 	double total();
 
@@ -21,4 +24,5 @@ public interface Composition<T> extends DataContainer {
 	void reset();
 
 	boolean isEmpty();
+
 }

@@ -3,9 +3,9 @@ package edu.trafficsim.engine.factory;
 import org.apache.commons.math3.random.RandomGenerator;
 import org.opengis.referencing.operation.TransformException;
 
+import edu.trafficsim.engine.SimulationScenario;
 import edu.trafficsim.engine.VehicleFactory;
 import edu.trafficsim.model.DriverType;
-import edu.trafficsim.model.SimulationScenario;
 import edu.trafficsim.model.Vehicle;
 import edu.trafficsim.model.VehicleType;
 import edu.trafficsim.model.roadusers.DefaultVehicle;
@@ -42,10 +42,10 @@ public class DefaultVehicleFactory extends AbstractFactory implements
 		// vehicle name
 		String name = "vehicle" + count;
 		// statistics initial frame
-		int startFrame = scenario.getSimulator().getForwardedSteps();
+		int startFrame = scenario.getTimer().getForwardedSteps();
 
 		// Normal distribution for desired values
-		RandomGenerator rng = scenario.getSimulator().getRand()
+		RandomGenerator rng = scenario.getTimer().getRand()
 				.getRandomGenerator();
 		double width = Randoms.normal(vehicleType.getWidth(), cv, rng);
 		double length = Randoms.normal(vehicleType.getLength(), cv, rng);

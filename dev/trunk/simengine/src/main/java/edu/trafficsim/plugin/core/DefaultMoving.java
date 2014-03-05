@@ -4,9 +4,9 @@ import java.util.Collection;
 
 import org.opengis.referencing.operation.TransformException;
 
+import edu.trafficsim.engine.SimulationScenario;
 import edu.trafficsim.model.ConnectionLane;
 import edu.trafficsim.model.Link;
-import edu.trafficsim.model.SimulationScenario;
 import edu.trafficsim.model.Vehicle;
 import edu.trafficsim.model.util.Randoms;
 import edu.trafficsim.plugin.AbstractPlugin;
@@ -31,7 +31,7 @@ public class DefaultMoving extends AbstractPlugin implements IMoving {
 
 	protected void updatePosition(Vehicle vehicle,
 			SimulationScenario simulationScenario) {
-		double stepSize = simulationScenario.getSimulator().getStepSize();
+		double stepSize = simulationScenario.getTimer().getStepSize();
 
 		// calculate new speed and new position
 		double newSpeed = vehicle.speed() + stepSize * vehicle.acceleration();
@@ -66,9 +66,9 @@ public class DefaultMoving extends AbstractPlugin implements IMoving {
 		if (vehicle.onConnector()) {
 			Link link = routing.getSucceedingLink(scenario.getOdMatrix(),
 					vehicle.getLink(), vehicle.getVehicleType()
-							.getVehicleClass(), scenario.getSimulator()
-							.getForwardedTime(), scenario.getSimulator()
-							.getRand().getRandom());
+							.getVehicleClass(), scenario.getTimer()
+							.getForwardedTime(), scenario.getTimer().getRand()
+							.getRandom());
 			vehicle.currentLane(((ConnectionLane) vehicle.currentLane())
 					.getToLane());
 			vehicle.targetLink(link);
@@ -77,9 +77,12 @@ public class DefaultMoving extends AbstractPlugin implements IMoving {
 					.getToConnectors();
 			if (connectors.contains(vehicle.preferredConnector())) {
 				vehicle.currentLane(vehicle.preferredConnector());
-			} else {
+			} else if (!connectors.isEmpty()) {
 				vehicle.currentLane(Randoms.randomElement(connectors, scenario
-						.getSimulator().getRand().getRandom()));
+						.getTimer().getRand().getRandom()));
+			} else {
+				vehicle.deactivate();
+				return;
 			}
 		}
 		if (vehicle.currentLane().getLength() - vehicle.position() < 0) {

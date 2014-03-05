@@ -4,7 +4,7 @@ import java.util.Collection;
 
 import com.vividsolutions.jts.geom.Coordinate;
 
-public interface Network {
+public interface Network extends DataContainer {
 
 	Collection<Node> getSources();
 

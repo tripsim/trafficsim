@@ -2,8 +2,8 @@ package edu.trafficsim.plugin.core;
 
 import java.util.Collection;
 
+import edu.trafficsim.engine.SimulationScenario;
 import edu.trafficsim.model.ConnectionLane;
-import edu.trafficsim.model.SimulationScenario;
 import edu.trafficsim.model.Vehicle;
 import edu.trafficsim.plugin.AbstractPlugin;
 import edu.trafficsim.plugin.ICarFollowing;
@@ -78,7 +78,7 @@ public abstract class AbstractCarFollowingImpl extends AbstractPlugin implements
 					vehicle.getLength(), vehicle.speed(), desiredSpeed,
 					maxAccel, maxDecel, desiredAccel, desiredDecel,
 					leading.getLength(), leading.speed(), simulationScenario
-							.getSimulator().getStepSize());
+							.getTimer().getStepSize());
 		}
 
 		vehicle.acceleration(accel);

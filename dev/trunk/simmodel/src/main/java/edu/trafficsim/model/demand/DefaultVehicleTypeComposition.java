@@ -5,7 +5,6 @@ import java.util.Set;
 import edu.trafficsim.model.VehicleType;
 import edu.trafficsim.model.VehicleTypeComposition;
 import edu.trafficsim.model.core.AbstractComposition;
-import edu.trafficsim.model.core.ModelInputException;
 
 public class DefaultVehicleTypeComposition extends
 		AbstractComposition<VehicleType> implements VehicleTypeComposition {
@@ -13,20 +12,13 @@ public class DefaultVehicleTypeComposition extends
 	private static final long serialVersionUID = 1L;
 
 	public DefaultVehicleTypeComposition(long id, String name,
-			VehicleType[] vehicleTypes, double[] probabilities)
-			throws ModelInputException {
+			VehicleType[] vehicleTypes, Double[] probabilities) {
 		super(id, name, vehicleTypes, probabilities);
 	}
 
 	@Override
 	public final Set<VehicleType> getVehicleTypes() {
 		return keys();
-	}
-
-	@Override
-	public void setId(Long id) {
-		// TODO Auto-generated method stub
-		
 	}
 
 }

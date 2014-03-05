@@ -1,21 +1,11 @@
-package edu.trafficsim.model.simulator;
+package edu.trafficsim.utility;
 
+import java.io.Serializable;
 import java.util.Date;
 
-import edu.trafficsim.model.BaseEntity;
-import edu.trafficsim.model.Simulator;
-import edu.trafficsim.model.SimulatorType;
-import edu.trafficsim.model.core.Rand;
+public class Timer implements Serializable {
 
-public abstract class AbstractSimulator<T> extends BaseEntity<T> implements
-		Simulator {
-
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
-
-	private SimulatorType type;
 
 	private Date startTime;
 	private int warmup; // in seconds
@@ -28,10 +18,11 @@ public abstract class AbstractSimulator<T> extends BaseEntity<T> implements
 
 	private int forwardedSteps;
 
-	public AbstractSimulator(long id, String name, SimulatorType type,
-			int duration, double stepSize, long seed) {
-		super(id, name);
-		this.type = type;
+	public static Timer create(int duration, double stepSize, long seed) {
+		return new Timer(duration, stepSize, seed);
+	}
+
+	public Timer(int duration, double stepSize, long seed) {
 		this.duration = duration;
 		this.stepSize = stepSize;
 		this.seed = seed;
@@ -40,18 +31,6 @@ public abstract class AbstractSimulator<T> extends BaseEntity<T> implements
 		reset();
 	}
 
-	@Override
-	public SimulatorType getSimulatorType() {
-		return type;
-	}
-
-	@Override
-	public void setSimulatorType(SimulatorType type) {
-		this.type = type;
-
-	}
-
-	@Override
 	public Date getStartTime() {
 		return startTime;
 	}
@@ -60,7 +39,6 @@ public abstract class AbstractSimulator<T> extends BaseEntity<T> implements
 		this.startTime = startTime;
 	}
 
-	@Override
 	public int getWarmup() {
 		return warmup;
 	}
@@ -69,7 +47,6 @@ public abstract class AbstractSimulator<T> extends BaseEntity<T> implements
 		this.warmup = warmup;
 	}
 
-	@Override
 	public int getDuration() {
 		return duration;
 	}
@@ -78,7 +55,6 @@ public abstract class AbstractSimulator<T> extends BaseEntity<T> implements
 		this.duration = duration;
 	}
 
-	@Override
 	public double getStepSize() {
 		return stepSize;
 	}
@@ -87,12 +63,10 @@ public abstract class AbstractSimulator<T> extends BaseEntity<T> implements
 		this.stepSize = stepSize;
 	}
 
-	@Override
 	public int getTotalSteps() {
 		return (int) Math.round(duration / stepSize);
 	}
 
-	@Override
 	public long getSeed() {
 		return seed;
 	}
@@ -101,32 +75,26 @@ public abstract class AbstractSimulator<T> extends BaseEntity<T> implements
 		this.seed = seed;
 	}
 
-	@Override
 	public Rand getRand() {
 		return rand;
 	}
 
-	@Override
 	public double getForwardedTime() {
 		return stepSize * (double) forwardedSteps;
 	}
 
-	@Override
 	public int getForwardedSteps() {
 		return forwardedSteps;
 	}
 
-	@Override
 	public boolean isFinished() {
 		return duration < forwardedSteps * stepSize;
 	}
 
-	@Override
 	public void stepForward() {
 		forwardedSteps++;
 	}
 
-	@Override
 	public void reset() {
 		forwardedSteps = 0;
 		rand = new Rand(seed);

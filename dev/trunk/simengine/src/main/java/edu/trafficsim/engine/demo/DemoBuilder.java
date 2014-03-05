@@ -12,10 +12,11 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.vividsolutions.jts.geom.Coordinate;
 
 import edu.trafficsim.engine.NetworkFactory;
-import edu.trafficsim.engine.ScenarioFactory;
+import edu.trafficsim.engine.OdFactory;
+import edu.trafficsim.engine.SimulationScenario;
 import edu.trafficsim.engine.TypesFactory;
 import edu.trafficsim.engine.factory.DefaultNetworkFactory;
-import edu.trafficsim.engine.factory.DefaultScenarioFactory;
+import edu.trafficsim.engine.factory.DefaultOdFactory;
 import edu.trafficsim.engine.factory.DefaultTypesFactory;
 import edu.trafficsim.engine.osm.OsmNetworkExtractor;
 import edu.trafficsim.model.DriverType;
@@ -27,28 +28,26 @@ import edu.trafficsim.model.Node;
 import edu.trafficsim.model.Od;
 import edu.trafficsim.model.OdMatrix;
 import edu.trafficsim.model.RoadInfo;
-import edu.trafficsim.model.SimulationScenario;
-import edu.trafficsim.model.Simulator;
 import edu.trafficsim.model.TurnPercentage;
 import edu.trafficsim.model.VehicleType;
-import edu.trafficsim.model.VehicleTypeComposition;
 import edu.trafficsim.model.VehicleType.VehicleClass;
+import edu.trafficsim.model.VehicleTypeComposition;
 import edu.trafficsim.model.core.ModelInputException;
 import edu.trafficsim.model.util.GeoReferencing;
 import edu.trafficsim.model.util.GeoReferencing.TransformCoordinateFilter;
 import edu.trafficsim.utility.CoordinateTransformer;
+import edu.trafficsim.utility.Sequence;
+import edu.trafficsim.utility.Timer;
 
 // Hack to create nodes links...
 public class DemoBuilder {
 
-	private Simulator simulator;
+	private Timer timer;
 	private Network network;
 	private OdMatrix odMatrix;
 
-	long seq = 0;
-
-	static ScenarioFactory scenarioFactory = DefaultScenarioFactory
-			.getInstance();
+	static OdFactory odFactory = DefaultOdFactory.getInstance();
+	static Sequence seq = new Sequence();
 
 	public DemoBuilder() throws ModelInputException,
 			NoSuchAuthorityCodeException, FactoryException, TransformException {
@@ -60,7 +59,7 @@ public class DemoBuilder {
 			JsonParseException, IOException, TransformException {
 		BufferedReader reader = new BufferedReader(new InputStreamReader(
 				getClass().getResourceAsStream("demo.json")));
-		OsmNetworkExtractor extractor = new OsmNetworkExtractor(0);
+		OsmNetworkExtractor extractor = new OsmNetworkExtractor(seq);
 		return extractor.extract(extractor.parse(reader),
 				DefaultNetworkFactory.getInstance());
 	}
@@ -109,11 +108,11 @@ public class DemoBuilder {
 				coord1859358892, coord53720208, coord53607075 };
 
 		// Nodes
-		Node node1 = networkFactory.createNode(seq++, "Johnson at Randall",
+		Node node1 = networkFactory.createNode(seq, "Johnson at Randall",
 				new Coordinate(coord53596818));
-		Node node2 = networkFactory.createNode(seq++, "Johnson at Orchardl",
+		Node node2 = networkFactory.createNode(seq, "Johnson at Orchardl",
 				new Coordinate(coord1345424866));
-		Node node3 = networkFactory.createNode(seq++, "Johnson at Charter",
+		Node node3 = networkFactory.createNode(seq, "Johnson at Charter",
 				new Coordinate(coord53607075));
 		node1.setId(1l);
 		node2.setId(2l);
@@ -121,23 +120,23 @@ public class DemoBuilder {
 		// Node node4 = networkFactory.createNode("Johnson at Mill");
 		// Node node5 = networkFactory.createNode("Johnson at Park");
 		// Links
-		Link link1 = networkFactory.createLink(seq++, "Johson1", node1, node2,
-				coords1);
-		Link link2 = networkFactory.createLink(seq++, "Johson2", node2, node3,
-				coords2);
+		Link link1 = networkFactory.createLink(seq, "Johson1", node1, node2,
+				coords1, null);
+		Link link2 = networkFactory.createLink(seq, "Johson2", node2, node3,
+				coords2, null);
 		link1.setId(1l);
 		link2.setId(2l);
 
 		// RoadInfo
-		RoadInfo info1 = networkFactory.createRoadInfo(seq++, "Test name",
-				12345, "Test highway");
-		RoadInfo info2 = networkFactory.createRoadInfo(seq++, "Test name",
-				54321, "Test highway");
+		RoadInfo info1 = networkFactory.createRoadInfo(seq, "Test name", 12345,
+				"Test highway");
+		RoadInfo info2 = networkFactory.createRoadInfo(seq, "Test name", 54321,
+				"Test highway");
 		link1.setRoadInfo(info1);
 		link2.setRoadInfo(info2);
 
 		// Network
-		network = networkFactory.createNetwork(seq++, "test");
+		network = networkFactory.createNetwork(seq, "test");
 		network.add(node1, node2, node3);
 		network.add(link1, link2);
 		network.discover();
@@ -149,35 +148,33 @@ public class DemoBuilder {
 		CoordinateTransformer.transform(network, filter);
 
 		// Lanes
-		Lane[] lanes1 = networkFactory.createLanes(new Long[] { seq++, seq++,
-				seq++ }, link1, 10, -10, 4);
-		Lane[] lanes2 = networkFactory.createLanes(new Long[] { seq++, seq++,
-				seq++ }, link2, 10, -10, 4);
+		Lane[] lanes1 = networkFactory.createLanes(seq, link1, 10, -10, 4, 3);
+		Lane[] lanes2 = networkFactory.createLanes(seq, link2, 10, -10, 4, 3);
 		// Connectors
-		networkFactory.connect(seq++, lanes1[0], lanes2[0], 4);
-		networkFactory.connect(seq++, lanes1[1], lanes2[1], 4);
-		networkFactory.connect(seq++, lanes1[2], lanes2[2], 4);
+		networkFactory.connect(seq, lanes1[0], lanes2[0], 4);
+		networkFactory.connect(seq, lanes1[1], lanes2[1], 4);
+		networkFactory.connect(seq, lanes1[2], lanes2[2], 4);
 
 		// create types and
-		VehicleType vehicleTypeCar = typesFactory.createVehicleType(seq++,
+		VehicleType vehicleTypeCar = typesFactory.createVehicleType(seq,
 				"TestCar", VehicleClass.Car);
-		VehicleType vehicleTypeTruck = typesFactory.createVehicleType(seq++,
+		VehicleType vehicleTypeTruck = typesFactory.createVehicleType(seq,
 				"TestTruck", VehicleClass.Truck);
-		DriverType driverType = typesFactory.createDriverType(seq++,
-				"TestDriver");
+		DriverType driverType = typesFactory
+				.createDriverType(seq, "TestDriver");
 
 		// create Demand
 		VehicleType[] vehicleTypes = new VehicleType[] { vehicleTypeCar,
 				vehicleTypeTruck };
-		double[] vehPossibilities = new double[] { 0.8, 0.2 };
+		Double[] vehPossibilities = new Double[] { 0.8, 0.2 };
 		VehicleTypeComposition vehicleTypeComposition = typesFactory
-				.createVehicleTypeComposition(seq++, "Default", vehicleTypes,
+				.createVehicleTypeComposition(seq, "Default", vehicleTypes,
 						vehPossibilities);
 		// Driver Type
 		DriverType[] driverTypes = new DriverType[] { driverType };
-		double[] drvPossibilities = new double[] { 1.0 };
+		Double[] drvPossibilities = new Double[] { 1.0 };
 		DriverTypeComposition driverTypeComposition = typesFactory
-				.createDriverTypeComposition(seq++, "Default", driverTypes,
+				.createDriverTypeComposition(seq, "Default", driverTypes,
 						drvPossibilities);
 
 		// Origin Destination
@@ -185,31 +182,29 @@ public class DemoBuilder {
 		// no destination 100s~200s 800vph
 		double[] times = new double[] { 300, 500 };
 		Integer[] vphs = new Integer[] { 4000, 4800 };
-		Od od = scenarioFactory.createOd(seq++, "od", node1, null,
+		Od od = odFactory.createOd(seq, "od", node1, null,
 				vehicleTypeComposition, driverTypeComposition, times, vphs);
 
-		odMatrix = scenarioFactory.createOdMatrix(seq++, "odm");
+		odMatrix = odFactory.createOdMatrix(seq, "odm");
 		odMatrix.add(od);
 
-		// Router
+		// Turn Percentage
 		double[] times1 = new double[] { 500 };
-		TurnPercentage turnPercentage1 = scenarioFactory
-				.createTurnPercentage(seq++, "tp1", link1,
-						new Link[] { link2 }, new double[] { 1.0 });
+		TurnPercentage turnPercentage1 = odFactory.createTurnPercentage(seq,
+				"tp1", link1, new Link[] { link2 }, new double[] { 1.0 });
 		TurnPercentage[] turnPercentages = new TurnPercentage[] { turnPercentage1 };
 		odMatrix.setTurnPercentage(link1, VehicleClass.Car, times1,
 				turnPercentages);
 
-		// Simulator
-		simulator = scenarioFactory.createSimulator(seq++, 100, 0.1);
+		// Timer
+		timer = new Timer(100, 0.5, 0);
 	}
 
 	public SimulationScenario getScenario() {
-		return scenarioFactory.createSimulationScenario(seq++, "demo",
-				simulator, network, odMatrix);
+		return new SimulationScenario(network, odMatrix, timer);
 	}
 
-	public Long getSeq() {
+	public Sequence getSeq() {
 		return seq;
 	}
 

@@ -113,8 +113,9 @@ public class Coordinates {
 		// return linearGeom;
 
 		GeoReferencing geo = getGeoReferencing(crs);
-		Coordinate[] coords = Arrays.copyOf(linearGeom.getCoordinates(),
-				linearGeom.getCoordinates().length);
+		Coordinate[] coords = new Coordinate[linearGeom.getCoordinates().length];
+		for (int i = 0; i < coords.length; i++)
+			coords[i] = linearGeom.getCoordinateSequence().getCoordinateCopy(i);
 
 		int iStart = 0, iEnd = coords.length;
 		double distance = geo.orthodromicDistance(coords[iStart],

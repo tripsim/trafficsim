@@ -7,22 +7,27 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.MatrixVariable;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.SessionAttributes;
 
+import edu.trafficsim.engine.NetworkFactory;
 import edu.trafficsim.model.ConnectionLane;
 import edu.trafficsim.model.Lane;
 import edu.trafficsim.model.Link;
 import edu.trafficsim.model.Network;
 import edu.trafficsim.model.core.ModelInputException;
+import edu.trafficsim.utility.Sequence;
 import edu.trafficsim.web.service.MapJsonService;
 import edu.trafficsim.web.service.entity.NetworkService;
 
 @Controller
 @RequestMapping(value = "/connector")
+@SessionAttributes(value = { "sequence", "networkFactory", "network" })
 public class ConnectorController extends AbstractController {
 
 	@Autowired
@@ -36,10 +41,7 @@ public class ConnectorController extends AbstractController {
 			@MatrixVariable(value = "laneId", pathVar = "fromLinkId") int fromLaneId,
 			@PathVariable long toLinkId,
 			@MatrixVariable(value = "laneId", pathVar = "toLinkId") int toLaneId,
-			Model model) {
-		Network network = project.getNetwork();
-		if (network == null)
-			return "components/empty";
+			@ModelAttribute("network") Network network, Model model) {
 		Link fromLink = network.getLink(fromLinkId);
 		if (fromLink == null)
 			return "components/empty";
@@ -67,10 +69,10 @@ public class ConnectorController extends AbstractController {
 	Map<String, Object> connectLanes(@RequestParam("link1") long link1Id,
 			@RequestParam("lane1") int lane1Id,
 			@RequestParam("link2") long link2Id,
-			@RequestParam("lane2") int lane2Id) {
-		Network network = project.getNetwork();
-		if (network == null)
-			return failureResponse("no network.");
+			@RequestParam("lane2") int lane2Id,
+			@ModelAttribute("networkFactory") NetworkFactory factory,
+			@ModelAttribute("sequence") Sequence seq,
+			@ModelAttribute("network") Network network) {
 		Link link1 = network.getLink(link1Id);
 		if (link1 == null)
 			return failureResponse("no link.");
@@ -89,15 +91,15 @@ public class ConnectorController extends AbstractController {
 				if (link1.getEndNode().isConnected(lane1, lane2)) {
 					return failureResponse("already connected");
 				}
-				ConnectionLane connector = networkService.connectLanes(lane1,
-						lane2);
+				ConnectionLane connector = networkService.connectLanes(factory,
+						seq, lane1, lane2);
 				return connectSuccessResponse(connector, "Success 1!");
 			} else if (link1.getStartNode() == link2.getEndNode()) {
 				if (link1.getStartNode().isConnected(lane2, lane1)) {
 					return failureResponse("already connected");
 				}
-				ConnectionLane connector = networkService.connectLanes(lane2,
-						lane1);
+				ConnectionLane connector = networkService.connectLanes(factory,
+						seq, lane2, lane1);
 				return connectSuccessResponse(connector, "Success 2!");
 			} else {
 				return failureResponse("no connection");
@@ -115,10 +117,9 @@ public class ConnectorController extends AbstractController {
 			@RequestParam("fromLink") long fromLinkId,
 			@RequestParam("fromLane") int fromLaneId,
 			@RequestParam("toLink") long toLinkId,
-			@RequestParam("toLane") int toLaneId) {
-		Network network = project.getNetwork();
-		if (network == null)
-			return failureResponse("no network.");
+			@RequestParam("toLane") int toLaneId,
+			@ModelAttribute("network") Network network) {
+
 		Link fromLink = network.getLink(fromLinkId);
 		if (fromLink == null)
 			return failureResponse("no link.");

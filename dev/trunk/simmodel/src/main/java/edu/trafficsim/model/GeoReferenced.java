@@ -5,7 +5,7 @@ import org.opengis.referencing.operation.TransformException;
 
 public interface GeoReferenced extends DataContainer {
 
-	public CoordinateReferenceSystem getCrs();
+	CoordinateReferenceSystem getCrs();
 
-	public void onGeomUpdated() throws TransformException;
+	void onGeomUpdated() throws TransformException;
 }

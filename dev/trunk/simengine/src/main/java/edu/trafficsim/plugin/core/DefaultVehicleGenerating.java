@@ -8,12 +8,12 @@ import java.util.Random;
 import org.apache.commons.math3.random.RandomGenerator;
 import org.opengis.referencing.operation.TransformException;
 
+import edu.trafficsim.engine.SimulationScenario;
 import edu.trafficsim.engine.VehicleFactory;
 import edu.trafficsim.model.DriverType;
 import edu.trafficsim.model.Lane;
 import edu.trafficsim.model.Link;
 import edu.trafficsim.model.Od;
-import edu.trafficsim.model.SimulationScenario;
 import edu.trafficsim.model.Vehicle;
 import edu.trafficsim.model.VehicleType;
 import edu.trafficsim.model.util.Randoms;
@@ -28,11 +28,11 @@ public class DefaultVehicleGenerating implements IVehicleGenerating {
 	@Override
 	public final List<Vehicle> newVehicles(Od od, SimulationScenario scenario,
 			VehicleFactory vehicleFactory) throws TransformException {
-		double time = scenario.getSimulator().getForwardedTime();
-		double stepSize = scenario.getSimulator().getStepSize();
-		RandomGenerator rng = scenario.getSimulator().getRand()
+		double time = scenario.getTimer().getForwardedTime();
+		double stepSize = scenario.getTimer().getStepSize();
+		RandomGenerator rng = scenario.getTimer().getRand()
 				.getRandomGenerator();
-		Random rand = scenario.getSimulator().getRand().getRandom();
+		Random rand = scenario.getTimer().getRand().getRandom();
 
 		// calculate arrival rate
 		int vph = od.vph(time);
@@ -87,8 +87,8 @@ public class DefaultVehicleGenerating implements IVehicleGenerating {
 			IRouting routing = PluginManager.getRoutingImpl(scenario
 					.getRoutingType(vtypeToBuild));
 			Link targetLink = routing.getSucceedingLink(link, vehicle
-					.getVehicleType().getVehicleClass(), scenario
-					.getSimulator().getForwardedTime(), rand);
+					.getVehicleType().getVehicleClass(), scenario.getTimer()
+					.getForwardedTime(), rand);
 			vehicle.targetLink(targetLink);
 
 			// add vehicle to the simulation

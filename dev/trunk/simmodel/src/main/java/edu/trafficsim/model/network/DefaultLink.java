@@ -18,11 +18,11 @@ public class DefaultLink extends AbstractLink<DefaultLink> {
 	private RoadInfo roadInfo;
 
 	public DefaultLink(long id, String name, LinkType linkType, Node startNode,
-			Node endNode, LineString linearGeom) throws TransformException,
-			ModelInputException {
+			Node endNode, LineString linearGeom, RoadInfo roadInfo)
+			throws TransformException, ModelInputException {
 		super(id, name, startNode, endNode, linearGeom);
 		this.linkType = linkType;
-		this.roadInfo = null;
+		this.roadInfo = roadInfo;
 		onGeomUpdated();
 	}
 
@@ -37,8 +37,6 @@ public class DefaultLink extends AbstractLink<DefaultLink> {
 
 	@Override
 	public RoadInfo getRoadInfo() {
-		if (roadInfo == null)
-			this.roadInfo = new RoadInfo();
 		return roadInfo;
 	}
 
