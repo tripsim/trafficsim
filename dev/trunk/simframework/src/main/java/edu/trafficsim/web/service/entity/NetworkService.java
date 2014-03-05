@@ -13,6 +13,7 @@ import com.vividsolutions.jts.geom.CoordinateSequence;
 import com.vividsolutions.jts.geom.LineString;
 
 import edu.trafficsim.engine.NetworkFactory;
+import edu.trafficsim.engine.factory.Sequence;
 import edu.trafficsim.model.ConnectionLane;
 import edu.trafficsim.model.Lane;
 import edu.trafficsim.model.Link;
@@ -22,7 +23,6 @@ import edu.trafficsim.model.OdMatrix;
 import edu.trafficsim.model.core.ModelInputException;
 import edu.trafficsim.model.core.MultiValuedMap;
 import edu.trafficsim.model.util.Coordinates;
-import edu.trafficsim.utility.Sequence;
 import edu.trafficsim.web.UserInterfaceException;
 
 @Service

@@ -17,8 +17,8 @@ public class ImportScenarioService {
 		project.setTimer(scenario.getTimer());
 		if (scenario.getOdMatrix() != null) {
 			for (Od od : scenario.getOdMatrix().getOds()) {
-				library.addVehicleCompositions(od.getVehicleCompositions());
-				library.addDriverCompositions(od.getDriverCompositions());
+				library.addVehicleComposition(od.getVehicleComposition());
+				library.addDriverComposition(od.getDriverComposition());
 			}
 			for (VehicleTypeComposition composition : library
 					.getVehicleCompositions()) {

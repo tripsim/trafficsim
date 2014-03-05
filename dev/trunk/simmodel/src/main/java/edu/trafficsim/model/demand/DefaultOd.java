@@ -19,35 +19,23 @@ public class DefaultOd extends BaseEntity<DefaultOd> implements Od {
 		private static final long serialVersionUID = 1L;
 	}
 
-	static final class DynamicVehicleTypeComposition extends
-			AbstractDynamicProperty<VehicleTypeComposition> {
-
-		private static final long serialVersionUID = 1L;
-	}
-
-	static final class DynamicDriverTypeComposition extends
-			AbstractDynamicProperty<DriverTypeComposition> {
-
-		private static final long serialVersionUID = 1L;
-	}
-
 	private Node origin;
 	private Node destination;
+	private VehicleTypeComposition vehicleComposition;
+	private DriverTypeComposition driverComposition;
 
 	private final DynamicFlow dynamicFlow = new DynamicFlow();
-	private final DynamicVehicleTypeComposition dynamicVehicleTypeComposition = new DynamicVehicleTypeComposition();
-	private final DynamicDriverTypeComposition dynamicDriverTypeComposition = new DynamicDriverTypeComposition();
 
 	public DefaultOd(long id, String name, Node origin, Node destination,
-			VehicleTypeComposition vehicleTypeComposition,
-			DriverTypeComposition driverTypeComposition, double[] times,
+			VehicleTypeComposition vehicleComposition,
+			DriverTypeComposition driverComposition, double[] times,
 			Integer[] vphs) throws ModelInputException {
 		super(id, name);
 		this.origin = origin;
 		this.destination = destination;
+		this.vehicleComposition = vehicleComposition;
+		this.driverComposition = driverComposition;
 		setVphs(times, vphs);
-		setVehicleComposiion(vehicleTypeComposition);
-		setDriverComposition(driverTypeComposition);
 	}
 
 	@Override
@@ -71,6 +59,11 @@ public class DefaultOd extends BaseEntity<DefaultOd> implements Od {
 	}
 
 	@Override
+	public Collection<Integer> getVphs() {
+		return dynamicFlow.getValues();
+	}
+
+	@Override
 	public final int vph(double time) {
 		return dynamicFlow.getProperty(time) == null ? 0 : dynamicFlow
 				.getProperty(time);
@@ -83,44 +76,23 @@ public class DefaultOd extends BaseEntity<DefaultOd> implements Od {
 	}
 
 	@Override
-	public VehicleTypeComposition getVehicleComposition(double time) {
-		return dynamicVehicleTypeComposition.getProperty(time);
-	}
-
-	public final void setVehicleTypeComposition(double[] times,
-			VehicleTypeComposition[] compositions) throws ModelInputException {
-		dynamicVehicleTypeComposition.setProperties(times, compositions);
+	public VehicleTypeComposition getVehicleComposition() {
+		return vehicleComposition;
 	}
 
 	@Override
-	public DriverTypeComposition getDriverComposition(double time) {
-		return dynamicDriverTypeComposition.getProperty(time);
-	}
-
-	public final void setDriverTypeComposition(double[] times,
-			DriverTypeComposition[] compositions) throws ModelInputException {
-		dynamicDriverTypeComposition.setProperties(times, compositions);
+	public void setVehicleComposition(VehicleTypeComposition composition) {
+		this.vehicleComposition = composition;
 	}
 
 	@Override
-	public Collection<VehicleTypeComposition> getVehicleCompositions() {
-		return dynamicVehicleTypeComposition.getValues();
+	public DriverTypeComposition getDriverComposition() {
+		return driverComposition;
 	}
 
 	@Override
-	public Collection<DriverTypeComposition> getDriverCompositions() {
-		return dynamicDriverTypeComposition.getValues();
+	public void setDriverComposition(DriverTypeComposition composition) {
+		this.driverComposition = composition;
 	}
 
-	@Override
-	public void setVehicleComposiion(VehicleTypeComposition vehicleComposition) {
-		dynamicVehicleTypeComposition.setProperty(Double.POSITIVE_INFINITY,
-				vehicleComposition);
-	}
-
-	@Override
-	public void setDriverComposition(DriverTypeComposition driverComposition) {
-		dynamicDriverTypeComposition.setProperty(Double.POSITIVE_INFINITY,
-				driverComposition);
-	}
 }

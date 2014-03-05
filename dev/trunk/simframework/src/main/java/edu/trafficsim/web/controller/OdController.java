@@ -15,13 +15,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import edu.trafficsim.engine.OdFactory;
+import edu.trafficsim.engine.factory.Sequence;
 import edu.trafficsim.engine.library.TypesLibrary;
 import edu.trafficsim.model.Network;
 import edu.trafficsim.model.Node;
 import edu.trafficsim.model.Od;
 import edu.trafficsim.model.OdMatrix;
 import edu.trafficsim.model.core.ModelInputException;
-import edu.trafficsim.utility.Sequence;
 import edu.trafficsim.web.UserInterfaceException;
 import edu.trafficsim.web.service.entity.OdService;
 

@@ -18,25 +18,29 @@ import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.io.ParseException;
 
 import edu.trafficsim.engine.NetworkFactory;
+import edu.trafficsim.engine.OdFactory;
+import edu.trafficsim.engine.factory.Sequence;
 import edu.trafficsim.model.Link;
 import edu.trafficsim.model.Network;
 import edu.trafficsim.model.Node;
 import edu.trafficsim.model.OdMatrix;
 import edu.trafficsim.model.core.ModelInputException;
-import edu.trafficsim.utility.Sequence;
 import edu.trafficsim.web.service.MapJsonService;
 import edu.trafficsim.web.service.entity.NetworkService;
+import edu.trafficsim.web.service.entity.OdService;
 import edu.trafficsim.web.service.entity.OsmImportService;
 import edu.trafficsim.web.service.entity.OsmImportService.OsmHighwayValue;
 
 @Controller
 @RequestMapping(value = "/network")
-@SessionAttributes(value = { "sequence", "networkFactory", "network",
-		"odMatrix" })
+@SessionAttributes(value = { "sequence", "networkFactory", "odFactory",
+		"network", "odMatrix" })
 public class NetworkController extends AbstractController {
 
 	@Autowired
 	NetworkService networkService;
+	@Autowired
+	OdService odService;
 	@Autowired
 	OsmImportService extractOsmNetworkService;
 	@Autowired
@@ -65,13 +69,16 @@ public class NetworkController extends AbstractController {
 	public @ResponseBody
 	Map<String, Object> createNetwork(@ModelAttribute("sequence") Sequence seq,
 			@ModelAttribute("networkFactory") NetworkFactory factory,
+			@ModelAttribute("odFactory") OdFactory odFactory,
 			@RequestParam("bbox") String bbox,
 			@RequestParam("highway") String highway, Model model) {
 		try {
 			Network network = extractOsmNetworkService.createNetwork(seq, bbox,
 					highway, factory);
 
+			OdMatrix odMatrix = odService.createOdMatrix(odFactory, seq);
 			model.addAttribute("network", network);
+			model.addAttribute("odMatrix", odMatrix);
 			return successResponse("network created", "network/view",
 					mapJsonService.getNetworkJson(network));
 		} catch (Exception e) {

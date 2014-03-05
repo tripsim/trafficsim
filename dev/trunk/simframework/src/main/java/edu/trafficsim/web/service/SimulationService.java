@@ -1,14 +1,26 @@
 package edu.trafficsim.web.service;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+
 import org.opengis.referencing.operation.TransformException;
 import org.springframework.stereotype.Service;
 
+import com.vividsolutions.jts.io.ParseException;
+
+import edu.trafficsim.engine.NetworkFactory;
+import edu.trafficsim.engine.OdFactory;
 import edu.trafficsim.engine.SimulationScenario;
 import edu.trafficsim.engine.StatisticsCollector;
+import edu.trafficsim.engine.TypesFactory;
+import edu.trafficsim.engine.factory.Sequence;
 import edu.trafficsim.model.Network;
 import edu.trafficsim.model.OdMatrix;
+import edu.trafficsim.model.core.ModelInputException;
 import edu.trafficsim.plugin.ISimulating;
 import edu.trafficsim.plugin.PluginManager;
+import edu.trafficsim.utility.ScenarioImportExport;
 import edu.trafficsim.utility.Timer;
 import edu.trafficsim.web.SimulationProject;
 
@@ -19,9 +31,9 @@ public class SimulationService {
 	private static final double DEFAULT_STEPSIZE = 0.5d;
 	private static final long DEFAULT_SEED = 0l;
 
-	public void runSimulation(SimulationProject project, Network network,
-			OdMatrix odMatrix) throws TransformException {
-		SimulationScenario scenario = createSimulationScenario(project,
+	public void runSimulation(SimulationProject project, Sequence seq,
+			Network network, OdMatrix odMatrix) throws TransformException {
+		SimulationScenario scenario = createSimulationScenario(project, seq,
 				network, odMatrix);
 		runSimulation(scenario, project.getStatistics());
 	}
@@ -35,12 +47,14 @@ public class SimulationService {
 	}
 
 	public Timer createSimulation() {
-		return new Timer(DEFAULT_DURATION, DEFAULT_STEPSIZE, DEFAULT_SEED);
+		return Timer.create(DEFAULT_DURATION, DEFAULT_STEPSIZE, DEFAULT_SEED);
 	}
 
 	public SimulationScenario createSimulationScenario(
-			SimulationProject project, Network network, OdMatrix odMatrix) {
-		return new SimulationScenario(network, odMatrix, project.getTimer());
+			SimulationProject project, Sequence seq, Network network,
+			OdMatrix odMatrix) {
+		return SimulationScenario.create(network, odMatrix, project.getTimer(),
+				seq);
 	}
 
 	public void setTimer(SimulationProject project, double stepSize,
@@ -57,5 +71,22 @@ public class SimulationService {
 
 	public Timer createTimer() {
 		return Timer.create(DEFAULT_DURATION, DEFAULT_STEPSIZE, DEFAULT_SEED);
+	}
+
+	public void exportScenario(SimulationProject project, Sequence seq,
+			Network network, OdMatrix odMatrix, OutputStream out)
+			throws IOException {
+		SimulationScenario scenario = createSimulationScenario(project, seq,
+				network, odMatrix);
+		ScenarioImportExport.exportScenario(scenario, out);
+	}
+
+	public SimulationScenario importScenario(InputStream in,
+			TypesFactory typesFactory, NetworkFactory networkFactory,
+			OdFactory odFactory) throws IOException, ParseException,
+			ModelInputException, TransformException {
+		SimulationScenario scenario = ScenarioImportExport.importScenario(in,
+				typesFactory, networkFactory, odFactory);
+		return scenario;
 	}
 }

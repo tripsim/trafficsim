@@ -11,15 +11,14 @@ import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
-import com.fasterxml.jackson.databind.MappingJsonFactory;
+
+import edu.trafficsim.engine.Engine;
 
 abstract class AbstractHighwaysJsonParser {
 
-	private static JsonFactory jsonFactory = null;
+	private static JsonFactory jsonFactory = Engine.jsonFactory;
 
 	AbstractHighwaysJsonParser() {
-		if (jsonFactory == null)
-			jsonFactory = new MappingJsonFactory();
 	}
 
 	public void parse(Reader reader) throws JsonParseException, IOException {

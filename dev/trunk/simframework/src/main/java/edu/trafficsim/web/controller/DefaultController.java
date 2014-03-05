@@ -16,11 +16,11 @@ import edu.trafficsim.engine.NetworkFactory;
 import edu.trafficsim.engine.OdFactory;
 import edu.trafficsim.engine.SimulationScenario;
 import edu.trafficsim.engine.TypesFactory;
+import edu.trafficsim.engine.factory.Sequence;
 import edu.trafficsim.engine.library.TypesLibrary;
 import edu.trafficsim.model.Network;
 import edu.trafficsim.model.OdMatrix;
 import edu.trafficsim.model.core.ModelInputException;
-import edu.trafficsim.utility.Sequence;
 import edu.trafficsim.web.SimulationProject;
 import edu.trafficsim.web.UserInterfaceException;
 import edu.trafficsim.web.service.DemoService;
@@ -54,7 +54,7 @@ public class DefaultController extends AbstractController {
 	public String home(Model model, HttpSession session)
 			throws ModelInputException {
 		if (session.isNew()) {
-			Sequence seq = new Sequence();
+			Sequence seq = Sequence.create();
 			NetworkFactory networkFactory = project.getNetworkFactory();
 			OdFactory odFactory = project.getOdFactory();
 			TypesFactory typesFactory = project.getTypesFactory();
@@ -82,9 +82,7 @@ public class DefaultController extends AbstractController {
 		String str = "";
 		try {
 			SimulationScenario scenario = demoService.getScenario();
-			Sequence seq = demoService.getSequence();
-
-			model.addAttribute("sequence", seq);
+			model.addAttribute("sequence", scenario.getSequence());
 			model.addAttribute("network", scenario.getNetwork());
 			model.addAttribute("odMatrix", scenario.getOdMatrix());
 

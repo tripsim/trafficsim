@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
+import edu.trafficsim.engine.factory.Sequence;
 import edu.trafficsim.model.Network;
 import edu.trafficsim.model.OdMatrix;
 import edu.trafficsim.utility.Timer;
@@ -21,7 +22,7 @@ import edu.trafficsim.web.service.SimulationService;
 
 @Controller
 @RequestMapping(value = "/simulator")
-@SessionAttributes(value = { "simulator", "network", "odMatrix" })
+@SessionAttributes(value = { "sequence", "network", "odMatrix" })
 public class SimulatorController extends AbstractController {
 
 	@Autowired
@@ -45,12 +46,13 @@ public class SimulatorController extends AbstractController {
 			@RequestParam("warmup") int warmup,
 			@RequestParam("stepSize") double stepSize,
 			@RequestParam("seed") long seed,
+			@ModelAttribute("sequence") Sequence seq,
 			@ModelAttribute("network") Network network,
 			@ModelAttribute("odMatrix") OdMatrix odMatrix) {
 		simulationService.setTimer(project, stepSize, duration, warmup, seed);
 
 		try {
-			simulationService.runSimulation(project, network, odMatrix);
+			simulationService.runSimulation(project, seq, network, odMatrix);
 		} catch (TransformException e) {
 			return failureResponse("Transform issues!");
 		}

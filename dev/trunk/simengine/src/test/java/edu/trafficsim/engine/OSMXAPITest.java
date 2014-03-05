@@ -12,11 +12,11 @@ import org.opengis.referencing.operation.TransformException;
 import com.fasterxml.jackson.core.JsonParseException;
 
 import edu.trafficsim.engine.factory.DefaultNetworkFactory;
+import edu.trafficsim.engine.factory.Sequence;
 import edu.trafficsim.engine.osm.Highways;
 import edu.trafficsim.engine.osm.HighwaysJsonParser;
 import edu.trafficsim.engine.osm.OsmNetworkExtractor;
 import edu.trafficsim.model.core.ModelInputException;
-import edu.trafficsim.utility.Sequence;
 
 public class OSMXAPITest {
 
@@ -27,7 +27,7 @@ public class OSMXAPITest {
 		testExtractByUrl();
 	}
 
-	static Sequence seq = new Sequence();
+	static Sequence seq = Sequence.create();
 	static NetworkFactory networkFactory = DefaultNetworkFactory.getInstance();
 	static OsmNetworkExtractor extractor = new OsmNetworkExtractor(seq);
 
