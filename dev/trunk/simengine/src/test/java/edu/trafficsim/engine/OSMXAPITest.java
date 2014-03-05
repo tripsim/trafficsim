@@ -16,6 +16,7 @@ import edu.trafficsim.engine.osm.Highways;
 import edu.trafficsim.engine.osm.HighwaysJsonParser;
 import edu.trafficsim.engine.osm.OsmNetworkExtractor;
 import edu.trafficsim.model.core.ModelInputException;
+import edu.trafficsim.utility.Sequence;
 
 public class OSMXAPITest {
 
@@ -26,8 +27,9 @@ public class OSMXAPITest {
 		testExtractByUrl();
 	}
 
+	static Sequence seq = new Sequence();
 	static NetworkFactory networkFactory = DefaultNetworkFactory.getInstance();
-	static OsmNetworkExtractor extractor = new OsmNetworkExtractor(1);
+	static OsmNetworkExtractor extractor = new OsmNetworkExtractor(seq);
 
 	protected static void testExtractByReader() throws TransformException {
 
@@ -67,6 +69,7 @@ public class OSMXAPITest {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		@SuppressWarnings("unused")
 		Highways highways = parser.getParsedHighways();
 	}
 

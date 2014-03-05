@@ -6,6 +6,7 @@ import java.util.Set;
 
 import org.springframework.stereotype.Service;
 
+import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.io.WKTReader;
 import com.vividsolutions.jts.io.WKTWriter;
 
@@ -103,6 +104,10 @@ public class MapJsonService {
 	public String getLanesConnectorsJson(Network network, long linkId) {
 		return "{\"lanes\":" + getLanesJson(network, linkId)
 				+ ",\"connectors\":" + getConnectorsJson(network, linkId) + "}";
+	}
+
+	public String getEmptyLanesConnectorsJson() {
+		return "{\"lanes\":{},\"connectors\":{}}";
 	}
 
 	/**
@@ -335,5 +340,9 @@ public class MapJsonService {
 		}
 
 		return "{" + getNetworkJson(links, nodes) + "}";
+	}
+
+	public String getWkt(Geometry geom) {
+		return writer.write(geom);
 	}
 }

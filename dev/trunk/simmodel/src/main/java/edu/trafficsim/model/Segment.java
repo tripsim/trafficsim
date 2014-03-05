@@ -14,30 +14,30 @@ import edu.trafficsim.model.core.ModelInputException;
  */
 public interface Segment extends GeoReferenced {
 
-	public Location getStartLocation();
+	Location getStartLocation();
 
-	public Location getEndLocation();
+	Location getEndLocation();
 
-	public LineString getLinearGeom();
+	LineString getLinearGeom();
 
 	void setLinearGeom(Location startLocation, Location endLocation,
 			LineString linearGeom) throws TransformException,
 			ModelInputException;
 
-	public double getWidth();
+	double getWidth();
 
 	/**
 	 * @return the real world length of the segment
 	 */
-	public double getLength();
+	double getLength();
 
 	/**
 	 * @return the linear geometry length, based on coordinates
 	 */
-	public double getGeomLength();
+	double getGeomLength();
 
-	public List<Subsegment> getSubsegments();
+	List<Subsegment> getSubsegments();
 
-	public int sizeOfSubsegments();
+	int sizeOfSubsegments();
 
 }

@@ -6,28 +6,38 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.MatrixVariable;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.SessionAttributes;
 
+import edu.trafficsim.engine.OdFactory;
+import edu.trafficsim.engine.library.TypesLibrary;
+import edu.trafficsim.model.Network;
 import edu.trafficsim.model.Node;
 import edu.trafficsim.model.Od;
+import edu.trafficsim.model.OdMatrix;
 import edu.trafficsim.model.core.ModelInputException;
+import edu.trafficsim.utility.Sequence;
 import edu.trafficsim.web.UserInterfaceException;
 import edu.trafficsim.web.service.entity.OdService;
 
 @Controller
 @RequestMapping(value = "/od")
+@SessionAttributes(value = { "sequence", "typesLibrary", "odFactory",
+		"network", "odMatrix" })
 public class OdController extends AbstractController {
 
 	@Autowired
 	OdService odService;
 
 	@RequestMapping(value = "/info/{id}", method = RequestMethod.GET)
-	public String odView(@PathVariable long id, Model model) {
-		Od od = project.getOdMatrix().getOd(id);
+	public String odView(@PathVariable long id,
+			@ModelAttribute("odMatrix") OdMatrix odMatrix, Model model) {
+		Od od = odMatrix.getOd(id);
 
 		model.addAttribute("od", od);
 		return "components/od-fragments :: info";
@@ -37,17 +47,15 @@ public class OdController extends AbstractController {
 	public String odEdit(
 			@PathVariable long id,
 			@MatrixVariable(required = false, defaultValue = "false") boolean isNew,
-			Model model) {
-		Od od = project.getOdMatrix().getOd(id);
+			@ModelAttribute("typesLibrary") TypesLibrary library,
+			@ModelAttribute("network") Network network,
+			@ModelAttribute("odMatrix") OdMatrix odMatrix, Model model) {
 
+		Od od = odMatrix.getOd(id);
 		// TODO make it reachable sinks
-		try {
-			model.addAttribute("vehiclecompositions",
-					project.getVehicleCompositions());
-		} catch (ModelInputException | UserInterfaceException e) {
-			return "components/empty";
-		}
-		model.addAttribute("destinations", project.getNetwork().getSinks());
+		model.addAttribute("vehiclecompositions",
+				library.getVehicleCompositions());
+		model.addAttribute("destinations", network.getSinks());
 		model.addAttribute("od", od);
 		model.addAttribute("isNew", isNew);
 		return "components/od-fragments :: form";
@@ -59,22 +67,33 @@ public class OdController extends AbstractController {
 			@RequestParam("destinatioId") long dId,
 			@RequestParam("vehicleCompositionName") String vcName,
 			@RequestParam("times[]") double[] times,
-			@RequestParam("vphs[]") Integer[] vphs) {
+			@RequestParam("vphs[]") Integer[] vphs,
+			@ModelAttribute("typesLibrary") TypesLibrary library,
+			@ModelAttribute("network") Network network,
+			@ModelAttribute("odMatrix") OdMatrix odMatrix) {
 		try {
-			odService.updateOd(id, dId, vcName, times, vphs);
+			odService.updateOd(library, network, odMatrix, id, dId, vcName,
+					times, vphs);
+			return messageOnlySuccessResponse("Od saved.");
 		} catch (ModelInputException e) {
-			return failureResponse(e.getMessage());
+			return failureResponse(e);
 		}
-		return messageOnlySuccessResponse("Od saved.");
 	}
 
 	@RequestMapping(value = "/new", method = RequestMethod.POST)
 	public @ResponseBody
-	Map<String, Object> newOd(@RequestParam("originId") long oid) {
-		Node origin = project.getNetwork().getNode(oid);
+	Map<String, Object> newOd(@RequestParam("originId") long oid,
+			@ModelAttribute("typesLibrary") TypesLibrary library,
+			@ModelAttribute("odFactory") OdFactory factory,
+			@ModelAttribute("sequence") Sequence sequence,
+			@ModelAttribute("network") Network network,
+			@ModelAttribute("odMatrix") OdMatrix odMatrix) {
 
+		Node origin = network.getNode(oid);
 		try {
-			long id = odService.createOd(origin, null).getId();
+			long id = odService.createOd(library, factory, sequence, odMatrix,
+					origin, null).getId();
+
 			return successResponse("New od created.", null, id);
 		} catch (ModelInputException | UserInterfaceException e) {
 			return failureResponse(e.getMessage());
@@ -83,8 +102,9 @@ public class OdController extends AbstractController {
 
 	@RequestMapping(value = "/remove", method = RequestMethod.POST)
 	public @ResponseBody
-	Map<String, Object> removeOd(@RequestParam("id") long id) {
-		odService.removeOd(id);
+	Map<String, Object> removeOd(@RequestParam("id") long id,
+			@ModelAttribute("odMatrix") OdMatrix odMatrix) {
+		odService.removeOd(odMatrix, id);
 		return messageOnlySuccessResponse("Od removed.");
 	}
 

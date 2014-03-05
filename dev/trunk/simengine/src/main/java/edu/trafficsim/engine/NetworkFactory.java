@@ -14,46 +14,52 @@ import edu.trafficsim.model.Network;
 import edu.trafficsim.model.Node;
 import edu.trafficsim.model.RoadInfo;
 import edu.trafficsim.model.core.ModelInputException;
+import edu.trafficsim.utility.Sequence;
 
 public interface NetworkFactory {
 
-	Network createNetwork(Long id, String name);
+	Point createPoint(double x, double y);
 
-	Node createNode(Long id, String name, double x, double y);
-
-	Node createNode(Long id, String name, Coordinate coord);
+	Point createPoint(Coordinate coord);
 
 	LineString createLineString(Coordinate[] coords);
 
 	LineString createLineString(CoordinateSequence points);
 
-	Link createLink(Long id, String name, Node startNode, Node endNode,
-			Coordinate[] coords) throws ModelInputException, TransformException;
+	Network createNetwork(Sequence seq, String name);
 
-	Link createLink(Long id, String name, Node startNode, Node endNode,
-			CoordinateSequence points) throws ModelInputException,
+	Node createNode(Sequence seq, String name, double x, double y);
+
+	Node createNode(Sequence seq, String name, Coordinate coord);
+
+	Link createLink(Sequence seq, String name, Node startNode, Node endNode,
+			Coordinate[] coords, RoadInfo roadInfo) throws ModelInputException,
 			TransformException;
 
-	Link createLink(Long id, String name, Node startNode, Node endNode,
-			LineString linearGeom) throws ModelInputException,
-			TransformException;
-
-	Link createReverseLink(Long id, String name, Link link)
+	Link createLink(Sequence seq, String name, Node startNode, Node endNode,
+			CoordinateSequence points, RoadInfo roadInfo)
 			throws ModelInputException, TransformException;
 
-	Lane createLane(Long id, Link link, double start, double end, double width)
+	Link createLink(Sequence seq, String name, Node startNode, Node endNode,
+			LineString linearGeom, RoadInfo roadInfo)
 			throws ModelInputException, TransformException;
 
-	Lane[] createLanes(Long[] ids, Link link, double start, double end,
+	Link createReverseLink(Sequence seq, String name, Link link)
+			throws ModelInputException, TransformException;
+
+	Lane createLane(Sequence seq, Link link, double start, double end,
 			double width) throws ModelInputException, TransformException;
 
-	RoadInfo createRoadInfo(Long id, String roadName, long osmId, String highway);
+	Lane[] createLanes(Sequence seq, Link link, double start, double end,
+			double width, int numOfLanes) throws ModelInputException,
+			TransformException;
 
-	ConnectionLane connect(Long id, Lane laneFrom, Lane laneTo, double width)
-			throws ModelInputException, TransformException;
+	ConnectionLane connect(Sequence seq, Lane laneFrom, Lane laneTo,
+			double width) throws ModelInputException, TransformException;
 
-	Point createPoint(double x, double y);
+	RoadInfo createRoadInfo(Sequence seq, String roadName, long roadId,
+			String highway);
 
-	Point createPoint(Coordinate coord);
+	RoadInfo createRoadInfo(Sequence seq, String roadName);
 
 }

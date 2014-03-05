@@ -9,12 +9,22 @@ import com.vividsolutions.jts.geom.Coordinate;
 
 import edu.trafficsim.model.Link;
 import edu.trafficsim.model.Node;
-import edu.trafficsim.model.Simulator;
 import edu.trafficsim.model.Vehicle;
+import edu.trafficsim.utility.Timer;
 
 public interface StatisticsCollector {
 
-	void reset(Simulator simulator);
+	public static final int INIT = 0;
+	public static final int RUNNING = 1;
+	public static final int DONE = 2;
+
+	void begin(Timer timer);
+
+	void finish();
+
+	int status();
+
+	boolean isDone();
 
 	void stepForward(int forwardedSteps);
 

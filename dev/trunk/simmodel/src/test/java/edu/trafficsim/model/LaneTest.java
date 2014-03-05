@@ -29,7 +29,7 @@ public class LaneTest {
 
 		DefaultLink link = new DefaultLink(0, null, null, new DefaultNode(0,
 				null, null, null), new DefaultNode(0, null, null, null),
-				geometryFactory.createLineString(new Coordinate[] {}));
+				geometryFactory.createLineString(new Coordinate[] {}), null);
 
 		Field f1 = AbstractSegment.class.getDeclaredField("length");
 		f1.setAccessible(true);

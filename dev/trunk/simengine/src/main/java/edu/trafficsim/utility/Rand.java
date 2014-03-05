@@ -1,4 +1,4 @@
-package edu.trafficsim.model.core;
+package edu.trafficsim.utility;
 
 import java.util.Random;
 

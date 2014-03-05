@@ -1,7 +1,7 @@
 var simulation = {}; // attach simulation to somewhere for navigation
 var map = {};
 
-simulation.defaultRefreshInterval = 100;
+simulation.defaultRefreshInterval = 500;
 // {links : {linkId : feature}, lanes: {linkId:[features]}}
 simulation.network = {
 	links : {},
@@ -399,7 +399,7 @@ simulation.initMap = function() {
 					function(f) {
 						that.editLinks();
 						networkLayer.removeFeatures([ f.feature ]);
-						if (f.feature.geometry.getLength() < 2) {
+						if (f.feature.geometry.components.length < 2) {
 							simwebhelper.feedback('needs at least two points.');
 							return;
 						}
@@ -498,12 +498,12 @@ simulation.initMap = function() {
 						networkLayer,
 						function(e) {
 							if (sketch.start != null
-									&& editNetworkControl.handler.line.geometry.getLength() < 2) {
+									&& editNetworkControl.handler.line.geometry.components.length < 2) {
 								return;
 							}
 							sketch.end = e.feature;
 							var geom = editNetworkControl.handler.line.geometry;
-							sketch.endPoint = geom.components[geom.getLength() - 1];
+							sketch.endPoint = geom.components[geom.components.length - 1];
 							editNetworkControl.finishSketch();
 						});
 	};
@@ -561,7 +561,7 @@ simulation.initMap = function() {
 					}
 					if (sketch.end != null) {
 						var obj = {};
-						drawGeom.components[drawGeom.getLength()] = sketch.endPoint;
+						drawGeom.components[drawGeom.components.length] = sketch.endPoint;
 						if (sketch.end.attributes['nodeId']) {
 							obj.type = 'node';
 							obj.id = sketch.end.attributes['nodeId'];

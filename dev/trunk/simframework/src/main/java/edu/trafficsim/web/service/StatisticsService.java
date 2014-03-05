@@ -7,40 +7,32 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.io.WKTWriter;
 
+import edu.trafficsim.engine.NetworkFactory;
 import edu.trafficsim.engine.StatisticsCollector;
 import edu.trafficsim.engine.StatisticsCollector.LinkState;
 import edu.trafficsim.engine.StatisticsCollector.VehicleState;
 import edu.trafficsim.model.Vehicle;
 import edu.trafficsim.model.core.MultiValuedMap;
 import edu.trafficsim.model.util.Colors;
-import edu.trafficsim.web.SimulationProject;
-import edu.trafficsim.web.SimulationResult;
 
 @Service
 public class StatisticsService {
 
 	@Autowired
-	SimulationProject project;
-	@Autowired
-	SimulationResult result;
+	MapJsonService mapJsonService;
 
-	private static WKTWriter writer = new WKTWriter();
-
-	public String getTrajectory(Long vid) {
-		StatisticsCollector statics = result.getStatistics();
+	public String getTrajectory(StatisticsCollector statics,
+			NetworkFactory factory, Long vid) {
 		VehicleState[] vehicleStates = statics.trajectory(vid);
 		Coordinate[] coords = new Coordinate[vehicleStates.length];
 		for (int i = 0; i < vehicleStates.length; i++) {
 			coords[i] = vehicleStates[i].coord;
 		}
-		return writer.write(project.getNetworkFactory()
-				.createLineString(coords));
+		return mapJsonService.getWkt(factory.createLineString(coords));
 	}
 
-	public String getTsdPlotData(Long id) {
-		StatisticsCollector statics = result.getStatistics();
+	public String getTsdPlotData(StatisticsCollector statics, Long id) {
 		LinkState[] linkStats = statics.linkStats(id);
 		MultiValuedMap<Long, String> data = new MultiValuedMap<Long, String>();
 		for (int i = 0; i < linkStats.length; i++) {
@@ -60,9 +52,7 @@ public class StatisticsService {
 		return "[" + sb.toString() + "]";
 	}
 
-	public String getFrames() {
-		StatisticsCollector statics = result.getStatistics();
-
+	public String getFrames(StatisticsCollector statics) {
 		StringBuffer vehicleSb = new StringBuffer();
 		StringBuffer frameSb = new StringBuffer();
 

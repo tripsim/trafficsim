@@ -1,5 +1,7 @@
 package edu.trafficsim.model.core;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -16,25 +18,40 @@ public abstract class AbstractComposition<K> extends BaseEntity<K> implements
 	private double total = 0;
 
 	public AbstractComposition(long id, String name, K[] keys,
-			double[] probabilities) throws ModelInputException {
+			Double[] probabilities) {
 		super(id, name);
+		try {
+			checkLength(keys, probabilities);
+			for (int i = 0; i < keys.length; i++)
+				culmulate(keys[i], probabilities[i]);
+		} catch (ModelInputException e) {
+			map.clear();
+			total = 0;
+		}
+	}
+
+	private void checkLength(K[] keys, Double[] probabilities)
+			throws ModelInputException {
 		if (keys == null || probabilities == null)
 			throw new ModelInputException(
 					"keys and probabilities cannot be null!");
 		else if (keys.length != probabilities.length)
 			throw new ModelInputException(
 					"keys and composition need to have the same length!");
-		for (int i = 0; i < keys.length; i++)
-			culmulate(keys[i], probabilities[i]);
 	}
 
 	@Override
 	public final Set<K> keys() {
-		return map.keySet();
+		return Collections.unmodifiableSet(map.keySet());
 	}
 
 	public final Double get(K key) {
 		return map.get(key);
+	}
+
+	@Override
+	public final Collection<Double> values() {
+		return Collections.unmodifiableCollection(map.values());
 	}
 
 	@Override

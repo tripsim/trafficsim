@@ -25,6 +25,7 @@ import edu.trafficsim.model.core.ModelInputException;
 import edu.trafficsim.model.util.GeoReferencing;
 import edu.trafficsim.model.util.GeoReferencing.TransformCoordinateFilter;
 import edu.trafficsim.utility.CoordinateTransformer;
+import edu.trafficsim.utility.Sequence;
 
 public class OsmNetworkExtractor {
 
@@ -32,9 +33,9 @@ public class OsmNetworkExtractor {
 	private static final TransformCoordinateFilter filter = GeoReferencing
 			.getDefaultTransformFilter();
 
-	private long seq;
+	private Sequence seq;
 
-	public OsmNetworkExtractor(long seq) {
+	public OsmNetworkExtractor(Sequence seq) {
 		this.seq = seq;
 	}
 
@@ -69,8 +70,7 @@ public class OsmNetworkExtractor {
 	protected Network createNetwork(Highways highways,
 			NetworkFactory networkFactory) throws ModelInputException,
 			TransformException {
-		Network network = networkFactory.createNetwork(nextSeq(),
-				NETWORK_NAME);
+		Network network = networkFactory.createNetwork(seq, NETWORK_NAME);
 
 		Map<OsmNode, Node> nodes = new HashMap<OsmNode, Node>(highways
 				.getOsmNodes().size());
@@ -82,6 +82,8 @@ public class OsmNetworkExtractor {
 			OsmNode startOsmNode = osmWay.osmNodes.get(i);
 			coords.add(startOsmNode.asCoord());
 			OsmNode endOsmNode = null;
+			RoadInfo roadInfo = networkFactory.createRoadInfo(seq, osmWay.name,
+					osmWay.id, osmWay.highway);
 			while (++i < osmWay.osmNodes.size()) {
 				// read the next osmnode and add to coords until end
 				endOsmNode = osmWay.osmNodes.get(i);
@@ -91,7 +93,7 @@ public class OsmNetworkExtractor {
 				// start node for next link
 				if (endOsmNode.isShared() || i == osmWay.osmNodes.size() - 1) {
 					create(network, nodes, startOsmNode, endOsmNode, osmWay,
-							coords, networkFactory);
+							coords, roadInfo, networkFactory);
 					coords.clear();
 					startOsmNode = endOsmNode;
 					coords.add(startOsmNode.asCoord());
@@ -106,8 +108,9 @@ public class OsmNetworkExtractor {
 
 	private void create(Network network, Map<OsmNode, Node> nodes,
 			OsmNode startOsmNode, OsmNode endOsmNode, OsmWay osmWay,
-			List<Coordinate> coords, NetworkFactory networkFactory)
-			throws ModelInputException, TransformException {
+			List<Coordinate> coords, RoadInfo roadInfo,
+			NetworkFactory networkFactory) throws ModelInputException,
+			TransformException {
 		Node startNode = nodes.get(startOsmNode);
 		if (startNode == null) {
 			startNode = createNode(startOsmNode, networkFactory);
@@ -121,11 +124,8 @@ public class OsmNetworkExtractor {
 			nodes.put(endOsmNode, endNode);
 		}
 
-		RoadInfo roadInfo = networkFactory.createRoadInfo(nextSeq(),
-				osmWay.name, osmWay.id, osmWay.highway);
-		Link link = createLink(osmWay, startNode, endNode, coords,
+		Link link = createLink(osmWay, startNode, endNode, coords, roadInfo,
 				networkFactory);
-		link.setRoadInfo(roadInfo);
 		network.add(link);
 		if (!osmWay.oneway) {
 			Link reverseLink = createReverseLink(link, networkFactory);
@@ -140,33 +140,27 @@ public class OsmNetworkExtractor {
 		for (OsmWay osmWay : osmNode.osmWays) {
 			name += " @ " + osmWay.name;
 		}
-		Node node = networkFactory.createNode(nextSeq(), name,
-				osmNode.asCoord());
+		Node node = networkFactory.createNode(seq, name, osmNode.asCoord());
 		// TODO edit node
 		return node;
 	}
 
 	private Link createLink(OsmWay osmWay, Node startNode, Node endNode,
-			List<Coordinate> coords, NetworkFactory networkFactory)
-			throws ModelInputException, TransformException {
-		Link link = networkFactory.createLink(nextSeq(), osmWay.name,
-				startNode, endNode, coords.toArray(new Coordinate[0]));
+			List<Coordinate> coords, RoadInfo roadInfo,
+			NetworkFactory networkFactory) throws ModelInputException,
+			TransformException {
+		Link link = networkFactory.createLink(seq, osmWay.name, startNode,
+				endNode, coords.toArray(new Coordinate[0]), roadInfo);
 		// TODO edit link
 		return link;
 	}
 
 	private Link createReverseLink(Link link, NetworkFactory networkFactory)
 			throws ModelInputException, TransformException {
-		Link reverseLink = networkFactory.createReverseLink(nextSeq(),
+		Link reverseLink = networkFactory.createReverseLink(seq,
 				String.format("%s Reversed", link.getName()), link);
+		reverseLink.setRoadInfo(link.getRoadInfo());
 		return reverseLink;
 	}
 
-	private long nextSeq() {
-		return seq++;
-	}
-
-	public long currentSeq() {
-		return seq;
-	}
 }

@@ -249,7 +249,6 @@ public class GeoReferencing {
 	 * @return default filter to transform the coordinates from degrees
 	 *         (EPSG:4326) to meters (EPSG:900913)
 	 */
-	@Deprecated
 	public final static TransformCoordinateFilter getDefaultTransformFilter() {
 		try {
 			return getTransformFilter(getCrs(CRS_CODE_4326),

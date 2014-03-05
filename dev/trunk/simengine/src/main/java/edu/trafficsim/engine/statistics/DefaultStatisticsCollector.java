@@ -12,18 +12,19 @@ import java.util.Set;
 import edu.trafficsim.engine.StatisticsCollector;
 import edu.trafficsim.model.Link;
 import edu.trafficsim.model.Node;
-import edu.trafficsim.model.Simulator;
 import edu.trafficsim.model.Vehicle;
+import edu.trafficsim.utility.Timer;
 
 public class DefaultStatisticsCollector implements StatisticsCollector {
 
 	private final List<StatisticsFrame> frames;
-	private DefaultStatisticsFrame currentFrame;
 
 	private final Map<Long, Vehicle> vehicles;
 	private final Set<Long> links;
 
-	private double stepSize;
+	private int status;
+	private double stepSize = 0;
+	private DefaultStatisticsFrame currentFrame;
 
 	public static class DefaultStatisticsFrame implements StatisticsFrame {
 		double time;
@@ -64,26 +65,38 @@ public class DefaultStatisticsCollector implements StatisticsCollector {
 
 	}
 
-	public static StatisticsCollector create(Simulator simulator) {
-		StatisticsCollector statistics = new DefaultStatisticsCollector(
-				simulator.getTotalSteps());
-		statistics.reset(simulator);
+	public static StatisticsCollector create() {
+		StatisticsCollector statistics = new DefaultStatisticsCollector();
 		return statistics;
 	}
 
-	protected DefaultStatisticsCollector(int totalSteps) {
-		frames = new ArrayList<StatisticsFrame>(totalSteps);
+	protected DefaultStatisticsCollector() {
+		frames = new ArrayList<StatisticsFrame>();
 		vehicles = new HashMap<Long, Vehicle>();
 		links = new HashSet<Long>();
+		status = StatisticsCollector.INIT;
 	}
 
 	@Override
-	public void reset(Simulator simulator) {
-		stepSize = simulator.getStepSize();
-		frames.clear();
-		vehicles.clear();
-		links.clear();
+	public void begin(Timer timer) {
+		stepSize = timer.getStepSize();
 		stepForward(0);
+		status = StatisticsCollector.RUNNING;
+	}
+
+	@Override
+	public void finish() {
+		status = StatisticsCollector.DONE;
+	}
+
+	@Override
+	public int status() {
+		return status;
+	}
+
+	@Override
+	public boolean isDone() {
+		return status == StatisticsCollector.DONE;
 	}
 
 	@Override

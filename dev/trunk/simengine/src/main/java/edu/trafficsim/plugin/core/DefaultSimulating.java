@@ -6,18 +6,18 @@ import java.util.List;
 
 import org.opengis.referencing.operation.TransformException;
 
+import edu.trafficsim.engine.SimulationScenario;
 import edu.trafficsim.engine.StatisticsCollector;
 import edu.trafficsim.engine.VehicleFactory;
 import edu.trafficsim.engine.factory.DefaultVehicleFactory;
 import edu.trafficsim.model.Od;
-import edu.trafficsim.model.SimulationScenario;
-import edu.trafficsim.model.Simulator;
 import edu.trafficsim.model.Vehicle;
 import edu.trafficsim.plugin.ICarFollowing;
 import edu.trafficsim.plugin.IMoving;
 import edu.trafficsim.plugin.ISimulating;
 import edu.trafficsim.plugin.IVehicleGenerating;
 import edu.trafficsim.plugin.PluginManager;
+import edu.trafficsim.utility.Timer;
 
 public class DefaultSimulating implements ISimulating {
 
@@ -37,13 +37,13 @@ public class DefaultSimulating implements ISimulating {
 		IVehicleGenerating vehicleGenerating = PluginManager
 				.getVehicleGenerating(null);
 
-		Simulator simulator = simulationScenario.getSimulator();
-		statistics.reset(simulator);
+		Timer timer = simulationScenario.getTimer();
+		statistics.begin(timer);
 		System.out.println("******** Simulation Demo ********");
 		System.out.println("---- Parameters ----");
-		System.out.println("Random Seed: " + simulator.getSeed());
-		System.out.println("Step Size: " + simulator.getStepSize());
-		System.out.println("Duration: " + simulator.getDuration());
+		System.out.println("Random Seed: " + timer.getSeed());
+		System.out.println("Step Size: " + timer.getStepSize());
+		System.out.println("Duration: " + timer.getDuration());
 
 		List<Vehicle> vehicles = new ArrayList<Vehicle>();
 		// TODO move to configuration
@@ -51,8 +51,8 @@ public class DefaultSimulating implements ISimulating {
 		// time to live, indicates the remaining simulation steps
 		System.out.println("---- Simulation ----");
 
-		while (!simulator.isFinished()) {
-			double time = simulator.getForwardedTime();
+		while (!timer.isFinished()) {
+			double time = timer.getForwardedTime();
 			// TODO work on multi-threading
 			// every lane a new thread for performance
 			// duplicate collection so as to make modification while iterating
@@ -74,8 +74,8 @@ public class DefaultSimulating implements ISimulating {
 						simulationScenario, vehicleFactory);
 				vehicles.addAll(newVehicles);
 			}
-			simulator.stepForward();
-			statistics.stepForward(simulator.getForwardedSteps());
+			timer.stepForward();
+			statistics.stepForward(timer.getForwardedSteps());
 		}
 
 		// System.out.println("---- Output ----");
@@ -87,7 +87,8 @@ public class DefaultSimulating implements ISimulating {
 		// }
 		// System.out.println();
 		// }
-		simulator.reset();
+		statistics.finish();
+		timer.reset();
 	}
 
 }

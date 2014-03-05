@@ -18,7 +18,7 @@ public class DefaultTurnPercentage extends AbstractComposition<Link> implements
 	public DefaultTurnPercentage(long id, String name, Link upstream,
 			Link[] downstreams, double[] percentages)
 			throws ModelInputException {
-		super(id, name, new Link[0], new double[0]);
+		super(id, name, new Link[0], new Double[0]);
 
 		this.upstream = upstream;
 
