@@ -44,10 +44,10 @@ public class CompositionService extends EntityService {
 		VehicleTypeComposition composition = library
 				.removeVehicleComposition(name);
 		for (Od od : odMatrix.getOds()) {
-			od.getVehicleCompositions().contains(composition);
 			try {
-				throw new UserInterfaceException(
-						"Cannot remove composition. It is referenced.");
+				if (od.getVehicleComposition() == composition)
+					throw new UserInterfaceException(
+							"Cannot remove composition. It is referenced.");
 			} catch (UserInterfaceException e) {
 				library.addVehicleComposition(composition);
 				throw e;

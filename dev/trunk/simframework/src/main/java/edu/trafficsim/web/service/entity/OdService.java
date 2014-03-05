@@ -19,7 +19,7 @@ public class OdService extends EntityService {
 			OdMatrix odMatrix, Long id, Long dId, String vcName,
 			double[] times, Integer[] vphs) throws ModelInputException {
 		odMatrix.getOd(id).setDestination(network.getNode(dId));
-		odMatrix.getOd(id).setVehicleComposiion(
+		odMatrix.getOd(id).setVehicleComposition(
 				library.getVehicleComposition(vcName));
 		odMatrix.getOd(id).setVphs(times, vphs);
 	}
