@@ -9,10 +9,10 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.core.JsonParseException;
 
 import edu.trafficsim.engine.NetworkFactory;
+import edu.trafficsim.engine.factory.Sequence;
 import edu.trafficsim.engine.osm.OsmNetworkExtractor;
 import edu.trafficsim.model.Network;
 import edu.trafficsim.model.core.ModelInputException;
-import edu.trafficsim.utility.Sequence;
 
 @Service
 public class OsmImportService extends EntityService {

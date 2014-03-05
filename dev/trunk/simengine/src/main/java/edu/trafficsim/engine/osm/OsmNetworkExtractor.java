@@ -15,6 +15,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.vividsolutions.jts.geom.Coordinate;
 
 import edu.trafficsim.engine.NetworkFactory;
+import edu.trafficsim.engine.factory.Sequence;
 import edu.trafficsim.engine.osm.Highways.OsmNode;
 import edu.trafficsim.engine.osm.Highways.OsmWay;
 import edu.trafficsim.model.Link;
@@ -25,7 +26,6 @@ import edu.trafficsim.model.core.ModelInputException;
 import edu.trafficsim.model.util.GeoReferencing;
 import edu.trafficsim.model.util.GeoReferencing.TransformCoordinateFilter;
 import edu.trafficsim.utility.CoordinateTransformer;
-import edu.trafficsim.utility.Sequence;
 
 public class OsmNetworkExtractor {
 

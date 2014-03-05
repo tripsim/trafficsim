@@ -3,13 +3,13 @@ package edu.trafficsim.web.service.entity;
 import org.springframework.stereotype.Service;
 
 import edu.trafficsim.engine.OdFactory;
+import edu.trafficsim.engine.factory.Sequence;
 import edu.trafficsim.engine.library.TypesLibrary;
 import edu.trafficsim.model.Network;
 import edu.trafficsim.model.Node;
 import edu.trafficsim.model.Od;
 import edu.trafficsim.model.OdMatrix;
 import edu.trafficsim.model.core.ModelInputException;
-import edu.trafficsim.utility.Sequence;
 import edu.trafficsim.web.UserInterfaceException;
 
 @Service

@@ -19,15 +19,22 @@ public class Timer implements Serializable {
 	private int forwardedSteps;
 
 	public static Timer create(int duration, double stepSize, long seed) {
+		return create(duration, 0, stepSize, seed);
+	}
+
+	public static Timer create(int duration, int warmup, double stepSize,
+			long seed) {
 		return new Timer(duration, stepSize, seed);
 	}
 
-	public Timer(int duration, double stepSize, long seed) {
+	Timer(int duration, double stepSize, long seed) {
+		this(duration, 0, stepSize, seed);
+	}
+
+	Timer(int duration, int warmup, double stepSize, long seed) {
 		this.duration = duration;
 		this.stepSize = stepSize;
 		this.seed = seed;
-
-		this.warmup = 0;
 		reset();
 	}
 

@@ -1,5 +1,6 @@
 package edu.trafficsim.engine.library;
 
+import edu.trafficsim.engine.factory.Sequence;
 import edu.trafficsim.model.DriverType;
 import edu.trafficsim.model.DriverTypeComposition;
 import edu.trafficsim.model.VehicleType;
@@ -8,7 +9,6 @@ import edu.trafficsim.model.VehicleTypeComposition;
 import edu.trafficsim.model.core.ModelInputException;
 import edu.trafficsim.model.demand.DefaultDriverTypeComposition;
 import edu.trafficsim.model.demand.DefaultVehicleTypeComposition;
-import edu.trafficsim.utility.Sequence;
 
 public class TypesLibrary extends AbstractTypesLibrary {
 

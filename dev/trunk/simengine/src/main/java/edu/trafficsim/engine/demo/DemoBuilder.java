@@ -18,6 +18,7 @@ import edu.trafficsim.engine.TypesFactory;
 import edu.trafficsim.engine.factory.DefaultNetworkFactory;
 import edu.trafficsim.engine.factory.DefaultOdFactory;
 import edu.trafficsim.engine.factory.DefaultTypesFactory;
+import edu.trafficsim.engine.factory.Sequence;
 import edu.trafficsim.engine.osm.OsmNetworkExtractor;
 import edu.trafficsim.model.DriverType;
 import edu.trafficsim.model.DriverTypeComposition;
@@ -36,7 +37,6 @@ import edu.trafficsim.model.core.ModelInputException;
 import edu.trafficsim.model.util.GeoReferencing;
 import edu.trafficsim.model.util.GeoReferencing.TransformCoordinateFilter;
 import edu.trafficsim.utility.CoordinateTransformer;
-import edu.trafficsim.utility.Sequence;
 import edu.trafficsim.utility.Timer;
 
 // Hack to create nodes links...
@@ -47,7 +47,7 @@ public class DemoBuilder {
 	private OdMatrix odMatrix;
 
 	static OdFactory odFactory = DefaultOdFactory.getInstance();
-	static Sequence seq = new Sequence();
+	static Sequence seq = Sequence.create();
 
 	public DemoBuilder() throws ModelInputException,
 			NoSuchAuthorityCodeException, FactoryException, TransformException {
@@ -197,15 +197,11 @@ public class DemoBuilder {
 				turnPercentages);
 
 		// Timer
-		timer = new Timer(100, 0.5, 0);
+		timer = Timer.create(100, 0.5, 0);
 	}
 
 	public SimulationScenario getScenario() {
-		return new SimulationScenario(network, odMatrix, timer);
-	}
-
-	public Sequence getSeq() {
-		return seq;
+		return SimulationScenario.create(network, odMatrix, timer, seq);
 	}
 
 }

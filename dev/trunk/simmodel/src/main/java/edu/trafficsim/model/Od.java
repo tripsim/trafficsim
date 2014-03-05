@@ -14,21 +14,20 @@ public interface Od extends DataContainer {
 
 	Node setDestination(Node destination);
 
+	int vph(double time);
+
 	Collection<Double> getJumpTimes();
 
-	int vph(double time);
+	Collection<Integer> getVphs();
 
 	void setVphs(double[] times, Integer[] vphs) throws ModelInputException;
 
-	VehicleTypeComposition getVehicleComposition(double time);
+	VehicleTypeComposition getVehicleComposition();
 
-	DriverTypeComposition getDriverComposition(double time);
+	void setVehicleComposition(VehicleTypeComposition composition);
 
-	Collection<VehicleTypeComposition> getVehicleCompositions();
+	DriverTypeComposition getDriverComposition();
 
-	Collection<DriverTypeComposition> getDriverCompositions();
+	void setDriverComposition(DriverTypeComposition composition);
 
-	void setVehicleComposiion(VehicleTypeComposition vehicleComposition);
-
-	void setDriverComposition(DriverTypeComposition driverComposition);
 }

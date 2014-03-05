@@ -19,11 +19,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import edu.trafficsim.engine.NetworkFactory;
+import edu.trafficsim.engine.factory.Sequence;
 import edu.trafficsim.model.Link;
 import edu.trafficsim.model.Network;
 import edu.trafficsim.model.OdMatrix;
 import edu.trafficsim.model.core.ModelInputException;
-import edu.trafficsim.utility.Sequence;
 import edu.trafficsim.web.UserInterfaceException;
 import edu.trafficsim.web.service.MapJsonService;
 import edu.trafficsim.web.service.entity.NetworkService;

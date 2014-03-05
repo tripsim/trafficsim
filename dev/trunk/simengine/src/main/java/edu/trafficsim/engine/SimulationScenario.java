@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+import edu.trafficsim.engine.factory.Sequence;
 import edu.trafficsim.model.DriverType;
 import edu.trafficsim.model.Network;
 import edu.trafficsim.model.OdMatrix;
@@ -18,6 +19,7 @@ public class SimulationScenario implements Serializable {
 	private final Network network;
 	private final OdMatrix odMatrix;
 	private final Timer timer;
+	private final Sequence seq;
 
 	private static final class TypeKey extends
 			MultiKey<VehicleType, DriverType> {
@@ -42,10 +44,17 @@ public class SimulationScenario implements Serializable {
 	final Map<TypeKey, String> carFollowingTypes = new HashMap<TypeKey, String>();
 	final Map<TypeKey, String> laneChangingTypes = new HashMap<TypeKey, String>();
 
-	public SimulationScenario(Network network, OdMatrix odMatrix, Timer timer) {
+	public static final SimulationScenario create(Network network,
+			OdMatrix odMatrix, Timer timer, Sequence sequence) {
+		return new SimulationScenario(network, odMatrix, timer, sequence);
+	}
+
+	SimulationScenario(Network network, OdMatrix odMatrix, Timer timer,
+			Sequence sequence) {
 		this.network = network;
 		this.odMatrix = odMatrix;
 		this.timer = timer;
+		this.seq = sequence;
 	}
 
 	public final Network getNetwork() {
@@ -58,6 +67,10 @@ public class SimulationScenario implements Serializable {
 
 	public final Timer getTimer() {
 		return timer;
+	}
+
+	public final Sequence getSequence() {
+		return seq;
 	}
 
 	public final String getMovingType(VehicleType vehicleType) {

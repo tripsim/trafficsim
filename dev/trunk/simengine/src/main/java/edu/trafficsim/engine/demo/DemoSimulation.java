@@ -10,7 +10,6 @@ import edu.trafficsim.engine.statistics.DefaultStatisticsCollector;
 import edu.trafficsim.model.core.ModelInputException;
 import edu.trafficsim.plugin.ISimulating;
 import edu.trafficsim.plugin.core.DefaultSimulating;
-import edu.trafficsim.utility.Sequence;
 
 public class DemoSimulation {
 
@@ -52,7 +51,4 @@ public class DemoSimulation {
 		return builder.getScenario();
 	}
 
-	public Sequence getSequence() {
-		return builder.getSeq();
-	}
 }

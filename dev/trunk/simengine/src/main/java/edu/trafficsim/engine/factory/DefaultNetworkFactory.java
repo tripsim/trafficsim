@@ -25,7 +25,6 @@ import edu.trafficsim.model.network.DefaultLink;
 import edu.trafficsim.model.network.DefaultNetwork;
 import edu.trafficsim.model.network.DefaultNode;
 import edu.trafficsim.model.network.DefaultRoadInfo;
-import edu.trafficsim.utility.Sequence;
 
 public class DefaultNetworkFactory extends AbstractFactory implements
 		NetworkFactory {
@@ -45,7 +44,12 @@ public class DefaultNetworkFactory extends AbstractFactory implements
 
 	@Override
 	public Network createNetwork(Sequence seq, String name) {
-		return new DefaultNetwork(seq.nextId(), name);
+		return createNetwork(seq.nextId(), name);
+	}
+
+	@Override
+	public Network createNetwork(Long id, String name) {
+		return new DefaultNetwork(id, name);
 	}
 
 	// TODO set default types
@@ -73,21 +77,27 @@ public class DefaultNetworkFactory extends AbstractFactory implements
 	}
 
 	@Override
-	public DefaultNode createNode(Sequence seq, String name, double x, double y) {
+	public Node createNode(Sequence seq, String name, double x, double y) {
 		return createNode(seq, name, createPoint(x, y));
 	}
 
 	@Override
-	public DefaultNode createNode(Sequence seq, String name, Coordinate coord) {
+	public Node createNode(Sequence seq, String name, Coordinate coord) {
 		return createNode(seq, name, createPoint(coord));
 	}
 
-	public DefaultNode createNode(Sequence seq, String name, Point point) {
-		return new DefaultNode(seq.nextId(), name, nodeType, point);
+	@Override
+	public Node createNode(Sequence seq, String name, Point point) {
+		return createNode(seq.nextId(), name, nodeType, point);
 	}
 
 	@Override
-	public DefaultLink createLink(Sequence seq, String name, Node startNode,
+	public Node createNode(Long id, String name, NodeType type, Point point) {
+		return new DefaultNode(id, name, nodeType, point);
+	}
+
+	@Override
+	public Link createLink(Sequence seq, String name, Node startNode,
 			Node endNode, Coordinate[] coords, RoadInfo roadInfo)
 			throws ModelInputException, TransformException {
 		return createLink(seq, name, startNode, endNode,
@@ -103,19 +113,29 @@ public class DefaultNetworkFactory extends AbstractFactory implements
 	}
 
 	@Override
-	public DefaultLink createLink(Sequence seq, String name, Node startNode,
+	public Link createLink(Sequence seq, String name, Node startNode,
 			Node endNode, LineString lineString, RoadInfo roadInfo)
 			throws ModelInputException, TransformException {
 		if (roadInfo == null)
 			roadInfo = createRoadInfo(seq, name);
-		return new DefaultLink(seq.nextId(), name, linkType, startNode,
-				endNode, lineString, roadInfo);
+		return createLink(seq.nextId(), name, linkType, startNode, endNode,
+				lineString, roadInfo);
 	}
 
 	@Override
-	public DefaultLink createReverseLink(Sequence seq, String name, Link link)
+	public Link createLink(Long id, String name, LinkType type, Node startNode,
+			Node endNode, LineString lineString, RoadInfo roadInfo)
 			throws ModelInputException, TransformException {
-		DefaultLink newLink = createLink(seq, name, link.getEndNode(),
+		if (roadInfo == null)
+			throw new ModelInputException("Road info cannot be null.");
+		return new DefaultLink(id, name, linkType, startNode, endNode,
+				lineString, roadInfo);
+	}
+
+	@Override
+	public Link createReverseLink(Sequence seq, String name, Link link)
+			throws ModelInputException, TransformException {
+		Link newLink = createLink(seq, name, link.getEndNode(),
 				link.getStartNode(), (LineString) link.getLinearGeom()
 						.reverse(), link.getRoadInfo());
 		link.setReverseLink(newLink);
@@ -123,18 +143,15 @@ public class DefaultNetworkFactory extends AbstractFactory implements
 	}
 
 	@Override
-	public DefaultLane createLane(Sequence seq, Link link, double start,
-			double end, double width) throws ModelInputException,
-			TransformException {
-		return new DefaultLane(seq.nextId(), link, start, end, width);
+	public Lane createLane(Sequence seq, Link link, double start, double end,
+			double width) throws ModelInputException, TransformException {
+		return createLane(seq.nextId(), link, start, end, width);
 	}
 
 	@Override
-	public ConnectionLane connect(Sequence seq, Lane laneFrom, Lane laneTo,
+	public Lane createLane(Long id, Link link, double start, double end,
 			double width) throws ModelInputException, TransformException {
-		DefaultConnectionLane connectionLane = new DefaultConnectionLane(
-				seq.nextId(), laneFrom, laneTo, width);
-		return connectionLane;
+		return new DefaultLane(id, link, start, end, width);
 	}
 
 	@Override
@@ -148,9 +165,28 @@ public class DefaultNetworkFactory extends AbstractFactory implements
 	}
 
 	@Override
+	public ConnectionLane connect(Sequence seq, Lane laneFrom, Lane laneTo,
+			double width) throws ModelInputException, TransformException {
+		return connect(seq.nextId(), laneFrom, laneTo, width);
+
+	}
+
+	@Override
+	public ConnectionLane connect(Long id, Lane laneFrom, Lane laneTo,
+			double width) throws ModelInputException, TransformException {
+		return new DefaultConnectionLane(id, laneFrom, laneTo, width);
+	}
+
+	@Override
 	public RoadInfo createRoadInfo(Sequence seq, String name, long osmId,
 			String highway) {
-		return new DefaultRoadInfo(seq.nextId(), name, osmId, highway);
+		return createRoadInfo(seq.nextId(), name, osmId, highway);
+	}
+
+	@Override
+	public RoadInfo createRoadInfo(Long id, String name, long osmId,
+			String highway) {
+		return new DefaultRoadInfo(id, name, osmId, highway);
 	}
 
 	@Override
