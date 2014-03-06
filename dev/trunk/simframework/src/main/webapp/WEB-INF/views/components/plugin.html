@@ -1,0 +1,41 @@
+<h2>Plug-in Management</h2>
+<div id="user-configuration-buttons">
+	<span id="user-configuration-button-close" class="button">close</span>
+</div>
+<div>
+	<table>
+		<tbody>
+			<tr>
+				<td>Simulating</td>
+				<td><th:block data-th-fragment="select(simulatings)">
+						<select>
+							<option data-th-each="simulating : ${simulatings}"
+								data-th-attr="value=${simulating}" data-th-text="${simulating}"></option>
+						</select>
+					</th:block></td>
+			</tr>
+			<tr>
+				<td>Vehicle Generating</td>
+				<td data-th-include=":: select(${generatings})"></td>
+			</tr>
+			<tr>
+				<td>Routing</td>
+				<td data-th-include=":: select(${routings})"></td>
+			</tr>
+		</tbody>
+		<tbody>
+			<tr>
+				<td>Moving (Dynamics)</td>
+				<td></td>
+			</tr>
+			<tr>
+				<td>Car Following</td>
+				<td></td>
+			</tr>
+			<tr>
+				<td>Lane Changing</td>
+				<td></td>
+			</tr>
+		</tbody>
+	</table>
+</div>

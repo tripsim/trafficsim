@@ -252,14 +252,14 @@ simulation.initMap = function() {
 	 * Vector Layer, Lanes
 	 **************************************************************************/
 	var lanesTemplate = {
-		strokeWidth : 6,
+		strokeWidth : 8,
 		strokeColor : '${color}',
 		strokeOpacity : 0.8,
 		fillColor : '${color}',
 		fillOpacity : 0.8
 	};
 	var lanesSelectTemplate = {
-		strokeWidth : 8,
+		strokeWidth : 10,
 		strokeColor : 'blue',
 		strokeOpacity : 0.8,
 		fillColor : 'blue',
@@ -502,8 +502,14 @@ simulation.initMap = function() {
 								return;
 							}
 							sketch.end = e.feature;
-							var geom = editNetworkControl.handler.line.geometry;
-							sketch.endPoint = geom.components[geom.components.length - 1];
+							if (e.feature.attributes['linkId']) {
+								var geom = editNetworkControl.handler.line.geometry;
+								sketch.endPoint = geom.components[geom.components.length - 1];
+							} else {
+								sketch.endPoint = new OpenLayers.Geometry.Point(
+										e.feature.geometry.x,
+										e.feature.geometry.y);
+							}
 							editNetworkControl.finishSketch();
 						});
 	};
@@ -561,7 +567,8 @@ simulation.initMap = function() {
 					}
 					if (sketch.end != null) {
 						var obj = {};
-						drawGeom.components[drawGeom.components.length] = sketch.endPoint;
+						if (drawGeom.components > 2)
+							drawGeom.components[drawGeom.components.length] = sketch.endPoint;
 						if (sketch.end.attributes['nodeId']) {
 							obj.type = 'node';
 							obj.id = sketch.end.attributes['nodeId'];

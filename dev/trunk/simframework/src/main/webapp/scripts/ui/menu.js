@@ -41,14 +41,14 @@ jQuery(document).ready(function() {
 		simwebhelper.getPanel('vehiclecomposition/view');
 	});
 
+	/* plugin */
+	jQuery('#user-interface-plugin').click(function() {
+		simwebhelper.getPanel('plugin/view');
+	});
+
 	/* simulator */
 	jQuery('#user-interface-simulator').click(function() {
 		simwebhelper.getPanel('simulator/view');
-	});
-
-	/* router */
-	jQuery('#user-interface-router').click(function() {
-		simwebhelper.getPanel('router/view');
 	});
 
 	/* simulation result */

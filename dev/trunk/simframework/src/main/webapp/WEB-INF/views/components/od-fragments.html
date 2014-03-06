@@ -2,7 +2,7 @@
 	<td><span>Destination</span> <br /> <span>Composition</span></td>
 	<td><span
 		data-th-text="${od.destination} == null ? 'None' : ${od.destination.id}"></span><br />
-		<span data-th-text="${od.getVehicleComposition(0).name}"></span></td>
+		<span data-th-text="${od.vehicleComposition.name}"></span></td>
 	<td><span>End Time </span> <br /> <span>VPH</span></td>
 	<td data-th-each="time : ${od.jumpTimes}"><span
 		data-th-text="${time}"></span> <br /> <span
@@ -17,7 +17,7 @@
 	<td><span
 		data-th-replace="components/od-fragments :: selectDestination(${destinations})"></span>
 		<br /> <span
-		data-th-replace="components/od-fragments :: selectComposition(${od.getVehicleComposition(0).name}, ${vehiclecompositions})"></span></td>
+		data-th-replace="components/od-fragments :: selectComposition(${od.vehicleComposition.name}, ${vehiclecompositions})"></span></td>
 	<td><span>End Time </span> <br /> <span>VPH</span></td>
 	<td class="od-td" data-th-each="time : ${od.jumpTimes}"><input
 		type="text" name="time" data-th-value="${time}" /> <br /> <input
