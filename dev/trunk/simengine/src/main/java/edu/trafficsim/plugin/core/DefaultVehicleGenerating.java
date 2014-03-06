@@ -58,8 +58,12 @@ public class DefaultVehicleGenerating implements IVehicleGenerating {
 			// random initial link and lane
 			List<Link> links = new ArrayList<Link>(od.getOrigin()
 					.getDownstreams());
+			if (links.isEmpty())
+				continue;
 			Link link = links.get(rand.nextInt(links.size()));
 			List<Lane> lanes = Arrays.asList(link.getLanes());
+			if (lanes.isEmpty())
+				continue;
 			Lane lane = lanes.get(rand.nextInt(lanes.size()));
 
 			// random initial speed and acceleration

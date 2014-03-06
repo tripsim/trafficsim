@@ -1,13 +1,14 @@
 package edu.trafficsim.plugin;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import edu.trafficsim.plugin.core.PipesCarFollowing;
 import edu.trafficsim.plugin.core.DefaultLaneChanging;
 import edu.trafficsim.plugin.core.DefaultMoving;
 import edu.trafficsim.plugin.core.DefaultSimulating;
 import edu.trafficsim.plugin.core.DefaultVehicleGenerating;
+import edu.trafficsim.plugin.core.PipesCarFollowing;
 import edu.trafficsim.plugin.core.RandomRouting;
 
 public class PluginManager {
@@ -34,6 +35,10 @@ public class PluginManager {
 		laneChangings.put(DEFAULT_KEY, new DefaultLaneChanging());
 	}
 
+	public static Collection<String> getSimulatingKeys() {
+		return simulatings.keySet();
+	}
+
 	public static ISimulating getSimulatingImpl(String key) {
 		return simulatings.get(key) == null ? simulatings.get(DEFAULT_KEY)
 				: simulatings.get(key);
@@ -49,9 +54,17 @@ public class PluginManager {
 				.get(DEFAULT_CARFOLLOWING) : carFollowings.get(key);
 	}
 
+	public static Collection<String> getRoutingKeys() {
+		return routings.keySet();
+	}
+
 	public static IRouting getRoutingImpl(String key) {
 		return routings.get(key) == null ? routings.get(DEFAULT_ROUTING)
 				: routings.get(key);
+	}
+
+	public static Collection<String> getVehicleGeneratingKeys() {
+		return vehicleGeneratings.keySet();
 	}
 
 	public static IVehicleGenerating getVehicleGenerating(String key) {
