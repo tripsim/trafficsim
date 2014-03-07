@@ -1,6 +1,5 @@
 package edu.trafficsim.model;
 
-
 public class DriverType extends Type<DriverType> {
 
 	private static final long serialVersionUID = 1L;
@@ -43,8 +42,8 @@ public class DriverType extends Type<DriverType> {
 		return desiredHeadway;
 	}
 
-	public void setDesiredHeadway(double minHeadway) {
-		this.desiredHeadway = minHeadway;
+	public void setDesiredHeadway(double desiredHeadway) {
+		this.desiredHeadway = desiredHeadway;
 	}
 
 	public double getDesiredSpeed() {

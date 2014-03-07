@@ -1,0 +1,51 @@
+<h2>Vehicle Type</h2>
+<div>
+	<table>
+		<tbody
+			data-th-attr="data-name=${vehicleType.name}, data-is-new=${isNew}">
+			<tr>
+				<td>Name</td>
+				<td><input type="text" name="name"
+					data-th-value="${vehicleType.name}" /></td>
+			</tr>
+			<tr>
+				<td>Vehicle Class</td>
+				<td><select name="vehicleclass">
+						<option
+							data-th-each="vehicleClass : ${vehicleType.vehicleClass.values()}"
+							data-th-attr="selected=${vehicleClass==vehicleType.vehicleClass} ? 'true' :'false', value=${vehicleClass.name()}"
+							data-th-text="${vehicleClass.name()}"></option>
+				</select></td>
+			</tr>
+			<tr>
+				<td>Width</td>
+				<td><input type="text" name="width"
+					data-th-value="${#numbers.formatDecimal(vehicleType.width, 1, 2)}" /></td>
+			</tr>
+			<tr>
+				<td>Length</td>
+				<td><input type="text" name="length"
+					data-th-value="${#numbers.formatDecimal(vehicleType.length, 1, 2)}" /></td>
+			</tr>
+			<tr>
+				<td>Max Acceleration(m/s2)</td>
+				<td><input type="text" name="maxaccel"
+					data-th-value="${#numbers.formatDecimal(vehicleType.maxAccel, 1, 2)}" /></td>
+			</tr>
+			<tr>
+				<td>Max Deceleration (m/s2)</td>
+				<td><input type="text" name="maxdecel"
+					data-th-value="${#numbers.formatDecimal(vehicleType.maxDecel, 1, 2)}" /></td>
+			</tr>
+			<tr>
+				<td>Max Speed (m/s)</td>
+				<td><input type="text" name="maxspeed"
+					data-th-value="${#numbers.formatDecimal(vehicleType.maxSpeed, 1, 2)}" /></td>
+			</tr>
+			<tr>
+				<td><span class="user-configuration-vehicle-type-save button">save</span><span
+					class="user-configuration-vehicle-type-cancel button">cancel</span></td>
+			</tr>
+		</tbody>
+	</table>
+</div>

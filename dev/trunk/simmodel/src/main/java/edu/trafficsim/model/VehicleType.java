@@ -1,6 +1,5 @@
 package edu.trafficsim.model;
 
-
 public class VehicleType extends Type<VehicleType> {
 	private static final long serialVersionUID = 1L;
 
@@ -29,7 +28,7 @@ public class VehicleType extends Type<VehicleType> {
 	//
 	// private double emission;
 
-	private final VehicleClass vehicleClass;
+	private VehicleClass vehicleClass;
 
 	public VehicleType(long id, String name, VehicleClass vehicleClass) {
 		super(id, name);
@@ -38,6 +37,10 @@ public class VehicleType extends Type<VehicleType> {
 
 	public VehicleClass getVehicleClass() {
 		return vehicleClass;
+	}
+
+	public void setVehicleClass(VehicleClass vehicleClass) {
+		this.vehicleClass = vehicleClass;
 	}
 
 	public double getWidth() {

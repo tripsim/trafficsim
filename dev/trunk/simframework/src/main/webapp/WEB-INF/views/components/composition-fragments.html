@@ -1,0 +1,31 @@
+<tr data-th-fragment="info(composition,dataType)"
+	data-th-attr="data-name=${composition.name},data-type=${dataType}">
+	<td><span>Name</span> <br /> <span
+		data-th-text="${composition.name}"></span></td>
+	<td data-th-each="type : ${composition.types}"><span
+		data-th-text="${type.name}"></span> <br /> <span
+		data-th-text="${#numbers.formatDecimal(composition.probability(type),1,4)}"></span></td>
+	<td colspan="0"><span
+		class="user-configuration-composition-edit button">edit</span><span
+		class="user-configuration-composition-remove button">remove</span></td>
+</tr>
+
+<tr data-th-fragment="form(composition,dataType,types)"
+	data-th-attr="data-name=${composition.name},data-type=${dataType},data-is-new=${isNew}">
+	<td><span>Name</span> <br /> <input type="text" name="name"
+		data-th-value="${composition.name}" /></td>
+	<td class="composition-td" data-th-each="type : ${composition.types}"><span
+		data-th-replace="components/composition-fragments :: select(${types}, ${type})"></span>
+		<br /> <input type="text" name="probablity"
+		data-th-value="${composition.probability(type)}" /></td>
+	<td colspan="0"><span
+		class="user-configuration-composition-add button">add</span><span
+		class="user-configuration-composition-save button">save</span><span
+		class="user-configuration-composition-cancel button">cancel</span></td>
+</tr>
+
+<select data-th-fragment="select(types, selectedType)" name="type">
+	<option data-th-each="type : ${types}"
+		data-th-attr="selected=${selectedType.equals(type)} ? 'true' :'false', value=${type.name}"
+		data-th-text="${type.name}"></option>
+</select>

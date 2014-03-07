@@ -1,0 +1,37 @@
+<h2>Types</h2>
+<div id="user-configuration-buttons">
+	<span id="user-configuration-button-close" class="button">close</span>
+</div>
+<div>
+	<table>
+		<tbody>
+			<tr>
+				<td><h3>Vehicle Type</h3></td>
+
+			</tr>
+			<tr data-th-each="type : ${vehicleTypes}"
+				data-th-attr="data-name=${type.name}">
+				<td data-th-text="${type.name}"></td>
+				<td><span class="user-configuration-vehicle-type-edit button">edit</span><span
+					class="user-configuration-vehicle-type-remove button">remove</span></td>
+			</tr>
+			<tr>
+				<td><span class="user-configuration-vehicle-type-new button">new</span></td>
+			</tr>
+		</tbody>
+		<tbody>
+			<tr>
+				<td><h3>Driver Type</h3></td>
+			</tr>
+			<tr data-th-each="type : ${driverTypes}"
+				data-th-attr="data-name=${type.name}">
+				<td data-th-text="${type.name}"></td>
+				<td><span class="user-configuration-driver-type-edit button">edit</span><span
+					class="user-configuration-driver-type-remove button">remove</span></td>
+			</tr>
+			<tr>
+				<td><span class="user-configuration-driver-type-new button">new</span></td>
+			</tr>
+		</tbody>
+	</table>
+</div>

@@ -17,7 +17,7 @@ public class DefaultVehicleTypeComposition extends
 	}
 
 	@Override
-	public final Set<VehicleType> getVehicleTypes() {
+	public final Set<VehicleType> getTypes() {
 		return keys();
 	}
 

@@ -37,8 +37,8 @@ jQuery(document).ready(function() {
 	});
 
 	/* vehicle composition */
-	jQuery('#user-interface-vehicle-composition').click(function() {
-		simwebhelper.getPanel('vehiclecomposition/view');
+	jQuery('#user-interface-compositions').click(function() {
+		simwebhelper.getPanel('compositions/view');
 	});
 
 	/* types */

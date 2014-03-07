@@ -22,11 +22,11 @@ public class ImportScenarioService {
 			}
 			for (VehicleTypeComposition composition : library
 					.getVehicleCompositions()) {
-				library.addVehicleTypes(composition.getVehicleTypes());
+				library.addVehicleTypes(composition.getTypes());
 			}
 			for (DriverTypeComposition composition : library
 					.getDriverCompositions()) {
-				library.addDriverTypes(composition.getDriverTypes());
+				library.addDriverTypes(composition.getTypes());
 			}
 		}
 	}
