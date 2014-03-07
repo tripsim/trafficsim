@@ -307,9 +307,9 @@ public class ScenarioImportExport {
 						.writeNumber(od.getDestination() == null ? NODESTINATION
 								: od.getDestination().getId());
 				generator.writeFieldName(VEHICLECOMPOSITION);
-				generator.writeNumber(od.getVehicleComposition().getName());
+				generator.writeString(od.getVehicleComposition().getName());
 				generator.writeFieldName(DRIVERCOMPOSITION);
-				generator.writeNumber(od.getDriverComposition().getName());
+				generator.writeString(od.getDriverComposition().getName());
 
 				// start time intervals
 				generator.writeArrayFieldStart(TIMES);

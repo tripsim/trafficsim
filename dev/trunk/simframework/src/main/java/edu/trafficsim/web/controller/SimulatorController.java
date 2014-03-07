@@ -31,11 +31,8 @@ public class SimulatorController extends AbstractController {
 	SimulationService simulationService;
 
 	@RequestMapping(value = "/view", method = RequestMethod.GET)
-	public String simulatorViw(Model model) {
+	public String simulatorView(Model model) {
 		Timer timer = project.getTimer();
-		if (timer == null)
-			project.setTimer(timer = simulationService.createTimer());
-
 		model.addAttribute("timer", timer);
 		return "components/simulator";
 	}

@@ -7,6 +7,10 @@ public class Timer implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
+	private static final int DEFAULT_DURATION = 100;
+	private static final double DEFAULT_STEPSIZE = 0.5d;
+	private static final long DEFAULT_SEED = 0l;
+
 	private Date startTime;
 	private int warmup; // in seconds
 
@@ -17,6 +21,10 @@ public class Timer implements Serializable {
 	private Rand rand;
 
 	private int forwardedSteps;
+
+	public static Timer create() {
+		return create(DEFAULT_DURATION, DEFAULT_STEPSIZE, DEFAULT_SEED);
+	}
 
 	public static Timer create(int duration, double stepSize, long seed) {
 		return create(duration, 0, stepSize, seed);

@@ -28,10 +28,6 @@ import edu.trafficsim.web.SimulationProject;
 @Service
 public class SimulationService {
 
-	private static final int DEFAULT_DURATION = 100;
-	private static final double DEFAULT_STEPSIZE = 0.5d;
-	private static final long DEFAULT_SEED = 0l;
-
 	public void runSimulation(SimulationProject project, Sequence seq,
 			Network network, OdMatrix odMatrix) throws TransformException {
 		SimulationScenario scenario = createSimulationScenario(project, seq,
@@ -47,10 +43,6 @@ public class SimulationService {
 		simulating.run(scenario, statics);
 	}
 
-	public Timer createSimulation() {
-		return Timer.create(DEFAULT_DURATION, DEFAULT_STEPSIZE, DEFAULT_SEED);
-	}
-
 	public SimulationScenario createSimulationScenario(
 			SimulationProject project, Sequence seq, Network network,
 			OdMatrix odMatrix) {
@@ -61,17 +53,10 @@ public class SimulationService {
 	public void setTimer(SimulationProject project, double stepSize,
 			int duration, int warmup, long seed) {
 		Timer timer = project.getTimer();
-		if (timer == null)
-			project.setTimer(Timer.create(DEFAULT_DURATION, DEFAULT_STEPSIZE,
-					DEFAULT_SEED));
 		timer.setStepSize(stepSize);
 		timer.setDuration(duration);
 		timer.setWarmup(warmup);
 		timer.setSeed(seed);
-	}
-
-	public Timer createTimer() {
-		return Timer.create(DEFAULT_DURATION, DEFAULT_STEPSIZE, DEFAULT_SEED);
 	}
 
 	public void exportScenario(SimulationProject project, Sequence seq,

@@ -15,8 +15,8 @@ import edu.trafficsim.plugin.PluginManager;
 @SessionAttributes(value = { "typesLibrary" })
 public class PluginController extends AbstractController {
 
-	@RequestMapping(value = "/view", method = RequestMethod.GET)
-	public String viewPlugins(
+	@RequestMapping(value = "/manager", method = RequestMethod.GET)
+	public String managePlugins(
 			@ModelAttribute("typesLibrary") TypesLibrary library, Model model) {
 
 		model.addAttribute("simulatings", PluginManager.getSimulatingKeys());
@@ -28,6 +28,21 @@ public class PluginController extends AbstractController {
 		model.addAttribute("lanechangings", PluginManager.getLaneChangingKeys());
 
 		model.addAttribute("vehicleTypes", library.getVehicleTypes());
-		return "components/plugin";
+		return "components/plugin-manager";
+	}
+
+	@RequestMapping(value = "/types", method = RequestMethod.GET)
+	public String viewPlugins(
+			@ModelAttribute("typesLibrary") TypesLibrary library, Model model) {
+
+		model.addAttribute("simulatings", PluginManager.getSimulatingKeys());
+		model.addAttribute("routings", PluginManager.getRoutingKeys());
+		model.addAttribute("generatings",
+				PluginManager.getVehicleGeneratingKeys());
+		model.addAttribute("movings", PluginManager.getMovingKeys());
+		model.addAttribute("carfollowings", PluginManager.getCarFollowingKeys());
+		model.addAttribute("lanechangings", PluginManager.getLaneChangingKeys());
+
+		return "components/plugin-types";
 	}
 }
