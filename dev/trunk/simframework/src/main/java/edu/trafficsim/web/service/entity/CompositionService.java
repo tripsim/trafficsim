@@ -39,21 +39,17 @@ public class CompositionService extends EntityService {
 		return composition;
 	}
 
-	public void removeVehicleComposition(TypesLibrary library,
-			OdMatrix odMatrix, String name) throws UserInterfaceException {
+	public VehicleTypeComposition removeVehicleComposition(
+			TypesLibrary library, OdMatrix odMatrix, String name)
+			throws UserInterfaceException {
 		VehicleTypeComposition composition = library
-				.removeVehicleComposition(name);
+				.getVehicleComposition(name);
 		for (Od od : odMatrix.getOds()) {
-			try {
-				if (od.getVehicleComposition() == composition)
-					throw new UserInterfaceException(
-							"Cannot remove composition. It is referenced.");
-			} catch (UserInterfaceException e) {
-				library.addVehicleComposition(composition);
-				throw e;
-			}
+			if (od.getVehicleComposition() == composition)
+				throw new UserInterfaceException(
+						"Cannot remove composition. It is referenced.");
 		}
-
+		return library.removeVehicleComposition(name);
 	}
 
 	public VehicleTypeComposition createVehicleComposition(
@@ -68,11 +64,42 @@ public class CompositionService extends EntityService {
 
 		VehicleTypeComposition comp = factory.createVehicleTypeComposition(seq,
 				newName,
-				defaultComposition.getVehicleTypes()
-						.toArray(new VehicleType[0]), defaultComposition
-						.values().toArray(new Double[0]));
+				defaultComposition.getTypes().toArray(new VehicleType[0]),
+				defaultComposition.values().toArray(new Double[0]));
 		library.addVehicleComposition(comp);
 		return comp;
+	}
+
+	public DriverTypeComposition updateDriverComposition(TypesLibrary library,
+			String oldName, String newName, String[] types, double[] values)
+			throws ModelInputException, UserInterfaceException {
+		DriverTypeComposition composition = library
+				.getDriverComposition(oldName);
+		if (!oldName.equals(newName)) {
+			if (library.getDriverComposition(newName) != null)
+				throw new UserInterfaceException(newName + " already existed!");
+
+			library.removeDriverComposition(oldName);
+			composition.setName(newName);
+			library.addDriverComposition(composition);
+		}
+		composition.reset();
+		for (int i = 0; i < types.length; i++) {
+			composition.culmulate(library.getDriverType(types[i]), values[i]);
+		}
+
+		return composition;
+	}
+
+	public DriverTypeComposition removeDriverComposition(TypesLibrary library,
+			OdMatrix odMatrix, String name) throws UserInterfaceException {
+		DriverTypeComposition composition = library.getDriverComposition(name);
+		for (Od od : odMatrix.getOds()) {
+			if (od.getDriverComposition() == composition)
+				throw new UserInterfaceException(
+						"Cannot remove composition. It is referenced.");
+		}
+		return library.removeDriverComposition(name);
 	}
 
 	public DriverTypeComposition createDriverComposition(TypesLibrary library,
@@ -86,8 +113,8 @@ public class CompositionService extends EntityService {
 		}
 
 		DriverTypeComposition comp = factory.createDriverTypeComposition(seq,
-				name,
-				defaultComposition.getDriverTypes().toArray(new DriverType[0]),
+				newName,
+				defaultComposition.getTypes().toArray(new DriverType[0]),
 				defaultComposition.values().toArray(new Double[0]));
 		library.addDriverComposition(comp);
 		return comp;

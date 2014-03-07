@@ -1,0 +1,37 @@
+<h2>Driver Type</h2>
+<div>
+	<table>
+		<tbody
+			data-th-attr="data-name=${driverType.name}, data-is-new=${isNew}">
+			<tr>
+				<td>Name</td>
+				<td><input type="text" name="name"
+					data-th-value="${driverType.name}" /></td>
+			</tr>
+			<tr>
+				<td>Perception Time</td>
+				<td><input type="text" name="perceptiontime"
+					data-th-value="${#numbers.formatDecimal(driverType.perceptionTime, 1, 2)}" /></td>
+			</tr>
+			<tr>
+				<td>Reaction Time</td>
+				<td><input type="text" name="reactiontime"
+					data-th-value="${#numbers.formatDecimal(driverType.reactionTime, 1, 2)}" /></td>
+			</tr>
+			<tr>
+				<td>Desired Headway</td>
+				<td><input type="text" name="desiredheadway"
+					data-th-value="${#numbers.formatDecimal(driverType.desiredHeadway, 1, 2)}" /></td>
+			</tr>
+			<tr>
+				<td>Desired Speed</td>
+				<td><input type="text" name="desiredspeed"
+					data-th-value="${#numbers.formatDecimal(driverType.desiredSpeed, 1, 2)}" /></td>
+			</tr>
+			<tr>
+				<td><span class="user-configuration-driver-type-save button">save</span><span
+					class="user-configuration-driver-type-cancel button">cancel</span></td>
+			</tr>
+		</tbody>
+	</table>
+</div>

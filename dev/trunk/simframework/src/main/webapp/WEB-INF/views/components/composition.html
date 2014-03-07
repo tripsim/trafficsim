@@ -1,0 +1,39 @@
+<h2>Compositions</h2>
+<div id="user-configuration-buttons">
+	<span id="user-configuration-button-close" class="button">close</span>
+</div>
+
+<div>
+	<h3>Vehicle Compositions</h3>
+	<table>
+		<tbody id="user-configuration-vehicle-compositions">
+			<th:block data-th-each="vehicleComposition : ${vehicleCompositions}">
+				<tr
+					data-th-replace="components/composition-fragments :: info(${vehicleComposition}, vehicle)">
+				</tr>
+			</th:block>
+		</tbody>
+		<tbody>
+			<tr>
+				<td><span
+					class="user-configuration-vehicle-composition-new button">new</span></td>
+			</tr>
+		</tbody>
+	</table>
+	<h3>Driver Compositions</h3>
+	<table>
+		<tbody id="user-configuration-driver-compositions">
+			<th:block data-th-each="driverComposition : ${driverCompositions}">
+				<tr
+					data-th-replace="components/composition-fragments :: info(${driverComposition}, driver)">
+				</tr>
+			</th:block>
+		</tbody>
+		<tbody>
+			<tr>
+				<td><span
+					class="user-configuration-driver-composition-new button">new</span></td>
+			</tr>
+		</tbody>
+	</table>
+</div>

@@ -96,7 +96,7 @@ html,body,#map {
 	z-index: 1;
 }
 
-#user-configuration-buttons span {
+#user-configuration-buttons {
 	
 }
 
@@ -119,11 +119,13 @@ html,body,#map {
 }
 
 #user-configuration td {
+	padding: 4px;
 	min-width: 80px;
 }
 
 #user-configuration td span.button {
-	margin: 0 2px;
+	margin-right: 4px;
+	min-width: 50px;
 }
 
 #user-configuration td select {

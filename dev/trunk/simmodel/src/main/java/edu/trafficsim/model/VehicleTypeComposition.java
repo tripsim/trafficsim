@@ -4,6 +4,6 @@ import java.util.Set;
 
 public interface VehicleTypeComposition extends Composition<VehicleType> {
 
-	Set<VehicleType> getVehicleTypes();
+	Set<VehicleType> getTypes();
 
 }

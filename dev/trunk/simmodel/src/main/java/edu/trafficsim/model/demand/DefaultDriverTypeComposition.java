@@ -17,7 +17,7 @@ public class DefaultDriverTypeComposition extends
 	}
 
 	@Override
-	public final Set<DriverType> getDriverTypes() {
+	public final Set<DriverType> getTypes() {
 		return keys();
 	}
 

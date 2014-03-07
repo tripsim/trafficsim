@@ -353,7 +353,7 @@ public class ScenarioImportExport {
 
 			// start vehicle type
 			generator.writeArrayFieldStart(VEHICLETYPES);
-			for (VehicleType v : composition.getVehicleTypes()) {
+			for (VehicleType v : composition.getTypes()) {
 				generator.writeString(v.getName());
 				vehicleTypes.add(v);
 			}
@@ -385,7 +385,7 @@ public class ScenarioImportExport {
 
 			// start driver type
 			generator.writeArrayFieldStart(DRIVERTYPES);
-			for (DriverType d : composition.getDriverTypes()) {
+			for (DriverType d : composition.getTypes()) {
 				generator.writeString(d.getName());
 				driverTypes.add(d);
 			}
