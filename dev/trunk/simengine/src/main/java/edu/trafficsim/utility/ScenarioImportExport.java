@@ -35,6 +35,7 @@ import edu.trafficsim.engine.factory.DefaultNetworkFactory;
 import edu.trafficsim.engine.factory.DefaultOdFactory;
 import edu.trafficsim.engine.factory.DefaultTypesFactory;
 import edu.trafficsim.engine.factory.Sequence;
+import edu.trafficsim.engine.library.TypesLibrary;
 import edu.trafficsim.model.ConnectionLane;
 import edu.trafficsim.model.DriverType;
 import edu.trafficsim.model.DriverTypeComposition;
@@ -306,9 +307,9 @@ public class ScenarioImportExport {
 						.writeNumber(od.getDestination() == null ? NODESTINATION
 								: od.getDestination().getId());
 				generator.writeFieldName(VEHICLECOMPOSITION);
-				generator.writeNumber(od.getVehicleComposition().getId());
+				generator.writeNumber(od.getVehicleComposition().getName());
 				generator.writeFieldName(DRIVERCOMPOSITION);
-				generator.writeNumber(od.getDriverComposition().getId());
+				generator.writeNumber(od.getDriverComposition().getName());
 
 				// start time intervals
 				generator.writeArrayFieldStart(TIMES);
@@ -467,14 +468,13 @@ public class ScenarioImportExport {
 	}
 
 	public static SimulationScenario importScenario(InputStream in,
-			TypesFactory typesFactory, NetworkFactory networkFactory,
-			OdFactory odFactory) throws JsonParseException, IOException,
-			ParseException, ModelInputException, TransformException {
+			TypesLibrary typesLibrary, TypesFactory typesFactory,
+			NetworkFactory networkFactory, OdFactory odFactory)
+			throws JsonParseException, IOException, ParseException,
+			ModelInputException, TransformException {
 		JsonParser jsonParse = factory.createParser(in);
 		JsonNode rootNode = Engine.mapper.readTree(jsonParse);
 
-		Map<String, NodeType> nodeTypes = new HashMap<String, NodeType>();
-		Map<String, LinkType> linkTypes = new HashMap<String, LinkType>();
 		Map<Long, RoadInfo> roadInfos = new HashMap<Long, RoadInfo>();
 		Map<Long, Lane> lanes = new HashMap<Long, Lane>();
 
@@ -491,7 +491,7 @@ public class ScenarioImportExport {
 			id = child.get(ID).asLong();
 			name = child.get(NAME).asText();
 			NodeType type = typesFactory.createNodeType(id, name);
-			nodeTypes.put(name, type);
+			typesLibrary.addNodeType(type);
 		}
 
 		// import nodes
@@ -501,7 +501,8 @@ public class ScenarioImportExport {
 			id = child.get(ID).asLong();
 			name = child.get(NAME).asText();
 			Point pt = (Point) fromWKT(child.get(GEOM).asText());
-			NodeType type = nodeTypes.get(child.get(NODETYPE));
+			NodeType type = typesLibrary.getNodeType(child.get(NODETYPE)
+					.asText());
 			Node node = networkFactory.createNode(id, name, type, pt);
 			network.add(node);
 		}
@@ -513,7 +514,7 @@ public class ScenarioImportExport {
 			id = child.get(ID).asLong();
 			name = child.get(NAME).asText();
 			LinkType type = typesFactory.createLinkType(id, name);
-			linkTypes.put(name, type);
+			typesLibrary.addLinkType(type);
 		}
 
 		// import road info
@@ -536,7 +537,8 @@ public class ScenarioImportExport {
 			id = child.get(ID).asLong();
 			name = child.get(NAME).asText();
 			LineString geom = (LineString) fromWKT(child.get(GEOM).asText());
-			LinkType type = linkTypes.get(child.get(LINKTYPE));
+			LinkType type = typesLibrary.getLinkType(child.get(LINKTYPE)
+					.asText());
 			Node startNode = network.getNode(child.get(STARTNODE).asLong());
 			Node endNode = network.getNode(child.get(ENDNODE).asLong());
 			RoadInfo info = roadInfos.get(child.get(ROADINFO).asLong());
@@ -571,14 +573,8 @@ public class ScenarioImportExport {
 			}
 		}
 
-		linkTypes = null;
-		nodeTypes = null;
 		roadInfos = null;
 		lanes = null;
-		Map<Long, VehicleTypeComposition> vehicleCompositions = new HashMap<Long, VehicleTypeComposition>();
-		Map<Long, DriverTypeComposition> driverCompositions = new HashMap<Long, DriverTypeComposition>();
-		Map<String, VehicleType> vehicleTypes = new HashMap<String, VehicleType>();
-		Map<String, DriverType> driverTypes = new HashMap<String, DriverType>();
 
 		// import vehicle types
 		jsonNode = rootNode.get(VEHICLETYPES);
@@ -589,7 +585,7 @@ public class ScenarioImportExport {
 			String vehicelClass = child.get(VEHICLECLASS).asText();
 			VehicleType type = typesFactory.createVehicleType(id, name,
 					VehicleClass.valueOf(vehicelClass));
-			vehicleTypes.put(name, type);
+			typesLibrary.addVehicleType(type);
 		}
 
 		// import driver types
@@ -599,7 +595,7 @@ public class ScenarioImportExport {
 			id = child.get(ID).asLong();
 			name = child.get(NAME).asText();
 			DriverType type = typesFactory.createDriverType(id, name);
-			driverTypes.put(name, type);
+			typesLibrary.addDriverType(type);
 		}
 
 		// import vehicle composition
@@ -611,14 +607,15 @@ public class ScenarioImportExport {
 			JsonNode grandChild = child.get(VEHICLETYPES);
 			VehicleType[] vts = new VehicleType[grandChild.size()];
 			for (int j = 0; j < grandChild.size(); j++)
-				vts[j] = vehicleTypes.get(grandChild.get(i).textValue());
+				vts[j] = typesLibrary.getVehicleType(grandChild.get(i)
+						.textValue());
 			grandChild = child.get(PROBABILITIES);
 			Double[] dbs = new Double[grandChild.size()];
 			for (int j = 0; j < grandChild.size(); j++)
 				dbs[j] = grandChild.get(j).asDouble();
 			VehicleTypeComposition comp = typesFactory
 					.createVehicleTypeComposition(id, name, vts, dbs);
-			vehicleCompositions.put(id, comp);
+			typesLibrary.addVehicleComposition(comp);
 		}
 
 		// import driver composition
@@ -630,14 +627,15 @@ public class ScenarioImportExport {
 			JsonNode grandChild = child.get(DRIVERTYPES);
 			DriverType[] dts = new DriverType[grandChild.size()];
 			for (int j = 0; j < grandChild.size(); j++)
-				dts[j] = driverTypes.get(grandChild.get(i).textValue());
+				dts[j] = typesLibrary.getDriverType(grandChild.get(i)
+						.textValue());
 			grandChild = child.get(PROBABILITIES);
 			Double[] dbs = new Double[grandChild.size()];
 			for (int j = 0; j < grandChild.size(); j++)
 				dbs[j] = grandChild.get(j).asDouble();
 			DriverTypeComposition comp = typesFactory
 					.createDriverTypeComposition(id, name, dts, dbs);
-			driverCompositions.put(id, comp);
+			typesLibrary.addDriverComposition(comp);
 		}
 
 		// import ods
@@ -653,10 +651,11 @@ public class ScenarioImportExport {
 			name = child.get(NAME).asText();
 			Node origin = network.getNode(child.get(ORIGIN).asLong());
 			Node destination = network.getNode(child.get(DESTINATION).asLong());
-			VehicleTypeComposition vc = vehicleCompositions.get(child
-					.get(VEHICLECOMPOSITION).asLong());
-			DriverTypeComposition dc = driverCompositions.get(child
-					.get(DRIVERCOMPOSITION).asLong());
+			VehicleTypeComposition vc = typesLibrary
+					.getVehicleComposition(child.get(VEHICLECOMPOSITION)
+							.asText());
+			DriverTypeComposition dc = typesLibrary.getDriverComposition(child
+					.get(DRIVERCOMPOSITION).asText());
 			JsonNode grandChild = child.get(TIMES);
 			double[] times = new double[grandChild.size()];
 			for (int j = 0; j < grandChild.size(); j++)
@@ -697,7 +696,8 @@ public class ScenarioImportExport {
 
 		FileInputStream in = new FileInputStream(new File(
 				"/Users/Xuan/Desktop/test.json"));
-		importScenario(in, DefaultTypesFactory.getInstance(),
+		importScenario(in, TypesLibrary.defaultLibrary(),
+				DefaultTypesFactory.getInstance(),
 				DefaultNetworkFactory.getInstance(),
 				DefaultOdFactory.getInstance());
 	}
