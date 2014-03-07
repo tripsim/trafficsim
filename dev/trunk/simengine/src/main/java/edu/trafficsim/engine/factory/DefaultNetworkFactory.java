@@ -52,10 +52,6 @@ public class DefaultNetworkFactory extends AbstractFactory implements
 		return new DefaultNetwork(id, name);
 	}
 
-	// TODO set default types
-	private static NodeType nodeType = new NodeType(0, "temp");
-	private static LinkType linkType = new LinkType(0, "temp");
-
 	@Override
 	public Point createPoint(double x, double y) {
 		return geometryFactory.createPoint(new Coordinate(x, y));
@@ -77,48 +73,50 @@ public class DefaultNetworkFactory extends AbstractFactory implements
 	}
 
 	@Override
-	public Node createNode(Sequence seq, String name, double x, double y) {
-		return createNode(seq, name, createPoint(x, y));
+	public Node createNode(Sequence seq, String name, NodeType type, double x,
+			double y) {
+		return createNode(seq, name, type, createPoint(x, y));
 	}
 
 	@Override
-	public Node createNode(Sequence seq, String name, Coordinate coord) {
-		return createNode(seq, name, createPoint(coord));
+	public Node createNode(Sequence seq, String name, NodeType type,
+			Coordinate coord) {
+		return createNode(seq, name, type, createPoint(coord));
 	}
 
 	@Override
-	public Node createNode(Sequence seq, String name, Point point) {
-		return createNode(seq.nextId(), name, nodeType, point);
+	public Node createNode(Sequence seq, String name, NodeType type, Point point) {
+		return createNode(seq.nextId(), name, type, point);
 	}
 
 	@Override
 	public Node createNode(Long id, String name, NodeType type, Point point) {
-		return new DefaultNode(id, name, nodeType, point);
+		return new DefaultNode(id, name, type, point);
 	}
 
 	@Override
-	public Link createLink(Sequence seq, String name, Node startNode,
-			Node endNode, Coordinate[] coords, RoadInfo roadInfo)
+	public Link createLink(Sequence seq, String name, LinkType type,
+			Node startNode, Node endNode, Coordinate[] coords, RoadInfo roadInfo)
 			throws ModelInputException, TransformException {
-		return createLink(seq, name, startNode, endNode,
+		return createLink(seq, name, type, startNode, endNode,
 				createLineString(coords), roadInfo);
 	}
 
 	@Override
-	public Link createLink(Sequence seq, String name, Node startNode,
-			Node endNode, CoordinateSequence points, RoadInfo roadInfo)
-			throws ModelInputException, TransformException {
-		return createLink(seq, name, startNode, endNode,
+	public Link createLink(Sequence seq, String name, LinkType type,
+			Node startNode, Node endNode, CoordinateSequence points,
+			RoadInfo roadInfo) throws ModelInputException, TransformException {
+		return createLink(seq, name, type, startNode, endNode,
 				createLineString(points), roadInfo);
 	}
 
 	@Override
-	public Link createLink(Sequence seq, String name, Node startNode,
-			Node endNode, LineString lineString, RoadInfo roadInfo)
-			throws ModelInputException, TransformException {
+	public Link createLink(Sequence seq, String name, LinkType type,
+			Node startNode, Node endNode, LineString lineString,
+			RoadInfo roadInfo) throws ModelInputException, TransformException {
 		if (roadInfo == null)
 			roadInfo = createRoadInfo(seq, name);
-		return createLink(seq.nextId(), name, linkType, startNode, endNode,
+		return createLink(seq.nextId(), name, type, startNode, endNode,
 				lineString, roadInfo);
 	}
 
@@ -128,16 +126,16 @@ public class DefaultNetworkFactory extends AbstractFactory implements
 			throws ModelInputException, TransformException {
 		if (roadInfo == null)
 			throw new ModelInputException("Road info cannot be null.");
-		return new DefaultLink(id, name, linkType, startNode, endNode,
-				lineString, roadInfo);
+		return new DefaultLink(id, name, type, startNode, endNode, lineString,
+				roadInfo);
 	}
 
 	@Override
 	public Link createReverseLink(Sequence seq, String name, Link link)
 			throws ModelInputException, TransformException {
-		Link newLink = createLink(seq, name, link.getEndNode(),
-				link.getStartNode(), (LineString) link.getLinearGeom()
-						.reverse(), link.getRoadInfo());
+		Link newLink = createLink(seq, name, link.getLinkType(),
+				link.getEndNode(), link.getStartNode(), (LineString) link
+						.getLinearGeom().reverse(), link.getRoadInfo());
 		link.setReverseLink(newLink);
 		return newLink;
 	}

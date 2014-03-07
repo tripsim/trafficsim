@@ -8,6 +8,8 @@ import java.util.Map;
 
 import edu.trafficsim.model.DriverType;
 import edu.trafficsim.model.DriverTypeComposition;
+import edu.trafficsim.model.LinkType;
+import edu.trafficsim.model.NodeType;
 import edu.trafficsim.model.VehicleType;
 import edu.trafficsim.model.VehicleTypeComposition;
 
@@ -15,16 +17,62 @@ abstract class AbstractTypesLibrary implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
+	private final Map<String, NodeType> nodeTypes;
+	private final Map<String, LinkType> linkTypes;
 	private final Map<String, VehicleType> vehicleTypes;
 	private final Map<String, DriverType> driverTypes;
 	private final Map<String, VehicleTypeComposition> vehicleCompositions;
 	private final Map<String, DriverTypeComposition> driverCompositions;
 
 	public AbstractTypesLibrary() {
+		nodeTypes = new HashMap<String, NodeType>();
+		linkTypes = new HashMap<String, LinkType>();
 		vehicleTypes = new HashMap<String, VehicleType>();
 		driverTypes = new HashMap<String, DriverType>();
 		vehicleCompositions = new HashMap<String, VehicleTypeComposition>();
 		driverCompositions = new HashMap<String, DriverTypeComposition>();
+	}
+
+	public NodeType getNodeType(String name) {
+		return nodeTypes.get(name);
+	}
+
+	public Collection<NodeType> getNodeTypes() {
+		return Collections.unmodifiableCollection(nodeTypes.values());
+	}
+
+	public void addNodeType(NodeType type) {
+		nodeTypes.put(type.getName(), type);
+	}
+
+	public void addNodeTypes(Collection<? extends NodeType> nodeTypes) {
+		for (NodeType type : nodeTypes)
+			addNodeType(type);
+	}
+
+	public NodeType removeNodeType(String name) {
+		return nodeTypes.remove(name);
+	}
+
+	public LinkType getLinkType(String name) {
+		return linkTypes.get(name);
+	}
+
+	public Collection<LinkType> getLinkTypes() {
+		return Collections.unmodifiableCollection(linkTypes.values());
+	}
+
+	public void addLinkType(LinkType linkType) {
+		linkTypes.put(linkType.getName(), linkType);
+	}
+
+	public void addLinkTypes(Collection<? extends LinkType> linkTypes) {
+		for (LinkType type : linkTypes)
+			addLinkType(type);
+	}
+
+	public LinkType removeLinkType(String name) {
+		return linkTypes.remove(name);
 	}
 
 	public VehicleType getVehicleType(String name) {

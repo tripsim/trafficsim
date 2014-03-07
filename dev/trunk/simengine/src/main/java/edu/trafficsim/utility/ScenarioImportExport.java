@@ -553,7 +553,6 @@ public class ScenarioImportExport {
 				double width = n.get(WIDTH).asDouble();
 				Lane lane = networkFactory.createLane(id, link, start, end,
 						width);
-				link.add(lane);
 				lanes.put(id, lane);
 			}
 		}

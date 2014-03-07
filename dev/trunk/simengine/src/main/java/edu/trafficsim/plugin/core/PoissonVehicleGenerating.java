@@ -21,7 +21,7 @@ import edu.trafficsim.plugin.IRouting;
 import edu.trafficsim.plugin.IVehicleGenerating;
 import edu.trafficsim.plugin.PluginManager;
 
-public class DefaultVehicleGenerating implements IVehicleGenerating {
+public class PoissonVehicleGenerating implements IVehicleGenerating {
 
 	// Based on arrival rate (possion dist)
 	// An alternative should be based on headway (negative exponential dist)

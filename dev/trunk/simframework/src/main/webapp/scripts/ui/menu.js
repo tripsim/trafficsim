@@ -41,8 +41,18 @@ jQuery(document).ready(function() {
 		simwebhelper.getPanel('vehiclecomposition/view');
 	});
 
-	/* plugin */
-	jQuery('#user-interface-plugin').click(function() {
+	/* types */
+	jQuery('#user-interface-types').click(function() {
+		simwebhelper.getPanel('types/view');
+	});
+
+	/* plugin types */
+	jQuery('#user-interface-plugin-types').click(function() {
+		simwebhelper.getPanel('plugin/types');
+	});
+
+	/* plugin manager */
+	jQuery('#user-interface-plugin-manager').click(function() {
 		simwebhelper.getPanel('plugin/view');
 	});
 
@@ -58,7 +68,6 @@ jQuery(document).ready(function() {
 
 	/* Create New Scenario */
 	jQuery('#user-interface-scenario').click(function() {
-		simulation.clearLayers();
 		simwebhelper.getPanel('scenario/new');
 	});
 

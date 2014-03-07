@@ -50,7 +50,7 @@ public class DefaultController extends AbstractController {
 	@Autowired
 	OdService odService;
 
-	@RequestMapping
+	@RequestMapping(value = "/")
 	public String home(Model model, HttpSession session)
 			throws ModelInputException {
 		if (session.isNew()) {
@@ -58,7 +58,7 @@ public class DefaultController extends AbstractController {
 			NetworkFactory networkFactory = project.getNetworkFactory();
 			OdFactory odFactory = project.getOdFactory();
 			TypesFactory typesFactory = project.getTypesFactory();
-			TypesLibrary typesLibrary = TypesLibrary.defaultLibrary(seq);
+			TypesLibrary typesLibrary = TypesLibrary.defaultLibrary();
 			Network network = networkService.createNetwork(networkFactory, seq);
 			OdMatrix odMatrix = odService.createOdMatrix(odFactory, seq);
 

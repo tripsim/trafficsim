@@ -13,6 +13,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 
 import edu.trafficsim.engine.factory.DefaultNetworkFactory;
 import edu.trafficsim.engine.factory.Sequence;
+import edu.trafficsim.engine.library.TypesLibrary;
 import edu.trafficsim.engine.osm.Highways;
 import edu.trafficsim.engine.osm.HighwaysJsonParser;
 import edu.trafficsim.engine.osm.OsmNetworkExtractor;
@@ -29,7 +30,14 @@ public class OSMXAPITest {
 
 	static Sequence seq = Sequence.create();
 	static NetworkFactory networkFactory = DefaultNetworkFactory.getInstance();
+	static TypesLibrary typesLibrary = null;
 	static OsmNetworkExtractor extractor = new OsmNetworkExtractor(seq);
+	static {
+		try {
+			typesLibrary = TypesLibrary.defaultLibrary();
+		} catch (ModelInputException e) {
+		}
+	}
 
 	protected static void testExtractByReader() throws TransformException {
 
@@ -37,7 +45,8 @@ public class OSMXAPITest {
 				OSMXAPITest.class.getResourceAsStream("test.json")));
 
 		try {
-			extractor.extract(extractor.parse(reader), networkFactory);
+			extractor.extract(extractor.parse(reader), typesLibrary,
+					networkFactory);
 
 		} catch (ModelInputException | IOException e) {
 			// TODO Auto-generated catch block
@@ -49,7 +58,7 @@ public class OSMXAPITest {
 		String urlPre = "http://jxapi.openstreetmap.org/xapi/api/0.6";
 		String testQuery = "/way[highway=*][bbox=-89.4114,43.0707,-89.3955,43.0753]";
 		try {
-			extractor.extract(urlPre + testQuery, networkFactory);
+			extractor.extract(urlPre + testQuery, typesLibrary, networkFactory);
 		} catch (ModelInputException | IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

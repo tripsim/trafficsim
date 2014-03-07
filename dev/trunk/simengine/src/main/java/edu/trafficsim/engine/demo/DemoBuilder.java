@@ -1,14 +1,9 @@
 package edu.trafficsim.engine.demo;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.opengis.referencing.operation.TransformException;
 
-import com.fasterxml.jackson.core.JsonParseException;
 import com.vividsolutions.jts.geom.Coordinate;
 
 import edu.trafficsim.engine.NetworkFactory;
@@ -19,13 +14,15 @@ import edu.trafficsim.engine.factory.DefaultNetworkFactory;
 import edu.trafficsim.engine.factory.DefaultOdFactory;
 import edu.trafficsim.engine.factory.DefaultTypesFactory;
 import edu.trafficsim.engine.factory.Sequence;
-import edu.trafficsim.engine.osm.OsmNetworkExtractor;
+import edu.trafficsim.engine.library.TypesLibrary;
 import edu.trafficsim.model.DriverType;
 import edu.trafficsim.model.DriverTypeComposition;
 import edu.trafficsim.model.Lane;
 import edu.trafficsim.model.Link;
+import edu.trafficsim.model.LinkType;
 import edu.trafficsim.model.Network;
 import edu.trafficsim.model.Node;
+import edu.trafficsim.model.NodeType;
 import edu.trafficsim.model.Od;
 import edu.trafficsim.model.OdMatrix;
 import edu.trafficsim.model.RoadInfo;
@@ -54,19 +51,10 @@ public class DemoBuilder {
 		manualBuild();
 	}
 
-	// test osm extraction
-	public Network extractOsmNetwork() throws ModelInputException,
-			JsonParseException, IOException, TransformException {
-		BufferedReader reader = new BufferedReader(new InputStreamReader(
-				getClass().getResourceAsStream("demo.json")));
-		OsmNetworkExtractor extractor = new OsmNetworkExtractor(seq);
-		return extractor.extract(extractor.parse(reader),
-				DefaultNetworkFactory.getInstance());
-	}
-
 	private void manualBuild() throws ModelInputException,
 			NoSuchAuthorityCodeException, FactoryException, TransformException {
 
+		TypesLibrary typesLibrary = TypesLibrary.defaultLibrary();
 		NetworkFactory networkFactory = DefaultNetworkFactory.getInstance();
 		TypesFactory typesFactory = DefaultTypesFactory.getInstance();
 
@@ -108,22 +96,24 @@ public class DemoBuilder {
 				coord1859358892, coord53720208, coord53607075 };
 
 		// Nodes
+		NodeType nodeType = typesLibrary.getDefaultNodeType();
 		Node node1 = networkFactory.createNode(seq, "Johnson at Randall",
-				new Coordinate(coord53596818));
+				nodeType, new Coordinate(coord53596818));
 		Node node2 = networkFactory.createNode(seq, "Johnson at Orchardl",
-				new Coordinate(coord1345424866));
+				nodeType, new Coordinate(coord1345424866));
 		Node node3 = networkFactory.createNode(seq, "Johnson at Charter",
-				new Coordinate(coord53607075));
+				nodeType, new Coordinate(coord53607075));
 		node1.setId(1l);
 		node2.setId(2l);
 		node3.setId(3l);
 		// Node node4 = networkFactory.createNode("Johnson at Mill");
 		// Node node5 = networkFactory.createNode("Johnson at Park");
 		// Links
-		Link link1 = networkFactory.createLink(seq, "Johson1", node1, node2,
-				coords1, null);
-		Link link2 = networkFactory.createLink(seq, "Johson2", node2, node3,
-				coords2, null);
+		LinkType linkType = typesLibrary.getDefaultLinkType();
+		Link link1 = networkFactory.createLink(seq, "Johson1", linkType, node1,
+				node2, coords1, null);
+		Link link2 = networkFactory.createLink(seq, "Johson2", linkType, node2,
+				node3, coords2, null);
 		link1.setId(1l);
 		link2.setId(2l);
 
