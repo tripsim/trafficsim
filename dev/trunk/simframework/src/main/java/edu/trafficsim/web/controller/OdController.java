@@ -53,8 +53,10 @@ public class OdController extends AbstractController {
 
 		Od od = odMatrix.getOd(id);
 		// TODO make it reachable sinks
-		model.addAttribute("vehiclecompositions",
+		model.addAttribute("vehicleCompositions",
 				library.getVehicleCompositions());
+		model.addAttribute("driverCompositions",
+				library.getDriverCompositions());
 		model.addAttribute("destinations", network.getSinks());
 		model.addAttribute("od", od);
 		model.addAttribute("isNew", isNew);
@@ -66,6 +68,7 @@ public class OdController extends AbstractController {
 	Map<String, Object> saveOd(@RequestParam("id") long id,
 			@RequestParam("destinatioId") long dId,
 			@RequestParam("vehicleCompositionName") String vcName,
+			@RequestParam("driverCompositionName") String dcName,
 			@RequestParam("times[]") double[] times,
 			@RequestParam("vphs[]") Integer[] vphs,
 			@ModelAttribute("typesLibrary") TypesLibrary library,
@@ -73,7 +76,7 @@ public class OdController extends AbstractController {
 			@ModelAttribute("odMatrix") OdMatrix odMatrix) {
 		try {
 			odService.updateOd(library, network, odMatrix, id, dId, vcName,
-					times, vphs);
+					dcName, times, vphs);
 			return messageOnlySuccessResponse("Od saved.");
 		} catch (ModelInputException e) {
 			return failureResponse(e);

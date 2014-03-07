@@ -23,7 +23,7 @@ html,body,#map {
 	top: 64px;
 	left: 8px;
 	width: 180px;
-	height: 360px;
+	height: 400px;
 	z-index: 20000;
 	opacity: 0.75;
 	color: #04376c;
@@ -59,8 +59,8 @@ html,body,#map {
 	padding: 4px 4px 4px 10px;
 	top: 64px;
 	left: 200px;
-	width: 500px;
-	height: 360px;
+	width: 600px;
+	height: 400px;
 	z-index: 20000;
 	opacity: 0.75;
 	background-color: #0d58a6;
@@ -123,6 +123,10 @@ html,body,#map {
 	min-width: 80px;
 }
 
+#user-configuration td:first-child {
+	min-width: 150px;
+}
+
 #user-configuration td span.button {
 	margin-right: 4px;
 	min-width: 50px;
@@ -162,16 +166,12 @@ html,body,#map {
 /***********************************************************
  * jqplot 
  **********************************************************/
-#plot {
-	padding: 8px;
-	z-index: 20000;
+#popup {
 	position: fixed;
-	top: 64px;
-	left: 720px;
-	width: 800px;
-	height: 600px;
+	top: 0px;
+	left: 0px;
 	background-color: #ffffff;
-	opacity: 0.9;
+	opacity: 0.8;
 	display: none;
 	z-index: 20000;
 }

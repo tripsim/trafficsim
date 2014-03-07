@@ -96,7 +96,9 @@ jQuery(document).ready(
 						postData.destinatioId = tr.find(
 								'select[name="destination"]').val();
 						postData.vehicleCompositionName = tr.find(
-								'select[name="composition"]').val();
+								'select[name="vehicle"]').val();
+						postData.driverCompositionName = tr.find(
+								'select[name="driver"]').val();
 						simwebhelper.action('od/save', postData,
 								function() {
 									simwebhelper.fillHtml('od/info/'

@@ -4,7 +4,7 @@
 </div>
 <div>
 	<table>
-		<tbody>
+		<tbody data-th-fragment="info(node)" data-th-attr="data-id=${node.id}">
 			<tr>
 				<td>Node Id</td>
 				<td data-th-text="${node.id}"></td>
@@ -31,16 +31,20 @@
 				<td data-th-each="ds : ${node.downstreams}"><span
 					data-th-text="${ds.id}"></span></td>
 			</tr>
+			<tr>
+				<td colspan="2"><span
+					class="user-configuration-node-edit button">edit</span></td>
+			</tr>
 		</tbody>
 	</table>
 </div>
 
 <div data-th-if="${network.isSource(node)}">
 	<table>
+		<tr>
+			<td><h3>Vehicle Inputs</h3></td>
+		</tr>
 		<tbody id="user-configuration-ods-tbody">
-			<tr>
-				<td colspan="0"><h3>Vehicle Inputs</h3></td>
-			</tr>
 			<th:block data-th-each="od : ${ods}">
 				<tr data-th-replace="components/od-fragments :: info(${od})">
 				</tr>

@@ -48,6 +48,10 @@ public class NetworkService extends EntityService {
 		return node;
 	}
 
+	public void saveNode(Node node, String name) {
+		node.setName(name);
+	}
+
 	public Link createLink(NetworkFactory factory, Sequence seq,
 			Network network, LinkType linkType, Node startNode, Node endNode,
 			CoordinateSequence points) throws ModelInputException,

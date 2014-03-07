@@ -16,11 +16,13 @@ import edu.trafficsim.web.UserInterfaceException;
 public class OdService extends EntityService {
 
 	public void updateOd(TypesLibrary library, Network network,
-			OdMatrix odMatrix, Long id, Long dId, String vcName,
+			OdMatrix odMatrix, Long id, Long dId, String vcName, String dcName,
 			double[] times, Integer[] vphs) throws ModelInputException {
 		odMatrix.getOd(id).setDestination(network.getNode(dId));
 		odMatrix.getOd(id).setVehicleComposition(
 				library.getVehicleComposition(vcName));
+		odMatrix.getOd(id).setDriverComposition(
+				library.getDriverComposition(dcName));
 		odMatrix.getOd(id).setVphs(times, vphs);
 	}
 

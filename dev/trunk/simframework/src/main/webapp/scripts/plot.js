@@ -1,7 +1,19 @@
 var simplot = {
 	plot : function(data) {
 		try {
-			jQuery('#plot').empty().show();
+			var width = jQuery(document).width();
+			var height = jQuery(document).height();
+			jQuery('#popup').empty().css({
+				width : width,
+				height : height
+			}).show();
+			jQuery('<div id="plot"></plot>').appendTo('#popup').css({
+				top : height * 0.25,
+				left : width * 0.25,
+				width : width * 0.50,
+				height : height * 0.50
+			});
+			jQuery(document).keyup(simplot.close);
 			jQuery.jqplot('plot', data, {
 				title : 'Time Space Diagram',
 				seriesDefaults : {
@@ -26,6 +38,7 @@ var simplot = {
 		}
 	},
 	close : function() {
-		jQuery('#plot').empty().hide();
+		jQuery('#popup').empty().hide();
+		jQuery(document).unbind('keyup', simplot.close);
 	}
 };

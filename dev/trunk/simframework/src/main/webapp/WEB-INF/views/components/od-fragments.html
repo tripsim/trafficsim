@@ -1,8 +1,10 @@
 <tr data-th-fragment="info(od)" data-th-attr="data-id=${od.id}">
-	<td><span>Destination</span> <br /> <span>Composition</span></td>
+	<td><span>Destination</span> <br /> <span>Vehicle
+			Composition</span><br /> <span>Driver Composition</span></td>
 	<td><span
 		data-th-text="${od.destination} == null ? 'None' : ${od.destination.id}"></span><br />
-		<span data-th-text="${od.vehicleComposition.name}"></span></td>
+		<span data-th-text="${od.vehicleComposition.name}"></span><br /> <span
+		data-th-text="${od.driverComposition.name}"></span></td>
 	<td><span>End Time </span> <br /> <span>VPH</span></td>
 	<td data-th-each="time : ${od.jumpTimes}"><span
 		data-th-text="${time}"></span> <br /> <span
@@ -13,11 +15,14 @@
 
 <tr data-th-fragment="form(od, destinations)"
 	data-th-attr="data-id=${od.id}, data-is-new=${isNew}">
-	<td><span>Destination</span><br /> <span>Composition</span></td>
+	<td><span>Destination</span> <br /> <span>Vehicle
+			Composition</span><br /> <span>Driver Composition</span></td>
 	<td><span
 		data-th-replace="components/od-fragments :: selectDestination(${destinations})"></span>
 		<br /> <span
-		data-th-replace="components/od-fragments :: selectComposition(${od.vehicleComposition.name}, ${vehiclecompositions})"></span></td>
+		data-th-replace="components/od-fragments :: selectComposition(${od.vehicleComposition.name}, ${vehicleCompositions}, vehicle)"></span><br />
+		<span
+		data-th-replace="components/od-fragments :: selectComposition(${od.driverComposition.name}, ${driverCompositions}, driver)"></span></td>
 	<td><span>End Time </span> <br /> <span>VPH</span></td>
 	<td class="od-td" data-th-each="time : ${od.jumpTimes}"><input
 		type="text" name="time" data-th-value="${time}" /> <br /> <input
@@ -37,8 +42,9 @@
 		data-th-text="${destination.id}"></option>
 </select>
 
-<select data-th-fragment="selectComposition(current, compositions)"
-	name="composition">
+<select
+	data-th-fragment="selectComposition(current, compositions, name)"
+	data-th-attr="name=${name}">
 	<option data-th-each="composition : ${compositions}"
 		data-th-attr="selected=${current.equals(composition)} ? 'true' :'false', value=${composition.name}"
 		data-th-text="${composition.name}"></option>

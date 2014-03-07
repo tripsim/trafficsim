@@ -43,8 +43,7 @@ jQuery(document).ready(
 							name : tbody.find('input[name="name"]').val(),
 							highway : tbody.find('select[name="highway"]')
 									.val(),
-							roadName : tbody.find('input[name="roadName"]')
-									.val()
+							roadName : tbody.find('input[name="name"]').val()
 						};
 						simwebhelper.action('link/save', postData, function(
 								data) {
@@ -75,5 +74,38 @@ jQuery(document).ready(
 							simulation.reDrawLanes(lanesconnectors.lanes,
 									lanesconnectors.connectors);
 						});
+					});
+			/*******************************************************************
+			 * Panel, User Configuration, Node View
+			 ******************************************************************/
+			/* edit node */
+			jQuery('#user-configuration').on('click',
+					'.user-configuration-node-edit', function() {
+						var tbody = jQuery(this).closest('tbody');
+						var id = tbody.attr('data-id');
+						simwebhelper.fillHtml('node/form/' + id, tbody);
+					});
+			/* save node */
+			jQuery('#user-configuration').on(
+					'click',
+					'.user-configuration-node-save',
+					function() {
+						var tbody = jQuery(this).closest('tbody');
+						var id = tbody.attr('data-id');
+						var postData = {
+							id : tbody.attr('data-id'),
+							name : tbody.find('input[name="name"]').val(),
+						};
+						simwebhelper.action('node/save', postData, function(
+								data) {
+							simwebhelper.fillHtml('node/info/' + id, tbody);
+						});
+					});
+			/* cancel edit node */
+			jQuery('#user-configuration').on('click',
+					'.user-configuration-node-cancel', function() {
+						var tbody = jQuery(this).closest('tbody');
+						var id = tbody.attr('data-id');
+						simwebhelper.fillHtml('node/info/' + id, tbody);
 					});
 		});
