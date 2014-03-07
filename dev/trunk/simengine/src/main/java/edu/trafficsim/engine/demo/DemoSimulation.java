@@ -6,6 +6,7 @@ import org.opengis.referencing.operation.TransformException;
 
 import edu.trafficsim.engine.SimulationScenario;
 import edu.trafficsim.engine.StatisticsCollector;
+import edu.trafficsim.engine.library.TypesLibrary;
 import edu.trafficsim.engine.statistics.DefaultStatisticsCollector;
 import edu.trafficsim.model.core.ModelInputException;
 import edu.trafficsim.plugin.ISimulating;
@@ -49,6 +50,10 @@ public class DemoSimulation {
 
 	public SimulationScenario getScenario() {
 		return builder.getScenario();
+	}
+
+	public TypesLibrary getTypesLibrary() {
+		return builder.getTypesLibrary();
 	}
 
 }

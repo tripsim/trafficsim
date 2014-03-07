@@ -2,6 +2,7 @@ package edu.trafficsim.plugin.core;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -36,6 +37,8 @@ public class PoissonVehicleGenerating implements IVehicleGenerating {
 
 		// calculate arrival rate
 		int vph = od.vph(time);
+		if (vph <= 0)
+			return Collections.emptyList();
 		double arrivalRate = ((double) vph) / (3600 / stepSize);
 
 		// random num

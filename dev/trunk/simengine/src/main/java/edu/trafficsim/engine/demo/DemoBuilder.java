@@ -9,14 +9,10 @@ import com.vividsolutions.jts.geom.Coordinate;
 import edu.trafficsim.engine.NetworkFactory;
 import edu.trafficsim.engine.OdFactory;
 import edu.trafficsim.engine.SimulationScenario;
-import edu.trafficsim.engine.TypesFactory;
 import edu.trafficsim.engine.factory.DefaultNetworkFactory;
 import edu.trafficsim.engine.factory.DefaultOdFactory;
-import edu.trafficsim.engine.factory.DefaultTypesFactory;
 import edu.trafficsim.engine.factory.Sequence;
 import edu.trafficsim.engine.library.TypesLibrary;
-import edu.trafficsim.model.DriverType;
-import edu.trafficsim.model.DriverTypeComposition;
 import edu.trafficsim.model.Lane;
 import edu.trafficsim.model.Link;
 import edu.trafficsim.model.LinkType;
@@ -27,9 +23,7 @@ import edu.trafficsim.model.Od;
 import edu.trafficsim.model.OdMatrix;
 import edu.trafficsim.model.RoadInfo;
 import edu.trafficsim.model.TurnPercentage;
-import edu.trafficsim.model.VehicleType;
 import edu.trafficsim.model.VehicleType.VehicleClass;
-import edu.trafficsim.model.VehicleTypeComposition;
 import edu.trafficsim.model.core.ModelInputException;
 import edu.trafficsim.model.util.GeoReferencing;
 import edu.trafficsim.model.util.GeoReferencing.TransformCoordinateFilter;
@@ -39,12 +33,12 @@ import edu.trafficsim.utility.Timer;
 // Hack to create nodes links...
 public class DemoBuilder {
 
-	private Timer timer;
+	private Sequence seq;
 	private Network network;
 	private OdMatrix odMatrix;
+	private Timer timer;
 
-	static OdFactory odFactory = DefaultOdFactory.getInstance();
-	static Sequence seq = Sequence.create();
+	static TypesLibrary typesLibrary;
 
 	public DemoBuilder() throws ModelInputException,
 			NoSuchAuthorityCodeException, FactoryException, TransformException {
@@ -54,9 +48,10 @@ public class DemoBuilder {
 	private void manualBuild() throws ModelInputException,
 			NoSuchAuthorityCodeException, FactoryException, TransformException {
 
-		TypesLibrary typesLibrary = TypesLibrary.defaultLibrary();
+		seq = Sequence.create();
+		typesLibrary = TypesLibrary.defaultLibrary();
 		NetworkFactory networkFactory = DefaultNetworkFactory.getInstance();
-		TypesFactory typesFactory = DefaultTypesFactory.getInstance();
+		OdFactory odFactory = DefaultOdFactory.getInstance();
 
 		// TODO using WTKReader, or other well known format reader if viable
 
@@ -145,35 +140,14 @@ public class DemoBuilder {
 		networkFactory.connect(seq, lanes1[1], lanes2[1], 4);
 		networkFactory.connect(seq, lanes1[2], lanes2[2], 4);
 
-		// create types and
-		VehicleType vehicleTypeCar = typesFactory.createVehicleType(seq,
-				"TestCar", VehicleClass.Car);
-		VehicleType vehicleTypeTruck = typesFactory.createVehicleType(seq,
-				"TestTruck", VehicleClass.Truck);
-		DriverType driverType = typesFactory
-				.createDriverType(seq, "TestDriver");
-
-		// create Demand
-		VehicleType[] vehicleTypes = new VehicleType[] { vehicleTypeCar,
-				vehicleTypeTruck };
-		Double[] vehPossibilities = new Double[] { 0.8, 0.2 };
-		VehicleTypeComposition vehicleTypeComposition = typesFactory
-				.createVehicleTypeComposition(seq, "Default", vehicleTypes,
-						vehPossibilities);
-		// Driver Type
-		DriverType[] driverTypes = new DriverType[] { driverType };
-		Double[] drvPossibilities = new Double[] { 1.0 };
-		DriverTypeComposition driverTypeComposition = typesFactory
-				.createDriverTypeComposition(seq, "Default", driverTypes,
-						drvPossibilities);
-
 		// Origin Destination
 		// no destination 0s ~ 100s 1000vph
 		// no destination 100s~200s 800vph
 		double[] times = new double[] { 300, 500 };
 		Integer[] vphs = new Integer[] { 4000, 4800 };
 		Od od = odFactory.createOd(seq, "od", node1, null,
-				vehicleTypeComposition, driverTypeComposition, times, vphs);
+				typesLibrary.getDefaultVehicleComposition(),
+				typesLibrary.getDefaultDriverComposition(), times, vphs);
 
 		odMatrix = odFactory.createOdMatrix(seq, "odm");
 		odMatrix.add(od);
@@ -192,6 +166,10 @@ public class DemoBuilder {
 
 	public SimulationScenario getScenario() {
 		return SimulationScenario.create(network, odMatrix, timer, seq);
+	}
+
+	public TypesLibrary getTypesLibrary() {
+		return typesLibrary;
 	}
 
 }

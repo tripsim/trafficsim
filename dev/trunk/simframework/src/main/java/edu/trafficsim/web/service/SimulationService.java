@@ -15,6 +15,7 @@ import edu.trafficsim.engine.SimulationScenario;
 import edu.trafficsim.engine.StatisticsCollector;
 import edu.trafficsim.engine.TypesFactory;
 import edu.trafficsim.engine.factory.Sequence;
+import edu.trafficsim.engine.library.TypesLibrary;
 import edu.trafficsim.model.Network;
 import edu.trafficsim.model.OdMatrix;
 import edu.trafficsim.model.core.ModelInputException;
@@ -82,11 +83,12 @@ public class SimulationService {
 	}
 
 	public SimulationScenario importScenario(InputStream in,
-			TypesFactory typesFactory, NetworkFactory networkFactory,
-			OdFactory odFactory) throws IOException, ParseException,
-			ModelInputException, TransformException {
+			TypesLibrary typesLibrary, TypesFactory typesFactory,
+			NetworkFactory networkFactory, OdFactory odFactory)
+			throws IOException, ParseException, ModelInputException,
+			TransformException {
 		SimulationScenario scenario = ScenarioImportExport.importScenario(in,
-				typesFactory, networkFactory, odFactory);
+				typesLibrary, typesFactory, networkFactory, odFactory);
 		if (scenario.getNetwork() != null)
 			scenario.getNetwork().discover();
 		return scenario;

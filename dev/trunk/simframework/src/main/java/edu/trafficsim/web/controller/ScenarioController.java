@@ -29,7 +29,6 @@ import edu.trafficsim.model.Network;
 import edu.trafficsim.model.OdMatrix;
 import edu.trafficsim.model.core.ModelInputException;
 import edu.trafficsim.web.SimulationProject;
-import edu.trafficsim.web.service.ImportScenarioService;
 import edu.trafficsim.web.service.SimulationService;
 
 @Controller
@@ -42,8 +41,6 @@ public class ScenarioController extends AbstractController {
 	SimulationProject project;
 	@Autowired
 	SimulationService simulationService;
-	@Autowired
-	ImportScenarioService importScenarioService;
 
 	@RequestMapping(value = "/new", method = RequestMethod.GET)
 	public String newScenarioView() {
@@ -79,12 +76,10 @@ public class ScenarioController extends AbstractController {
 		if (!multipartFile.isEmpty()) {
 			try (InputStream in = multipartFile.getInputStream()) {
 				SimulationScenario scenario = simulationService.importScenario(
-						in, typesFactory, networkFactory, odFactory);
+						in, library, typesFactory, networkFactory, odFactory);
 				model.addAttribute("sequence", scenario.getSequence());
 				model.addAttribute("network", scenario.getNetwork());
 				model.addAttribute("odMatrix", scenario.getOdMatrix());
-
-				importScenarioService.updateProject(project, library, scenario);
 			} catch (IOException e) {
 			} catch (ParseException | ModelInputException e) {
 			} catch (TransformException e) {

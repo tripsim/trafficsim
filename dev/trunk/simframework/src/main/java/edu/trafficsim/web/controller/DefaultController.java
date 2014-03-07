@@ -24,7 +24,6 @@ import edu.trafficsim.model.core.ModelInputException;
 import edu.trafficsim.web.SimulationProject;
 import edu.trafficsim.web.UserInterfaceException;
 import edu.trafficsim.web.service.DemoService;
-import edu.trafficsim.web.service.ImportScenarioService;
 import edu.trafficsim.web.service.MapJsonService;
 import edu.trafficsim.web.service.entity.NetworkService;
 import edu.trafficsim.web.service.entity.OdService;
@@ -40,8 +39,6 @@ public class DefaultController extends AbstractController {
 
 	@Autowired
 	DemoService demoService;
-	@Autowired
-	ImportScenarioService importScenarioService;
 	@Autowired
 	MapJsonService mapJsonService;
 
@@ -86,7 +83,8 @@ public class DefaultController extends AbstractController {
 			model.addAttribute("network", scenario.getNetwork());
 			model.addAttribute("odMatrix", scenario.getOdMatrix());
 
-			importScenarioService.updateProject(project, library, scenario);
+			model.addAttribute("typesLibrary", demoService.getTypesLibrary());
+
 			str = mapJsonService.getNetworkJson(scenario.getNetwork());
 		} catch (TransformException e) {
 			e.printStackTrace();
