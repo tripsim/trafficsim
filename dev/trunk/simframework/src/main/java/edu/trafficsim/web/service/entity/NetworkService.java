@@ -17,8 +17,10 @@ import edu.trafficsim.engine.factory.Sequence;
 import edu.trafficsim.model.ConnectionLane;
 import edu.trafficsim.model.Lane;
 import edu.trafficsim.model.Link;
+import edu.trafficsim.model.LinkType;
 import edu.trafficsim.model.Network;
 import edu.trafficsim.model.Node;
+import edu.trafficsim.model.NodeType;
 import edu.trafficsim.model.OdMatrix;
 import edu.trafficsim.model.core.ModelInputException;
 import edu.trafficsim.model.core.MultiValuedMap;
@@ -40,39 +42,40 @@ public class NetworkService extends EntityService {
 	}
 
 	public Node createNode(NetworkFactory factory, Sequence seq,
-			Network network, Coordinate coord) {
-		Node node = factory.createNode(seq, DEFAULT_NEW_NAME, coord);
+			Network network, NodeType nodeType, Coordinate coord) {
+		Node node = factory.createNode(seq, DEFAULT_NEW_NAME, nodeType, coord);
 		network.add(node);
 		return node;
 	}
 
 	public Link createLink(NetworkFactory factory, Sequence seq,
-			Network network, Node startNode, Node endNode,
+			Network network, LinkType linkType, Node startNode, Node endNode,
 			CoordinateSequence points) throws ModelInputException,
 			TransformException {
-		Link link = factory.createLink(seq, DEFAULT_NEW_NAME, startNode,
-				endNode, points, null);
+		Link link = factory.createLink(seq, DEFAULT_NEW_NAME, linkType,
+				startNode, endNode, points, null);
 		network.add(link);
 		return link;
 	}
 
 	public Node breakLink(NetworkFactory factory, Sequence seq,
-			Network network, OdMatrix odMatrix, Link link, double x, double y)
-			throws TransformException, ModelInputException {
+			Network network, OdMatrix odMatrix, Link link, NodeType nodeType,
+			LinkType linkType, double x, double y) throws TransformException,
+			ModelInputException {
 
 		LineString[] linearGeoms = Coordinates.splitLinearGeom(
 				link.getLinearGeom(), new Coordinate(x, y));
 
 		// create new node
-		Node newNode = factory.createNode(seq, DEFAULT_NEW_NAME,
+		Node newNode = factory.createNode(seq, DEFAULT_NEW_NAME, nodeType,
 				new Coordinate(linearGeoms[0].getEndPoint().getCoordinate()));
 		network.add(newNode);
 
 		Link newLink = breakLink(factory, seq, network, odMatrix, link,
-				newNode, linearGeoms);
+				newNode, linkType, linearGeoms);
 		if (link.getReverseLink() != null) {
 			Link newReverseLink = breakLink(factory, seq, network, odMatrix,
-					link.getReverseLink(), newNode,
+					link.getReverseLink(), newNode, linkType,
 					Coordinates.splitLinearGeom(link.getReverseLink()
 							.getLinearGeom(), new Coordinate(x, y)));
 			newLink.setReverseLink(link.getReverseLink());
@@ -85,8 +88,8 @@ public class NetworkService extends EntityService {
 
 	protected Link breakLink(NetworkFactory factory, Sequence seq,
 			Network network, OdMatrix odMatrix, Link link, Node newNode,
-			LineString[] linearGeoms) throws TransformException,
-			ModelInputException {
+			LinkType linkType, LineString[] linearGeoms)
+			throws TransformException, ModelInputException {
 
 		// remove toConnectors from link
 		MultiValuedMap<Integer, Lane> connectionMap = new MultiValuedMap<Integer, Lane>();
@@ -103,8 +106,8 @@ public class NetworkService extends EntityService {
 
 		// create new link
 		Link newLink = factory.createLink(seq, link.getName() + " "
-				+ DEFAULT_NEW_NAME, newNode, oldEndNode, linearGeoms[1],
-				link.getRoadInfo());
+				+ DEFAULT_NEW_NAME, linkType, newNode, oldEndNode,
+				linearGeoms[1], link.getRoadInfo());
 		network.add(newLink);
 		// create new lanes
 		Lane[] newLanes = factory.createLanes(seq, newLink, DEFAULT_LANE_START,

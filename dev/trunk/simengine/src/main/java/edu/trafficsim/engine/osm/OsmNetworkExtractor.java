@@ -16,11 +16,14 @@ import com.vividsolutions.jts.geom.Coordinate;
 
 import edu.trafficsim.engine.NetworkFactory;
 import edu.trafficsim.engine.factory.Sequence;
+import edu.trafficsim.engine.library.TypesLibrary;
 import edu.trafficsim.engine.osm.Highways.OsmNode;
 import edu.trafficsim.engine.osm.Highways.OsmWay;
 import edu.trafficsim.model.Link;
+import edu.trafficsim.model.LinkType;
 import edu.trafficsim.model.Network;
 import edu.trafficsim.model.Node;
+import edu.trafficsim.model.NodeType;
 import edu.trafficsim.model.RoadInfo;
 import edu.trafficsim.model.core.ModelInputException;
 import edu.trafficsim.model.util.GeoReferencing;
@@ -53,23 +56,25 @@ public class OsmNetworkExtractor {
 		return parser.getParsedHighways();
 	}
 
-	public Network extract(String urlStr, NetworkFactory networkFactory)
-			throws ModelInputException, JsonParseException, ProtocolException,
-			IOException, TransformException {
+	public Network extract(String urlStr, TypesLibrary typesLibrary,
+			NetworkFactory networkFactory) throws ModelInputException,
+			JsonParseException, ProtocolException, IOException,
+			TransformException {
 		Highways highways = parse(urlStr);
-		return extract(highways, networkFactory);
+		return extract(highways, typesLibrary, networkFactory);
 	}
 
-	public Network extract(Highways highways, NetworkFactory networkFactory)
-			throws ModelInputException, JsonParseException, ProtocolException,
-			IOException, TransformException {
-		return createNetwork(highways, networkFactory);
+	public Network extract(Highways highways, TypesLibrary typesLibrary,
+			NetworkFactory networkFactory) throws ModelInputException,
+			JsonParseException, ProtocolException, IOException,
+			TransformException {
+		return createNetwork(highways, typesLibrary, networkFactory);
 	}
 
 	// TODO the osm nodes that has only two links if possible
 	protected Network createNetwork(Highways highways,
-			NetworkFactory networkFactory) throws ModelInputException,
-			TransformException {
+			TypesLibrary typesLibrary, NetworkFactory networkFactory)
+			throws ModelInputException, TransformException {
 		Network network = networkFactory.createNetwork(seq, NETWORK_NAME);
 
 		Map<OsmNode, Node> nodes = new HashMap<OsmNode, Node>(highways
@@ -93,7 +98,9 @@ public class OsmNetworkExtractor {
 				// start node for next link
 				if (endOsmNode.isShared() || i == osmWay.osmNodes.size() - 1) {
 					create(network, nodes, startOsmNode, endOsmNode, osmWay,
-							coords, roadInfo, networkFactory);
+							coords, roadInfo, networkFactory,
+							typesLibrary.getDefaultNodeType(),
+							typesLibrary.getDefaultLinkType());
 					coords.clear();
 					startOsmNode = endOsmNode;
 					coords.add(startOsmNode.asCoord());
@@ -109,23 +116,23 @@ public class OsmNetworkExtractor {
 	private void create(Network network, Map<OsmNode, Node> nodes,
 			OsmNode startOsmNode, OsmNode endOsmNode, OsmWay osmWay,
 			List<Coordinate> coords, RoadInfo roadInfo,
-			NetworkFactory networkFactory) throws ModelInputException,
-			TransformException {
+			NetworkFactory networkFactory, NodeType nodeType, LinkType linkType)
+			throws ModelInputException, TransformException {
 		Node startNode = nodes.get(startOsmNode);
 		if (startNode == null) {
-			startNode = createNode(startOsmNode, networkFactory);
+			startNode = createNode(startOsmNode, nodeType, networkFactory);
 			network.add(startNode);
 			nodes.put(startOsmNode, startNode);
 		}
 		Node endNode = nodes.get(endOsmNode);
 		if (endNode == null) {
-			endNode = createNode(endOsmNode, networkFactory);
+			endNode = createNode(endOsmNode, nodeType, networkFactory);
 			network.add(endNode);
 			nodes.put(endOsmNode, endNode);
 		}
 
-		Link link = createLink(osmWay, startNode, endNode, coords, roadInfo,
-				networkFactory);
+		Link link = createLink(osmWay, linkType, startNode, endNode, coords,
+				roadInfo, networkFactory);
 		network.add(link);
 		if (!osmWay.oneway) {
 			Link reverseLink = createReverseLink(link, networkFactory);
@@ -135,22 +142,25 @@ public class OsmNetworkExtractor {
 
 	}
 
-	private Node createNode(OsmNode osmNode, NetworkFactory networkFactory) {
+	private Node createNode(OsmNode osmNode, NodeType nodeType,
+			NetworkFactory networkFactory) {
 		String name = String.valueOf(osmNode.id);
 		for (OsmWay osmWay : osmNode.osmWays) {
 			name += " @ " + osmWay.name;
 		}
-		Node node = networkFactory.createNode(seq, name, osmNode.asCoord());
+		Node node = networkFactory.createNode(seq, name, nodeType,
+				osmNode.asCoord());
 		// TODO edit node
 		return node;
 	}
 
-	private Link createLink(OsmWay osmWay, Node startNode, Node endNode,
-			List<Coordinate> coords, RoadInfo roadInfo,
+	private Link createLink(OsmWay osmWay, LinkType linkType, Node startNode,
+			Node endNode, List<Coordinate> coords, RoadInfo roadInfo,
 			NetworkFactory networkFactory) throws ModelInputException,
 			TransformException {
-		Link link = networkFactory.createLink(seq, osmWay.name, startNode,
-				endNode, coords.toArray(new Coordinate[0]), roadInfo);
+		Link link = networkFactory
+				.createLink(seq, osmWay.name, linkType, startNode, endNode,
+						coords.toArray(new Coordinate[0]), roadInfo);
 		// TODO edit link
 		return link;
 	}

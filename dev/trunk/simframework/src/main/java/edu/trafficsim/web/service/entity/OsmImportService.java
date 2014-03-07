@@ -10,28 +10,28 @@ import com.fasterxml.jackson.core.JsonParseException;
 
 import edu.trafficsim.engine.NetworkFactory;
 import edu.trafficsim.engine.factory.Sequence;
+import edu.trafficsim.engine.library.TypesLibrary;
 import edu.trafficsim.engine.osm.OsmNetworkExtractor;
 import edu.trafficsim.model.Network;
 import edu.trafficsim.model.core.ModelInputException;
 
 @Service
 public class OsmImportService extends EntityService {
-	
 
 	// "/way[highway=*][bbox=-89.4114,43.0707,-89.3955,43.0753]"
 	private static final String url = "http://jxapi.openstreetmap.org/xapi/api/0.6";
 	private static final String queryTemplate = "/way[highway=%s][bbox=%s]";
 
 	public Network createNetwork(Sequence seq, String bbox, String highway,
-			NetworkFactory factory) throws ModelInputException,
-			JsonParseException, ProtocolException, IOException,
-			TransformException {
+			TypesLibrary library, NetworkFactory factory)
+			throws ModelInputException, JsonParseException, ProtocolException,
+			IOException, TransformException {
 		OsmNetworkExtractor extractor = new OsmNetworkExtractor(seq);
 
 		String highwayQuery = OsmHighwayValue.valueOf(highway) == null ? OsmHighwayValue.All.queryValue
 				: OsmHighwayValue.valueOf(highway).queryValue;
 		String query = String.format(queryTemplate, highwayQuery, bbox);
-		Network network = extractor.extract(url + query, factory);
+		Network network = extractor.extract(url + query, library, factory);
 		return network;
 	}
 

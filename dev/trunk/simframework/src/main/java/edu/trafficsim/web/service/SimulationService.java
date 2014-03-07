@@ -87,6 +87,8 @@ public class SimulationService {
 			ModelInputException, TransformException {
 		SimulationScenario scenario = ScenarioImportExport.importScenario(in,
 				typesFactory, networkFactory, odFactory);
+		if (scenario.getNetwork() != null)
+			scenario.getNetwork().discover();
 		return scenario;
 	}
 }

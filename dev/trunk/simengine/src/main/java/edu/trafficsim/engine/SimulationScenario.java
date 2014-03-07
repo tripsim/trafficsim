@@ -5,11 +5,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import edu.trafficsim.engine.factory.Sequence;
-import edu.trafficsim.model.DriverType;
 import edu.trafficsim.model.Network;
 import edu.trafficsim.model.OdMatrix;
 import edu.trafficsim.model.VehicleType;
-import edu.trafficsim.model.core.MultiKey;
 import edu.trafficsim.utility.Timer;
 
 public class SimulationScenario implements Serializable {
@@ -21,28 +19,12 @@ public class SimulationScenario implements Serializable {
 	private final Timer timer;
 	private final Sequence seq;
 
-	private static final class TypeKey extends
-			MultiKey<VehicleType, DriverType> {
-
-		private static final long serialVersionUID = 1L;
-
-		public TypeKey(VehicleType key1, DriverType key2) {
-			super(key1, key2);
-		}
-
-	}
-
-	private static final TypeKey typeKey(VehicleType vehicleType,
-			DriverType driverType) {
-		return new TypeKey(vehicleType, driverType);
-	}
-
 	final String simulatingType = null;
 	final String vehicleGeneratingType = null;
-	final Map<VehicleType, String> movingTypes = new HashMap<VehicleType, String>();
 	final Map<VehicleType, String> routingTypes = new HashMap<VehicleType, String>();
-	final Map<TypeKey, String> carFollowingTypes = new HashMap<TypeKey, String>();
-	final Map<TypeKey, String> laneChangingTypes = new HashMap<TypeKey, String>();
+	final Map<VehicleType, String> movingTypes = new HashMap<VehicleType, String>();
+	final Map<VehicleType, String> carFollowingTypes = new HashMap<VehicleType, String>();
+	final Map<VehicleType, String> laneChangingTypes = new HashMap<VehicleType, String>();
 
 	public static final SimulationScenario create(Network network,
 			OdMatrix odMatrix, Timer timer, Sequence sequence) {
@@ -81,14 +63,12 @@ public class SimulationScenario implements Serializable {
 		return routingTypes.get(vehicleType);
 	}
 
-	public final String getCarFollowingType(VehicleType vehicleType,
-			DriverType driverType) {
-		return routingTypes.get(typeKey(vehicleType, driverType));
+	public final String getCarFollowingType(VehicleType vehicleType) {
+		return carFollowingTypes.get(vehicleType);
 	}
 
-	public final String getLaneChangingType(VehicleType vehicleType,
-			DriverType driverType) {
-		return routingTypes.get(typeKey(vehicleType, driverType));
+	public final String getLaneChangingType(VehicleType vehicleType) {
+		return laneChangingTypes.get(vehicleType);
 	}
 
 	public final String getVehicleGeneratingType() {

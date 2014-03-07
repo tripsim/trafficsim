@@ -669,6 +669,7 @@ simulation.initMap = function() {
 	};
 	/* select area */
 	this.prepareSelectArea = function() {
+		simulation.clearLayers();
 		selectAreaControl.activate();
 		boxHandler.activate();
 	};

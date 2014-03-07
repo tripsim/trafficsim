@@ -1,8 +1,9 @@
 package edu.trafficsim.engine.library;
 
-import edu.trafficsim.engine.factory.Sequence;
 import edu.trafficsim.model.DriverType;
 import edu.trafficsim.model.DriverTypeComposition;
+import edu.trafficsim.model.LinkType;
+import edu.trafficsim.model.NodeType;
 import edu.trafficsim.model.VehicleType;
 import edu.trafficsim.model.VehicleType.VehicleClass;
 import edu.trafficsim.model.VehicleTypeComposition;
@@ -14,11 +15,16 @@ public class TypesLibrary extends AbstractTypesLibrary {
 
 	private static final long serialVersionUID = 1L;
 
+	public static final String DEFAULT_NODE_TYPE = "Default";
+	public static final String DEFAULT_LINK_TYPE = "Default";
 	public static final String DEFAULT_CAR_TYPE = "Default Car";
 	public static final String DEFAULT_TRUCK_TYPE = "Default Truck";
 	public static final String DEFAULT_VEHICLE_TYPE = DEFAULT_CAR_TYPE;
 	public static final String DEFAULT_DRIVER_TYPE = "Default Driver";
 	public static final String DEFAULT_COMPOSITION = "Default";
+
+	private static NodeType node;
+	private static LinkType link;
 
 	private static VehicleType car;
 	private static VehicleType truck;
@@ -27,7 +33,11 @@ public class TypesLibrary extends AbstractTypesLibrary {
 	private static DriverTypeComposition driverComposition;
 
 	protected TypesLibrary() {
-		long internalSeq = 0;
+		long internalSeq = 1;
+
+		node = new NodeType(internalSeq++, DEFAULT_NODE_TYPE);
+		link = new LinkType(internalSeq++, DEFAULT_LINK_TYPE);
+
 		car = new VehicleType(internalSeq++, DEFAULT_CAR_TYPE, VehicleClass.Car);
 		truck = new VehicleType(internalSeq++, DEFAULT_TRUCK_TYPE,
 				VehicleClass.Truck);
@@ -41,10 +51,11 @@ public class TypesLibrary extends AbstractTypesLibrary {
 				new Double[] { 1.0 });
 	}
 
-	public static TypesLibrary defaultLibrary(Sequence seq)
-			throws ModelInputException {
+	public static TypesLibrary defaultLibrary() throws ModelInputException {
 		TypesLibrary library = new TypesLibrary();
 
+		library.addNodeType(node);
+		library.addLinkType(link);
 		library.addVehicleType(car);
 		library.addVehicleType(truck);
 		library.addDriverType(driver);
@@ -52,6 +63,22 @@ public class TypesLibrary extends AbstractTypesLibrary {
 		library.addDriverComposition(driverComposition);
 
 		return library;
+	}
+
+	public NodeType getDefaultNodeType() {
+		NodeType type = getNodeType(DEFAULT_NODE_TYPE);
+		if (type != null)
+			return type;
+		addNodeType(node);
+		return node;
+	}
+
+	public LinkType getDefaultLinkType() {
+		LinkType type = getLinkType(DEFAULT_LINK_TYPE);
+		if (type != null)
+			return type;
+		addLinkType(link);
+		return link;
 	}
 
 	public VehicleType getDefaultVehicleType() {

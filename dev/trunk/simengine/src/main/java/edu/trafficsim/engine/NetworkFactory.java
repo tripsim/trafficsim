@@ -32,24 +32,24 @@ public interface NetworkFactory {
 
 	Network createNetwork(Long id, String name);
 
-	Node createNode(Sequence seq, String name, double x, double y);
+	Node createNode(Sequence seq, String name, NodeType type, double x, double y);
 
-	Node createNode(Sequence seq, String name, Coordinate coord);
+	Node createNode(Sequence seq, String name, NodeType type, Coordinate coord);
 
-	Node createNode(Sequence seq, String name, Point point);
+	Node createNode(Sequence seq, String name, NodeType type, Point point);
 
 	Node createNode(Long id, String name, NodeType type, Point point);
 
-	Link createLink(Sequence seq, String name, Node startNode, Node endNode,
-			Coordinate[] coords, RoadInfo roadInfo) throws ModelInputException,
-			TransformException;
-
-	Link createLink(Sequence seq, String name, Node startNode, Node endNode,
-			CoordinateSequence points, RoadInfo roadInfo)
+	Link createLink(Sequence seq, String name, LinkType type, Node startNode,
+			Node endNode, Coordinate[] coords, RoadInfo roadInfo)
 			throws ModelInputException, TransformException;
 
-	Link createLink(Sequence seq, String name, Node startNode, Node endNode,
-			LineString linearGeom, RoadInfo roadInfo)
+	Link createLink(Sequence seq, String name, LinkType type, Node startNode,
+			Node endNode, CoordinateSequence points, RoadInfo roadInfo)
+			throws ModelInputException, TransformException;
+
+	Link createLink(Sequence seq, String name, LinkType type, Node startNode,
+			Node endNode, LineString linearGeom, RoadInfo roadInfo)
 			throws ModelInputException, TransformException;
 
 	Link createLink(Long id, String name, LinkType type, Node startNode,
