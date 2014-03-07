@@ -33,12 +33,7 @@ jQuery(document).ready(function() {
 
 	/* list */
 	jQuery('#user-interface-list').click(function() {
-		// TODO show list of nodes, links, ods
-	});
-
-	/* vehicle composition */
-	jQuery('#user-interface-compositions').click(function() {
-		simwebhelper.getPanel('compositions/view');
+		jsonEditor.open();
 	});
 
 	/* types */
@@ -46,6 +41,10 @@ jQuery(document).ready(function() {
 		simwebhelper.getPanel('types/view');
 	});
 
+	/* vehicle composition */
+	jQuery('#user-interface-compositions').click(function() {
+		simwebhelper.getPanel('compositions/view');
+	});
 	/* plugin types */
 	jQuery('#user-interface-plugin-types').click(function() {
 		simwebhelper.getPanel('plugin/types');
@@ -53,7 +52,7 @@ jQuery(document).ready(function() {
 
 	/* plugin manager */
 	jQuery('#user-interface-plugin-manager').click(function() {
-		simwebhelper.getPanel('plugin/view');
+		simwebhelper.getPanel('plugin/manager');
 	});
 
 	/* simulator */

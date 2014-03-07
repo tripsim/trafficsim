@@ -1,0 +1,46 @@
+<h2>Plug-in Types</h2>
+<div id="user-configuration-buttons">
+	<span id="user-configuration-button-close" class="button">close</span>
+</div>
+<div>
+	<table>
+		<tbody>
+			<tr>
+				<td><h3>Simulating</h3></td>
+			</tr>
+			<tr data-th-each="simulating : ${simulatings}">
+				<td data-th-text="${simulating}"></td>
+			</tr>
+			<tr>
+				<td><h3>Vehicle Generating</h3></td>
+			</tr>
+			<tr data-th-each="generating : ${generatings}">
+				<td data-th-text="${generating}"></td>
+			</tr>
+			<tr>
+				<td><h3>Routing</h3></td>
+			</tr>
+			<tr data-th-each="routing : ${routings}">
+				<td data-th-text="${routing}"></td>
+			</tr>
+			<tr>
+				<td><h3>Moving (Dynamics)</h3></td>
+			</tr>
+			<tr data-th-each="moving : ${movings}">
+				<td data-th-text="${moving}"></td>
+			</tr>
+			<tr>
+				<td><h3>Car Followings</h3></td>
+			</tr>
+			<tr data-th-each="carfollowing : ${carfollowings}">
+				<td data-th-text="${carfollowing}"></td>
+			</tr>
+			<tr>
+				<td><h3>Lane Changings</h3></td>
+			</tr>
+			<tr data-th-each="lanechanging : ${lanechangings}">
+				<td data-th-text="${lanechanging}"></td>
+			</tr>
+		</tbody>
+	</table>
+</div>

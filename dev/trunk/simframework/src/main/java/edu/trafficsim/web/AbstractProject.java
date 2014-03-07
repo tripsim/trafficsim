@@ -25,6 +25,7 @@ public abstract class AbstractProject {
 		odFactory = DefaultOdFactory.getInstance();
 		typesFactory = DefaultTypesFactory.getInstance();
 		statistics = DefaultStatisticsCollector.create();
+		timer = Timer.create();
 	}
 
 	public NetworkFactory getNetworkFactory() {
