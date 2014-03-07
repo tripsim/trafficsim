@@ -38,9 +38,4 @@ jQuery(document).ready(
 							simplot.plot(data);
 						});
 					});
-			/* link stat close plot */
-			jQuery('#user-configuration').on('click',
-					'.user-configuration-results-tsd-close', function() {
-						simplot.close();
-					});
 		});

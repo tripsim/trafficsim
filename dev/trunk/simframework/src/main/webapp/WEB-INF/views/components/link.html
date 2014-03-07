@@ -7,27 +7,27 @@
 		<tbody data-th-fragment="info(link)" data-th-attr="data-id=${link.id}">
 			<tr>
 				<td>Link Id</td>
-				<td colspan="0" data-th-text="${link.id}"></td>
+				<td data-th-text="${link.id}"></td>
 			</tr>
 			<tr>
 				<td>Link Name</td>
-				<td colspan="2" data-th-text="${link.name}"></td>
+				<td data-th-text="${link.name}"></td>
 			</tr>
 			<tr>
 				<td>Length</td>
-				<td colspan="0"
-					data-th-text="${#numbers.formatDecimal(link.length, 1, 4)}"></td>
+				<td data-th-text="${#numbers.formatDecimal(link.length, 1, 4)}"></td>
 			</tr>
 			<tr>
 				<td>Highway</td>
-				<td colspan="0" data-th-text="${link.roadInfo.highway}"></td>
+				<td data-th-text="${link.roadInfo.highway}"></td>
 			</tr>
 			<tr>
 				<td>Road Name</td>
-				<td colspan="0" data-th-text="${link.roadInfo.name}"></td>
+				<td data-th-text="${link.roadInfo.name}"></td>
 			</tr>
 			<tr>
-				<td><span class="user-configuration-link-edit button">edit</span><span
+				<td colspan="2"><span
+					class="user-configuration-link-edit button">edit</span><span
 					class="user-configuration-link-remove button">remove</span><span
 					data-th-if="${link.reverseLink} == null"
 					class="user-configuration-link-create-reverse button">create
@@ -50,7 +50,7 @@
 			</tr>
 		</th:block>
 		<tr>
-			<td colspan="8"><span
+			<td colspan="0"><span
 				class="user-configuration-link-add-lane button">add lane</span></td>
 		</tr>
 	</table>

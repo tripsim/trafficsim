@@ -715,7 +715,6 @@ simulation.initMap = function() {
 	};
 	/* load all frames */
 	this.loadFrames = function() {
-		var that = this;
 		that.totalF = 0;
 		that.vehicles = {};
 		that.frames = {};
@@ -741,17 +740,24 @@ simulation.initMap = function() {
 			}
 		});
 	};
+	/* clear frames */
+	this.clearFrames = function() {
+		that.stopAnimation();
+		that.frames = {};
+		that.vehicles = {};
+		that.totalF = 0;
+	};
 	/* start animation */
 	this.startAnimation = function() {
 		if (!that.totalF)
 			that.loadFrames();
-		this.f = 0;
+		that.f = 0;
 		vehicleLayer.setVisibility(true);
-		this.refreshStrategy.activate();
+		that.refreshStrategy.activate();
 	};
 	/* stop animation */
 	this.stopAnimation = function() {
 		vehicleLayer.setVisibility(false);
-		this.refreshStrategy.deactivate();
+		that.refreshStrategy.deactivate();
 	};
 };

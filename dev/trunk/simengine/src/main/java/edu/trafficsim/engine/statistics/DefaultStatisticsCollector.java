@@ -79,6 +79,9 @@ public class DefaultStatisticsCollector implements StatisticsCollector {
 
 	@Override
 	public void begin(Timer timer) {
+		frames.clear();
+		vehicles.clear();
+		links.clear();
 		stepSize = timer.getStepSize();
 		stepForward(0);
 		status = StatisticsCollector.RUNNING;
