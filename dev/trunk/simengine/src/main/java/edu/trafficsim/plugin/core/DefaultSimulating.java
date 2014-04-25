@@ -12,6 +12,7 @@ import edu.trafficsim.engine.VehicleFactory;
 import edu.trafficsim.engine.factory.DefaultVehicleFactory;
 import edu.trafficsim.model.Od;
 import edu.trafficsim.model.Vehicle;
+import edu.trafficsim.plugin.AbstractPlugin;
 import edu.trafficsim.plugin.ICarFollowing;
 import edu.trafficsim.plugin.IMoving;
 import edu.trafficsim.plugin.ISimulating;
@@ -19,7 +20,9 @@ import edu.trafficsim.plugin.IVehicleGenerating;
 import edu.trafficsim.plugin.PluginManager;
 import edu.trafficsim.utility.Timer;
 
-public class DefaultSimulating implements ISimulating {
+public class DefaultSimulating extends AbstractPlugin implements ISimulating {
+
+	private static final long serialVersionUID = 1L;
 
 	protected static VehicleFactory vehicleFactory = DefaultVehicleFactory
 			.getInstance();

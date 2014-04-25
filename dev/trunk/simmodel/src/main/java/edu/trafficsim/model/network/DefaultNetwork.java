@@ -7,11 +7,9 @@ import java.util.Set;
 
 import com.vividsolutions.jts.geom.Coordinate;
 
-import edu.trafficsim.model.Network;
 import edu.trafficsim.model.Node;
 
-public class DefaultNetwork extends AbstractNetwork<DefaultNetwork> implements
-		Network {
+public class DefaultNetwork extends AbstractNetwork<DefaultNetwork> {
 
 	private static final long serialVersionUID = 1L;
 
