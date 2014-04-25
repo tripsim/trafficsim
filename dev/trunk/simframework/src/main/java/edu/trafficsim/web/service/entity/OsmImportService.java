@@ -3,6 +3,8 @@ package edu.trafficsim.web.service.entity;
 import java.io.IOException;
 import java.net.ProtocolException;
 
+import javax.xml.stream.XMLStreamException;
+
 import org.opengis.referencing.operation.TransformException;
 import org.springframework.stereotype.Service;
 
@@ -18,20 +20,27 @@ import edu.trafficsim.model.core.ModelInputException;
 @Service
 public class OsmImportService extends EntityService {
 
-	// "/way[highway=*][bbox=-89.4114,43.0707,-89.3955,43.0753]"
-	private static final String url = "http://jxapi.openstreetmap.org/xapi/api/0.6";
-	private static final String queryTemplate = "/way[highway=%s][bbox=%s]";
+	// "way[highway=*][bbox=-89.4114,43.0707,-89.3955,43.0753]"
+	// String urlPre = "http://jxapi.openstreetmap.org/xapi/api/0.6/";
+	// String urlPre = "http://open.mapquestapi.com/xapi/api/0.6/";
+	// String urlPre = "http://overpass.osm.rambler.ru/cgi/xapi?";
+	// String urlPre = "http://www.overpass-api.de/api/xapi?";
+	// String urlPre = "http://api.openstreetmap.fr/xapi?";
+	private static final String url = "http://api.openstreetmap.fr/xapi?";
+	private static final String queryTemplate = "way[highway=%s][bbox=%s]";
+
+	private static final String newNetworkName = "New Network";
 
 	public Network createNetwork(Sequence seq, String bbox, String highway,
 			TypesLibrary library, NetworkFactory factory)
 			throws ModelInputException, JsonParseException, ProtocolException,
-			IOException, TransformException {
-		OsmNetworkExtractor extractor = new OsmNetworkExtractor(seq);
+			IOException, TransformException, XMLStreamException {
 
 		String highwayQuery = OsmHighwayValue.valueOf(highway) == null ? OsmHighwayValue.All.queryValue
 				: OsmHighwayValue.valueOf(highway).queryValue;
 		String query = String.format(queryTemplate, highwayQuery, bbox);
-		Network network = extractor.extract(url + query, library, factory);
+		Network network = OsmNetworkExtractor.extract(url + query, library,
+				factory, seq, newNetworkName);
 		return network;
 	}
 
