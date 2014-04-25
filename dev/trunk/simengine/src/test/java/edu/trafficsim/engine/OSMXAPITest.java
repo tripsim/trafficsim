@@ -22,10 +22,10 @@ import edu.trafficsim.model.core.ModelInputException;
 public class OSMXAPITest {
 
 	public static void main(String[] args) throws TransformException {
-		// test();
+		 test();
 		// testParse();
 		// testExtractByReader();
-		testExtractByUrl();
+//		testExtractByUrl();
 	}
 
 	static Sequence seq = Sequence.create();
@@ -83,7 +83,8 @@ public class OSMXAPITest {
 	}
 
 	protected static void test() {
-		String urlPre = "http://jxapi.openstreetmap.org/xapi/api/0.6";
+//		String urlPre = "http://jxapi.openstreetmap.org/xapi/api/0.6";
+		String urlPre = "http://open.mapquestapi.com/xapi/api/0.6";
 		String testQuery = "/way[highway=*][bbox=-89.4114,43.0707,-89.3955,43.0753]";
 
 		String urlStr = urlPre + testQuery;

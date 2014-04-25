@@ -9,7 +9,7 @@ import edu.trafficsim.engine.VehicleFactory;
 import edu.trafficsim.model.Od;
 import edu.trafficsim.model.Vehicle;
 
-public interface IVehicleGenerating {
+public interface IVehicleGenerating extends IPlugin {
 
 	public List<Vehicle> newVehicles(Od od, SimulationScenario scenario,
 			VehicleFactory vehicleFactory) throws TransformException;

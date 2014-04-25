@@ -12,10 +12,6 @@ import edu.trafficsim.model.core.ModelInputException;
  */
 public interface Subsegment extends GeoReferenced {
 
-	public Long getId();
-
-	public String getName();
-
 	public double getStart();
 
 	public double getEnd();

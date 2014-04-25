@@ -18,11 +18,15 @@ import edu.trafficsim.model.Od;
 import edu.trafficsim.model.Vehicle;
 import edu.trafficsim.model.VehicleType;
 import edu.trafficsim.model.util.Randoms;
+import edu.trafficsim.plugin.AbstractPlugin;
 import edu.trafficsim.plugin.IRouting;
 import edu.trafficsim.plugin.IVehicleGenerating;
 import edu.trafficsim.plugin.PluginManager;
 
-public class PoissonVehicleGenerating implements IVehicleGenerating {
+public class PoissonVehicleGenerating extends AbstractPlugin implements
+		IVehicleGenerating {
+
+	private static final long serialVersionUID = 1L;
 
 	// Based on arrival rate (possion dist)
 	// An alternative should be based on headway (negative exponential dist)
@@ -115,5 +119,35 @@ public class PoissonVehicleGenerating implements IVehicleGenerating {
 		}
 
 		return vehicles;
+	}
+
+	@Override
+	public String getName() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void init() throws Exception {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void upgrade() throws Exception {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void activate() throws Exception {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void deactivate() throws Exception {
+		// TODO Auto-generated method stub
+
 	}
 }
