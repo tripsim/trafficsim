@@ -1,4 +1,4 @@
-package edu.trafficsim.engine.osm;
+package edu.trafficsim.engine.osm.parser;
 
 import java.io.IOException;
 
@@ -7,10 +7,14 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.JsonNode;
 
-import edu.trafficsim.engine.osm.Highways.OsmNode;
-import edu.trafficsim.engine.osm.Highways.OsmWay;
+import edu.trafficsim.engine.osm.parser.Highways.OsmNode;
+import edu.trafficsim.engine.osm.parser.Highways.OsmWay;
 
-public class HighwaysJsonParser extends AbstractHighwaysJsonParser {
+class OsmJsonParser {
+
+	private final static String NODES = "nodes";
+	private final static String WAYS = "ways";
+	private final static String RELATIONS = "relations";
 
 	private final static String NODE_ID = "id";
 	private final static String NODE_LAT = "lat";
@@ -26,22 +30,36 @@ public class HighwaysJsonParser extends AbstractHighwaysJsonParser {
 	private final static String WAY_TAG_ONEWAY = "oneway";
 
 	private final static String TRUE_VALUE = "yes";
-	// private final static String FALSE_VALUE = "no";
+	@SuppressWarnings("unused")
+	private final static String FALSE_VALUE = "no";
 	private final static String BLANK_VALUE = "null";
 
-	private Highways highways;
-
-	public HighwaysJsonParser() {
-		highways = new Highways();
+	protected static void parse(JsonParser jsonParser, Highways highways)
+			throws JsonParseException, IOException {
+		jsonParser.nextToken(); // JsonToken.START_OBJECT
+		while (jsonParser.nextToken() != JsonToken.END_OBJECT) {
+			String key = jsonParser.getCurrentName();
+			if (NODES.equals(key)) {
+				parseNodes(jsonParser, highways);
+			} else if (WAYS.equals(key)) {
+				parseWays(jsonParser, highways);
+				return;
+			} else if (RELATIONS.equals(key)) {
+				parseRelations(jsonParser, highways);
+			} else {
+				jsonParser.skipChildren();
+				// SKIPPED keys
+				// version generator copyright attribution license
+				// ALTERNATIONS
+				// overpass api use "elements" to hold node, way, relation
+				// together
+			}
+		}
+		jsonParser.close();
 	}
 
-	public Highways getParsedHighways() {
-		return highways;
-	}
-
-	@Override
-	protected void parseNodes(JsonParser jsonParser) throws JsonParseException,
-			IOException {
+	protected static void parseNodes(JsonParser jsonParser, Highways highways)
+			throws JsonParseException, IOException {
 		// Exception handling
 		if (jsonParser.nextToken() != JsonToken.START_ARRAY)
 			// throw exception
@@ -53,7 +71,7 @@ public class HighwaysJsonParser extends AbstractHighwaysJsonParser {
 			long id = jsonNode.get(NODE_ID).asLong();
 			double lat = jsonNode.get(NODE_LAT).asDouble();
 			double lon = jsonNode.get(NODE_LON).asDouble();
-			OsmNode osmNode = highways.addOsmNode(id, lat, lon);
+			OsmNode osmNode = highways.newOsmNode(id, lat, lon);
 
 			JsonNode tagNode = jsonNode.get(NODE_TAG);
 			if (tagNode != null) {
@@ -63,9 +81,8 @@ public class HighwaysJsonParser extends AbstractHighwaysJsonParser {
 		}
 	}
 
-	@Override
-	protected void parseWays(JsonParser jsonParser) throws JsonParseException,
-			IOException {
+	protected static void parseWays(JsonParser jsonParser, Highways highways)
+			throws JsonParseException, IOException {
 		if (jsonParser.nextToken() != JsonToken.START_ARRAY)
 			// throw exception
 			System.out.println("Wrong ways");
@@ -74,13 +91,9 @@ public class HighwaysJsonParser extends AbstractHighwaysJsonParser {
 			// Read Way
 			JsonNode jsonNode = jsonParser.readValueAsTree();
 
-			OsmWay osmWay = highways.addOsmWay(jsonNode.get(WAY_ID).asLong());
+			OsmWay osmWay = highways.newOsmWay(jsonNode.get(WAY_ID).asLong());
 			for (JsonNode ndsNode : jsonNode.get(WAY_NODES)) {
-				OsmNode osmNode = highways.getOsmNode(ndsNode.asLong());
-				if (osmNode != null) {
-					osmWay.addNode(osmNode);
-					osmNode.addWay(osmWay);
-				}
+				highways.refNode(osmWay, ndsNode.asLong());
 			}
 
 			JsonNode tagNode = jsonNode.get(WAY_TAG);
@@ -96,9 +109,8 @@ public class HighwaysJsonParser extends AbstractHighwaysJsonParser {
 		}
 	}
 
-	@Override
-	protected void parseRelations(JsonParser jsonParser)
-			throws JsonParseException, IOException {
+	protected static void parseRelations(JsonParser jsonParser,
+			Highways highways) throws JsonParseException, IOException {
 		if (jsonParser.nextToken() != JsonToken.START_ARRAY)
 			// throw exception
 			System.out.println("Wrong relations");

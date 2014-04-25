@@ -1,4 +1,4 @@
-package edu.trafficsim.engine.osm;
+package edu.trafficsim.engine.osm.parser;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -18,7 +18,7 @@ public class Highways {
 		osmWays = new ArrayList<OsmWay>();
 	}
 
-	OsmNode addOsmNode(long id, double lat, double lon) {
+	OsmNode newOsmNode(long id, double lat, double lon) {
 		OsmNode osmNode = new OsmNode();
 		osmNode.id = id;
 		osmNode.lat = lat;
@@ -27,14 +27,19 @@ public class Highways {
 		return osmNode;
 	}
 
-	OsmWay addOsmWay(long id) {
+	OsmWay newOsmWay(long id) {
 		OsmWay osmWay = new OsmWay();
+		osmWay.id = id;
 		osmWays.add(osmWay);
 		return osmWay;
 	}
 
-	OsmNode getOsmNode(long id) {
-		return osmNodes.get(id);
+	void refNode(OsmWay osmWay, long nodeId) {
+		OsmNode osmNode = osmNodes.get(nodeId);
+		if (osmNode != null) {
+			osmWay.addNode(osmNode);
+			osmNode.addWay(osmWay);
+		}
 	}
 
 	List<OsmWay> getOsmWays() {
