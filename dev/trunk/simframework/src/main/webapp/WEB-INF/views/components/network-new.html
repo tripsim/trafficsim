@@ -1,10 +1,16 @@
 <h2>Import Network from Open Street Map</h2>
 <p>
-	<span>Restrictions</span> <select id="user-network-highway">
-		<option data-th-each="option : ${options}" data-th-value="${option.name}"
-			data-th-text="${option.desc}"></option>
+	<span>Xapi</span> <select id="user-osm-xapi">
+		<option data-th-each="url : ${urls}" data-th-value="${url.url}"
+			data-th-text="${url.url}"></option>
 	</select>
 </p>
 <p>
-	<span class="button user-configuration-new-network-osm">Create</span>
+	<span>Restrictions</span> <select id="user-osm-highway">
+		<option data-th-each="option : ${options}"
+			data-th-value="${option.name}" data-th-text="${option.desc}"></option>
+	</select>
+</p>
+<p>
+	<span class="button user-configuration-osm-create">Create</span>
 </p>

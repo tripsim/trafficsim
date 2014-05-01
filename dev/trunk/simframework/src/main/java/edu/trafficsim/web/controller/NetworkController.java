@@ -31,6 +31,7 @@ import edu.trafficsim.web.service.entity.NetworkService;
 import edu.trafficsim.web.service.entity.OdService;
 import edu.trafficsim.web.service.entity.OsmImportService;
 import edu.trafficsim.web.service.entity.OsmImportService.OsmHighwayValue;
+import edu.trafficsim.web.service.entity.OsmImportService.OsmXapiUrl;
 
 @Controller
 @RequestMapping(value = "/network")
@@ -62,6 +63,7 @@ public class NetworkController extends AbstractController {
 
 	@RequestMapping(value = "/new", method = RequestMethod.GET)
 	public String newNetworkView(Model model) {
+		model.addAttribute("urls", OsmXapiUrl.values());
 		model.addAttribute("options", OsmHighwayValue.values());
 		return "components/network-new";
 	}
@@ -72,11 +74,11 @@ public class NetworkController extends AbstractController {
 			@ModelAttribute("typesLibrary") TypesLibrary library,
 			@ModelAttribute("networkFactory") NetworkFactory factory,
 			@ModelAttribute("odFactory") OdFactory odFactory,
-			@RequestParam("bbox") String bbox,
+			@RequestParam("bbox") String bbox, @RequestParam("url") String url,
 			@RequestParam("highway") String highway, Model model) {
 		try {
-			Network network = extractOsmNetworkService.createNetwork(seq, bbox,
-					highway, library, factory);
+			Network network = extractOsmNetworkService.createNetwork(url, bbox,
+					highway, seq, library, factory);
 
 			OdMatrix odMatrix = odService.createOdMatrix(odFactory, seq);
 			model.addAttribute("network", network);

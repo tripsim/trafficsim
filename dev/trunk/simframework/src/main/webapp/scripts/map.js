@@ -674,11 +674,12 @@ simulation.initMap = function() {
 		boxHandler.activate();
 	};
 	/* generate network from import */
-	this.createNetworkFromOsm = function(highway) {
+	this.createNetworkFromOsm = function(url, highway) {
 		var postData = {
 			bbox : importAreaBounds.transform(map.getProjectionObject(),
 					that.proj4326).toBBOX(),
-			highway : highway
+			highway : highway,
+			url : url
 		};
 		simwebhelper.action('network/create', postData, function(data) {
 			that.reDrawNetwork(data['links'], data['nodes']);

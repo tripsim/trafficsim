@@ -21,18 +21,11 @@ import edu.trafficsim.model.core.ModelInputException;
 public class OsmImportService extends EntityService {
 
 	// "way[highway=*][bbox=-89.4114,43.0707,-89.3955,43.0753]"
-	// String urlPre = "http://jxapi.openstreetmap.org/xapi/api/0.6/";
-	// String urlPre = "http://open.mapquestapi.com/xapi/api/0.6/";
-	// String urlPre = "http://overpass.osm.rambler.ru/cgi/xapi?";
-	// String urlPre = "http://www.overpass-api.de/api/xapi?";
-	// String urlPre = "http://api.openstreetmap.fr/xapi?";
-	private static final String url = "http://api.openstreetmap.fr/xapi?";
 	private static final String queryTemplate = "way[highway=%s][bbox=%s]";
-
 	private static final String newNetworkName = "New Network";
 
-	public Network createNetwork(Sequence seq, String bbox, String highway,
-			TypesLibrary library, NetworkFactory factory)
+	public Network createNetwork(String url, String bbox, String highway,
+			Sequence seq, TypesLibrary library, NetworkFactory factory)
 			throws ModelInputException, JsonParseException, ProtocolException,
 			IOException, TransformException, XMLStreamException {
 
@@ -42,6 +35,24 @@ public class OsmImportService extends EntityService {
 		Network network = OsmNetworkExtractor.extract(url + query, library,
 				factory, seq, newNetworkName);
 		return network;
+	}
+
+	public static enum OsmXapiUrl {
+		jXapi("http://jxapi.openstreetmap.org/xapi/api/0.6/"), MapQuest(
+				"http://open.mapquestapi.com/xapi/api/0.6/"), OverPassRambler(
+				"http://overpass.osm.rambler.ru/cgi/xapi?"), OverPassDe(
+				"http://www.overpass-api.de/api/xapi?"), OverPassFr(
+				"http://api.openstreetmap.fr/xapi?");
+
+		private final String url;
+
+		OsmXapiUrl(String url) {
+			this.url = url;
+		}
+
+		public String getUrl() {
+			return url;
+		}
 	}
 
 	public static enum OsmHighwayValue {
