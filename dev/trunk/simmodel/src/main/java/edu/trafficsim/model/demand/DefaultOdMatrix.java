@@ -1,3 +1,20 @@
+/*
+ * Copyright (C) 2014 Xuan Shi
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * 
+ */
 package edu.trafficsim.model.demand;
 
 import java.util.Collection;
@@ -19,6 +36,11 @@ import edu.trafficsim.model.core.ModelInputException;
 import edu.trafficsim.model.core.MultiKey;
 import edu.trafficsim.model.core.MultiValuedMap;
 
+/**
+ * 
+ * 
+ * @author Xuan Shi
+ */
 public class DefaultOdMatrix extends BaseEntity<DefaultOdMatrix> implements
 		OdMatrix {
 
@@ -93,6 +115,11 @@ public class DefaultOdMatrix extends BaseEntity<DefaultOdMatrix> implements
 		return new OdKey(od.getOrigin(), od.getDestination());
 	}
 
+	/**
+	 * 
+	 * 
+	 * @author Xuan Shi
+	 */
 	private static final class OdKey extends MultiKey<Node, Node> {
 		private static final long serialVersionUID = 1L;
 
@@ -103,6 +130,11 @@ public class DefaultOdMatrix extends BaseEntity<DefaultOdMatrix> implements
 	}
 
 	// turn percentage
+	/**
+	 * 
+	 * 
+	 * @author Xuan Shi
+	 */
 	static final class DynamicTurnPercentage extends
 			AbstractDynamicProperty<TurnPercentage> {
 
@@ -110,6 +142,11 @@ public class DefaultOdMatrix extends BaseEntity<DefaultOdMatrix> implements
 
 	}
 
+	/**
+	 * 
+	 * 
+	 * @author Xuan Shi
+	 */
 	static final class TurnKey extends MultiKey<Link, VehicleClass> {
 
 		private static final long serialVersionUID = 1L;

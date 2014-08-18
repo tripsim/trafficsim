@@ -1,3 +1,20 @@
+/*
+ * Copyright (C) 2014 Xuan Shi
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * 
+ */
 package edu.trafficsim.web.service.entity;
 
 import java.io.IOException;
@@ -17,6 +34,11 @@ import edu.trafficsim.engine.osm.OsmNetworkExtractor;
 import edu.trafficsim.model.Network;
 import edu.trafficsim.model.core.ModelInputException;
 
+/**
+ * 
+ * 
+ * @author Xuan Shi
+ */
 @Service
 public class OsmImportService extends EntityService {
 
@@ -37,6 +59,11 @@ public class OsmImportService extends EntityService {
 		return network;
 	}
 
+	/**
+	 * 
+	 * 
+	 * @author Xuan Shi
+	 */
 	public static enum OsmXapiUrl {
 		jXapi("http://jxapi.openstreetmap.org/xapi/api/0.6/"), MapQuest(
 				"http://open.mapquestapi.com/xapi/api/0.6/"), OverPassRambler(
@@ -55,6 +82,11 @@ public class OsmImportService extends EntityService {
 		}
 	}
 
+	/**
+	 * 
+	 * 
+	 * @author Xuan Shi
+	 */
 	public static enum OsmHighwayValue {
 		Motorway("Motorway only", "motorway|motorway_link"), Trunk(
 				"Trunk and above", "motorway|motorway_link|trunk|trunk_link"), Primary(
