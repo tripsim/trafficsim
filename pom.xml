@@ -26,9 +26,17 @@
 			</plugin>
 		</plugins>
 	</build>
-
-
+	<pluginRepositories>
+		<pluginRepository>
+			<id>spring-milestone</id>
+			<url>http://repo.spring.io/libs-release</url>
+		</pluginRepository>
+	</pluginRepositories>
 	<repositories>
+		<repository>
+			<id>spring-milestone</id>
+			<url>http://repo.spring.io/libs-release</url>
+		</repository>
 		<repository>
 			<id>maven2-repository.dev.java.net</id>
 			<name>Java.net repository</name>
@@ -40,30 +48,217 @@
 			<url>http://download.osgeo.org/webdav/geotools/</url>
 		</repository>
 		<repository>
+			<id>boundless</id>
+			<name>Boundless Maven Repository</name>
+			<url>http://repo.boundlessgeo.com/main</url>
 			<snapshots>
 				<enabled>true</enabled>
 			</snapshots>
-			<id>opengeo</id>
-			<name>OpenGeo Maven Repository</name>
-			<url>http://repo.opengeo.org</url>
+		</repository>
+		<repository>
+			<id>central</id>
+			<name>Maven Repository Switchboard</name>
+			<layout>default</layout>
+			<url>http://repo1.maven.org/maven2</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
 		</repository>
 	</repositories>
 
 	<dependencies>
+		<!-- Unit Test -->
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.8.1</version>
+			<version>${junit.version}</version>
 			<scope>test</scope>
+		</dependency>
+		<!-- Logging -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>${slf4j.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>jcl-over-slf4j</artifactId>
+			<version>${slf4j.version}</version>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>${slf4j.version}</version>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>${logback.version}</version>
 		</dependency>
 	</dependencies>
 
+	<dependencyManagement>
+		<dependencies>
+			<!-- Geometry -->
+			<dependency>
+				<groupId>com.vividsolutions</groupId>
+				<artifactId>jts</artifactId>
+				<version>${jts.version}</version>
+			</dependency>
+			<!-- GEO Tools -->
+			<dependency>
+				<groupId>org.geotools</groupId>
+				<artifactId>gt-main</artifactId>
+				<version>${geotools.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.geotools</groupId>
+				<artifactId>gt-api</artifactId>
+				<version>${geotools.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.geotools</groupId>
+				<artifactId>gt-referencing</artifactId>
+				<version>${geotools.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.geotools</groupId>
+				<artifactId>gt-epsg-hsql</artifactId>
+				<version>${geotools.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.geotools</groupId>
+				<artifactId>gt-epsg-extension</artifactId>
+				<version>${geotools.version}</version>
+			</dependency>
+			<!-- <dependency> -->
+			<!-- <groupId>org.geotools</groupId> -->
+			<!-- <artifactId>gt-opengis</artifactId> -->
+			<!-- <version>${geotools.version}</version> -->
+			<!-- </dependency> -->
+			<!-- Math -->
+			<dependency>
+				<groupId>org.apache.commons</groupId>
+				<artifactId>commons-math3</artifactId>
+				<version>${commons-math.version}</version>
+			</dependency>
+			<!-- JSON Parser -->
+			<dependency>
+				<groupId>com.fasterxml.jackson.core</groupId>
+				<artifactId>jackson-core</artifactId>
+				<version>${jackson.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.fasterxml.jackson.core</groupId>
+				<artifactId>jackson-annotations</artifactId>
+				<version>${jackson.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.fasterxml.jackson.core</groupId>
+				<artifactId>jackson-databind</artifactId>
+				<version>${jackson.version}</version>
+			</dependency>
+			<!-- Spring -->
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-context</artifactId>
+				<version>${springframework.version}</version>
+				<exclusions>
+					<!-- Exclude Commons Logging in favor of SLF4j -->
+					<exclusion>
+						<groupId>commons-logging</groupId>
+						<artifactId>commons-logging</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-web</artifactId>
+				<version>${springframework.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-webmvc</artifactId>
+				<version>${springframework.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.thymeleaf</groupId>
+				<artifactId>thymeleaf-spring4</artifactId>
+				<version>${thymeleaf.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>cglib</groupId>
+				<artifactId>cglib-nodep</artifactId>
+				<version>${cglib.version}</version>
+			</dependency>
+			<!-- Servlet -->
+			<dependency>
+				<groupId>javax.servlet</groupId>
+				<artifactId>servlet-api</artifactId>
+				<version>${servlet-api.version}</version>
+				<scope>provided</scope>
+			</dependency>
+			<dependency>
+				<groupId>javax.servlet.jsp</groupId>
+				<artifactId>jsp-api</artifactId>
+				<version>${jsp-api.version}</version>
+				<scope>provided</scope>
+			</dependency>
+			<dependency>
+				<groupId>javax</groupId>
+				<artifactId>javaee-web-api</artifactId>
+				<version>${javaee-web-api.version}</version>
+				<scope>provided</scope>
+			</dependency>
+			<dependency>
+				<groupId>javax.servlet</groupId>
+				<artifactId>jstl</artifactId>
+				<version>${jstl.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>commons-fileupload</groupId>
+				<artifactId>commons-fileupload</artifactId>
+				<version>${commons-fileupload.version}</version>
+			</dependency><!-- @Inject -->
+			<dependency>
+				<groupId>javax.inject</groupId>
+				<artifactId>javax.inject</artifactId>
+				<version>${javax.inject.version}</version>
+			</dependency>
+
+			<!-- TrafficSim -->
+			<dependency>
+				<groupId>edu.trafficsim</groupId>
+				<artifactId>simmodel</artifactId>
+				<version>${trafficsim.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>edu.trafficsim</groupId>
+				<artifactId>simengine</artifactId>
+				<version>${trafficsim.version}</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
 	<properties>
-		<org.springframework-version>4.0.1.RELEASE</org.springframework-version>
-		<org.thymeleaf-version>2.1.2.RELEASE</org.thymeleaf-version>
-		<org.slf4j-version>1.7.5</org.slf4j-version>
+		<trafficsim.version>0.0.1-SNAPSHOT</trafficsim.version>
+		<junit.version>4.8.1</junit.version>
+		<slf4j.version>1.7.5</slf4j.version>
+		<logback.version>1.0.11</logback.version>
 		<geotools.version>8.4</geotools.version>
 		<jts.version>1.13</jts.version>
-		<jackson.version>2.2.3</jackson.version>
+		<jackson.version>2.4.0</jackson.version>
+		<commons-math.version>3.1.1</commons-math.version>
+		<springframework.version>4.0.1.RELEASE</springframework.version>
+		<thymeleaf.version>2.1.2.RELEASE</thymeleaf.version>
+		<cglib.version>2.2</cglib.version>
+		<servlet-api.version>3.0-alpha-1</servlet-api.version>
+		<jsp-api.version>2.0</jsp-api.version>
+		<javaee-web-api.version>6.0</javaee-web-api.version>
+		<jstl.version>1.2</jstl.version>
+		<commons-fileupload.version>1.3.1</commons-fileupload.version>
+		<javax.inject.version>1</javax.inject.version>
 	</properties>
 </project>

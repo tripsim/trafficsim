@@ -19,24 +19,24 @@
 	</build>
 
 	<dependencies>
-
 		<!-- JSON Parser -->
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-core</artifactId>
-			<version>${jackson.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-annotations</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
-			<version>${jackson.version}</version>
 		</dependency>
 
-		<!-- trafficsim dependencies -->
+		<!-- TrafficSim -->
 		<dependency>
 			<groupId>edu.trafficsim</groupId>
 			<artifactId>simmodel</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 
