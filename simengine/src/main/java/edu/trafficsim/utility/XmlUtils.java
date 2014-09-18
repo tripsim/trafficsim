@@ -15,14 +15,34 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * 
  */
-package edu.trafficsim.engine;
+package edu.trafficsim.utility;
 
+import java.io.InputStream;
+
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
 
 /**
  * 
  * 
  * @author Xuan Shi
  */
-public class Engine {
+public final class XmlUtils {
 
+	private final XMLInputFactory xmlInputFactory;
+
+	private static class XmlFactoryHolder {
+		private static XmlUtils holder = new XmlUtils();
+	}
+
+	private XmlUtils() {
+		xmlInputFactory = XMLInputFactory.newInstance();
+	}
+
+	public static XMLStreamReader createStreamReader(InputStream inputStream)
+			throws XMLStreamException {
+		return XmlFactoryHolder.holder.xmlInputFactory
+				.createXMLStreamReader(inputStream);
+	}
 }

@@ -29,7 +29,8 @@ import javax.xml.stream.XMLStreamReader;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonParser;
 
-import edu.trafficsim.engine.Engine;
+import edu.trafficsim.utility.JsonSerializer;
+import edu.trafficsim.utility.XmlUtils;
 
 /**
  * 
@@ -63,7 +64,7 @@ public class OsmParser {
 	public static Highways parseJson(InputStream inputStream)
 			throws JsonParseException, IOException {
 		Highways highways = new Highways();
-		JsonParser jsonParser = Engine.jsonFactory.createParser(inputStream);
+		JsonParser jsonParser = JsonSerializer.createJsonParser(inputStream);
 		OsmJsonParser.parse(jsonParser, highways);
 		return highways;
 	}
@@ -71,8 +72,7 @@ public class OsmParser {
 	public static Highways parseXml(InputStream inputStream)
 			throws XMLStreamException {
 		Highways highways = new Highways();
-		XMLStreamReader reader = Engine.xmlInputFactory
-				.createXMLStreamReader(inputStream);
+		XMLStreamReader reader = XmlUtils.createStreamReader(inputStream);
 		OsmXmlParser.parse(reader, highways);
 		return highways;
 	}

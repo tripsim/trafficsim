@@ -15,14 +15,37 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * 
  */
-package edu.trafficsim.engine;
+package edu.trafficsim.utility;
 
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.io.ParseException;
+import com.vividsolutions.jts.io.WKTReader;
+import com.vividsolutions.jts.io.WKTWriter;
 
 /**
  * 
  * 
  * @author Xuan Shi
  */
-public class Engine {
+public final class WktUtils {
 
+	private final WKTWriter writer;
+	private final WKTReader reader;
+
+	private static class Holder {
+		private static WktUtils utils = new WktUtils();
+	}
+
+	private WktUtils() {
+		writer = new WKTWriter();
+		reader = new WKTReader();
+	}
+
+	public static String toWKT(Geometry geom) {
+		return Holder.utils.writer.write(geom);
+	}
+
+	public static Geometry fromWKT(String wellKnownText) throws ParseException {
+		return Holder.utils.reader.read(wellKnownText);
+	}
 }

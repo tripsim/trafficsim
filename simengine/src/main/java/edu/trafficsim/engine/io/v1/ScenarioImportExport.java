@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * 
  */
-package edu.trafficsim.utility;
+package edu.trafficsim.engine.io.v1;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -32,17 +32,14 @@ import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.opengis.referencing.operation.TransformException;
 
-import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.io.ParseException;
 
-import edu.trafficsim.engine.Engine;
 import edu.trafficsim.engine.NetworkFactory;
 import edu.trafficsim.engine.OdFactory;
 import edu.trafficsim.engine.SimulationScenario;
@@ -69,6 +66,9 @@ import edu.trafficsim.model.VehicleType;
 import edu.trafficsim.model.VehicleType.VehicleClass;
 import edu.trafficsim.model.VehicleTypeComposition;
 import edu.trafficsim.model.core.ModelInputException;
+import edu.trafficsim.utility.JsonSerializer;
+import edu.trafficsim.utility.Timer;
+import edu.trafficsim.utility.WktUtils;
 
 /**
  * 
@@ -76,16 +76,6 @@ import edu.trafficsim.model.core.ModelInputException;
  * @author Xuan Shi
  */
 public class ScenarioImportExport {
-
-	private static final JsonFactory factory = Engine.jsonFactory;
-
-	private static final String toWKT(Geometry geom) {
-		return Engine.writer.write(geom);
-	}
-
-	private static final Geometry fromWKT(String string) throws ParseException {
-		return Engine.reader.read(string);
-	}
 
 	public static final String NETWORK = "network";
 	public static final String ID = "id";
@@ -141,7 +131,7 @@ public class ScenarioImportExport {
 	public static void exportScenario(SimulationScenario scenario,
 			OutputStream out) throws IOException {
 
-		JsonGenerator generator = factory.createGenerator(out);
+		JsonGenerator generator = JsonSerializer.createJsonGenerator(out);
 
 		Set<NodeType> nodeTypes = new HashSet<NodeType>();
 		Set<LinkType> linkTypes = new HashSet<LinkType>();
@@ -173,7 +163,7 @@ public class ScenarioImportExport {
 				generator.writeFieldName(NAME);
 				generator.writeString(node.getName());
 				generator.writeFieldName(GEOM);
-				generator.writeString(toWKT(node.getPoint()));
+				generator.writeString(WktUtils.toWKT(node.getPoint()));
 				generator.writeFieldName(NODETYPE);
 				generator.writeString(node.getNodeType().getName());
 
@@ -215,7 +205,7 @@ public class ScenarioImportExport {
 				generator.writeFieldName(LINKTYPE);
 				generator.writeString(link.getLinkType().getName());
 				generator.writeFieldName(GEOM);
-				generator.writeString(toWKT(link.getLinearGeom()));
+				generator.writeString(WktUtils.toWKT(link.getLinearGeom()));
 				generator.writeFieldName(STARTNODE);
 				generator.writeNumber(link.getStartNode().getId());
 				generator.writeFieldName(ENDNODE);
@@ -494,8 +484,8 @@ public class ScenarioImportExport {
 			NetworkFactory networkFactory, OdFactory odFactory)
 			throws JsonParseException, IOException, ParseException,
 			ModelInputException, TransformException {
-		JsonParser jsonParse = factory.createParser(in);
-		JsonNode rootNode = Engine.mapper.readTree(jsonParse);
+		JsonParser jsonParse = JsonSerializer.createJsonParser(in);
+		JsonNode rootNode = JsonSerializer.readTree(jsonParse);
 
 		Map<Long, RoadInfo> roadInfos = new HashMap<Long, RoadInfo>();
 		Map<Long, Lane> lanes = new HashMap<Long, Lane>();
@@ -522,7 +512,7 @@ public class ScenarioImportExport {
 			JsonNode child = jsonNode.get(i);
 			id = child.get(ID).asLong();
 			name = child.get(NAME).asText();
-			Point pt = (Point) fromWKT(child.get(GEOM).asText());
+			Point pt = (Point) WktUtils.fromWKT(child.get(GEOM).asText());
 			NodeType type = typesLibrary.getNodeType(child.get(NODETYPE)
 					.asText());
 			Node node = networkFactory.createNode(id, name, type, pt);
@@ -558,7 +548,7 @@ public class ScenarioImportExport {
 			JsonNode child = jsonNode.get(i);
 			id = child.get(ID).asLong();
 			name = child.get(NAME).asText();
-			LineString geom = (LineString) fromWKT(child.get(GEOM).asText());
+			LineString geom = (LineString) WktUtils.fromWKT(child.get(GEOM).asText());
 			LinkType type = typesLibrary.getLinkType(child.get(LINKTYPE)
 					.asText());
 			Node startNode = network.getNode(child.get(STARTNODE).asLong());
