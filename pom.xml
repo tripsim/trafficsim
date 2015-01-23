@@ -80,23 +80,6 @@
 			<artifactId>slf4j-api</artifactId>
 			<version>${slf4j.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>jcl-over-slf4j</artifactId>
-			<version>${slf4j.version}</version>
-			<scope>runtime</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-log4j12</artifactId>
-			<version>${slf4j.version}</version>
-			<scope>runtime</scope>
-		</dependency>
-		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-classic</artifactId>
-			<version>${logback.version}</version>
-		</dependency>
 	</dependencies>
 
 	<dependencyManagement>
@@ -227,6 +210,25 @@
 				<artifactId>javax.inject</artifactId>
 				<version>${javax.inject.version}</version>
 			</dependency>
+			<!-- Logging -->
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>jcl-over-slf4j</artifactId>
+				<version>${slf4j.version}</version>
+				<scope>runtime</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-log4j12</artifactId>
+				<version>${slf4j.version}</version>
+				<scope>runtime</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-simple</artifactId>
+				<version>${slf4j.version}</version>
+				<scope>test</scope>
+			</dependency>
 
 			<!-- TrafficSim -->
 			<dependency>
@@ -245,7 +247,7 @@
 	<properties>
 		<trafficsim.version>0.0.1-SNAPSHOT</trafficsim.version>
 		<junit.version>4.8.1</junit.version>
-		<slf4j.version>1.7.5</slf4j.version>
+		<slf4j.version>1.7.10</slf4j.version>
 		<logback.version>1.0.11</logback.version>
 		<geotools.version>8.4</geotools.version>
 		<jts.version>1.13</jts.version>

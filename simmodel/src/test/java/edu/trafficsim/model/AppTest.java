@@ -7,33 +7,38 @@ import java.util.TreeMap;
 
 import org.apache.commons.math3.distribution.PoissonDistribution;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Hello world!
  * 
  */
 public class AppTest {
-	
+
+	private static Logger logger = LoggerFactory.getLogger(AppTest.class);
+
 	public static void main(String[] args) {
-		System.out.println("Hello World!");
+		logger.debug("Hello World!");
 
 		double x = 8.1;
 		double y = 2.2;
 		Double z = x % y;
-		System.out.println(z);
-		System.out.println(z.intValue());
+		logger.debug("{}", z);
+		logger.debug("{}", z.intValue());
 
 		double d = 8 / 3;
 		int i = (int) d;
-		System.out.println(d);
+		logger.debug("{}", d);
+		logger.debug("{}", i);
 		
 		double[] ds = new double[2];
-		System.out.println(Arrays.toString(ds));
+		logger.debug(Arrays.toString(ds));
 		
 		String[] strs = new String[] {"One", "Two"};
 		int t = 0;
-		System.out.println(strs[t++]);
-		System.out.println(t);
+		logger.debug(strs[t++]);
+		logger.debug("{}", t);
 	}
 
 	@Test
@@ -45,11 +50,11 @@ public class AppTest {
 		map.put(3, "third");
 		map.put(4, "fourth");
 
-		System.out.println(map.floorEntry(2));
-		System.out.println(map.ceilingEntry(2));
+		logger.debug("{}", map.floorEntry(2));
+		logger.debug("{}", map.ceilingEntry(2));
 
 		Double d = new Double(1.7);
-		System.out.println(d.intValue());
+		logger.debug("{}", d.intValue());
 	}
 
 	@Test
@@ -57,17 +62,13 @@ public class AppTest {
 		PoissonDistribution dist = new PoissonDistribution(15);
 		List<Double> probs = new ArrayList<Double>();
 		for (int i = 0; i < 20; i++) {
-			System.out.print(i);
-			System.out.print(" -- ");
 			double value = dist.cumulativeProbability(i);
 			probs.add(value);
-			System.out.println(value);
+			logger.debug("{} -- {}", i, value);
 		}
 
 		for (Double prob : probs) {
-			System.out.print(prob);
-			System.out.print(" -- ");
-			System.out.println(dist.inverseCumulativeProbability(prob));
+			logger.debug("{} -- {}", prob, dist.inverseCumulativeProbability(prob));
 		}
 	}
 }
