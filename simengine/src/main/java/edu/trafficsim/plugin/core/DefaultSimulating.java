@@ -20,8 +20,12 @@ package edu.trafficsim.plugin.core;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import org.opengis.referencing.operation.TransformException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import edu.trafficsim.engine.SimulationScenario;
 import edu.trafficsim.engine.StatisticsCollector;
@@ -45,18 +49,19 @@ import edu.trafficsim.utility.Timer;
 public class DefaultSimulating extends AbstractPlugin implements ISimulating {
 
 	private static final long serialVersionUID = 1L;
-
+	
+	private static final Logger logger = LoggerFactory.getLogger(DefaultSimulating.class);
+	
+	private static int nThreads = 5;
+	
 	protected static VehicleFactory vehicleFactory = DefaultVehicleFactory
 			.getInstance();
-
-	public void runDev() {
-
-	}
 
 	@Override
 	public void run(SimulationScenario simulationScenario,
 			StatisticsCollector statistics) throws TransformException {
 
+		// TODO load plug-ins
 		IMoving moving = PluginManager.getMovingImpl(null);
 		ICarFollowing carFollowing = PluginManager.getCarFollowingImpl(null);
 		IVehicleGenerating vehicleGenerating = PluginManager
@@ -64,33 +69,33 @@ public class DefaultSimulating extends AbstractPlugin implements ISimulating {
 
 		Timer timer = simulationScenario.getTimer();
 		statistics.begin(timer);
-		System.out.println("******** Simulation Demo ********");
-		System.out.println("---- Parameters ----");
-		System.out.println("Random Seed: " + timer.getSeed());
-		System.out.println("Step Size: " + timer.getStepSize());
-		System.out.println("Duration: " + timer.getDuration());
+		logger.info("******** Simulation Demo ********");
+		logger.info("---- Parameters ----");
+		logger.info("Random Seed: " + timer.getSeed());
+		logger.info("Step Size: " + timer.getStepSize());
+		logger.info("Duration: " + timer.getDuration());
 
+		ExecutorService executor = Executors.newFixedThreadPool(nThreads);
 		List<Vehicle> vehicles = new ArrayList<Vehicle>();
-		// TODO move to configuration
 
-		// time to live, indicates the remaining simulation steps
-		System.out.println("---- Simulation ----");
-
+		logger.info("---- Simulation ----");
 		while (!timer.isFinished()) {
 			double time = timer.getForwardedTime();
 			// TODO work on multi-threading
 			// every lane a new thread for performance
 			// duplicate collection so as to make modification while iterating
 
+			
+			// use executor for each link
 			for (Iterator<Vehicle> iterator = vehicles.iterator(); iterator
 					.hasNext();) {
 				Vehicle v = iterator.next();
 				carFollowing.update(v, simulationScenario);
 				moving.update(v, simulationScenario);
-				System.out.println("Time: " + time + "s: " + v.getName() + " "
+				logger.info("Time: " + time + "s: " + v.getName() + " "
 						+ v.position());
 				if (v.active()) {
-					// iterator.remove();
+//					iterator.remove();
 					statistics.visit(v);
 				}
 			}
@@ -103,17 +108,21 @@ public class DefaultSimulating extends AbstractPlugin implements ISimulating {
 			statistics.stepForward(timer.getForwardedSteps());
 		}
 
-		// System.out.println("---- Output ----");
+		// logger.info("---- Output ----");
 		// for (Vehicle v : vehicles) {
 		// System.out.print(v.getName() + ": ");
 		//
 		// for (VehicleState vs : statistics.trajectory(v.getId())) {
 		// System.out.print("(" + vs.coord.x + "," + vs.coord.y + ") ");
 		// }
-		// System.out.println();
+		// logger.info();
 		// }
 		statistics.finish();
 		timer.reset();
+	}
+	
+	private void runSimulation() {
+		
 	}
 
 }

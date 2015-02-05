@@ -9,9 +9,9 @@
 	</parent>
 
 	<modelVersion>4.0.0</modelVersion>
-	<artifactId>simengine</artifactId>
+	<artifactId>simdata</artifactId>
 	<packaging>jar</packaging>
-	<name>simengine</name>
+	<name>simdata</name>
 
 	<build>
 		<plugins>
@@ -19,20 +19,39 @@
 	</build>
 
 	<dependencies>
-		<!-- JSON Parser -->
+		<!-- Morphia -->
 		<dependency>
-			<groupId>com.fasterxml.jackson.core</groupId>
-			<artifactId>jackson-core</artifactId>
+			<groupId>org.mongodb.morphia</groupId>
+			<artifactId>morphia</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.fasterxml.jackson.core</groupId>
-			<artifactId>jackson-annotations</artifactId>
+			<groupId>cglib</groupId>
+			<artifactId>cglib-nodep</artifactId>
+			<optional>true</optional>
 		</dependency>
 		<dependency>
-			<groupId>com.fasterxml.jackson.core</groupId>
-			<artifactId>jackson-databind</artifactId>
+			<groupId>com.thoughtworks.proxytoys</groupId>
+			<artifactId>proxytoys</artifactId>
+			<optional>true</optional>
+		</dependency>
+		<!-- Spring -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-orm</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
 		</dependency>
 		<!-- Logging -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>jcl-over-slf4j</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-simple</artifactId>
@@ -43,10 +62,6 @@
 		<dependency>
 			<groupId>edu.trafficsim</groupId>
 			<artifactId>simmodel</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>edu.trafficsim</groupId>
-			<artifactId>simdata</artifactId>
 		</dependency>
 	</dependencies>
 

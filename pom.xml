@@ -10,6 +10,7 @@
 
 	<modules>
 		<module>simmodel</module>
+		<module>simdata</module>
 		<module>simengine</module>
 		<module>simframework</module>
 	</modules>
@@ -143,6 +144,19 @@
 				<artifactId>jackson-databind</artifactId>
 				<version>${jackson.version}</version>
 			</dependency>
+			<!-- Mongo Morphia -->
+			<dependency>
+				<groupId>org.mongodb.morphia</groupId>
+				<artifactId>morphia</artifactId>
+				<version>${morphia.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.thoughtworks.proxytoys</groupId>
+				<artifactId>proxytoys</artifactId>
+				<version>${proxytoys.version}</version>
+				<type>jar</type>
+				<optional>true</optional>
+			</dependency>
 			<!-- Spring -->
 			<dependency>
 				<groupId>org.springframework</groupId>
@@ -155,6 +169,27 @@
 						<artifactId>commons-logging</artifactId>
 					</exclusion>
 				</exclusions>
+			</dependency>
+			<!-- Spring -->
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-context</artifactId>
+				<version>${springframework.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-orm</artifactId>
+				<version>${springframework.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-tx</artifactId>
+				<version>${springframework.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-test</artifactId>
+				<version>${springframework.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.springframework</groupId>
@@ -204,7 +239,8 @@
 				<groupId>commons-fileupload</groupId>
 				<artifactId>commons-fileupload</artifactId>
 				<version>${commons-fileupload.version}</version>
-			</dependency><!-- @Inject -->
+			</dependency>
+			<!-- @Inject -->
 			<dependency>
 				<groupId>javax.inject</groupId>
 				<artifactId>javax.inject</artifactId>
@@ -215,7 +251,6 @@
 				<groupId>org.slf4j</groupId>
 				<artifactId>jcl-over-slf4j</artifactId>
 				<version>${slf4j.version}</version>
-				<scope>runtime</scope>
 			</dependency>
 			<dependency>
 				<groupId>org.slf4j</groupId>
@@ -234,6 +269,11 @@
 			<dependency>
 				<groupId>edu.trafficsim</groupId>
 				<artifactId>simmodel</artifactId>
+				<version>${trafficsim.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>edu.trafficsim</groupId>
+				<artifactId>simdata</artifactId>
 				<version>${trafficsim.version}</version>
 			</dependency>
 			<dependency>
@@ -262,5 +302,7 @@
 		<jstl.version>1.2</jstl.version>
 		<commons-fileupload.version>1.3.1</commons-fileupload.version>
 		<javax.inject.version>1</javax.inject.version>
+		<morphia.version>0.109</morphia.version>
+		<proxytoys.version>1.0</proxytoys.version>
 	</properties>
 </project>
