@@ -18,14 +18,14 @@
 package edu.trafficsim.model.roadusers;
 
 import edu.trafficsim.model.ConnectionLane;
-import edu.trafficsim.model.DriverType;
+import edu.trafficsim.model.CrusingType;
 import edu.trafficsim.model.Lane;
 import edu.trafficsim.model.Link;
 import edu.trafficsim.model.Node;
 import edu.trafficsim.model.Segment;
 import edu.trafficsim.model.Subsegment;
 import edu.trafficsim.model.Vehicle;
-import edu.trafficsim.model.VehicleType;
+import edu.trafficsim.model.VehicleClass;
 import edu.trafficsim.model.core.MovingObject;
 
 /**
@@ -38,43 +38,131 @@ public class DefaultVehicle extends MovingObject<DefaultVehicle> implements
 
 	private static final long serialVersionUID = 1L;
 
-	private VehicleType vehicleType;
-	private DriverType driverType;
+	private String vehicleType;
+	private String driverType;
+
+	private VehicleClass vehicleClass;
+	private CrusingType crusingType;
+	private double width;
+	private double length;
+	private double maxSpeed;
+	private double desiredSpeed;
+	private double desiredHeadway;
+	private double perceptionTime;
+	private double reactionTime;
 
 	private Node destination = null;
 	private Link targetLink = null;
 	private ConnectionLane preferredConnector = null;
 	private Lane currentLane = null;
 
-	private double width;
-	private double length;
-	// private double height;
-	private double maxSpeed;
-	private double desiredSpeed;
-	private double desiredHeadway;
-	private double reactionTime;
-
 	public DefaultVehicle(long id, String name, int startFrame,
-			VehicleType vehicleType, DriverType driverType) {
-		this(id, name, startFrame, vehicleType, driverType, vehicleType
-				.getWidth(), vehicleType.getLength(),
-				vehicleType.getMaxSpeed(), driverType.getDesiredSpeed(),
-				driverType.getDesiredHeadway(), driverType.getReactionTime());
-	}
-
-	public DefaultVehicle(long id, String name, int startFrame,
-			VehicleType vehicleType, DriverType driverType, double width,
-			double length, double maxSpeed, double desiredSpeed,
-			double desiredHeadway, double reactionTime) {
+			VehicleClass vehicleClass, String vehicleType, String driverType) {
 		super(id, name, startFrame);
+		this.vehicleClass = vehicleClass;
 		this.vehicleType = vehicleType;
 		this.driverType = driverType;
+	}
+
+	// Vehicle Properties
+	@Override
+	public final String getVehicleType() {
+		return vehicleType;
+	}
+
+	public final void setVehicleType(String vehicleType) {
+		this.vehicleType = vehicleType;
+	}
+
+	@Override
+	public final String getDriverType() {
+		return driverType;
+	}
+
+	public final void setDriverType(String driverType) {
+		this.driverType = driverType;
+	}
+
+	public VehicleClass getVehicleClass() {
+		return vehicleClass;
+	}
+
+	public void setVehicleClass(VehicleClass vehicleClass) {
+		this.vehicleClass = vehicleClass;
+	}
+
+	public CrusingType getCrusingType() {
+		return crusingType;
+	}
+
+	public void setCrusingType(CrusingType crusingType) {
+		this.crusingType = crusingType;
+	}
+
+	@Override
+	public final double getWidth() {
+		return width;
+	}
+
+	public final void setWidth(double width) {
 		this.width = width;
+	}
+
+	@Override
+	public final double getLength() {
+		return length;
+	}
+
+	public final void setLength(double length) {
 		this.length = length;
-		this.maxSpeed = maxSpeed;
+	}
+
+	@Override
+	public double getDesiredSpeed() {
+		return desiredSpeed;
+	}
+
+	public void setDesiredSpeed(double desiredSpeed) {
 		this.desiredSpeed = desiredSpeed;
+	}
+
+	@Override
+	public double getMaxSpeed() {
+		return maxSpeed;
+	}
+
+	public void setMaxSpeed(double maxSpeed) {
+		this.maxSpeed = maxSpeed;
+	}
+
+	@Override
+	public double getDesiredHeadway() {
+		return desiredHeadway;
+	}
+
+	public void setDesiredHeadway(double desiredHeadway) {
 		this.desiredHeadway = desiredHeadway;
 	}
+
+	@Override
+	public double getPerceptionTime() {
+		return perceptionTime;
+	}
+
+	public void setPerceptionTime(double perceptionTime) {
+		this.perceptionTime = perceptionTime;
+	}
+
+	@Override
+	public double getReactionTime() {
+		return reactionTime;
+	}
+
+	public void setReactionTime(double reactionTime) {
+		this.reactionTime = reactionTime;
+	}
+
+	// Vehicle States
 
 	@Override
 	public Segment getSegment() {
@@ -87,23 +175,8 @@ public class DefaultVehicle extends MovingObject<DefaultVehicle> implements
 	}
 
 	@Override
-	public final VehicleType getVehicleType() {
-		return vehicleType;
-	}
-
-	@Override
-	public final void setDriverType(VehicleType vehicleType) {
-		this.vehicleType = vehicleType;
-	}
-
-	@Override
-	public final DriverType getDriverType() {
-		return driverType;
-	}
-
-	@Override
-	public final void setDriverType(DriverType driverType) {
-		this.driverType = driverType;
+	public final Node getNode() {
+		return onConnector() ? ((ConnectionLane) currentLane).getNode() : null;
 	}
 
 	@Override
@@ -123,6 +196,16 @@ public class DefaultVehicle extends MovingObject<DefaultVehicle> implements
 		if (lane != null)
 			lane.add(this);
 		this.currentLane = lane;
+	}
+
+	@Override
+	public ConnectionLane preferredConnector() {
+		return preferredConnector;
+	}
+
+	@Override
+	public void preferredConnector(ConnectionLane lane) {
+		preferredConnector = lane;
 	}
 
 	@Override
@@ -175,52 +258,4 @@ public class DefaultVehicle extends MovingObject<DefaultVehicle> implements
 		return getName();
 	}
 
-	// TODO move to type
-	@Override
-	public final double getWidth() {
-		return width;
-	}
-
-	@Override
-	public final double getLength() {
-		return length;
-	}
-
-	public final void setWidth(double width) {
-		this.width = width;
-	}
-
-	public final void getLength(double length) {
-		this.length = length;
-	}
-
-	@Override
-	public ConnectionLane preferredConnector() {
-		return preferredConnector;
-	}
-
-	@Override
-	public void preferredConnector(ConnectionLane lane) {
-		preferredConnector = lane;
-	}
-
-	@Override
-	public double getDesiredSpeed() {
-		return desiredSpeed;
-	}
-
-	@Override
-	public double getMaxSpeed() {
-		return maxSpeed;
-	}
-
-	@Override
-	public double getDesiredHeadway() {
-		return desiredHeadway;
-	}
-
-	@Override
-	public double getReactionTime() {
-		return reactionTime;
-	}
 }

@@ -23,7 +23,7 @@ package edu.trafficsim.model;
  * 
  * @author Xuan Shi
  */
-public interface Event extends DataContainer {
+public interface Event extends ObjectContainer {
 	
 	public double getStartTime();
 

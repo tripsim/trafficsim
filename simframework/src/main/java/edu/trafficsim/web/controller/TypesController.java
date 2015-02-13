@@ -31,13 +31,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
-import edu.trafficsim.engine.TypesFactory;
-import edu.trafficsim.engine.factory.Sequence;
-import edu.trafficsim.engine.library.TypesLibrary;
-import edu.trafficsim.model.DriverType;
-import edu.trafficsim.model.VehicleType;
-import edu.trafficsim.model.VehicleType.VehicleClass;
-import edu.trafficsim.web.UserInterfaceException;
+import edu.trafficsim.engine.type.DriverType;
+import edu.trafficsim.engine.type.TypesManager;
+import edu.trafficsim.engine.type.VehicleType;
+import edu.trafficsim.model.VehicleClass;
+import edu.trafficsim.web.Sequence;
 import edu.trafficsim.web.service.entity.TypesService;
 
 /**
@@ -47,22 +45,21 @@ import edu.trafficsim.web.service.entity.TypesService;
  */
 @Controller
 @RequestMapping(value = "/types")
-@SessionAttributes(value = { "sequence", "typesLibrary", "typesFactory" })
+@SessionAttributes(value = { "sequence" })
 public class TypesController extends AbstractController {
 
-	private static final String DEFAULT_NAME = "New";
+	private static final String DEFAULT_NAME = "Type";
 	private static final VehicleClass DEFAULT_VEHICLECLASS = VehicleClass.Car;
 
+	@Autowired
+	TypesManager typesManager;
 	@Autowired
 	TypesService typesService;
 
 	@RequestMapping(value = "/view", method = RequestMethod.GET)
-	public String viewTypes(
-
-	@ModelAttribute("typesLibrary") TypesLibrary library, Model model) {
-
-		model.addAttribute("driverTypes", library.getDriverTypes());
-		model.addAttribute("vehicleTypes", library.getVehicleTypes());
+	public String viewTypes(Model model) {
+		model.addAttribute("driverTypes", typesManager.getDriverTypes());
+		model.addAttribute("vehicleTypes", typesManager.getVehicleTypes());
 		return "components/types";
 	}
 
@@ -70,56 +67,40 @@ public class TypesController extends AbstractController {
 	public String editVehicleType(
 			@PathVariable String name,
 			@MatrixVariable(required = false, defaultValue = "false") boolean isNew,
-			@ModelAttribute("typesLibrary") TypesLibrary library, Model model) {
-
+			Model model) {
 		model.addAttribute("isNew", isNew);
-		model.addAttribute("vehicleType", library.getVehicleType(name));
+		model.addAttribute("vehicleType", typesManager.getVehicleType(name));
 		return "components/vehicletype";
 	}
 
 	@RequestMapping(value = "/vehicle/new", method = RequestMethod.POST)
-	public @ResponseBody
-	Map<String, Object> newVehicleType(
-			@ModelAttribute("sequence") Sequence sequence,
-			@ModelAttribute("typesLibrary") TypesLibrary library,
-			@ModelAttribute("typesFactory") TypesFactory factory) {
-
-		VehicleType type = typesService.createVehicleType(library, factory,
-				sequence, DEFAULT_NAME, DEFAULT_VEHICLECLASS);
+	public @ResponseBody Map<String, Object> newVehicleType(
+			@ModelAttribute("sequence") edu.trafficsim.web.Sequence sequence) {
+		VehicleType type = typesService.createVehicleType(DEFAULT_NAME
+				+ sequence.nextId(), DEFAULT_VEHICLECLASS);
 		return successResponse("Vehicle type created",
 				"types/vehicle/" + type.getName() + ";isNew=true");
 	}
 
 	@RequestMapping(value = "/vehicle/save", method = RequestMethod.POST)
-	public @ResponseBody
-	Map<String, Object> saveVehicleType(@RequestParam("name") String name,
+	public @ResponseBody Map<String, Object> saveVehicleType(
+			@RequestParam("name") String name,
 			@RequestParam("newName") String newName,
 			@RequestParam("vehicleClass") VehicleClass vehicleClass,
 			@RequestParam("width") double width,
 			@RequestParam("length") double length,
 			@RequestParam("maxAccel") double maxAccel,
 			@RequestParam("maxDecel") double maxDecel,
-			@RequestParam("maxSpeed") double maxSpeed,
-			@ModelAttribute("typesLibrary") TypesLibrary library) {
-
-		try {
-			typesService.updateVehicleType(library, name, newName,
-					vehicleClass, width, length, maxAccel, maxDecel, maxSpeed);
-		} catch (UserInterfaceException e) {
-			return failureResponse(e);
-		}
+			@RequestParam("maxSpeed") double maxSpeed) {
+		typesService.updateVehicleType(name, newName, vehicleClass, width,
+				length, maxAccel, maxDecel, maxSpeed);
 		return messageOnlySuccessResponse("Vehicle type updated.");
 	}
 
 	@RequestMapping(value = "/vehicle/remove", method = RequestMethod.POST)
-	public @ResponseBody
-	Map<String, Object> removeVehicleType(@RequestParam("name") String name,
-			@ModelAttribute("typesLibrary") TypesLibrary library) {
-		try {
-			typesService.removeVehicleType(library, name);
-		} catch (UserInterfaceException e) {
-			return failureResponse(e);
-		}
+	public @ResponseBody Map<String, Object> removeVehicleType(
+			@RequestParam("name") String name) {
+		typesService.removeVehicleType(name);
 		return successResponse("Vehicle type removed", "types/view/");
 	}
 
@@ -127,54 +108,40 @@ public class TypesController extends AbstractController {
 	public String editDriverType(
 			@PathVariable String name,
 			@MatrixVariable(required = false, defaultValue = "false") boolean isNew,
-			@ModelAttribute("typesLibrary") TypesLibrary library, Model model) {
-
+			Model model) {
 		model.addAttribute("isNew", isNew);
-		model.addAttribute("driverType", library.getDriverType(name));
+		model.addAttribute("driverType", typesManager.getDriverType(name));
 		return "components/drivertype";
 	}
 
 	@RequestMapping(value = "/driver/new", method = RequestMethod.POST)
-	public @ResponseBody
-	Map<String, Object> newDriverType(
-			@ModelAttribute("sequence") Sequence sequence,
-			@ModelAttribute("typesLibrary") TypesLibrary library,
-			@ModelAttribute("typesFactory") TypesFactory factory) {
+	public @ResponseBody Map<String, Object> newDriverType(
+			@ModelAttribute("sequence") Sequence sequence) {
 
-		DriverType type = typesService.createDriverType(library, factory,
-				sequence, DEFAULT_NAME);
+		DriverType type = typesService.createDriverType(DEFAULT_NAME
+				+ sequence.nextId());
 		return successResponse("Driver type created",
 				"types/driver/" + type.getName() + ";isNew=true");
 	}
 
 	@RequestMapping(value = "/driver/save", method = RequestMethod.POST)
-	public @ResponseBody
-	Map<String, Object> saveDriverType(@RequestParam("name") String name,
+	public @ResponseBody Map<String, Object> saveDriverType(
+			@RequestParam("name") String name,
 			@RequestParam("newName") String newName,
 			@RequestParam("perceptionTime") double perceptionTime,
 			@RequestParam("reactionTime") double reactionTime,
 			@RequestParam("desiredHeadway") double desiredHeadway,
-			@RequestParam("desiredSpeed") double desiredSpeed,
-			@ModelAttribute("typesLibrary") TypesLibrary library) {
+			@RequestParam("desiredSpeed") double desiredSpeed) {
 
-		try {
-			typesService.updateDriverType(library, name, newName,
-					perceptionTime, reactionTime, desiredHeadway, desiredSpeed);
-		} catch (UserInterfaceException e) {
-			return failureResponse(e);
-		}
+		typesService.updateDriverType(name, newName, perceptionTime,
+				reactionTime, desiredHeadway, desiredSpeed);
 		return messageOnlySuccessResponse("Driver type updated.");
 	}
 
 	@RequestMapping(value = "/driver/remove", method = RequestMethod.POST)
-	public @ResponseBody
-	Map<String, Object> removeDriverType(@RequestParam("name") String name,
-			@ModelAttribute("typesLibrary") TypesLibrary library) {
-		try {
-			typesService.removeDriverType(library, name);
-		} catch (UserInterfaceException e) {
-			return failureResponse(e);
-		}
+	public @ResponseBody Map<String, Object> removeDriverType(
+			@RequestParam("name") String name) {
+		typesService.removeDriverType(name);
 		return successResponse("Driver type removed", "types/view/");
 	}
 

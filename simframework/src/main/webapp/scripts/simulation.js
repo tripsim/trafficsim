@@ -18,9 +18,9 @@
 (function() {
 	var prefix = 'resources/scripts/';
 	var scripts = [ 'map.js', 'plot.js', 'ui/helper.js', 'ui/general.js',
-			'ui/menu.js', 'ui/scenario-network.js', 'ui/network-link-node.js',
+			'ui/menu.js', 'ui/project-network.js', 'ui/network-link-node.js',
 			'ui/lane-connection.js', 'ui/od.js', 'ui/composition.js',
-			'ui/types.js', 'ui/plugins.js', 'ui/simulator.js', 'ui/results.js',
+			'ui/types.js', 'ui/plugins.js', 'ui/settings.js', 'ui/results.js',
 			'ui/json-editor.js' ];
 
 	var jsTags = new Array(scripts.length);

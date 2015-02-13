@@ -35,13 +35,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
-import edu.trafficsim.engine.NetworkFactory;
-import edu.trafficsim.engine.factory.Sequence;
+import edu.trafficsim.engine.network.NetworkFactory;
 import edu.trafficsim.model.Link;
 import edu.trafficsim.model.Network;
 import edu.trafficsim.model.OdMatrix;
 import edu.trafficsim.model.core.ModelInputException;
-import edu.trafficsim.web.UserInterfaceException;
+import edu.trafficsim.web.Sequence;
 import edu.trafficsim.web.service.MapJsonService;
 import edu.trafficsim.web.service.entity.NetworkService;
 import edu.trafficsim.web.service.entity.OsmImportService.OsmHighwayValue;
@@ -53,14 +52,16 @@ import edu.trafficsim.web.service.entity.OsmImportService.OsmHighwayValue;
  */
 @Controller
 @RequestMapping(value = "/link")
-@SessionAttributes(value = { "sequence", "networkFactory", "network",
-		"odMatrix" })
+@SessionAttributes(value = { "sequence", "network", "odMatrix" })
 public class LinkController extends AbstractController {
 
 	@Autowired
 	NetworkService networkService;
 	@Autowired
 	MapJsonService mapJsonService;
+
+	@Autowired
+	NetworkFactory networkFactory;
 
 	@RequestMapping(value = "view/{id}", method = RequestMethod.GET)
 	public String linkView(@PathVariable long id,
@@ -102,9 +103,8 @@ public class LinkController extends AbstractController {
 	}
 
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
-	public @ResponseBody
-	Map<String, Object> saveLink(@RequestParam("id") long id,
-			@RequestParam("name") String name,
+	public @ResponseBody Map<String, Object> saveLink(
+			@RequestParam("id") long id, @RequestParam("name") String name,
 			@RequestParam("highway") String highway,
 			@RequestParam("roadName") String roadName,
 			@ModelAttribute("network") Network network) {
@@ -114,8 +114,8 @@ public class LinkController extends AbstractController {
 	}
 
 	@RequestMapping(value = "/remove", method = RequestMethod.POST)
-	public @ResponseBody
-	Map<String, Object> removeLink(@RequestParam("id") long id,
+	public @ResponseBody Map<String, Object> removeLink(
+			@RequestParam("id") long id,
 			@ModelAttribute("network") Network network,
 			@ModelAttribute("odMatrix") OdMatrix odMatrix) {
 		try {
@@ -141,14 +141,13 @@ public class LinkController extends AbstractController {
 	}
 
 	@RequestMapping(value = "/createreverse", method = RequestMethod.POST)
-	public @ResponseBody
-	Map<String, Object> createReverseLink(@RequestParam("id") long id,
-			@ModelAttribute("networkFactory") NetworkFactory factory,
-			@ModelAttribute("sequence") Sequence seq,
+	public @ResponseBody Map<String, Object> createReverseLink(
+			@RequestParam("id") long id,
+			@ModelAttribute("sequence") Sequence sequence,
 			@ModelAttribute("network") Network network) {
 		try {
-			Link reverse = networkService.createReverseLink(factory, seq,
-					network, id);
+			Link reverse = networkService.createReverseLink(sequence, network,
+					id);
 			Map<String, Object> data = new HashMap<String, Object>();
 			data.put("link",
 					mapJsonService.getLinkJson(network, reverse.getId()));
@@ -157,8 +156,6 @@ public class LinkController extends AbstractController {
 			return successResponse("Link removed.", "link/view/" + id, data);
 		} catch (TransformException e) {
 			return failureResponse("Transformation issues!");
-		} catch (UserInterfaceException e) {
-			return failureResponse(e);
 		} catch (ModelInputException e) {
 			return failureResponse(e);
 		}

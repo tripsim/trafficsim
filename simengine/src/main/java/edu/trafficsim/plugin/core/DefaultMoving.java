@@ -20,40 +20,51 @@ package edu.trafficsim.plugin.core;
 import java.util.Collection;
 
 import org.opengis.referencing.operation.TransformException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
-import edu.trafficsim.engine.SimulationScenario;
+import edu.trafficsim.engine.simulation.Tracker;
 import edu.trafficsim.model.ConnectionLane;
 import edu.trafficsim.model.Link;
+import edu.trafficsim.model.OdMatrix;
 import edu.trafficsim.model.Vehicle;
 import edu.trafficsim.model.util.Randoms;
 import edu.trafficsim.plugin.AbstractPlugin;
 import edu.trafficsim.plugin.IMoving;
 import edu.trafficsim.plugin.IRouting;
-import edu.trafficsim.plugin.PluginManager;
 
-// TODO move to a seperate project
 /**
  * 
  * 
  * @author Xuan Shi
  */
+@Component("micro-scipic-moving")
 public class DefaultMoving extends AbstractPlugin implements IMoving {
-
 	private static final long serialVersionUID = 1L;
 
+	private static final Logger logger = LoggerFactory
+			.getLogger(DefaultMoving.class);
+
 	@Override
-	public final void update(Vehicle vehicle,
-			SimulationScenario simulationScenario) throws TransformException {
+	public final void update(Vehicle vehicle, OdMatrix odMatrix, Tracker tracker) {
 		if (!vehicle.active())
 			return;
-		updatePosition(vehicle, simulationScenario);
-		if (vehicle.active())
-			vehicle.refresh();
+		updatePosition(vehicle, odMatrix, tracker);
+		if (vehicle.active()) {
+			try {
+				vehicle.refresh();
+			} catch (TransformException e) {
+				logger.error("Deactivate vehicle'", vehicle.getId(),
+						"' for Transformation Error in moving vehicle ");
+				vehicle.deactivate();
+			}
+		}
 	}
 
-	protected void updatePosition(Vehicle vehicle,
-			SimulationScenario simulationScenario) {
-		double stepSize = simulationScenario.getTimer().getStepSize();
+	protected void updatePosition(Vehicle vehicle, OdMatrix odMatrix,
+			Tracker tracker) {
+		double stepSize = tracker.getStepSize();
 
 		// calculate new speed and new position
 		double newSpeed = vehicle.speed() + stepSize * vehicle.acceleration();
@@ -67,30 +78,28 @@ public class DefaultMoving extends AbstractPlugin implements IMoving {
 		// set new position
 		if (vehicle.getSubsegment().getLength() - newPosition < 0) {
 			vehicle.position(newPosition - vehicle.currentLane().getLength());
-			convey(vehicle, simulationScenario);
+			convey(vehicle, odMatrix, tracker);
 		} else {
 			vehicle.position(newPosition);
 		}
 
 	}
 
-	protected void convey(Vehicle vehicle, SimulationScenario scenario) {
+	protected void convey(Vehicle vehicle, OdMatrix odMatrix, Tracker tracker) {
 		if (vehicle.targetLink() == null) {
 			vehicle.currentLane(null);
 			vehicle.deactivate();
 			return;
 		}
 
-		IRouting routing = PluginManager.getRoutingImpl(scenario
+		IRouting routing = pluginManager.getRoutingImpl(tracker
 				.getRoutingType(vehicle.getVehicleType()));
 
 		System.out.println("------- Debug Convey --------");
 		if (vehicle.onConnector()) {
-			Link link = routing.getSucceedingLink(scenario.getOdMatrix(),
-					vehicle.getLink(), vehicle.getVehicleType()
-							.getVehicleClass(), scenario.getTimer()
-							.getForwardedTime(), scenario.getTimer().getRand()
-							.getRandom());
+			Link link = routing.getSucceedingLink(odMatrix, vehicle.getLink(),
+					vehicle.getVehicleClass(), tracker.getForwardedTime(),
+					tracker.getRand().getRandom());
 			vehicle.currentLane(((ConnectionLane) vehicle.currentLane())
 					.getToLane());
 			vehicle.targetLink(link);
@@ -100,8 +109,8 @@ public class DefaultMoving extends AbstractPlugin implements IMoving {
 			if (connectors.contains(vehicle.preferredConnector())) {
 				vehicle.currentLane(vehicle.preferredConnector());
 			} else if (!connectors.isEmpty()) {
-				vehicle.currentLane(Randoms.randomElement(connectors, scenario
-						.getTimer().getRand().getRandom()));
+				vehicle.currentLane(Randoms.randomElement(connectors, tracker
+						.getRand().getRandom()));
 			} else {
 				vehicle.deactivate();
 				return;
@@ -110,7 +119,7 @@ public class DefaultMoving extends AbstractPlugin implements IMoving {
 		if (vehicle.currentLane().getLength() - vehicle.position() < 0) {
 			vehicle.position(vehicle.position()
 					- vehicle.currentLane().getLength());
-			convey(vehicle, scenario);
+			convey(vehicle, odMatrix, tracker);
 		}
 	}
 }

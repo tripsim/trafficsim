@@ -11,7 +11,6 @@ import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.LineString;
 
-import edu.trafficsim.model.VehicleType.VehicleClass;
 import edu.trafficsim.model.core.AbstractSegment;
 import edu.trafficsim.model.core.AbstractSubsegment;
 import edu.trafficsim.model.core.ModelInputException;
@@ -57,14 +56,14 @@ public class LaneTest {
 		f1.set(link, 5);
 
 		Lane lane = new DefaultLane(0, link, 0, 0, 0);
-		VehicleType vehicleType = new VehicleType(0, "Test", VehicleClass.Car);
-		DriverType driverType = new DriverType(0, "Test");
-		DefaultVehicle vehicle1 = new DefaultVehicle(0, null, 0, vehicleType,
-				driverType);
+		String vehicleType = "test";
+		String driverType = "test";
+		DefaultVehicle vehicle1 = new DefaultVehicle(0, null, 0, null,
+				vehicleType, driverType);
 		vehicle1.setName("first");
 		vehicle1.position(10);
-		DefaultVehicle vehicle2 = new DefaultVehicle(1, null, 0, vehicleType,
-				driverType);
+		DefaultVehicle vehicle2 = new DefaultVehicle(1, null, 0, null,
+				vehicleType, driverType);
 		vehicle2.setName("second");
 		vehicle2.position(2);
 

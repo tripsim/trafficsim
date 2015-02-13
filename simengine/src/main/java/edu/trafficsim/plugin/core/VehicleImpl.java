@@ -17,6 +17,8 @@
  */
 package edu.trafficsim.plugin.core;
 
+import org.springframework.stereotype.Component;
+
 import edu.trafficsim.plugin.AbstractPlugin;
 import edu.trafficsim.plugin.IVehicle;
 
@@ -25,6 +27,7 @@ import edu.trafficsim.plugin.IVehicle;
  * 
  * @author Xuan Shi
  */
+@Component("default-vehicle")
 public class VehicleImpl extends AbstractPlugin implements IVehicle {
 
 	private static final long serialVersionUID = 1L;

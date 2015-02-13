@@ -17,9 +17,8 @@
  */
 package edu.trafficsim.plugin;
 
-import org.opengis.referencing.operation.TransformException;
-
-import edu.trafficsim.engine.SimulationScenario;
+import edu.trafficsim.engine.simulation.Tracker;
+import edu.trafficsim.model.OdMatrix;
 import edu.trafficsim.model.Vehicle;
 
 /**
@@ -29,6 +28,5 @@ import edu.trafficsim.model.Vehicle;
  */
 public interface IMoving extends IPlugin {
 
-	void update(Vehicle vehicle, SimulationScenario simulationScenario)
-			throws TransformException;
+	void update(Vehicle vehicle, OdMatrix odMatrix, Tracker tracker);
 }

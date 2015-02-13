@@ -32,13 +32,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
-import edu.trafficsim.engine.NetworkFactory;
-import edu.trafficsim.engine.factory.Sequence;
+import edu.trafficsim.engine.network.NetworkFactory;
 import edu.trafficsim.model.ConnectionLane;
 import edu.trafficsim.model.Lane;
 import edu.trafficsim.model.Link;
 import edu.trafficsim.model.Network;
 import edu.trafficsim.model.core.ModelInputException;
+import edu.trafficsim.web.Sequence;
 import edu.trafficsim.web.service.MapJsonService;
 import edu.trafficsim.web.service.entity.NetworkService;
 
@@ -49,13 +49,16 @@ import edu.trafficsim.web.service.entity.NetworkService;
  */
 @Controller
 @RequestMapping(value = "/connector")
-@SessionAttributes(value = { "sequence", "networkFactory", "network" })
+@SessionAttributes(value = { "sequence", "network" })
 public class ConnectorController extends AbstractController {
 
 	@Autowired
 	NetworkService networkService;
 	@Autowired
 	MapJsonService mapJsonService;
+
+	@Autowired
+	NetworkFactory networkFactory;
 
 	@RequestMapping(value = "view/{fromLinkId}/{toLinkId}", method = RequestMethod.GET)
 	public String connectorView(
@@ -87,13 +90,12 @@ public class ConnectorController extends AbstractController {
 	}
 
 	@RequestMapping(value = "/add", method = RequestMethod.POST)
-	public @ResponseBody
-	Map<String, Object> connectLanes(@RequestParam("link1") long link1Id,
+	public @ResponseBody Map<String, Object> connectLanes(
+			@RequestParam("link1") long link1Id,
 			@RequestParam("lane1") int lane1Id,
 			@RequestParam("link2") long link2Id,
 			@RequestParam("lane2") int lane2Id,
-			@ModelAttribute("networkFactory") NetworkFactory factory,
-			@ModelAttribute("sequence") Sequence seq,
+			@ModelAttribute("sequence") Sequence sequence,
 			@ModelAttribute("network") Network network) {
 		Link link1 = network.getLink(link1Id);
 		if (link1 == null)
@@ -113,15 +115,15 @@ public class ConnectorController extends AbstractController {
 				if (link1.getEndNode().isConnected(lane1, lane2)) {
 					return failureResponse("already connected");
 				}
-				ConnectionLane connector = networkService.connectLanes(factory,
-						seq, lane1, lane2);
+				ConnectionLane connector = networkService.connectLanes(
+						sequence, lane1, lane2);
 				return connectSuccessResponse(connector, "Success 1!");
 			} else if (link1.getStartNode() == link2.getEndNode()) {
 				if (link1.getStartNode().isConnected(lane2, lane1)) {
 					return failureResponse("already connected");
 				}
-				ConnectionLane connector = networkService.connectLanes(factory,
-						seq, lane2, lane1);
+				ConnectionLane connector = networkService.connectLanes(
+						sequence, lane2, lane1);
 				return connectSuccessResponse(connector, "Success 2!");
 			} else {
 				return failureResponse("no connection");
@@ -134,8 +136,7 @@ public class ConnectorController extends AbstractController {
 	}
 
 	@RequestMapping(value = "/remove", method = RequestMethod.POST)
-	public @ResponseBody
-	Map<String, Object> removeConnector(
+	public @ResponseBody Map<String, Object> removeConnector(
 			@RequestParam("fromLink") long fromLinkId,
 			@RequestParam("fromLane") int fromLaneId,
 			@RequestParam("toLink") long toLinkId,

@@ -37,11 +37,10 @@ public class DefaultTurnPercentage extends AbstractComposition<Link> implements
 
 	private Link upstream;
 
-	public DefaultTurnPercentage(long id, String name, Link upstream,
+	public DefaultTurnPercentage(String name, Link upstream,
 			Link[] downstreams, double[] percentages)
 			throws ModelInputException {
-		super(id, name, new Link[0], new Double[0]);
-
+		super(name, new Link[0], new Double[0]);
 		this.upstream = upstream;
 
 		if (downstreams == null || percentages == null)

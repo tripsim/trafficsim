@@ -20,18 +20,19 @@ package edu.trafficsim.plugin.core;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
-import org.opengis.referencing.operation.TransformException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-import edu.trafficsim.engine.SimulationScenario;
-import edu.trafficsim.engine.StatisticsCollector;
-import edu.trafficsim.engine.VehicleFactory;
-import edu.trafficsim.engine.factory.DefaultVehicleFactory;
+import edu.trafficsim.engine.simulation.SimulationSettings;
+import edu.trafficsim.engine.simulation.Tracker;
+import edu.trafficsim.engine.statistics.StatisticsCollector;
+import edu.trafficsim.engine.vehicle.VehicleFactory;
+import edu.trafficsim.model.Network;
 import edu.trafficsim.model.Od;
+import edu.trafficsim.model.OdMatrix;
 import edu.trafficsim.model.Vehicle;
 import edu.trafficsim.plugin.AbstractPlugin;
 import edu.trafficsim.plugin.ICarFollowing;
@@ -39,73 +40,70 @@ import edu.trafficsim.plugin.IMoving;
 import edu.trafficsim.plugin.ISimulating;
 import edu.trafficsim.plugin.IVehicleGenerating;
 import edu.trafficsim.plugin.PluginManager;
-import edu.trafficsim.utility.Timer;
 
 /**
  * 
  * 
  * @author Xuan Shi
  */
+@Component("micro-scopic-simulating")
 public class DefaultSimulating extends AbstractPlugin implements ISimulating {
 
 	private static final long serialVersionUID = 1L;
-	
-	private static final Logger logger = LoggerFactory.getLogger(DefaultSimulating.class);
-	
-	private static int nThreads = 5;
-	
-	protected static VehicleFactory vehicleFactory = DefaultVehicleFactory
-			.getInstance();
+	private static final Logger logger = LoggerFactory
+			.getLogger(DefaultSimulating.class);
+
+	@Autowired
+	VehicleFactory vehicleFactory;
+	@Autowired
+	StatisticsCollector statisticsCollector;
 
 	@Override
-	public void run(SimulationScenario simulationScenario,
-			StatisticsCollector statistics) throws TransformException {
+	public void simulate(Network network, OdMatrix odMatrix,
+			SimulationSettings settings) {
 
-		// TODO load plug-ins
-		IMoving moving = PluginManager.getMovingImpl(null);
-		ICarFollowing carFollowing = PluginManager.getCarFollowingImpl(null);
-		IVehicleGenerating vehicleGenerating = PluginManager
-				.getVehicleGenerating(null);
+		IMoving moving = pluginManager
+				.getMovingImpl(PluginManager.DEFAULT_MOVING);
+		ICarFollowing carFollowing = pluginManager
+				.getCarFollowingImpl(PluginManager.DEFAULT_CAR_FOLLOWING);
+		IVehicleGenerating vehicleGenerating = pluginManager
+				.getVehicleGeneratingImpl(PluginManager.DEFAULT_GENERATING);
 
-		Timer timer = simulationScenario.getTimer();
-		statistics.begin(timer);
-		logger.info("******** Simulation Demo ********");
+		Tracker tracker = new Tracker(settings);
+		logger.info("******** Micro Scopic Simulation ********");
 		logger.info("---- Parameters ----");
-		logger.info("Random Seed: " + timer.getSeed());
-		logger.info("Step Size: " + timer.getStepSize());
-		logger.info("Duration: " + timer.getDuration());
+		logger.info("Random Seed: " + tracker.getSeed());
+		logger.info("Step Size: " + tracker.getStepSize());
+		logger.info("Duration: " + tracker.getDuration());
 
-		ExecutorService executor = Executors.newFixedThreadPool(nThreads);
 		List<Vehicle> vehicles = new ArrayList<Vehicle>();
 
 		logger.info("---- Simulation ----");
-		while (!timer.isFinished()) {
-			double time = timer.getForwardedTime();
+		while (!tracker.isFinished()) {
+			double time = tracker.getForwardedTime();
 			// TODO work on multi-threading
 			// every lane a new thread for performance
 			// duplicate collection so as to make modification while iterating
 
-			
 			// use executor for each link
 			for (Iterator<Vehicle> iterator = vehicles.iterator(); iterator
 					.hasNext();) {
 				Vehicle v = iterator.next();
-				carFollowing.update(v, simulationScenario);
-				moving.update(v, simulationScenario);
+				carFollowing.update(v, tracker);
+				moving.update(v, odMatrix, tracker);
 				logger.info("Time: " + time + "s: " + v.getName() + " "
 						+ v.position());
 				if (v.active()) {
-//					iterator.remove();
-					statistics.visit(v);
+					// iterator.remove();
+					statisticsCollector.visit(time, v);
 				}
 			}
-			for (Od od : simulationScenario.getOdMatrix().getOds()) {
+			for (Od od : odMatrix.getOds()) {
 				List<Vehicle> newVehicles = vehicleGenerating.newVehicles(od,
-						simulationScenario, vehicleFactory);
+						tracker);
 				vehicles.addAll(newVehicles);
 			}
-			timer.stepForward();
-			statistics.stepForward(timer.getForwardedSteps());
+			tracker.stepForward();
 		}
 
 		// logger.info("---- Output ----");
@@ -117,12 +115,6 @@ public class DefaultSimulating extends AbstractPlugin implements ISimulating {
 		// }
 		// logger.info();
 		// }
-		statistics.finish();
-		timer.reset();
-	}
-	
-	private void runSimulation() {
-		
 	}
 
 }

@@ -17,12 +17,15 @@
  */
 package edu.trafficsim.plugin.core;
 
+import org.springframework.stereotype.Component;
+
 
 /**
  * 
  * 
  * @author Xuan Shi
  */
+@Component("random-routing")
 public class RandomRouting extends AbstractRouting {
 
 	private static final long serialVersionUID = 1L;

@@ -17,10 +17,9 @@
  */
 package edu.trafficsim.plugin;
 
-import org.opengis.referencing.operation.TransformException;
-
-import edu.trafficsim.engine.SimulationScenario;
-import edu.trafficsim.engine.StatisticsCollector;
+import edu.trafficsim.engine.simulation.SimulationSettings;
+import edu.trafficsim.model.Network;
+import edu.trafficsim.model.OdMatrix;
 
 /**
  * 
@@ -29,7 +28,7 @@ import edu.trafficsim.engine.StatisticsCollector;
  */
 public interface ISimulating extends IPlugin {
 
-	public void run(SimulationScenario simulationScenario,
-			StatisticsCollector statistics) throws TransformException;
+	void simulate(Network network, OdMatrix odMatrix,
+			SimulationSettings settings);
 
 }

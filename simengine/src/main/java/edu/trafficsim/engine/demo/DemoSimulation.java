@@ -17,65 +17,66 @@
  */
 package edu.trafficsim.engine.demo;
 
-import org.opengis.referencing.FactoryException;
-import org.opengis.referencing.NoSuchAuthorityCodeException;
-import org.opengis.referencing.operation.TransformException;
+import javax.annotation.PostConstruct;
 
-import edu.trafficsim.engine.SimulationScenario;
-import edu.trafficsim.engine.StatisticsCollector;
-import edu.trafficsim.engine.library.TypesLibrary;
-import edu.trafficsim.engine.statistics.DefaultStatisticsCollector;
+import org.opengis.referencing.FactoryException;
+import org.opengis.referencing.operation.TransformException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import edu.trafficsim.engine.simulation.SimulationManager;
+import edu.trafficsim.engine.simulation.SimulationService;
+import edu.trafficsim.engine.simulation.SimulationSettings;
+import edu.trafficsim.model.Network;
+import edu.trafficsim.model.OdMatrix;
 import edu.trafficsim.model.core.ModelInputException;
-import edu.trafficsim.plugin.ISimulating;
-import edu.trafficsim.plugin.core.DefaultSimulating;
 
 /**
  * 
  * 
  * @author Xuan Shi
  */
+@Service("demo-simulation")
 public class DemoSimulation {
 
-	private static DemoSimulation demo = null;
+	@Autowired
+	SimulationManager simulationManager;
+	@Autowired
+	SimulationService simulationService;
 
-	private DemoBuilder builder;
+	private Network network;
+	private OdMatrix odMatrix;
+	private SimulationSettings settings;
+	private long nextId;
 
-	private DemoSimulation() throws TransformException {
-		try {
-			builder = new DemoBuilder();
-		} catch (ModelInputException e) {
-			builder = null;
-			e.printStackTrace();
-		} catch (NoSuchAuthorityCodeException e) {
-			e.printStackTrace();
-		} catch (FactoryException e) {
-			e.printStackTrace();
-		}
-	}
-
-	public static DemoSimulation getInstance() throws TransformException {
-		if (demo == null)
-			demo = new DemoSimulation();
-		return demo;
-	}
-
-	public StatisticsCollector run() throws ModelInputException,
+	@PostConstruct
+	private void init() throws ModelInputException, FactoryException,
 			TransformException {
-		SimulationScenario scenario = builder.getScenario();
-		StatisticsCollector statistics = DefaultStatisticsCollector.create();
-
-		ISimulating simulation = new DefaultSimulating();
-
-		simulation.run(scenario, statistics);
-		return statistics;
+		DemoBuilder builder = new DemoBuilder();
+		network = builder.getNetwork();
+		odMatrix = builder.getOdMatrix();
+		nextId = builder.getNextId();
+		settings = simulationManager.getDefaultSimulationSettings();
 	}
 
-	public SimulationScenario getScenario() {
-		return builder.getScenario();
+	public Network getNetwork() {
+		return network;
 	}
 
-	public TypesLibrary getTypesLibrary() {
-		return builder.getTypesLibrary();
+	public OdMatrix getOdMatrix() {
+		return odMatrix;
+	}
+
+	public SimulationSettings getSettings() {
+		return settings;
+	}
+
+	public long getNextId() {
+		return nextId;
+	}
+
+	public void run() {
+		simulationService.execute(network, odMatrix, settings);
 	}
 
 }

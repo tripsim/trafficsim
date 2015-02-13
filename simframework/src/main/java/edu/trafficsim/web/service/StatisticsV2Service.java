@@ -19,7 +19,7 @@ package edu.trafficsim.web.service;
 
 import org.springframework.stereotype.Service;
 
-import edu.trafficsim.engine.StatisticsCollector;
+import edu.trafficsim.engine.statistics.StatisticsCollector;
 
 /**
  * 

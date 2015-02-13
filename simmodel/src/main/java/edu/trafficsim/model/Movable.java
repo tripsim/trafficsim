@@ -24,7 +24,7 @@ import com.vividsolutions.jts.geom.Coordinate;
  * 
  * @author Xuan Shi
  */
-public interface Movable extends DataContainer {
+public interface Movable extends ObjectContainer {
 
 	public double position();
 

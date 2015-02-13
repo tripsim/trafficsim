@@ -21,7 +21,6 @@ import org.opengis.referencing.operation.TransformException;
 
 import com.vividsolutions.jts.geom.LineString;
 
-import edu.trafficsim.model.LinkType;
 import edu.trafficsim.model.Node;
 import edu.trafficsim.model.RoadInfo;
 import edu.trafficsim.model.core.ModelInputException;
@@ -35,11 +34,11 @@ public class DefaultLink extends AbstractLink<DefaultLink> {
 
 	private static final long serialVersionUID = 1L;
 
-	private LinkType linkType;
+	private String linkType;
 
 	private RoadInfo roadInfo;
 
-	public DefaultLink(long id, String name, LinkType linkType, Node startNode,
+	public DefaultLink(long id, String name, String linkType, Node startNode,
 			Node endNode, LineString linearGeom, RoadInfo roadInfo)
 			throws TransformException, ModelInputException {
 		super(id, name, startNode, endNode, linearGeom);
@@ -49,11 +48,11 @@ public class DefaultLink extends AbstractLink<DefaultLink> {
 	}
 
 	@Override
-	public LinkType getLinkType() {
+	public String getLinkType() {
 		return linkType;
 	}
 
-	public void setLinkType(LinkType linkType) {
+	public void setLinkType(String linkType) {
 		this.linkType = linkType;
 	}
 

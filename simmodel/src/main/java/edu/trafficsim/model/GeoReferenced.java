@@ -25,7 +25,7 @@ import org.opengis.referencing.operation.TransformException;
  * 
  * @author Xuan Shi
  */
-public interface GeoReferenced extends DataContainer {
+public interface GeoReferenced extends ObjectContainer {
 
 	CoordinateReferenceSystem getCrs();
 

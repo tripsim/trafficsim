@@ -17,13 +17,13 @@
  */
 package edu.trafficsim.model.core;
 
-import edu.trafficsim.model.DataContainer;
+import edu.trafficsim.model.ObjectContainer;
 
 /**
  * 
  * 
  * @author Xuan Shi
  */
-public interface Environment extends DataContainer {
+public interface Environment extends ObjectContainer {
 
 }

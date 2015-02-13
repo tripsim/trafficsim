@@ -30,7 +30,7 @@ import edu.trafficsim.model.Node;
 import edu.trafficsim.model.Od;
 import edu.trafficsim.model.OdMatrix;
 import edu.trafficsim.model.TurnPercentage;
-import edu.trafficsim.model.VehicleType.VehicleClass;
+import edu.trafficsim.model.VehicleClass;
 import edu.trafficsim.model.core.AbstractDynamicProperty;
 import edu.trafficsim.model.core.ModelInputException;
 import edu.trafficsim.model.core.MultiKey;

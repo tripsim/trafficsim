@@ -185,7 +185,7 @@ simulation.initMap = function() {
 		strokeOpacity : 0.75,
 		strokeWidth : 10,
 		fillColor : 'gray',
-		fillOpacity : 0.75,
+		fillOpacity : 0.75
 	};
 	var networkContext = {
 		color : function(feature) {
@@ -200,7 +200,7 @@ simulation.initMap = function() {
 			}),
 			'select' : new OpenLayers.Style(networkSelectTemplate, {
 				context : networkContext
-			}),
+			})
 		}),
 		rendererOptions : {
 			zIndexing : true
@@ -407,7 +407,7 @@ simulation.initMap = function() {
 			OpenLayers.Handler.Path);
 	var sketch = {
 		start : null,
-		end : null,
+		end : null
 	};
 	editNetworkControl.events
 			.register(

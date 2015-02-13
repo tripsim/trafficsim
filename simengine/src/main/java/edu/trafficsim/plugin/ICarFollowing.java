@@ -17,7 +17,7 @@
  */
 package edu.trafficsim.plugin;
 
-import edu.trafficsim.engine.SimulationScenario;
+import edu.trafficsim.engine.simulation.Tracker;
 import edu.trafficsim.model.Vehicle;
 
 /**
@@ -27,5 +27,5 @@ import edu.trafficsim.model.Vehicle;
  */
 public interface ICarFollowing extends IPlugin {
 
-	void update(Vehicle vehicle, SimulationScenario simulationScenario);
+	void update(Vehicle vehicle, Tracker tracker);
 }

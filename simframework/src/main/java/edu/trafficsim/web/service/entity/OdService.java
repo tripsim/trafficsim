@@ -17,43 +17,56 @@
  */
 package edu.trafficsim.web.service.entity;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import edu.trafficsim.engine.OdFactory;
-import edu.trafficsim.engine.factory.Sequence;
-import edu.trafficsim.engine.library.TypesLibrary;
+import edu.trafficsim.engine.od.OdFactory;
+import edu.trafficsim.engine.type.TypesManager;
 import edu.trafficsim.model.Network;
 import edu.trafficsim.model.Node;
 import edu.trafficsim.model.Od;
 import edu.trafficsim.model.OdMatrix;
 import edu.trafficsim.model.core.ModelInputException;
-import edu.trafficsim.web.UserInterfaceException;
+import edu.trafficsim.web.Sequence;
 
 /**
  * 
  * 
  * @author Xuan Shi
  */
-@Service
+@Service("od-service")
 public class OdService extends EntityService {
 
-	public void updateOd(TypesLibrary library, Network network,
-			OdMatrix odMatrix, Long id, Long dId, String vcName, String dcName,
-			double[] times, Integer[] vphs) throws ModelInputException {
+	// in seconds
+	private static final double[] DEFAULT_TIME_POINTS = new double[] { 100 };
+	// in vph
+	private static final Integer[] DEFAULT_TIME_VPH = new Integer[] { 1000 };
+
+	private static final String DEFAULT_NAME = "";
+
+	@Autowired
+	TypesManager typesManager;
+
+	@Autowired
+	OdFactory factory;
+
+	public void updateOd(Network network, OdMatrix odMatrix, Long id, Long dId,
+			String vcName, String dcName, double[] times, Integer[] vphs)
+			throws ModelInputException {
 		odMatrix.getOd(id).setDestination(network.getNode(dId));
 		odMatrix.getOd(id).setVehicleComposition(
-				library.getVehicleComposition(vcName));
+				typesManager.getVehicleTypeComposition(vcName));
 		odMatrix.getOd(id).setDriverComposition(
-				library.getDriverComposition(dcName));
+				typesManager.getDriverTypeComposition(dcName));
 		odMatrix.getOd(id).setVphs(times, vphs);
 	}
 
-	public Od createOd(TypesLibrary library, OdFactory factory, Sequence seq,
-			OdMatrix odMatrix, Node origin, Node destination)
-			throws ModelInputException, UserInterfaceException {
-		Od od = factory.createOd(seq, "", origin, destination,
-				library.getDefaultVehicleComposition(),
-				library.getDefaultDriverComposition());
+	public Od createOd(Sequence sequence, OdMatrix odMatrix, Node origin,
+			Node destination) throws ModelInputException {
+		Od od = factory.createOd(sequence.nextId(), DEFAULT_NAME, origin,
+				destination, typesManager.getDefaultVehicleTypeComposition(),
+				typesManager.getDefaultDriverTypeComposition(),
+				DEFAULT_TIME_POINTS, DEFAULT_TIME_VPH);
 		odMatrix.add(od);
 		return od;
 	}
@@ -62,8 +75,8 @@ public class OdService extends EntityService {
 		odMatrix.remove(id);
 	}
 
-	public OdMatrix createOdMatrix(OdFactory factory, Sequence seq) {
-		return factory.createOdMatrix(seq);
+	public OdMatrix createOdMatrix(Sequence sequence) {
+		return factory.createOdMatrix(sequence.nextId());
 	}
 
 }

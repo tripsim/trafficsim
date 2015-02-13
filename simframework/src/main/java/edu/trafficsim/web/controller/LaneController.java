@@ -32,12 +32,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
-import edu.trafficsim.engine.NetworkFactory;
-import edu.trafficsim.engine.factory.Sequence;
+import edu.trafficsim.engine.network.NetworkFactory;
 import edu.trafficsim.model.Lane;
 import edu.trafficsim.model.Link;
 import edu.trafficsim.model.Network;
 import edu.trafficsim.model.core.ModelInputException;
+import edu.trafficsim.web.Sequence;
 import edu.trafficsim.web.service.MapJsonService;
 import edu.trafficsim.web.service.entity.NetworkService;
 
@@ -48,13 +48,15 @@ import edu.trafficsim.web.service.entity.NetworkService;
  */
 @Controller
 @RequestMapping(value = "/lane")
-@SessionAttributes(value = { "sequence", "networkFactory", "network" })
+@SessionAttributes(value = { "sequence", "network" })
 public class LaneController extends AbstractController {
 
 	@Autowired
 	NetworkService networkService;
 	@Autowired
 	MapJsonService mapJsonService;
+	@Autowired
+	NetworkFactory factory;
 
 	@RequestMapping(value = "/{linkId}", method = RequestMethod.GET)
 	public String lanes(@PathVariable long linkId,
@@ -97,10 +99,9 @@ public class LaneController extends AbstractController {
 	}
 
 	@RequestMapping(value = "/addtolink", method = RequestMethod.POST)
-	public @ResponseBody
-	Map<String, Object> addLane(@RequestParam("id") long id,
-			@ModelAttribute("networkFactory") NetworkFactory factory,
-			@ModelAttribute("sequence") Sequence seq,
+	public @ResponseBody Map<String, Object> addLane(
+			@RequestParam("id") long id,
+			@ModelAttribute("sequence") Sequence sequence,
 			@ModelAttribute("network") Network network) {
 		Link link = network.getLink(id);
 		if (link == null) {
@@ -108,7 +109,7 @@ public class LaneController extends AbstractController {
 		}
 
 		try {
-			networkService.addLane(factory, seq, link);
+			networkService.addLane(sequence, link);
 		} catch (ModelInputException e) {
 			return failureResponse(e.toString());
 		} catch (TransformException e) {
@@ -119,8 +120,8 @@ public class LaneController extends AbstractController {
 	}
 
 	@RequestMapping(value = "/removefromlink", method = RequestMethod.POST)
-	public @ResponseBody
-	Map<String, Object> removeLane(@RequestParam("laneId") int laneId,
+	public @ResponseBody Map<String, Object> removeLane(
+			@RequestParam("laneId") int laneId,
 			@RequestParam("linkId") long linkId,
 			@ModelAttribute("network") Network network) {
 
@@ -139,8 +140,8 @@ public class LaneController extends AbstractController {
 	}
 
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
-	public @ResponseBody
-	Map<String, Object> saveLane(@RequestParam("linkId") long id,
+	public @ResponseBody Map<String, Object> saveLane(
+			@RequestParam("linkId") long id,
 			@RequestParam("laneId") int laneId,
 			@RequestParam("start") double start,
 			@RequestParam("end") double end,

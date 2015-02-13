@@ -17,118 +17,100 @@
  */
 package edu.trafficsim.web.service.entity;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import edu.trafficsim.engine.TypesFactory;
-import edu.trafficsim.engine.factory.Sequence;
-import edu.trafficsim.engine.library.TypesLibrary;
-import edu.trafficsim.model.DriverType;
-import edu.trafficsim.model.DriverTypeComposition;
-import edu.trafficsim.model.VehicleType;
-import edu.trafficsim.model.VehicleType.VehicleClass;
-import edu.trafficsim.model.VehicleTypeComposition;
-import edu.trafficsim.web.UserInterfaceException;
+import edu.trafficsim.engine.type.DriverType;
+import edu.trafficsim.engine.type.TypesFactory;
+import edu.trafficsim.engine.type.TypesManager;
+import edu.trafficsim.engine.type.VehicleType;
+import edu.trafficsim.model.VehicleClass;
 
 /**
  * 
  * 
  * @author Xuan Shi
  */
-@Service
+@Service("types-service")
 public class TypesService extends EntityService {
 
-	public VehicleType createVehicleType(TypesLibrary library,
-			TypesFactory typesFactory, Sequence seq, String name,
-			VehicleClass vehicleClass) {
-		String newName = name;
-		int ps = 1;
-		while (library.getVehicleType(newName) != null)
-			newName = name + ps++;
-		VehicleType type = typesFactory.createVehicleType(seq, newName,
-				vehicleClass);
-		library.addVehicleType(type);
+	@Autowired
+	TypesManager typesManager;
+	@Autowired
+	TypesFactory typesFactory;
+
+	public VehicleType createVehicleType(String name, VehicleClass vehicleClass) {
+		VehicleType type = typesManager.getVehicleType(name);
+		if (type != null) {
+			throw new IllegalArgumentException("Vehicle type '" + name
+					+ "' already exists.");
+		}
+		type = typesFactory.createVehicleType(name, vehicleClass);
+		typesManager.saveVehicleType(type);
 		return type;
 	}
 
-	public VehicleType removeVehicleType(TypesLibrary library, String name)
-			throws UserInterfaceException {
-		VehicleType type = library.getVehicleType(name);
-		if (type != null) {
-			for (VehicleTypeComposition composition : library
-					.getVehicleCompositions()) {
-				if (composition.getTypes().contains(type))
-					throw new UserInterfaceException(
-							"Cannot remove vehicle type. It is referenced.");
-			}
+	public void removeVehicleType(String name) {
+		if (typesManager.countCompositionWithVehicleType(name) != 0) {
+			throw new RuntimeException("Cannot remove vehicle type '" + name
+					+ "', it is referenced.");
 		}
-		return library.removeVehicleType(name);
+		typesManager.deleteVehicleType(name);
 	}
 
-	public VehicleType updateVehicleType(TypesLibrary library, String name,
-			String newName, VehicleClass vehicleClass, double width,
-			double length, double maxAccel, double maxDecel, double maxSpeed)
-			throws UserInterfaceException {
-		VehicleType type = library.getVehicleType(name);
-		if (!name.equals(newName)) {
-			if (library.getVehicleType(newName) != null)
-				throw new UserInterfaceException("Vehicle Type " + name
-						+ " already existed!");
-			library.removeVehicleType(name);
-			type.setName(newName);
-			library.addVehicleType(type);
+	public VehicleType updateVehicleType(String name, String newName,
+			VehicleClass vehicleClass, double width, double length,
+			double maxAccel, double maxDecel, double maxSpeed) {
+		if (!name.equals(newName)
+				&& typesManager.getVehicleType(newName) != null) {
+			throw new IllegalArgumentException("Vehicle type '" + newName
+					+ "' already exists.");
 		}
+		VehicleType type = typesManager.getVehicleType(name);
+		type.setName(newName);
 		type.setVehicleClass(vehicleClass);
 		type.setWidth(width);
 		type.setLength(length);
 		type.setMaxAccel(maxAccel);
 		type.setMaxDecel(maxDecel);
 		type.setMaxSpeed(maxSpeed);
+		typesManager.saveVehicleType(type);
 		return type;
 	}
 
-	public DriverType createDriverType(TypesLibrary library,
-			TypesFactory typesFactory, Sequence seq, String name) {
-		String newName = name;
-		int ps = 1;
-		while (library.getDriverType(newName) != null)
-			newName = name + ps++;
-		DriverType type = typesFactory.createDriverType(seq, newName);
-		library.addDriverType(type);
-		return type;
-	}
-
-	public DriverType removeDriverType(TypesLibrary library, String name)
-			throws UserInterfaceException {
-		DriverType type = library.getDriverType(name);
+	public DriverType createDriverType(String name) {
+		DriverType type = typesManager.getDriverType(name);
 		if (type != null) {
-			for (DriverTypeComposition composition : library
-					.getDriverCompositions()) {
-				if (composition.getTypes().contains(type))
-					throw new UserInterfaceException(
-							"Cannot remove driver type. It is referenced.");
-			}
+			throw new IllegalArgumentException("Driver type '" + name
+					+ "' already exists.");
 		}
-		return library.removeDriverType(name);
+		type = typesFactory.createDriverType(name);
+		typesManager.saveDriverType(type);
+		return type;
 	}
 
-	public DriverType updateDriverType(TypesLibrary library, String name,
-			String newName, double perceptionTime, double reactionTime,
-			double desiredHeadway, double desiredSpeed)
-			throws UserInterfaceException {
-		DriverType type = library.getDriverType(name);
-		if (!name.equals(newName)) {
-			if (library.getDriverType(newName) != null)
-				throw new UserInterfaceException("Driver Type " + name
-						+ " already existed!");
-			library.removeDriverType(name);
-			type.setName(newName);
-			library.addDriverType(type);
+	public void removeDriverType(String name) {
+		if (typesManager.countCompositionWithDriverType(name) != 0) {
+			throw new RuntimeException("Cannot remove driver type '" + name
+					+ "', it is referenced.");
 		}
+		typesManager.deleteVehicleType(name);
+	}
+
+	public DriverType updateDriverType(String name, String newName,
+			double perceptionTime, double reactionTime, double desiredHeadway,
+			double desiredSpeed) {
+		if (!name.equals(newName)
+				&& typesManager.getDriverType(newName) != null) {
+			throw new IllegalArgumentException("Driver type '" + name
+					+ "' already exists.");
+		}
+		DriverType type = typesManager.getDriverType(name);
 		type.setPerceptionTime(perceptionTime);
 		type.setReactionTime(reactionTime);
 		type.setDesiredHeadway(desiredHeadway);
 		type.setDesiredSpeed(desiredSpeed);
+		typesManager.saveDriverType(type);
 		return type;
 	}
-
 }

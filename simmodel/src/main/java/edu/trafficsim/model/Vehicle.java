@@ -2,21 +2,20 @@
  * Copyright (C) 2014 Xuan Shi
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as
+ * it under the terms of the GNU Affero General  License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
+ * GNU Affero General  License for more details.
  *
- * You should have received a copy of the GNU Affero General Public License
+ * You should have received a copy of the GNU Affero General  License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * 
  */
 package edu.trafficsim.model;
-
 
 /**
  * 
@@ -25,45 +24,50 @@ package edu.trafficsim.model;
  */
 public interface Vehicle extends Movable, Agent {
 
-	public VehicleType getVehicleType();
+	String getVehicleType();
 
-	public void setDriverType(VehicleType vehicleType);
+	String getDriverType();
 
-	public DriverType getDriverType();
+	VehicleClass getVehicleClass();
 
-	public void setDriverType(DriverType driverType);
+	CrusingType getCrusingType();
 
-	public Link getLink();
+	double getWidth();
 
-	public Lane currentLane();
+	double getLength();
 
-	public void currentLane(Lane lane);
+	double getDesiredSpeed();
 
-	public boolean onConnector();
+	double getMaxSpeed();
 
-	public Link targetLink();
+	double getDesiredHeadway();
 
-	public void targetLink(Link link);
+	double getPerceptionTime();
 
-	public ConnectionLane preferredConnector();
+	double getReactionTime();
 
-	public void preferredConnector(ConnectionLane lane);
+	Link getLink();
 
-	public Node destination();
+	// if on connector
+	Node getNode();
 
-	public Vehicle leadingVehicle();
+	Lane currentLane();
 
-	public Vehicle precedingVehicle();
+	void currentLane(Lane lane);
 
-	public double getWidth();
+	boolean onConnector();
 
-	public double getLength();
+	Link targetLink();
 
-	public double getDesiredSpeed();
+	void targetLink(Link link);
 
-	public double getMaxSpeed();
+	ConnectionLane preferredConnector();
 
-	public double getDesiredHeadway();
+	void preferredConnector(ConnectionLane lane);
 
-	public double getReactionTime();
+	Node destination();
+
+	Vehicle leadingVehicle();
+
+	Vehicle precedingVehicle();
 }

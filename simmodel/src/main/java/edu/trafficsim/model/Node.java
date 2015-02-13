@@ -28,7 +28,7 @@ import edu.trafficsim.model.core.ModelInputException;
  */
 public interface Node extends Location {
 
-	NodeType getNodeType();
+	String getNodeType();
 
 	boolean upstream(Link link);
 
