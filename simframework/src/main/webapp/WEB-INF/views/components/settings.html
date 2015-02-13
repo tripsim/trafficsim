@@ -1,0 +1,34 @@
+<h2>Simulation Settings</h2>
+<div id="user-configuration-buttons">
+	<span id="user-configuration-button-close" class="button">close</span>
+</div>
+<div>
+	<table>
+		<tbody data-th-fragment="form(settings)">
+			<tr>
+				<td>Step Size</td>
+				<td><input type="text" name="stepSize"
+					data-th-value="${settings.stepSize}" /></td>
+			</tr>
+			<tr>
+				<td>Duration</td>
+				<td><input type="text" name="duration"
+					data-th-value="${settings.duration}" /></td>
+			</tr>
+			<tr>
+				<td>Warmup</td>
+				<td><input type="text" name="warmup"
+					data-th-value="${settings.warmup}" /></td>
+			</tr>
+			<tr>
+				<td>Random Seed</td>
+				<td><input type="text" name="seed"
+					data-th-value="${settings.seed}" /></td>
+			</tr>
+			<tr>
+				<td><span class="user-configuration-run-simulation button">Run
+						Simulation</span></td>
+			</tr>
+		</tbody>
+	</table>
+</div>

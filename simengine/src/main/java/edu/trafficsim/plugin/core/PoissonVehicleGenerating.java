@@ -25,41 +25,48 @@ import java.util.Random;
 
 import org.apache.commons.math3.random.RandomGenerator;
 import org.opengis.referencing.operation.TransformException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-import edu.trafficsim.engine.SimulationScenario;
-import edu.trafficsim.engine.VehicleFactory;
-import edu.trafficsim.model.DriverType;
+import edu.trafficsim.engine.simulation.Tracker;
+import edu.trafficsim.engine.vehicle.VehicleFactory;
 import edu.trafficsim.model.Lane;
 import edu.trafficsim.model.Link;
 import edu.trafficsim.model.Od;
 import edu.trafficsim.model.Vehicle;
-import edu.trafficsim.model.VehicleType;
 import edu.trafficsim.model.util.Randoms;
 import edu.trafficsim.plugin.AbstractPlugin;
 import edu.trafficsim.plugin.IRouting;
 import edu.trafficsim.plugin.IVehicleGenerating;
-import edu.trafficsim.plugin.PluginManager;
 
 /**
  * 
  * 
  * @author Xuan Shi
  */
+@Component("poisson-vehicle-generating")
 public class PoissonVehicleGenerating extends AbstractPlugin implements
 		IVehicleGenerating {
-
 	private static final long serialVersionUID = 1L;
 
-	// Based on arrival rate (possion dist)
-	// An alternative should be based on headway (negative exponential dist)
+	private static final Logger logger = LoggerFactory
+			.getLogger(PoissonVehicleGenerating.class);
+
+	@Autowired
+	VehicleFactory vehicleFactory;
+
+	/*
+	 * (non-Javadoc) Based on arrival rate (possion dist)An alternative should
+	 * be based on headway (negative exponential dist)
+	 */
 	@Override
-	public final List<Vehicle> newVehicles(Od od, SimulationScenario scenario,
-			VehicleFactory vehicleFactory) throws TransformException {
-		double time = scenario.getTimer().getForwardedTime();
-		double stepSize = scenario.getTimer().getStepSize();
-		RandomGenerator rng = scenario.getTimer().getRand()
-				.getRandomGenerator();
-		Random rand = scenario.getTimer().getRand().getRandom();
+	public final List<Vehicle> newVehicles(Od od, Tracker tracker) {
+		double time = tracker.getForwardedTime();
+		double stepSize = tracker.getStepSize();
+		RandomGenerator rng = tracker.getRand().getRandomGenerator();
+		Random rand = tracker.getRand().getRandom();
 
 		// calculate arrival rate
 		int vph = od.vph(time);
@@ -74,15 +81,15 @@ public class PoissonVehicleGenerating extends AbstractPlugin implements
 		for (int i = 0; i < num; i++) {
 
 			// create vehicle with random vehicle type and driver type
-			VehicleType vtypeToBuild = Randoms.randomElement(
+			String vtypeToBuild = Randoms.randomElement(
 					od.getVehicleComposition(), rand);
-			DriverType dtypeToBuild = Randoms.randomElement(
+			String dtypeToBuild = Randoms.randomElement(
 					od.getDriverComposition(), rand);
 			if (vtypeToBuild == null || dtypeToBuild == null)
 				continue;
 
 			Vehicle vehicle = vehicleFactory.createVehicle(vtypeToBuild,
-					dtypeToBuild, scenario);
+					dtypeToBuild, tracker);
 
 			// random initial link and lane
 			List<Link> links = new ArrayList<Link>(od.getOrigin()
@@ -101,8 +108,7 @@ public class PoissonVehicleGenerating extends AbstractPlugin implements
 			vehicle.speed(speed);
 			vehicle.acceleration(accel);
 			// set vehicle initial position, keep a min headway (gap) from the
-			// last
-			// vehicle in lane
+			// last vehicle in lane
 			double position = 0;
 			Vehicle tailVehicle = lane.getTailVehicle();
 			if (tailVehicle != null) {
@@ -114,14 +120,21 @@ public class PoissonVehicleGenerating extends AbstractPlugin implements
 
 			// add vehicle to the current lane
 			vehicle.currentLane(lane);
-			vehicle.refresh();
+			try {
+				vehicle.refresh();
+			} catch (TransformException e) {
+				logger.error(
+						"Skipped generating vehicle for Transformation Error during vehicle generation on lane ",
+						lane);
+				continue;
+			}
 
 			// update routing info
-			IRouting routing = PluginManager.getRoutingImpl(scenario
+			IRouting routing = pluginManager.getRoutingImpl(tracker
 					.getRoutingType(vtypeToBuild));
-			Link targetLink = routing.getSucceedingLink(link, vehicle
-					.getVehicleType().getVehicleClass(), scenario.getTimer()
-					.getForwardedTime(), rand);
+			Link targetLink = routing
+					.getSucceedingLink(link, vehicle.getVehicleClass(),
+							tracker.getForwardedTime(), rand);
 			vehicle.targetLink(targetLink);
 
 			// add vehicle to the simulation
@@ -133,10 +146,10 @@ public class PoissonVehicleGenerating extends AbstractPlugin implements
 			sb.append(vehicle.getName());
 			sb.append(" || ");
 			sb.append("VehicleType -> ");
-			sb.append(vtypeToBuild.getName());
+			sb.append(vtypeToBuild);
 			sb.append(" || ");
 			sb.append("DriverType -> ");
-			sb.append(dtypeToBuild.getName());
+			sb.append(dtypeToBuild);
 			System.out.println(sb.toString());
 		}
 
@@ -145,31 +158,6 @@ public class PoissonVehicleGenerating extends AbstractPlugin implements
 
 	@Override
 	public String getName() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void init() throws Exception {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void upgrade() throws Exception {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void activate() throws Exception {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void deactivate() throws Exception {
-		// TODO Auto-generated method stub
-
+		return "Poisson Vehicle Generation";
 	}
 }

@@ -23,7 +23,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import edu.trafficsim.model.BaseEntity;
 import edu.trafficsim.model.Composition;
 
 /**
@@ -33,17 +32,17 @@ import edu.trafficsim.model.Composition;
  * @param <K>
  *            the key type
  */
-public abstract class AbstractComposition<K> extends BaseEntity<K> implements
-		Composition<K> {
+public abstract class AbstractComposition<K> implements Composition<K> {
 
 	private static final long serialVersionUID = 1L;
+
+	private String name;
 
 	private Map<K, Double> map = new HashMap<K, Double>();
 	private double total = 0;
 
-	public AbstractComposition(long id, String name, K[] keys,
-			Double[] probabilities) {
-		super(id, name);
+	public AbstractComposition(String name, K[] keys, Double[] probabilities) {
+		this.name = name;
 		try {
 			checkLength(keys, probabilities);
 			for (int i = 0; i < keys.length; i++)
@@ -62,6 +61,16 @@ public abstract class AbstractComposition<K> extends BaseEntity<K> implements
 		else if (keys.length != probabilities.length)
 			throw new ModelInputException(
 					"keys and composition need to have the same length!");
+	}
+
+	@Override
+	public String getName() {
+		return name;
+	}
+
+	@Override
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	@Override

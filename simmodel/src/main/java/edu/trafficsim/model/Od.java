@@ -26,7 +26,7 @@ import edu.trafficsim.model.core.ModelInputException;
  * 
  * @author Xuan Shi
  */
-public interface Od extends DataContainer {
+public interface Od extends ObjectContainer {
 
 	Long getId();
 
@@ -44,12 +44,12 @@ public interface Od extends DataContainer {
 
 	void setVphs(double[] times, Integer[] vphs) throws ModelInputException;
 
-	VehicleTypeComposition getVehicleComposition();
+	TypesComposition getVehicleComposition();
 
-	void setVehicleComposition(VehicleTypeComposition composition);
+	void setVehicleComposition(TypesComposition composition);
 
-	DriverTypeComposition getDriverComposition();
+	TypesComposition getDriverComposition();
 
-	void setDriverComposition(DriverTypeComposition composition);
+	void setDriverComposition(TypesComposition composition);
 
 }

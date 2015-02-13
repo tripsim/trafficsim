@@ -30,8 +30,14 @@ public class DefaultRoadInfo extends BaseEntity<DefaultRoadInfo> implements
 
 	private static final long serialVersionUID = 1L;
 
+	private static final long DEFAULT_ID = 0;
+
 	private long roadId;
 	private String highway;
+
+	public DefaultRoadInfo() {
+		super(DEFAULT_ID, "");
+	}
 
 	public DefaultRoadInfo(Long id, String roadName, long roadId, String highway) {
 		super(id, roadName);

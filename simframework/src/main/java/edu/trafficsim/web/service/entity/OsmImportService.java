@@ -23,40 +23,44 @@ import java.net.ProtocolException;
 import javax.xml.stream.XMLStreamException;
 
 import org.opengis.referencing.operation.TransformException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonParseException;
 
-import edu.trafficsim.engine.NetworkFactory;
-import edu.trafficsim.engine.factory.Sequence;
-import edu.trafficsim.engine.library.TypesLibrary;
-import edu.trafficsim.engine.osm.OsmNetworkExtractor;
+import edu.trafficsim.engine.network.NetworkExtractResult;
+import edu.trafficsim.engine.network.NetworkExtractor;
 import edu.trafficsim.model.Network;
 import edu.trafficsim.model.core.ModelInputException;
+import edu.trafficsim.web.Sequence;
 
 /**
  * 
  * 
  * @author Xuan Shi
  */
-@Service
+@Service("osm-import-service")
 public class OsmImportService extends EntityService {
 
 	// "way[highway=*][bbox=-89.4114,43.0707,-89.3955,43.0753]"
 	private static final String queryTemplate = "way[highway=%s][bbox=%s]";
 	private static final String newNetworkName = "New Network";
 
+	@Autowired
+	NetworkExtractor extractor;
+
 	public Network createNetwork(String url, String bbox, String highway,
-			Sequence seq, TypesLibrary library, NetworkFactory factory)
-			throws ModelInputException, JsonParseException, ProtocolException,
-			IOException, TransformException, XMLStreamException {
+			Sequence sequence) throws ModelInputException, JsonParseException,
+			ProtocolException, IOException, TransformException,
+			XMLStreamException {
 
 		String highwayQuery = OsmHighwayValue.valueOf(highway) == null ? OsmHighwayValue.All.queryValue
 				: OsmHighwayValue.valueOf(highway).queryValue;
 		String query = String.format(queryTemplate, highwayQuery, bbox);
-		Network network = OsmNetworkExtractor.extract(url + query, library,
-				factory, seq, newNetworkName);
-		return network;
+		NetworkExtractResult networkExtractResult = extractor.extract(url
+				+ query, newNetworkName);
+		sequence.reset(networkExtractResult.getEndId());
+		return networkExtractResult.getNetwork();
 	}
 
 	/**

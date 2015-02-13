@@ -17,6 +17,8 @@
  */
 package edu.trafficsim.plugin.core;
 
+import org.springframework.stereotype.Component;
+
 import edu.trafficsim.plugin.AbstractPlugin;
 import edu.trafficsim.plugin.IDriver;
 
@@ -25,6 +27,7 @@ import edu.trafficsim.plugin.IDriver;
  * 
  * @author Xuan Shi
  */
+@Component("default-driver")
 public class DriverImpl extends AbstractPlugin implements IDriver {
 
 	private static final long serialVersionUID = 1L;

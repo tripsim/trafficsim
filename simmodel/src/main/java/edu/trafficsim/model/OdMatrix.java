@@ -19,7 +19,6 @@ package edu.trafficsim.model;
 
 import java.util.Collection;
 
-import edu.trafficsim.model.VehicleType.VehicleClass;
 import edu.trafficsim.model.core.ModelInputException;
 
 /**
@@ -27,7 +26,7 @@ import edu.trafficsim.model.core.ModelInputException;
  * 
  * @author Xuan Shi
  */
-public interface OdMatrix extends DataContainer {
+public interface OdMatrix extends ObjectContainer {
 
 	Od getOd(long id);
 

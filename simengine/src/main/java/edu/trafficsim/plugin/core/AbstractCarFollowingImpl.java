@@ -19,7 +19,7 @@ package edu.trafficsim.plugin.core;
 
 import java.util.Collection;
 
-import edu.trafficsim.engine.SimulationScenario;
+import edu.trafficsim.engine.simulation.Tracker;
 import edu.trafficsim.model.ConnectionLane;
 import edu.trafficsim.model.Vehicle;
 import edu.trafficsim.plugin.AbstractPlugin;
@@ -74,15 +74,15 @@ public abstract class AbstractCarFollowingImpl extends AbstractPlugin implements
 	}
 
 	@Override
-	public final void update(Vehicle vehicle,
-			SimulationScenario simulationScenario) {
+	public final void update(Vehicle vehicle, Tracker tracker) {
 		if (!vehicle.active())
 			return;
 		Vehicle leading = vehicle.leadingVehicle();
 
-		// TODO plugin manager
-		IVehicle iVeh = new VehicleImpl();
-		IDriver iDrv = new DriverImpl();
+		IVehicle iVeh = pluginManager.getVehicleImpl(tracker
+				.getVehicleImplType(vehicle.getVehicleType()));
+		IDriver iDrv = pluginManager.getDriverImpl(tracker
+				.getDriverImplType(vehicle.getDriverType()));
 		double desiredSpeed = vehicle.getDesiredSpeed();
 		double desiredAccel = iDrv.getDesiredAccel(vehicle.speed(),
 				desiredSpeed);
@@ -99,8 +99,7 @@ public abstract class AbstractCarFollowingImpl extends AbstractPlugin implements
 			accel = calculateAccel(spacing(vehicle), vehicle.getReactionTime(),
 					vehicle.getLength(), vehicle.speed(), desiredSpeed,
 					maxAccel, maxDecel, desiredAccel, desiredDecel,
-					leading.getLength(), leading.speed(), simulationScenario
-							.getTimer().getStepSize());
+					leading.getLength(), leading.speed(), tracker.getStepSize());
 		}
 
 		vehicle.acceleration(accel);

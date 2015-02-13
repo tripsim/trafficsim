@@ -21,7 +21,7 @@ import java.util.Random;
 
 import edu.trafficsim.model.Link;
 import edu.trafficsim.model.OdMatrix;
-import edu.trafficsim.model.VehicleType.VehicleClass;
+import edu.trafficsim.model.VehicleClass;
 
 /**
  * 

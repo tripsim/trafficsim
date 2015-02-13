@@ -22,7 +22,7 @@ package edu.trafficsim.model;
  * 
  * @author Xuan Shi
  */
-public interface RoadInfo extends DataContainer {
+public interface RoadInfo extends ObjectContainer {
 
 	long getRoadId();
 

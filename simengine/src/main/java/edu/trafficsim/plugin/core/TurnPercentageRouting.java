@@ -19,10 +19,12 @@ package edu.trafficsim.plugin.core;
 
 import java.util.Random;
 
+import org.springframework.stereotype.Component;
+
 import edu.trafficsim.model.Link;
 import edu.trafficsim.model.OdMatrix;
 import edu.trafficsim.model.TurnPercentage;
-import edu.trafficsim.model.VehicleType.VehicleClass;
+import edu.trafficsim.model.VehicleClass;
 import edu.trafficsim.model.util.Randoms;
 
 /**
@@ -30,6 +32,7 @@ import edu.trafficsim.model.util.Randoms;
  * 
  * @author Xuan Shi
  */
+@Component("turn-percentage-routing")
 public class TurnPercentageRouting extends AbstractRouting {
 
 	private static final long serialVersionUID = 1L;
@@ -40,7 +43,7 @@ public class TurnPercentageRouting extends AbstractRouting {
 		TurnPercentage turnPercentage = odMatrix.getTurnPercentage(
 				precedingLink, vehicleClass, forwardedTime);
 		return turnPercentage != null ? Randoms.randomElement(turnPercentage,
-				rand) : getSucceedingLink(precedingLink,
-				vehicleClass, forwardedTime, rand);
+				rand) : getSucceedingLink(precedingLink, vehicleClass,
+				forwardedTime, rand);
 	}
 }

@@ -34,15 +34,13 @@ import com.vividsolutions.jts.geom.CoordinateSequence;
 import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.io.ParseException;
 
-import edu.trafficsim.engine.NetworkFactory;
-import edu.trafficsim.engine.OdFactory;
-import edu.trafficsim.engine.factory.Sequence;
-import edu.trafficsim.engine.library.TypesLibrary;
+import edu.trafficsim.engine.type.TypesManager;
 import edu.trafficsim.model.Link;
 import edu.trafficsim.model.Network;
 import edu.trafficsim.model.Node;
 import edu.trafficsim.model.OdMatrix;
 import edu.trafficsim.model.core.ModelInputException;
+import edu.trafficsim.web.Sequence;
 import edu.trafficsim.web.service.MapJsonService;
 import edu.trafficsim.web.service.entity.NetworkService;
 import edu.trafficsim.web.service.entity.OdService;
@@ -57,8 +55,7 @@ import edu.trafficsim.web.service.entity.OsmImportService.OsmXapiUrl;
  */
 @Controller
 @RequestMapping(value = "/network")
-@SessionAttributes(value = { "sequence", "typesLibrary", "networkFactory",
-		"odFactory", "network", "odMatrix" })
+@SessionAttributes(value = { "sequence", "network", "odMatrix" })
 public class NetworkController extends AbstractController {
 
 	@Autowired
@@ -69,6 +66,9 @@ public class NetworkController extends AbstractController {
 	OsmImportService extractOsmNetworkService;
 	@Autowired
 	MapJsonService mapJsonService;
+
+	@Autowired
+	TypesManager typesManager;
 
 	@RequestMapping(value = "/view", method = RequestMethod.GET)
 	public String networkView(@ModelAttribute("network") Network network,
@@ -91,18 +91,15 @@ public class NetworkController extends AbstractController {
 	}
 
 	@RequestMapping(value = "/create", method = RequestMethod.POST)
-	public @ResponseBody
-	Map<String, Object> createNetwork(@ModelAttribute("sequence") Sequence seq,
-			@ModelAttribute("typesLibrary") TypesLibrary library,
-			@ModelAttribute("networkFactory") NetworkFactory factory,
-			@ModelAttribute("odFactory") OdFactory odFactory,
+	public @ResponseBody Map<String, Object> createNetwork(
+			@ModelAttribute("sequence") Sequence sequence,
 			@RequestParam("bbox") String bbox, @RequestParam("url") String url,
 			@RequestParam("highway") String highway, Model model) {
 		try {
 			Network network = extractOsmNetworkService.createNetwork(url, bbox,
-					highway, seq, library, factory);
+					highway, sequence);
 
-			OdMatrix odMatrix = odService.createOdMatrix(odFactory, seq);
+			OdMatrix odMatrix = odService.createOdMatrix(sequence);
 			model.addAttribute("network", network);
 			model.addAttribute("odMatrix", odMatrix);
 			return successResponse("network created", "network/view",
@@ -113,8 +110,7 @@ public class NetworkController extends AbstractController {
 	}
 
 	@RequestMapping(value = "/draw", method = RequestMethod.POST)
-	public @ResponseBody
-	Map<String, Object> breakLink(
+	public @ResponseBody Map<String, Object> breakLink(
 			@RequestParam("startCoordX") Double startCoordX,
 			@RequestParam("startCoordY") Double startCoordY,
 			@RequestParam("endCoordX") Double endCoordX,
@@ -124,9 +120,7 @@ public class NetworkController extends AbstractController {
 			@RequestParam("startNode") Long startNodeId,
 			@RequestParam("endNode") Long endNodeId,
 			@RequestParam("linearGeom") String linearGeomWkt,
-			@ModelAttribute("typesLibrary") TypesLibrary library,
-			@ModelAttribute("networkFactory") NetworkFactory factory,
-			@ModelAttribute("sequence") Sequence seq,
+			@ModelAttribute("sequence") Sequence sequence,
 			@ModelAttribute("network") Network network,
 			@ModelAttribute("odMatrix") OdMatrix odMatrix) {
 
@@ -136,12 +130,13 @@ public class NetworkController extends AbstractController {
 
 			// get start node
 			Node startNode;
+			String nodeType = typesManager.getDefaultNodeTypeName();
+			String linkType = typesManager.getDefaultLinkTypeName();
 			if (startLinkId != null && startCoordX != null
 					&& startCoordY != null) {
 				Link link = network.getLink(startLinkId);
-				startNode = networkService.breakLink(factory, seq, network,
-						odMatrix, link, library.getDefaultNodeType(),
-						library.getDefaultLinkType(), startCoordX, startCoordY);
+				startNode = networkService.breakLink(sequence, network,
+						odMatrix, link, nodeType, startCoordX, startCoordY);
 				points.setOrdinate(0, CoordinateSequence.X, startNode
 						.getPoint().getX());
 				points.setOrdinate(0, CoordinateSequence.Y, startNode
@@ -153,9 +148,8 @@ public class NetworkController extends AbstractController {
 				points.setOrdinate(0, CoordinateSequence.Y, startNode
 						.getPoint().getY());
 			} else
-				startNode = networkService.createNode(factory, seq, network,
-						library.getDefaultNodeType(),
-						points.getCoordinateCopy(0));
+				startNode = networkService.createNode(sequence, network,
+						nodeType, points.getCoordinateCopy(0));
 			if (startNode == null)
 				return failureResponse("No starting node.");
 
@@ -163,9 +157,8 @@ public class NetworkController extends AbstractController {
 			Node endNode;
 			if (endLinkId != null && endCoordX != null && endCoordY != null) {
 				Link link = network.getLink(endLinkId);
-				endNode = networkService.breakLink(factory, seq, network,
-						odMatrix, link, library.getDefaultNodeType(),
-						library.getDefaultLinkType(), endCoordX, endCoordY);
+				endNode = networkService.breakLink(sequence, network, odMatrix,
+						link, nodeType, endCoordX, endCoordY);
 				points.setOrdinate(points.size() - 1, CoordinateSequence.X,
 						endNode.getPoint().getX());
 				points.setOrdinate(points.size() - 1, CoordinateSequence.Y,
@@ -177,16 +170,15 @@ public class NetworkController extends AbstractController {
 				points.setOrdinate(points.size() - 1, CoordinateSequence.Y,
 						endNode.getPoint().getY());
 			} else
-				endNode = networkService.createNode(factory, seq, network,
-						library.getDefaultNodeType(),
-						points.getCoordinateCopy(points.size() - 1));
+				endNode = networkService.createNode(sequence, network,
+						nodeType, points.getCoordinateCopy(points.size() - 1));
 			if (endNode == null)
 				return failureResponse("No ending node.");
 
 			if (startNode.getToNode(endNode) != null)
 				return failureResponse("Link already exists.");
-			Link link = networkService.createLink(factory, seq, network,
-					library.getDefaultLinkType(), startNode, endNode, points);
+			Link link = networkService.createLink(sequence, network, linkType,
+					startNode, endNode, points);
 			if (startNode.getFromNode(endNode) != null) {
 				link.setReverseLink(startNode.getFromNode(endNode));
 				networkService.shiftLanes(startNode.getFromNode(endNode));

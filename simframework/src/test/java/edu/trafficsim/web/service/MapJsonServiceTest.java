@@ -4,19 +4,19 @@ import org.junit.Before;
 import org.junit.Test;
 import org.opengis.referencing.operation.TransformException;
 
+import edu.trafficsim.engine.demo.DemoBuilder;
 import edu.trafficsim.model.Network;
 
 public class MapJsonServiceTest {
 
-	DemoService demo;
 	Network network;
 	MapJsonService jsonService;
 
 	@Before
 	public void setUp() throws Exception {
-		demo = new DemoService();
-		network = demo.getScenario().getNetwork();
+		DemoBuilder demo = new DemoBuilder();
 		jsonService = new MapJsonService();
+		network = demo.getNetwork();
 	}
 
 	@Test

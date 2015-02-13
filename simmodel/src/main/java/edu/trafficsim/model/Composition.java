@@ -29,7 +29,7 @@ import edu.trafficsim.model.core.ModelInputException;
  * @param <T>
  *            the generic type
  */
-public interface Composition<T> extends DataContainer {
+public interface Composition<T> extends Nameable {
 
 	Set<T> keys();
 

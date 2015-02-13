@@ -72,9 +72,9 @@ jQuery(document).ready(function() {
 		simwebhelper.getPanel('plugin/manager');
 	});
 
-	/* simulator */
-	jQuery('#user-interface-simulator').click(function() {
-		simwebhelper.getPanel('simulator/view');
+	/* settings */
+	jQuery('#user-interface-settings').click(function() {
+		simwebhelper.getPanel('settings/view');
 	});
 
 	/* simulation result */
@@ -82,9 +82,9 @@ jQuery(document).ready(function() {
 		simwebhelper.getPanel('results/view');
 	});
 
-	/* Create New Scenario */
-	jQuery('#user-interface-scenario').click(function() {
-		simwebhelper.getPanel('scenario/new');
+	/* Create New Project */
+	jQuery('#user-interface-project').click(function() {
+		simwebhelper.getPanel('project/new');
 	});
 
 	/* json editor example */

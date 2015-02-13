@@ -17,7 +17,7 @@
  */
 package edu.trafficsim.plugin;
 
-import edu.trafficsim.plugin.IPlugin;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * 
@@ -28,29 +28,23 @@ public abstract class AbstractPlugin implements IPlugin {
 
 	private static final long serialVersionUID = 1L;
 
+	@Autowired
+	protected PluginManager pluginManager;
+
 	public String getName() {
-		// TODO Auto-generated method stub
-		return null;
+		return "Default Plug-in";
 	}
 
 	public void init() throws Exception {
-		// TODO Auto-generated method stub
-
 	}
 
 	public void upgrade() throws Exception {
-		// TODO Auto-generated method stub
-
 	}
 
 	public void activate() throws Exception {
-		// TODO Auto-generated method stub
-
 	}
 
 	public void deactivate() throws Exception {
-		// TODO Auto-generated method stub
-
 	}
 
 }

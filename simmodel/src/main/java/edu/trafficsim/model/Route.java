@@ -23,7 +23,7 @@ package edu.trafficsim.model;
  * 
  * @author Xuan Shi
  */
-public interface Route extends DataContainer {
+public interface Route extends ObjectContainer {
 
 	public Node getStartNode();
 

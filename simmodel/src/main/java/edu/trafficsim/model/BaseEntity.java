@@ -26,7 +26,7 @@ import java.util.Date;
  * @param <T>
  *            the generic type
  */
-public abstract class BaseEntity<T> implements DataContainer, Comparable<T> {
+public abstract class BaseEntity<T> implements ObjectContainer, Comparable<T> {
 
 	/**
 	 * 
@@ -39,9 +39,9 @@ public abstract class BaseEntity<T> implements DataContainer, Comparable<T> {
 
 	private Date modified;
 
-	private User createdBy;
+	private String createdBy;
 
-	private User modifiedBy;
+	private String modifiedBy;
 
 	private String name;
 
@@ -85,11 +85,11 @@ public abstract class BaseEntity<T> implements DataContainer, Comparable<T> {
 		return modified;
 	}
 
-	public User getCreatedBy() {
+	public String getCreatedBy() {
 		return createdBy;
 	}
 
-	public User getModifiedBy() {
+	public String getModifiedBy() {
 		return modifiedBy;
 	}
 
@@ -98,7 +98,6 @@ public abstract class BaseEntity<T> implements DataContainer, Comparable<T> {
 		return getName();
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public int compareTo(T o) {
 		if (o instanceof BaseEntity)

@@ -24,7 +24,7 @@ import org.opengis.referencing.operation.TransformException;
  * 
  * @author Xuan Shi
  */
-public interface Agent extends DataContainer {
+public interface Agent extends ObjectContainer {
 
 	public int getStartFrame();
 

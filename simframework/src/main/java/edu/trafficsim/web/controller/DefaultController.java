@@ -19,28 +19,23 @@ package edu.trafficsim.web.controller;
 
 import javax.servlet.http.HttpSession;
 
-import org.opengis.referencing.operation.TransformException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
-import edu.trafficsim.engine.NetworkFactory;
-import edu.trafficsim.engine.OdFactory;
-import edu.trafficsim.engine.SimulationScenario;
-import edu.trafficsim.engine.TypesFactory;
-import edu.trafficsim.engine.factory.Sequence;
-import edu.trafficsim.engine.library.TypesLibrary;
+import edu.trafficsim.engine.demo.DemoSimulation;
+import edu.trafficsim.engine.network.NetworkFactory;
+import edu.trafficsim.engine.od.OdFactory;
+import edu.trafficsim.engine.simulation.SimulationManager;
+import edu.trafficsim.engine.simulation.SimulationSettings;
 import edu.trafficsim.model.Network;
 import edu.trafficsim.model.OdMatrix;
 import edu.trafficsim.model.core.ModelInputException;
-import edu.trafficsim.web.SimulationProject;
-import edu.trafficsim.web.UserInterfaceException;
-import edu.trafficsim.web.service.DemoService;
+import edu.trafficsim.web.Sequence;
 import edu.trafficsim.web.service.MapJsonService;
 import edu.trafficsim.web.service.entity.NetworkService;
 import edu.trafficsim.web.service.entity.OdService;
@@ -52,65 +47,50 @@ import edu.trafficsim.web.service.entity.OdService;
  */
 @Controller
 @RequestMapping(value = "/")
-@SessionAttributes(value = { "sequence", "typesFactory", "typesLibrary",
-		"networkFactory", "odFactory", "network", "odMatrix" })
+@SessionAttributes(value = { "seq", "network", "odMatrix", "settings" })
 public class DefaultController extends AbstractController {
 
 	@Autowired
-	SimulationProject project;
+	DemoSimulation demoSimulation;
 
-	@Autowired
-	DemoService demoService;
 	@Autowired
 	MapJsonService mapJsonService;
-
 	@Autowired
 	NetworkService networkService;
 	@Autowired
 	OdService odService;
 
+	@Autowired
+	SimulationManager simulationManager;
+	@Autowired
+	NetworkFactory networkFactory;
+	@Autowired
+	OdFactory odFactory;
+
 	@RequestMapping(value = "/")
 	public String home(Model model, HttpSession session)
 			throws ModelInputException {
 		if (session.isNew()) {
-			Sequence seq = Sequence.create();
-			NetworkFactory networkFactory = project.getNetworkFactory();
-			OdFactory odFactory = project.getOdFactory();
-			TypesFactory typesFactory = project.getTypesFactory();
-			TypesLibrary typesLibrary = TypesLibrary.defaultLibrary();
-			Network network = networkService.createNetwork(networkFactory, seq);
-			OdMatrix odMatrix = odService.createOdMatrix(odFactory, seq);
+			Sequence sequence = new Sequence();
+			Network network = networkService.createNetwork(sequence);
+			OdMatrix odMatrix = odService.createOdMatrix(sequence);
+			SimulationSettings settings = simulationManager
+					.getDefaultSimulationSettings();
 
-			model.addAttribute("sequence", seq);
-			model.addAttribute("typesLibrary", typesLibrary);
-			model.addAttribute("networkFactory", networkFactory);
-			model.addAttribute("typesFactory", typesFactory);
-			model.addAttribute("odFactory", odFactory);
+			model.addAttribute("seq", sequence);
 			model.addAttribute("network", network);
 			model.addAttribute("odMatrix", odMatrix);
+			model.addAttribute("settings", settings);
 		}
-		;
 		return "index";
 	}
 
-	// TODO make it general import
 	@RequestMapping(value = "getdemonetwork", method = RequestMethod.GET)
-	public @ResponseBody
-	String demoNetwork(@ModelAttribute("typesLibrary") TypesLibrary library,
-			Model model) throws ModelInputException, UserInterfaceException {
-		String str = "";
-		try {
-			SimulationScenario scenario = demoService.getScenario();
-			model.addAttribute("sequence", scenario.getSequence());
-			model.addAttribute("network", scenario.getNetwork());
-			model.addAttribute("odMatrix", scenario.getOdMatrix());
-
-			model.addAttribute("typesLibrary", demoService.getTypesLibrary());
-
-			str = mapJsonService.getNetworkJson(scenario.getNetwork());
-		} catch (TransformException e) {
-			e.printStackTrace();
-		}
-		return str;
+	public @ResponseBody String demoNetwork(Model model)
+			throws ModelInputException {
+		model.addAttribute("sequence", new Sequence(demoSimulation.getNextId()));
+		model.addAttribute("network", demoSimulation.getNetwork());
+		model.addAttribute("odMatrix", demoSimulation.getOdMatrix());
+		return mapJsonService.getNetworkJson(demoSimulation.getNetwork());
 	}
 }

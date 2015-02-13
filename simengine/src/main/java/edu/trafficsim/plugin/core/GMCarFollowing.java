@@ -17,11 +17,14 @@
  */
 package edu.trafficsim.plugin.core;
 
+import org.springframework.stereotype.Component;
+
 /**
  * 
  * 
  * @author Xuan Shi
  */
+@Component("gm-car-following")
 public class GMCarFollowing extends AbstractCarFollowingImpl {
 
 	private static final long serialVersionUID = 1L;

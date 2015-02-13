@@ -17,128 +17,95 @@
  */
 package edu.trafficsim.web.service.entity;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import edu.trafficsim.engine.TypesFactory;
-import edu.trafficsim.engine.factory.Sequence;
-import edu.trafficsim.engine.library.TypesLibrary;
-import edu.trafficsim.model.DriverType;
-import edu.trafficsim.model.DriverTypeComposition;
-import edu.trafficsim.model.Od;
-import edu.trafficsim.model.OdMatrix;
-import edu.trafficsim.model.VehicleType;
-import edu.trafficsim.model.VehicleTypeComposition;
+import edu.trafficsim.engine.type.TypesManager;
+import edu.trafficsim.model.Composition;
+import edu.trafficsim.model.TypesComposition;
 import edu.trafficsim.model.core.ModelInputException;
-import edu.trafficsim.web.UserInterfaceException;
 
 /**
  * 
  * 
  * @author Xuan Shi
  */
-@Service
+@Service("composition-service")
 public class CompositionService extends EntityService {
 
-	public VehicleTypeComposition updateVehicleComposition(
-			TypesLibrary library, String oldName, String newName,
-			String[] types, double[] values) throws ModelInputException,
-			UserInterfaceException {
-		VehicleTypeComposition composition = library
-				.getVehicleComposition(oldName);
-		if (!oldName.equals(newName)) {
-			if (library.getVehicleComposition(newName) != null)
-				throw new UserInterfaceException(newName + " already existed!");
+	@Autowired
+	TypesManager typesManager;
 
-			library.removeVehicleComposition(oldName);
-			composition.setName(newName);
-			library.addVehicleComposition(composition);
-		}
-		composition.reset();
-		for (int i = 0; i < types.length; i++) {
-			composition.culmulate(library.getVehicleType(types[i]), values[i]);
+	public TypesComposition updateVehicleComposition(String oldName,
+			String newName, String[] types, double[] values)
+			throws ModelInputException {
+		if (!oldName.equals(newName)
+				&& typesManager.getVehicleTypeComposition(newName) != null) {
+			throw new IllegalArgumentException("Vehicle composition" + newName
+					+ " already existed!");
 		}
 
+		TypesComposition composition = typesManager
+				.getVehicleTypeComposition(oldName);
+		updateComposition(composition, newName, types, values);
 		return composition;
 	}
 
-	public VehicleTypeComposition removeVehicleComposition(
-			TypesLibrary library, OdMatrix odMatrix, String name)
-			throws UserInterfaceException {
-		VehicleTypeComposition composition = library
-				.getVehicleComposition(name);
-		for (Od od : odMatrix.getOds()) {
-			if (od.getVehicleComposition() == composition)
-				throw new UserInterfaceException(
-						"Cannot remove composition. It is referenced.");
-		}
-		return library.removeVehicleComposition(name);
-	}
-
-	public VehicleTypeComposition createVehicleComposition(
-			TypesLibrary library, TypesFactory factory, Sequence seq,
-			String name, VehicleTypeComposition defaultComposition)
+	private <T> void updateComposition(Composition<T> composition,
+			String newName, T[] types, double[] values)
 			throws ModelInputException {
-		String newName = name;
-		int ps = 1;
-		while (library.getVehicleComposition(newName) != null) {
-			newName = name + ps++;
-		}
-
-		VehicleTypeComposition comp = factory.createVehicleTypeComposition(seq,
-				newName,
-				defaultComposition.getTypes().toArray(new VehicleType[0]),
-				defaultComposition.values().toArray(new Double[0]));
-		library.addVehicleComposition(comp);
-		return comp;
-	}
-
-	public DriverTypeComposition updateDriverComposition(TypesLibrary library,
-			String oldName, String newName, String[] types, double[] values)
-			throws ModelInputException, UserInterfaceException {
-		DriverTypeComposition composition = library
-				.getDriverComposition(oldName);
-		if (!oldName.equals(newName)) {
-			if (library.getDriverComposition(newName) != null)
-				throw new UserInterfaceException(newName + " already existed!");
-
-			library.removeDriverComposition(oldName);
-			composition.setName(newName);
-			library.addDriverComposition(composition);
-		}
+		composition.setName(newName);
 		composition.reset();
 		for (int i = 0; i < types.length; i++) {
-			composition.culmulate(library.getDriverType(types[i]), values[i]);
+			composition.culmulate(types[i], values[i]);
 		}
+	}
 
+	public void removeVehicleComposition(String name) {
+		typesManager.deleteVehicleTypesComposition(name);
+	}
+
+	public TypesComposition createVehicleComposition(String name)
+			throws ModelInputException {
+		if (typesManager.getVehicleTypeComposition(name) != null) {
+			throw new IllegalArgumentException("Vehicle type composition '"
+					+ name + "' already exists.");
+		}
+		TypesComposition composition = typesManager
+				.getDefaultVehicleTypeComposition();
+		composition.setName(name);
+		typesManager.insertVehicleTypesComposition(composition);
 		return composition;
 	}
 
-	public DriverTypeComposition removeDriverComposition(TypesLibrary library,
-			OdMatrix odMatrix, String name) throws UserInterfaceException {
-		DriverTypeComposition composition = library.getDriverComposition(name);
-		for (Od od : odMatrix.getOds()) {
-			if (od.getDriverComposition() == composition)
-				throw new UserInterfaceException(
-						"Cannot remove composition. It is referenced.");
+	public TypesComposition updateDriverComposition(String oldName,
+			String newName, String[] types, double[] values)
+			throws ModelInputException {
+		if (!oldName.equals(newName)
+				&& typesManager.getDriverTypeComposition(newName) != null) {
+			throw new IllegalArgumentException(newName + " already existed!");
+
 		}
-		return library.removeDriverComposition(name);
+		TypesComposition composition = typesManager
+				.getDriverTypeComposition(oldName);
+		updateComposition(composition, newName, types, values);
+		return composition;
 	}
 
-	public DriverTypeComposition createDriverComposition(TypesLibrary library,
-			TypesFactory factory, Sequence seq, String name,
-			DriverTypeComposition defaultComposition)
-			throws ModelInputException {
-		String newName = name;
-		int ps = 1;
-		while (library.getDriverComposition(newName) != null) {
-			newName = name + ps++;
-		}
+	public void removeDriverComposition(String name) {
+		typesManager.deleteDriverTypesComposition(name);
+	}
 
-		DriverTypeComposition comp = factory.createDriverTypeComposition(seq,
-				newName,
-				defaultComposition.getTypes().toArray(new DriverType[0]),
-				defaultComposition.values().toArray(new Double[0]));
-		library.addDriverComposition(comp);
-		return comp;
+	public TypesComposition createDriverComposition(String name)
+			throws ModelInputException {
+		if (typesManager.getDriverTypeComposition(name) != null) {
+			throw new IllegalArgumentException("Driver type composition '"
+					+ name + "' already exists.");
+		}
+		TypesComposition composition = typesManager
+				.getDefaultDriverTypeComposition();
+		composition.setName(name);
+		typesManager.insertVehicleTypesComposition(composition);
+		return composition;
 	}
 }

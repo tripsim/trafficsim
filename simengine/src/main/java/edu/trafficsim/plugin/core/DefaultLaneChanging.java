@@ -17,6 +17,8 @@
  */
 package edu.trafficsim.plugin.core;
 
+import org.springframework.stereotype.Component;
+
 import edu.trafficsim.plugin.AbstractPlugin;
 import edu.trafficsim.plugin.ILaneChanging;
 
@@ -25,6 +27,7 @@ import edu.trafficsim.plugin.ILaneChanging;
  * 
  * @author Xuan Shi
  */
+@Component("default-lane-changing")
 public class DefaultLaneChanging extends AbstractPlugin implements
 		ILaneChanging {
 

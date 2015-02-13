@@ -19,8 +19,6 @@ package edu.trafficsim.model.network;
 
 import com.vividsolutions.jts.geom.Point;
 
-import edu.trafficsim.model.NodeType;
-
 /**
  * 
  * 
@@ -38,15 +36,15 @@ public class DefaultNode extends AbstractNode<DefaultNode> {
 
 	private final static double DEFAULT_RADIUS = 0;
 
-	private NodeType nodeType;
+	private String nodeType;
 
-	public DefaultNode(long id, String name, NodeType nodeType, Point point) {
+	public DefaultNode(long id, String name, String nodeType, Point point) {
 		super(id, name, point, DEFAULT_RADIUS);
 		this.nodeType = nodeType;
 	}
 
 	@Override
-	public final NodeType getNodeType() {
+	public final String getNodeType() {
 		return nodeType;
 	}
 

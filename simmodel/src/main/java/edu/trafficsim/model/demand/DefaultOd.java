@@ -20,10 +20,9 @@ package edu.trafficsim.model.demand;
 import java.util.Collection;
 
 import edu.trafficsim.model.BaseEntity;
-import edu.trafficsim.model.DriverTypeComposition;
 import edu.trafficsim.model.Node;
 import edu.trafficsim.model.Od;
-import edu.trafficsim.model.VehicleTypeComposition;
+import edu.trafficsim.model.TypesComposition;
 import edu.trafficsim.model.core.AbstractDynamicProperty;
 import edu.trafficsim.model.core.ModelInputException;
 
@@ -48,15 +47,15 @@ public class DefaultOd extends BaseEntity<DefaultOd> implements Od {
 
 	private Node origin;
 	private Node destination;
-	private VehicleTypeComposition vehicleComposition;
-	private DriverTypeComposition driverComposition;
+	private TypesComposition vehicleComposition;
+	private TypesComposition driverComposition;
 
 	private final DynamicFlow dynamicFlow = new DynamicFlow();
 
 	public DefaultOd(long id, String name, Node origin, Node destination,
-			VehicleTypeComposition vehicleComposition,
-			DriverTypeComposition driverComposition, double[] times,
-			Integer[] vphs) throws ModelInputException {
+			TypesComposition vehicleComposition,
+			TypesComposition driverComposition, double[] times, Integer[] vphs)
+			throws ModelInputException {
 		super(id, name);
 		this.origin = origin;
 		this.destination = destination;
@@ -103,22 +102,22 @@ public class DefaultOd extends BaseEntity<DefaultOd> implements Od {
 	}
 
 	@Override
-	public VehicleTypeComposition getVehicleComposition() {
+	public TypesComposition getVehicleComposition() {
 		return vehicleComposition;
 	}
 
 	@Override
-	public void setVehicleComposition(VehicleTypeComposition composition) {
+	public void setVehicleComposition(TypesComposition composition) {
 		this.vehicleComposition = composition;
 	}
 
 	@Override
-	public DriverTypeComposition getDriverComposition() {
+	public TypesComposition getDriverComposition() {
 		return driverComposition;
 	}
 
 	@Override
-	public void setDriverComposition(DriverTypeComposition composition) {
+	public void setDriverComposition(TypesComposition composition) {
 		this.driverComposition = composition;
 	}
 

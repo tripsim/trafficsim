@@ -28,7 +28,7 @@ import org.opengis.referencing.operation.TransformException;
  */
 public interface Link extends Segment {
 
-	LinkType getLinkType();
+	String getLinkType();
 
 	Node getStartNode();
 
