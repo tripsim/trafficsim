@@ -19,6 +19,8 @@ package edu.trafficsim.web.controller;
 
 import javax.servlet.http.HttpSession;
 
+import org.opengis.referencing.FactoryException;
+import org.opengis.referencing.operation.TransformException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -27,7 +29,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
-import edu.trafficsim.engine.demo.DemoSimulation;
+import edu.trafficsim.engine.demo.DemoBuilder;
 import edu.trafficsim.engine.network.NetworkFactory;
 import edu.trafficsim.engine.od.OdFactory;
 import edu.trafficsim.engine.simulation.SimulationManager;
@@ -49,9 +51,6 @@ import edu.trafficsim.web.service.entity.OdService;
 @RequestMapping(value = "/")
 @SessionAttributes(value = { "seq", "network", "odMatrix", "settings" })
 public class DefaultController extends AbstractController {
-
-	@Autowired
-	DemoSimulation demoSimulation;
 
 	@Autowired
 	MapJsonService mapJsonService;
@@ -87,10 +86,11 @@ public class DefaultController extends AbstractController {
 
 	@RequestMapping(value = "getdemonetwork", method = RequestMethod.GET)
 	public @ResponseBody String demoNetwork(Model model)
-			throws ModelInputException {
-		model.addAttribute("sequence", new Sequence(demoSimulation.getNextId()));
-		model.addAttribute("network", demoSimulation.getNetwork());
-		model.addAttribute("odMatrix", demoSimulation.getOdMatrix());
-		return mapJsonService.getNetworkJson(demoSimulation.getNetwork());
+			throws ModelInputException, FactoryException, TransformException {
+		DemoBuilder demo = new DemoBuilder();
+		model.addAttribute("sequence", new Sequence(demo.getNextId()));
+		model.addAttribute("network", demo.getNetwork());
+		model.addAttribute("odMatrix", demo.getOdMatrix());
+		return mapJsonService.getNetworkJson(demo.getNetwork());
 	}
 }

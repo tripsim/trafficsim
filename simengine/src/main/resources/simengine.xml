@@ -9,4 +9,5 @@
 
 	<context:annotation-config />
 	<context:component-scan base-package="edu.trafficsim.engine" />
+	<context:component-scan base-package="edu.trafficsim.plugin" />
 </beans>

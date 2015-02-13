@@ -39,11 +39,9 @@ import edu.trafficsim.web.service.StatisticsService;
  */
 @Controller
 @RequestMapping(value = "/results")
-@SessionAttributes(value = { "networkFactory", "network" })
+@SessionAttributes(value = { "network" })
 public class ResultsController extends AbstractController {
 
-	@Autowired
-	SimulationProject project;
 	@Autowired
 	StatisticsService statisticsService;
 

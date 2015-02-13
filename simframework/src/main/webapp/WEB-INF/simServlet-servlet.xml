@@ -69,6 +69,7 @@
 	<!-- **************************************************************** -->
 	<mvc:annotation-driven enable-matrix-variables="true" />
 	<context:component-scan base-package="edu.trafficsim.web" />
+	<import resource="classpath:simengine.xml" />
 
 	<!-- **************************************************************** -->
 	<!-- RESOURCE FOLDERS CONFIGURATION -->
