@@ -154,7 +154,7 @@ final class TypesConverter {
 		if (elementTypeDo == null) {
 			return;
 		}
-		elementTypeDo.setDefaultType(false);
+		elementTypeDo.setDefaultType(type.isDefaultType());
 		elementTypeDo.setCategory(TypeCategoryDo.LINK_TYPE);
 		elementTypeDo.setName(type.getName());
 	}
@@ -163,7 +163,7 @@ final class TypesConverter {
 		if (elementTypeDo == null) {
 			return;
 		}
-		elementTypeDo.setDefaultType(false);
+		elementTypeDo.setDefaultType(type.isDefaultType());
 		elementTypeDo.setCategory(TypeCategoryDo.NODE_TYPE);
 		elementTypeDo.setName(type.getName());
 	}
@@ -172,7 +172,7 @@ final class TypesConverter {
 		if (elementTypeDo == null) {
 			return;
 		}
-		elementTypeDo.setDefaultType(false);
+		elementTypeDo.setDefaultType(type.isDefaultType());
 		elementTypeDo.setCategory(TypeCategoryDo.VEHICLE_TYPE);
 		elementTypeDo.setName(type.getName());
 		elementTypeDo.setProperties(toVehicleTypeProperties(type));
@@ -199,7 +199,7 @@ final class TypesConverter {
 		if (elementTypeDo == null) {
 			return;
 		}
-		elementTypeDo.setDefaultType(false);
+		elementTypeDo.setDefaultType(type.isDefaultType());
 		elementTypeDo.setCategory(TypeCategoryDo.DRIVER_TYPE);
 		elementTypeDo.setName(type.getName());
 		elementTypeDo.setProperties(toDriverProperties(type));

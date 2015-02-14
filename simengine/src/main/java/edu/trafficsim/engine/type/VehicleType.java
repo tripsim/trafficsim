@@ -43,8 +43,8 @@ public class VehicleType extends Type {
 	//
 	// private double emission;
 
-	private VehicleClass vehicleClass;
-	private CrusingType crusingType;
+	private VehicleClass vehicleClass = VehicleClass.Car;
+	private CrusingType crusingType = CrusingType.NONE;
 
 	VehicleType(String name) {
 		super(name);

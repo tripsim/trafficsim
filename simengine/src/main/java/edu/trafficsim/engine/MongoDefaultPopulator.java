@@ -1,8 +1,10 @@
 package edu.trafficsim.engine;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
-import org.springframework.context.event.ContextStartedEvent;
+import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 
 import edu.trafficsim.data.dom.ElementTypeDo;
@@ -20,7 +22,10 @@ import edu.trafficsim.model.VehicleClass;
 
 @Component
 public class MongoDefaultPopulator implements
-		ApplicationListener<ContextStartedEvent> {
+		ApplicationListener<ContextRefreshedEvent> {
+
+	private static final Logger logger = LoggerFactory
+			.getLogger(MongoDefaultPopulator.class);
 
 	private static final String CAR = "Default Car";
 	private static final String TRUCK = "Default Truck";
@@ -42,7 +47,8 @@ public class MongoDefaultPopulator implements
 	TypesFactory typesFactory;
 
 	@Override
-	public void onApplicationEvent(ContextStartedEvent event) {
+	public void onApplicationEvent(ContextRefreshedEvent event) {
+		logger.info("Populating default values to mongo db!");
 		populateVehicleTypes();
 		populateDriverTypes();
 		populateLinkypes();
@@ -53,6 +59,7 @@ public class MongoDefaultPopulator implements
 
 	private void populateVehicleTypes() {
 		if (elementTypeDao.getDefaultByCategory(TypeCategoryDo.VEHICLE_TYPE) == null) {
+			logger.info("Populating default vehicle type(s) to mongo db!");
 			VehicleType type = typesManager.getVehicleType(CAR);
 			if (type == null) {
 				type = typesFactory.createVehicleType(CAR, VehicleClass.Car);
@@ -72,6 +79,7 @@ public class MongoDefaultPopulator implements
 
 	private void populateDriverTypes() {
 		if (elementTypeDao.getDefaultByCategory(TypeCategoryDo.DRIVER_TYPE) == null) {
+			logger.info("Populating default driver type(s) to mongo db!");
 			DriverType type = typesManager.getDriverType(DRIVER);
 			if (type == null) {
 				type = typesFactory.createDriverType(DRIVER);
@@ -83,6 +91,7 @@ public class MongoDefaultPopulator implements
 
 	private void populateLinkypes() {
 		if (elementTypeDao.getDefaultByCategory(TypeCategoryDo.LINK_TYPE) == null) {
+			logger.info("Populating default link type(s) to mongo db!");
 			LinkType type = typesManager.getLinkType(LINK);
 			if (type == null) {
 				type = typesFactory.createLinkType(LINK);
@@ -94,6 +103,7 @@ public class MongoDefaultPopulator implements
 
 	private void populateNodeTypes() {
 		if (elementTypeDao.getDefaultByCategory(TypeCategoryDo.NODE_TYPE) == null) {
+			logger.info("Populating default node type(s) to mongo db!");
 			NodeType type = typesManager.getNodeType(NODE);
 			if (type == null) {
 				type = typesFactory.createNodeType(NODE);
@@ -105,6 +115,7 @@ public class MongoDefaultPopulator implements
 
 	private void populateVehicleCompositions() {
 		if (compositionDao.getDefaultByCategory(TypeCategoryDo.VEHICLE_TYPE) == null) {
+			logger.info("Populating default vehicle composition(s) to mongo db!");
 			ElementTypeDo type1 = elementTypeDao.getByName(
 					TypeCategoryDo.VEHICLE_TYPE, CAR);
 			ElementTypeDo type2 = elementTypeDao.getByName(
@@ -130,6 +141,7 @@ public class MongoDefaultPopulator implements
 
 	private void populateDriverCompositions() {
 		if (compositionDao.getDefaultByCategory(TypeCategoryDo.DRIVER_TYPE) == null) {
+			logger.info("Populating default driver composition(s) to mongo db!");
 			ElementTypeDo type = elementTypeDao.getByName(
 					TypeCategoryDo.DRIVER_TYPE, DRIVER);
 			if (type == null) {
@@ -140,7 +152,7 @@ public class MongoDefaultPopulator implements
 					DRIVER_COMPO, new String[] { type.getName() },
 					new Double[] { 1.0 });
 			composition.setDefault(true);
-			typesManager.insertVehicleTypesComposition(composition);
+			typesManager.insertDriverTypesComposition(composition);
 		}
 	}
 
