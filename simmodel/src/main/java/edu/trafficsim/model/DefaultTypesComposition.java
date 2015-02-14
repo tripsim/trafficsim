@@ -31,6 +31,8 @@ public class DefaultTypesComposition extends AbstractComposition<String>
 
 	private static final long serialVersionUID = 1L;
 
+	private boolean defaultComposition = false;
+
 	public DefaultTypesComposition(String name, String[] types,
 			Double[] probabilities) {
 		super(name, types, probabilities);
@@ -39,6 +41,16 @@ public class DefaultTypesComposition extends AbstractComposition<String>
 	@Override
 	public final Set<String> getTypes() {
 		return keys();
+	}
+
+	@Override
+	public boolean isDefault() {
+		return defaultComposition;
+	}
+
+	@Override
+	public void setDefault(boolean defaultComposition) {
+		this.defaultComposition = defaultComposition;
 	}
 
 }

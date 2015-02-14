@@ -28,4 +28,7 @@ public interface TypesComposition extends Composition<String> {
 
 	Set<String> getTypes();
 
+	boolean isDefault();
+
+	void setDefault(boolean b);
 }

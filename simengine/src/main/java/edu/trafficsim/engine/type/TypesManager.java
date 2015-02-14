@@ -22,6 +22,10 @@ public interface TypesManager {
 
 	List<NodeType> getNodeTypes();
 
+	void saveLinkType(LinkType type);
+
+	void saveNodeType(NodeType type);
+
 	VehicleType getDefaultVehicleType();
 
 	VehicleType getVehicleType(String name);

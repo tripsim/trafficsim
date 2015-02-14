@@ -22,7 +22,10 @@ final class TypesConverter {
 	private TypesFactory typesFactory;
 
 	public LinkType toLinkType(ElementTypeDo elementTypeDo) {
-		checkType(elementTypeDo, TypeCategoryDo.LINK_TYPE);
+		if (elementTypeDo == null) {
+			return null;
+		}
+		checkType(elementTypeDo.getCategory(), TypeCategoryDo.LINK_TYPE);
 		return typesFactory.createLinkType(elementTypeDo.getName());
 	}
 
@@ -35,7 +38,10 @@ final class TypesConverter {
 	}
 
 	public NodeType toNodeType(ElementTypeDo elementTypeDo) {
-		checkType(elementTypeDo, TypeCategoryDo.NODE_TYPE);
+		if (elementTypeDo == null) {
+			return null;
+		}
+		checkType(elementTypeDo.getCategory(), TypeCategoryDo.NODE_TYPE);
 		return typesFactory.createNodeType(elementTypeDo.getName());
 	}
 
@@ -48,7 +54,10 @@ final class TypesConverter {
 	}
 
 	public VehicleType toVehicleType(ElementTypeDo elementTypeDo) {
-		checkType(elementTypeDo, TypeCategoryDo.VEHICLE_TYPE);
+		if (elementTypeDo == null) {
+			return null;
+		}
+		checkType(elementTypeDo.getCategory(), TypeCategoryDo.VEHICLE_TYPE);
 		return typesFactory.createVehicleType(elementTypeDo.getName(),
 				elementTypeDo.getProperties());
 	}
@@ -62,7 +71,10 @@ final class TypesConverter {
 	}
 
 	public DriverType toDriverType(ElementTypeDo elementTypeDo) {
-		checkType(elementTypeDo, TypeCategoryDo.DRIVER_TYPE);
+		if (elementTypeDo == null) {
+			return null;
+		}
+		checkType(elementTypeDo.getCategory(), TypeCategoryDo.DRIVER_TYPE);
 		return typesFactory.createDriverType(elementTypeDo.getName(),
 				elementTypeDo.getProperties());
 	}
@@ -77,7 +89,10 @@ final class TypesConverter {
 
 	public TypesComposition toVehicleTypesComposition(
 			CompositionDo compositionDo) {
-		checkType(compositionDo, TypeCategoryDo.VEHICLE_TYPE);
+		if (compositionDo == null) {
+			return null;
+		}
+		checkType(compositionDo.getCategory(), TypeCategoryDo.VEHICLE_TYPE);
 		return toTypesComposition(compositionDo);
 	}
 
@@ -91,7 +106,10 @@ final class TypesConverter {
 	}
 
 	public TypesComposition toDriverTypesComposition(CompositionDo compositionDo) {
-		checkType(compositionDo, TypeCategoryDo.DRIVER_TYPE);
+		if (compositionDo == null) {
+			return null;
+		}
+		checkType(compositionDo.getCategory(), TypeCategoryDo.DRIVER_TYPE);
 		return toTypesComposition(compositionDo);
 	}
 
@@ -125,29 +143,29 @@ final class TypesConverter {
 				probabilities.toArray(new Double[probabilities.size()]));
 	}
 
-	private static void checkType(ElementTypeDo elementTypeDo,
-			TypeCategoryDo desiredType) {
-		if (elementTypeDo == null) {
-			throw new IllegalArgumentException(
-					"elementTypeDo is null, maybe it doesn't exist!");
-		}
-		checkType(elementTypeDo.getCategory(), desiredType);
-	}
-
-	private static void checkType(CompositionDo compositionDo,
-			TypeCategoryDo desiredType) {
-		if (compositionDo == null) {
-			throw new IllegalArgumentException(
-					"compositionDo  is null, maybe it doesn't exist!");
-		}
-		checkType(compositionDo.getCategory(), desiredType);
-	}
-
 	private static void checkType(TypeCategoryDo type,
 			TypeCategoryDo desiredType) {
 		if (type != desiredType) {
 			throw new IllegalArgumentException(type + " is not " + desiredType);
 		}
+	}
+
+	public void applyElementTypeDo(ElementTypeDo elementTypeDo, LinkType type) {
+		if (elementTypeDo == null) {
+			return;
+		}
+		elementTypeDo.setDefaultType(false);
+		elementTypeDo.setCategory(TypeCategoryDo.LINK_TYPE);
+		elementTypeDo.setName(type.getName());
+	}
+
+	public void applyElementTypeDo(ElementTypeDo elementTypeDo, NodeType type) {
+		if (elementTypeDo == null) {
+			return;
+		}
+		elementTypeDo.setDefaultType(false);
+		elementTypeDo.setCategory(TypeCategoryDo.NODE_TYPE);
+		elementTypeDo.setName(type.getName());
 	}
 
 	public void applyElementTypeDo(ElementTypeDo elementTypeDo, VehicleType type) {
@@ -210,7 +228,7 @@ final class TypesConverter {
 		CompositionDo compositionDo = new CompositionDo();
 		compositionDo.setName(typesComposition.getName());
 		compositionDo.setCategory(category);
-		compositionDo.setDefaultComposition(false);
+		compositionDo.setDefaultComposition(typesComposition.isDefault());
 		Map<String, Double> comp = new HashMap<String, Double>();
 		for (String type : typesComposition.getTypes()) {
 			double value = typesComposition.probability(type);

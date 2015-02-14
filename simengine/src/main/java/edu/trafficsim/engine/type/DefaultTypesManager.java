@@ -79,6 +79,36 @@ class DefaultTypesManager implements TypesManager {
 	}
 
 	@Override
+	public void saveLinkType(LinkType type) {
+		if (type == null) {
+			log.info("Link type should not be null.");
+			return;
+		}
+		ElementTypeDo elementTypeDo = elementTypeDao.getByName(
+				TypeCategoryDo.LINK_TYPE, type.getName());
+		if (elementTypeDo == null) {
+			elementTypeDo = new ElementTypeDo();
+		}
+		typesConverter.applyElementTypeDo(elementTypeDo, type);
+		elementTypeDao.save(elementTypeDo);
+	}
+
+	@Override
+	public void saveNodeType(NodeType type) {
+		if (type == null) {
+			log.info("Node type should not be null.");
+			return;
+		}
+		ElementTypeDo elementTypeDo = elementTypeDao.getByName(
+				TypeCategoryDo.NODE_TYPE, type.getName());
+		if (elementTypeDo == null) {
+			elementTypeDo = new ElementTypeDo();
+		}
+		typesConverter.applyElementTypeDo(elementTypeDo, type);
+		elementTypeDao.save(elementTypeDo);
+	}
+
+	@Override
 	public VehicleType getDefaultVehicleType() {
 		return typesConverter.toVehicleType(elementTypeDao
 				.getDefaultByCategory(TypeCategoryDo.VEHICLE_TYPE));
@@ -247,4 +277,5 @@ class DefaultTypesManager implements TypesManager {
 		}
 		compositionDao.delete(compositionDo);
 	}
+
 }
