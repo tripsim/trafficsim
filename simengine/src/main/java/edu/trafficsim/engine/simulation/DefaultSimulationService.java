@@ -17,20 +17,19 @@ public class DefaultSimulationService implements SimulationService {
 	SimulationManager simulationManager;
 
 	@Override
-	public void execute(Network network, OdMatrix odMatrix) {
-		execute(network, odMatrix,
+	public void execute(String outcomeName, Network network, OdMatrix odMatrix) {
+		execute(outcomeName, network, odMatrix,
 				simulationManager.getDefaultSimulationSettings());
 	}
 
 	@Override
-	public void execute(Network network, OdMatrix odMatrix,
+	public void execute(String outcomeName, Network network, OdMatrix odMatrix,
 			SimulationSettings settings) {
+		simulationManager.insertSimulation(outcomeName, settings);
+
 		ISimulating impl = pluginManager.getSimulatingImpl(settings
 				.getSimulatingType());
-
-		long simulationId = System.currentTimeMillis();
-		// TODO save simulation settings
-		impl.simulate(simulationId, network, odMatrix, settings);
+		impl.simulate(outcomeName, network, odMatrix, settings);
 	}
 
 }

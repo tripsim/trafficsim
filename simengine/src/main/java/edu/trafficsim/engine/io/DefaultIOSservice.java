@@ -14,6 +14,7 @@ import com.vividsolutions.jts.io.ParseException;
 
 import edu.trafficsim.engine.network.NetworkFactory;
 import edu.trafficsim.engine.od.OdFactory;
+import edu.trafficsim.engine.simulation.SimulationProject;
 import edu.trafficsim.engine.type.TypesFactory;
 import edu.trafficsim.engine.type.TypesManager;
 import edu.trafficsim.model.core.ModelInputException;

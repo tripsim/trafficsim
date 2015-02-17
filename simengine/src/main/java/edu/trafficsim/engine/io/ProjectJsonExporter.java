@@ -50,6 +50,7 @@ import java.util.Set;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 
+import edu.trafficsim.engine.simulation.SimulationProject;
 import edu.trafficsim.engine.simulation.SimulationSettings;
 import edu.trafficsim.model.ConnectionLane;
 import edu.trafficsim.model.Lane;
@@ -76,9 +77,9 @@ final class ProjectJsonExporter {
 
 		// start project (root)
 		generator.writeStartObject();
-
+		
 		// start network
-		Network network = project.network;
+		Network network = project.getNetwork();
 		generator.writeObjectFieldStart(NETWORK);
 		if (network != null) {
 			generator.writeFieldName(ID);
@@ -195,7 +196,7 @@ final class ProjectJsonExporter {
 		}
 
 		// start odMatrix
-		OdMatrix odMatrix = project.odMatrix;
+		OdMatrix odMatrix = project.getOdMatrix();
 		if (odMatrix != null) {
 			generator.writeObjectFieldStart(ODMATRIX);
 			generator.writeFieldName(ID);
@@ -313,7 +314,7 @@ final class ProjectJsonExporter {
 		// end driver compositions
 
 		// start simulation settings
-		SimulationSettings settings = project.settings;
+		SimulationSettings settings = project.getSettings();
 		generator.writeObjectFieldStart(SETTINGS);
 		generator.writeFieldName(DURATION);
 		generator.writeNumber(settings.getDuration());

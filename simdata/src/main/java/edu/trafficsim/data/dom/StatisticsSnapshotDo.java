@@ -7,16 +7,15 @@ import org.mongodb.morphia.annotations.Index;
 import org.mongodb.morphia.annotations.Indexes;
 
 @Entity(value = "snapshots", noClassnameStored = true)
-@Indexes({ @Index(value = "simulationId"),
-		@Index(value = "simulationId, sequence"),
-		@Index(value = "simulationId, vid"),
-		@Index(value = "simulationId, linkId"),
-		@Index(value = "simulationId, nodeId") })
+@Indexes({ @Index(value = "name"), @Index(value = "name, sequence"),
+		@Index(value = "name, vid"), @Index(value = "name, linkId"),
+		@Index(value = "name, nodeId") })
 public class StatisticsSnapshotDo {
 
 	@Id
 	private ObjectId id;
-	private long simulationId;
+	private String name;
+
 	private long sequence;
 
 	private long vid;
@@ -39,12 +38,12 @@ public class StatisticsSnapshotDo {
 		this.id = id;
 	}
 
-	public long getSimulationId() {
-		return simulationId;
+	public String getName() {
+		return name;
 	}
 
-	public void setSimulationId(long simulationId) {
-		this.simulationId = simulationId;
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public long getSequence() {

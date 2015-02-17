@@ -36,7 +36,8 @@ public class DemoTest {
 			TransformException {
 		DemoBuilder demo = new DemoBuilder(typesManager, networkFactory,
 				odFactory);
-		simulationService.execute(demo.getNetwork(), demo.getOdMatrix());
+		simulationService
+				.execute("demo", demo.getNetwork(), demo.getOdMatrix());
 
 	}
 
@@ -51,7 +52,8 @@ public class DemoTest {
 				.getBean(SimulationService.class);
 		DemoBuilder demo = new DemoBuilder(typesManager, networkFactory,
 				odFactory);
-		simulationService.execute(demo.getNetwork(), demo.getOdMatrix());
+		simulationService
+				.execute("demo", demo.getNetwork(), demo.getOdMatrix());
 		((ConfigurableApplicationContext) context).close();
 	}
 }

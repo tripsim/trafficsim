@@ -34,7 +34,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import edu.trafficsim.engine.io.IOService;
-import edu.trafficsim.engine.io.SimulationProject;
+import edu.trafficsim.engine.simulation.SimulationProject;
 import edu.trafficsim.engine.simulation.SimulationSettings;
 import edu.trafficsim.model.Network;
 import edu.trafficsim.model.OdMatrix;

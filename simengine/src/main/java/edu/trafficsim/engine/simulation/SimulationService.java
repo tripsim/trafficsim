@@ -5,7 +5,8 @@ import edu.trafficsim.model.OdMatrix;
 
 public interface SimulationService {
 
-	void execute(Network network, OdMatrix odMatrix);
+	void execute(String outcomeName, Network network, OdMatrix odMatrix);
 
-	void execute(Network network, OdMatrix odMatrix, SimulationSettings settings);
+	void execute(String outcomeName, Network network, OdMatrix odMatrix,
+			SimulationSettings settings);
 }

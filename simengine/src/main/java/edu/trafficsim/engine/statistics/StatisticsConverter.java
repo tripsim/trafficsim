@@ -12,7 +12,7 @@ final class StatisticsConverter {
 		for (VehicleSnapshot vs : snapshot.vehicles.values()) {
 			StatisticsSnapshotDo ssd = new StatisticsSnapshotDo();
 			ssd.setSequence(snapshot.sequence);
-			ssd.setSimulationId(snapshot.startTimestamp);
+			ssd.setName(snapshot.outcomeName);
 			applyVehicleStatisticsDo(ssd, vs);
 		}
 		return result;

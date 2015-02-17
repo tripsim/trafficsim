@@ -28,7 +28,7 @@ import edu.trafficsim.model.OdMatrix;
  */
 public interface ISimulating extends IPlugin {
 
-	void simulate(long timestamp, Network network, OdMatrix odMatrix,
+	void simulate(String outcomeName, Network network, OdMatrix odMatrix,
 			SimulationSettings settings);
 
 }

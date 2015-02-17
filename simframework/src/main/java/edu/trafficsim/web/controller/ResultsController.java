@@ -27,8 +27,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
-import edu.trafficsim.engine.io.SimulationProject;
 import edu.trafficsim.engine.network.NetworkFactory;
+import edu.trafficsim.engine.simulation.SimulationProject;
 import edu.trafficsim.engine.statistics.StatisticsCollector;
 import edu.trafficsim.web.service.StatisticsService;
 

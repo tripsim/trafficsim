@@ -27,25 +27,25 @@ import edu.trafficsim.util.Rand;
 public class Tracker {
 
 	private final SimulationSettings settings;
-	private final long timestamp;
+	private final String outcomeName;
+	private final Rand rand;
 
-	private Rand rand;
 	private long forwardedSteps;
 	private long vehicleCount;
 
-	public Tracker(long timestamp, SimulationSettings settings) {
-		this.timestamp = timestamp;
+	public Tracker(String outcomeName, SimulationSettings settings) {
+		this.outcomeName = outcomeName;
 		this.settings = settings;
+		rand = new Rand(getSeed());
 		forwardedSteps = 0;
 		vehicleCount = 0;
-		rand = new Rand(getSeed());
 	}
 
-	public int getWarmup() {
+	public long getWarmup() {
 		return settings.getWarmup();
 	}
 
-	public int getDuration() {
+	public long getDuration() {
 		return settings.getDuration();
 	}
 
@@ -94,8 +94,8 @@ public class Tracker {
 	}
 
 	// States
-	public long getTimestamp() {
-		return timestamp;
+	public String getOutcomeName() {
+		return outcomeName;
 	}
 
 	public int getTotalSteps() {

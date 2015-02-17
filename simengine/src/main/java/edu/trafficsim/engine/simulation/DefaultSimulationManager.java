@@ -10,4 +10,10 @@ public class DefaultSimulationManager implements SimulationManager {
 		return new SimulationSettingsBuilder().build();
 	}
 
+	@Override
+	public void insertSimulation(String outcomeName, SimulationSettings settings) {
+		// TODO Auto-generated method stub
+
+	}
+
 }

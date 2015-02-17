@@ -59,6 +59,7 @@ public class SettingsController extends AbstractController {
 
 	@RequestMapping(value = "/run", method = RequestMethod.POST)
 	public @ResponseBody Map<String, Object> runSimulation(
+			@RequestParam("name") String name,
 			@RequestParam("duration") int duration,
 			@RequestParam("stepSize") double stepSize,
 			@RequestParam("warmup") int warmup,
@@ -68,7 +69,7 @@ public class SettingsController extends AbstractController {
 			@ModelAttribute("settings") SimulationSettings settings) {
 		settingsService.updateSettings(settings, duration, stepSize, warmup,
 				seed);
-		simulationService.execute(network, odMatrix, settings);
+		simulationService.execute(name, network, odMatrix, settings);
 		return messageOnlySuccessResponse("Simulation started.");
 	}
 

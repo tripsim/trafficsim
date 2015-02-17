@@ -1,8 +1,7 @@
-package edu.trafficsim.engine.io;
+package edu.trafficsim.engine.simulation;
 
 import java.io.Serializable;
 
-import edu.trafficsim.engine.simulation.SimulationSettings;
 import edu.trafficsim.model.Network;
 import edu.trafficsim.model.OdMatrix;
 
@@ -10,6 +9,7 @@ public class SimulationProject implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
+	String name;
 	Network network;
 	OdMatrix odMatrix;
 	SimulationSettings settings;
@@ -19,6 +19,14 @@ public class SimulationProject implements Serializable {
 		this.network = network;
 		this.odMatrix = odMatrix;
 		this.settings = settings;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public Network getNetwork() {
@@ -43,10 +51,6 @@ public class SimulationProject implements Serializable {
 
 	public void setSettings(SimulationSettings settings) {
 		this.settings = settings;
-	}
-
-	public static long getSerialversionuid() {
-		return serialVersionUID;
 	}
 
 }

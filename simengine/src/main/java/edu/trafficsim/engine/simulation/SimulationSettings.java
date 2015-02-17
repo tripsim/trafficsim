@@ -27,9 +27,9 @@ import java.util.Map;
  */
 public class SimulationSettings {
 
-	private int duration; // in seconds
+	private long duration; // in seconds
 	private double stepSize; // in seconds
-	private int warmup; // in seconds
+	private long warmup; // in seconds
 	private long seed;
 	private double sd; // standard deviation
 
@@ -48,19 +48,19 @@ public class SimulationSettings {
 		this.stepSize = stepSize;
 	}
 
-	public int getWarmup() {
+	public long getWarmup() {
 		return warmup;
 	}
 
-	public void setWarmup(int warmup) {
+	public void setWarmup(long warmup) {
 		this.warmup = warmup;
 	}
 
-	public int getDuration() {
+	public long getDuration() {
 		return duration;
 	}
 
-	public void setDuration(int duration) {
+	public void setDuration(long duration) {
 		this.duration = duration;
 	}
 

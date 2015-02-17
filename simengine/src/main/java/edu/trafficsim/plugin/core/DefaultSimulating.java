@@ -59,7 +59,7 @@ public class DefaultSimulating extends AbstractPlugin implements ISimulating {
 	StatisticsCollector statisticsCollector;
 
 	@Override
-	public void simulate(long timestamp, Network network, OdMatrix odMatrix,
+	public void simulate(String outcomeName, Network network, OdMatrix odMatrix,
 			SimulationSettings settings) {
 
 		IMoving moving = pluginManager
@@ -69,7 +69,7 @@ public class DefaultSimulating extends AbstractPlugin implements ISimulating {
 		IVehicleGenerating vehicleGenerating = pluginManager
 				.getVehicleGeneratingImpl(PluginManager.DEFAULT_GENERATING);
 
-		Tracker tracker = new Tracker(timestamp, settings);
+		Tracker tracker = new Tracker(outcomeName, settings);
 		logger.info("******** Micro Scopic Simulation ********");
 		logger.info("---- Parameters ----");
 		logger.info("Random Seed: {} ", tracker.getSeed());
