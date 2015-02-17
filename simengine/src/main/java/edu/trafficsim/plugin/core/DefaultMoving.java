@@ -39,7 +39,7 @@ import edu.trafficsim.plugin.IRouting;
  * 
  * @author Xuan Shi
  */
-@Component("micro-scipic-moving")
+@Component("Microscopic Moving")
 public class DefaultMoving extends AbstractPlugin implements IMoving {
 	private static final long serialVersionUID = 1L;
 
@@ -55,8 +55,7 @@ public class DefaultMoving extends AbstractPlugin implements IMoving {
 			try {
 				vehicle.refresh();
 			} catch (TransformException e) {
-				logger.error("Deactivate vehicle'", vehicle.getId(),
-						"' for Transformation Error in moving vehicle ");
+				logger.error("Deactivate vehicle '{}' for Transformation Error in moving vehicle!", vehicle.getId());
 				vehicle.deactivate();
 			}
 		}
@@ -69,7 +68,7 @@ public class DefaultMoving extends AbstractPlugin implements IMoving {
 		// calculate new speed and new position
 		double newSpeed = vehicle.speed() + stepSize * vehicle.acceleration();
 		if (newSpeed <= 0) {
-			System.err.println("Negative speed, wrong algorithm!");
+			logger.error("Negative speed, wrong algorithm!");
 			newSpeed = 0;
 		}
 		double newPosition = vehicle.position() + stepSize * newSpeed;
@@ -95,7 +94,7 @@ public class DefaultMoving extends AbstractPlugin implements IMoving {
 		IRouting routing = pluginManager.getRoutingImpl(tracker
 				.getRoutingType(vehicle.getVehicleType()));
 
-		System.out.println("------- Debug Convey --------");
+		logger.debug("------- Debug Convey --------");
 		if (vehicle.onConnector()) {
 			Link link = routing.getSucceedingLink(odMatrix, vehicle.getLink(),
 					vehicle.getVehicleClass(), tracker.getForwardedTime(),

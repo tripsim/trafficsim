@@ -24,7 +24,7 @@ import org.springframework.stereotype.Component;
  * 
  * @author Xuan Shi
  */
-@Component("gm-car-following")
+@Component("GM Car-following")
 public class GMCarFollowing extends AbstractCarFollowingImpl {
 
 	private static final long serialVersionUID = 1L;

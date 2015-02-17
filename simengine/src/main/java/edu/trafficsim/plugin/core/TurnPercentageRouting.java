@@ -32,7 +32,7 @@ import edu.trafficsim.model.util.Randoms;
  * 
  * @author Xuan Shi
  */
-@Component("turn-percentage-routing")
+@Component("Turn-percentage Routing")
 public class TurnPercentageRouting extends AbstractRouting {
 
 	private static final long serialVersionUID = 1L;

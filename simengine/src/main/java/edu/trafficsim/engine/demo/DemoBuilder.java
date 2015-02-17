@@ -19,7 +19,6 @@ package edu.trafficsim.engine.demo;
 
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.operation.TransformException;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import com.vividsolutions.jts.geom.Coordinate;
 
@@ -53,15 +52,16 @@ public class DemoBuilder {
 	private Network network;
 	private OdMatrix odMatrix;
 
-	@Autowired
 	private TypesManager typesManager;
-	@Autowired
 	private NetworkFactory networkFactory;
-	@Autowired
 	private OdFactory odFactory;
 
-	public DemoBuilder() throws ModelInputException, FactoryException,
-			TransformException {
+	public DemoBuilder(TypesManager typesManager,
+			NetworkFactory networkFactory, OdFactory odFactory)
+			throws ModelInputException, FactoryException, TransformException {
+		this.typesManager = typesManager;
+		this.networkFactory = networkFactory;
+		this.odFactory = odFactory;
 		manualBuild();
 	}
 

@@ -17,7 +17,7 @@ import edu.trafficsim.model.TypesComposition;
 @Service("default-types-manager")
 class DefaultTypesManager implements TypesManager {
 
-	private static final Logger log = LoggerFactory
+	private static final Logger logger = LoggerFactory
 			.getLogger(DefaultTypesManager.class);
 
 	@Autowired
@@ -81,7 +81,7 @@ class DefaultTypesManager implements TypesManager {
 	@Override
 	public void saveLinkType(LinkType type) {
 		if (type == null) {
-			log.info("Link type should not be null.");
+			logger.info("Link type should not be null.");
 			return;
 		}
 		ElementTypeDo elementTypeDo = elementTypeDao.getByName(
@@ -96,7 +96,7 @@ class DefaultTypesManager implements TypesManager {
 	@Override
 	public void saveNodeType(NodeType type) {
 		if (type == null) {
-			log.info("Node type should not be null.");
+			logger.info("Node type should not be null.");
 			return;
 		}
 		ElementTypeDo elementTypeDo = elementTypeDao.getByName(
@@ -183,7 +183,7 @@ class DefaultTypesManager implements TypesManager {
 	@Override
 	public void saveVehicleType(VehicleType type) {
 		if (type == null) {
-			log.info("Vehicle type should not be null.");
+			logger.info("Vehicle type should not be null.");
 			return;
 		}
 		ElementTypeDo elementTypeDo = elementTypeDao.getByName(
@@ -198,7 +198,7 @@ class DefaultTypesManager implements TypesManager {
 	@Override
 	public void saveDriverType(DriverType type) {
 		if (type == null) {
-			log.info("Driver type should not be null.");
+			logger.info("Driver type should not be null.");
 			return;
 		}
 		ElementTypeDo elementTypeDo = elementTypeDao.getByName(
@@ -215,8 +215,8 @@ class DefaultTypesManager implements TypesManager {
 		ElementTypeDo elementTypeDo = elementTypeDao.getByName(
 				TypeCategoryDo.VEHICLE_TYPE, name);
 		if (elementTypeDo == null) {
-			log.info("Vehicle type '", name,
-					"' doesn't exists, nothing to delete!");
+			logger.info("Vehicle type '{}' doesn't exists, nothing to delete!",
+					name);
 		}
 		elementTypeDao.delete(elementTypeDo);
 	}
@@ -226,8 +226,8 @@ class DefaultTypesManager implements TypesManager {
 		ElementTypeDo elementTypeDo = elementTypeDao.getByName(
 				TypeCategoryDo.VEHICLE_TYPE, name);
 		if (elementTypeDo == null) {
-			log.info("Driver type '", name,
-					"' doesn't exists, nothing to delete!");
+			logger.info("Driver type '{}' doesn't exists, nothing to delete!",
+					name);
 		}
 		elementTypeDao.delete(elementTypeDo);
 	}
@@ -261,8 +261,8 @@ class DefaultTypesManager implements TypesManager {
 		CompositionDo compositionDo = compositionDao.getByName(
 				TypeCategoryDo.VEHICLE_TYPE, name);
 		if (compositionDo == null) {
-			log.info("Vehicle type '", name,
-					"' doesn't exists, nothing to delete!");
+			logger.info("Vehicle type '{}' doesn't exists, nothing to delete!",
+					name);
 		}
 		compositionDao.delete(compositionDo);
 	}
@@ -272,8 +272,8 @@ class DefaultTypesManager implements TypesManager {
 		CompositionDo compositionDo = compositionDao.getByName(
 				TypeCategoryDo.DRIVER_TYPE, name);
 		if (compositionDo == null) {
-			log.info("Driver type '", name,
-					"' doesn't exists, nothing to delete!");
+			logger.info("Driver type '{}' doesn't exists, nothing to delete!",
+					name);
 		}
 		compositionDao.delete(compositionDo);
 	}

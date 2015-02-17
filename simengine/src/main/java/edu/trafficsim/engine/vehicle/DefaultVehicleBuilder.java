@@ -14,7 +14,7 @@ final class DefaultVehicleBuilder {
 	final String driverType;
 
 	// Vehicle Type Properties
-	int startFrame = 0;
+	long startFrame = 0;
 	double width = 2.5;
 	double length = 4.5;
 
@@ -40,7 +40,7 @@ final class DefaultVehicleBuilder {
 		return this;
 	}
 
-	DefaultVehicleBuilder withStartFrame(int startFrame) {
+	DefaultVehicleBuilder withStartFrame(long startFrame) {
 		this.startFrame = startFrame;
 		return this;
 	}

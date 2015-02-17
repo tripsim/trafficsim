@@ -17,11 +17,15 @@
  */
 package edu.trafficsim.engine.statistics;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.WeakHashMap;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import edu.trafficsim.engine.simulation.Tracker;
 import edu.trafficsim.model.Vehicle;
 
 /**
@@ -30,19 +34,44 @@ import edu.trafficsim.model.Vehicle;
  * @author Xuan Shi
  */
 @Service("default-statistics-collector")
-public class DefaultStatisticsCollector implements StatisticsCollector {
+class DefaultStatisticsCollector implements StatisticsCollector {
 
-	Map<Double, StatisticsSnapshot> snapshots = new HashMap<Double, StatisticsSnapshot>();
+	private static final Logger logger = LoggerFactory
+			.getLogger(DefaultStatisticsCollector.class);
+
+	@Autowired
+	StatisticsCommittor committor;
+
+	private Map<Tracker, StatisticsSnapshot> map = new WeakHashMap<Tracker, StatisticsSnapshot>();
 
 	@Override
-	public void visit(double time, Vehicle vehicle) {
+	public void visit(Tracker tracker, Vehicle vehicle) {
 		if (vehicle == null || !vehicle.active() || vehicle.position() < 0) {
 			return;
 		}
-		StatisticsSnapshot snapshot = snapshots.get(time);
+
+		StatisticsSnapshot snapshot = map.get(tracker);
 		if (snapshot == null) {
-			snapshots.put(time, snapshot = new StatisticsSnapshot(time));
+			snapshot = newSnapshot(tracker);
+		} else if (snapshot.simulationTime != tracker.getForwardedTime()) {
+			try {
+				committor.commit(snapshot);
+			} catch (InterruptedException e) {
+				logger.info(
+						"commiting staticstics from vehicle '{}' at step '{}' is interrupted",
+						vehicle, snapshot.sequence);
+			}
+			snapshot = newSnapshot(tracker);
 		}
 		snapshot.visitVehicle(vehicle);
 	}
+
+	private StatisticsSnapshot newSnapshot(Tracker tracker) {
+		StatisticsSnapshot snapshot = new StatisticsSnapshot(
+				tracker.getTimestamp(), tracker.getForwardedTime(),
+				tracker.getForwardedSteps());
+		map.put(tracker, snapshot);
+		return snapshot;
+	}
+
 }

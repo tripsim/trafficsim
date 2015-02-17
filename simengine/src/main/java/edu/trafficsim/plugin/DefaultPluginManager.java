@@ -63,7 +63,7 @@ class DefaultPluginManager implements PluginManager {
 	public ISimulating getSimulatingImpl(String name) {
 		ISimulating impl = simulatings.get(name);
 		if (impl == null) {
-			logger.info("ISimulating '", name, "' not found, using default.");
+			logger.debug("ISimulating '{}' not found, using default.", name);
 			impl = simulatings.get(DEFAULT_SIMULATING);
 		}
 		return impl;
@@ -78,7 +78,7 @@ class DefaultPluginManager implements PluginManager {
 	public IMoving getMovingImpl(String name) {
 		IMoving impl = movings.get(name);
 		if (impl == null) {
-			logger.info("IMoving '", name, "' not found, Using default.");
+			logger.debug("IMoving '{}' not found, Using default.", name);
 			impl = movings.get(DEFAULT_MOVING);
 		}
 		return impl;
@@ -93,7 +93,7 @@ class DefaultPluginManager implements PluginManager {
 	public ICarFollowing getCarFollowingImpl(String name) {
 		ICarFollowing impl = carFollowings.get(name);
 		if (impl == null) {
-			logger.info("ICarFollowing '", name, "' not found, Using default.");
+			logger.debug("ICarFollowing '{}' not found, Using default.", name);
 			impl = carFollowings.get(DEFAULT_CAR_FOLLOWING);
 		}
 		return impl;
@@ -108,7 +108,7 @@ class DefaultPluginManager implements PluginManager {
 	public ILaneChanging getLaneChangingImpl(String name) {
 		ILaneChanging impl = laneChangings.get(name);
 		if (impl == null) {
-			logger.info("ILaneChanging '", name, "' not found, Using default.");
+			logger.debug("ILaneChanging '{}' not found, Using default.", name);
 			impl = laneChangings.get(DEFAULT_LANE_CHANGING);
 		}
 		return impl;
@@ -123,7 +123,7 @@ class DefaultPluginManager implements PluginManager {
 	public IRouting getRoutingImpl(String name) {
 		IRouting impl = routings.get(name);
 		if (impl == null) {
-			logger.info("IRouting '", name, "' not found, Using default.");
+			logger.debug("IRouting '{}' not found, Using default. ", name);
 			impl = routings.get(DEFAULT_ROUTING);
 		}
 		return impl;
@@ -138,8 +138,8 @@ class DefaultPluginManager implements PluginManager {
 	public IVehicleGenerating getVehicleGeneratingImpl(String name) {
 		IVehicleGenerating impl = vehicleGeneratings.get(name);
 		if (impl == null) {
-			logger.info("IVehicleGenerating '", name,
-					"' not found, Using default.");
+			logger.debug("IVehicleGenerating '{}' not found, Using default.",
+					name);
 			impl = vehicleGeneratings.get(DEFAULT_GENERATING);
 		}
 		return impl;
@@ -154,7 +154,7 @@ class DefaultPluginManager implements PluginManager {
 	public IVehicle getVehicleImpl(String name) {
 		IVehicle impl = vehicleImpls.get(name);
 		if (impl == null) {
-			logger.info("IVehicle '", name, "' not found, Using default type ");
+			logger.debug("IVehicle '{}' not found, Using default type.", name);
 			impl = vehicleImpls.get(DEFAULT_VEHICLE_IMPL);
 		}
 		return impl;
@@ -169,7 +169,7 @@ class DefaultPluginManager implements PluginManager {
 	public IDriver getDriverImpl(String name) {
 		IDriver impl = driverImpls.get(name);
 		if (impl == null) {
-			logger.info("IDriver '", name, "' not found, Using default type ");
+			logger.debug("IDriver '{}' not found, Using default type.", name);
 			impl = driverImpls.get(DEFAULT_DRIVER_IMPL);
 		}
 		return impl;

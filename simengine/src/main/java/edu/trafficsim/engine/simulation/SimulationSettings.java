@@ -27,8 +27,8 @@ import java.util.Map;
  */
 public class SimulationSettings {
 
-	protected int duration; // in seconds
-	protected double stepSize; // in seconds
+	private int duration; // in seconds
+	private double stepSize; // in seconds
 	private int warmup; // in seconds
 	private long seed;
 	private double sd; // standard deviation

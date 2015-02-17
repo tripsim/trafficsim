@@ -13,13 +13,22 @@ public class DefaultSimulationService implements SimulationService {
 
 	@Autowired
 	PluginManager pluginManager;
+	@Autowired
+	SimulationManager simulationManager;
+
+	@Override
+	public void execute(Network network, OdMatrix odMatrix) {
+		execute(network, odMatrix,
+				simulationManager.getDefaultSimulationSettings());
+	}
 
 	@Override
 	public void execute(Network network, OdMatrix odMatrix,
 			SimulationSettings settings) {
 		ISimulating impl = pluginManager.getSimulatingImpl(settings
 				.getSimulatingType());
-		impl.simulate(network, odMatrix, settings);
+
+		impl.simulate(System.currentTimeMillis(), network, odMatrix, settings);
 	}
 
 }

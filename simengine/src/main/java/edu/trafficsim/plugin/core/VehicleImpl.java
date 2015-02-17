@@ -27,7 +27,7 @@ import edu.trafficsim.plugin.IVehicle;
  * 
  * @author Xuan Shi
  */
-@Component("default-vehicle")
+@Component("Default Vehicle")
 public class VehicleImpl extends AbstractPlugin implements IVehicle {
 
 	private static final long serialVersionUID = 1L;

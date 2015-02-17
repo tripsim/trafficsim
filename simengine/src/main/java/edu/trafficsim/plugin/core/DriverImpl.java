@@ -27,7 +27,7 @@ import edu.trafficsim.plugin.IDriver;
  * 
  * @author Xuan Shi
  */
-@Component("default-driver")
+@Component("Default Driver")
 public class DriverImpl extends AbstractPlugin implements IDriver {
 
 	private static final long serialVersionUID = 1L;

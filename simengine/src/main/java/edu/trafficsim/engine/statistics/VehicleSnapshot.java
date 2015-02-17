@@ -17,7 +17,6 @@ public class VehicleSnapshot {
 	final Long nodeId;
 
 	public VehicleSnapshot(Vehicle vehicle) {
-		super();
 		vid = vehicle.getId();
 		coord = vehicle.coord();
 		position = vehicle.position();

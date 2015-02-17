@@ -46,7 +46,7 @@ import edu.trafficsim.plugin.PluginManager;
  * 
  * @author Xuan Shi
  */
-@Component("micro-scopic-simulating")
+@Component("Microscopic Simulating")
 public class DefaultSimulating extends AbstractPlugin implements ISimulating {
 
 	private static final long serialVersionUID = 1L;
@@ -59,7 +59,7 @@ public class DefaultSimulating extends AbstractPlugin implements ISimulating {
 	StatisticsCollector statisticsCollector;
 
 	@Override
-	public void simulate(Network network, OdMatrix odMatrix,
+	public void simulate(long timestamp, Network network, OdMatrix odMatrix,
 			SimulationSettings settings) {
 
 		IMoving moving = pluginManager
@@ -69,12 +69,12 @@ public class DefaultSimulating extends AbstractPlugin implements ISimulating {
 		IVehicleGenerating vehicleGenerating = pluginManager
 				.getVehicleGeneratingImpl(PluginManager.DEFAULT_GENERATING);
 
-		Tracker tracker = new Tracker(settings);
+		Tracker tracker = new Tracker(timestamp, settings);
 		logger.info("******** Micro Scopic Simulation ********");
 		logger.info("---- Parameters ----");
-		logger.info("Random Seed: " + tracker.getSeed());
-		logger.info("Step Size: " + tracker.getStepSize());
-		logger.info("Duration: " + tracker.getDuration());
+		logger.info("Random Seed: {} ", tracker.getSeed());
+		logger.info("Step Size: {}", tracker.getStepSize());
+		logger.info("Duration: {}", tracker.getDuration());
 
 		List<Vehicle> vehicles = new ArrayList<Vehicle>();
 
@@ -91,11 +91,10 @@ public class DefaultSimulating extends AbstractPlugin implements ISimulating {
 				Vehicle v = iterator.next();
 				carFollowing.update(v, tracker);
 				moving.update(v, odMatrix, tracker);
-				logger.info("Time: " + time + "s: " + v.getName() + " "
-						+ v.position());
-				if (v.active()) {
-					// iterator.remove();
-					statisticsCollector.visit(time, v);
+				logger.info("Time: {}s: {} ", time, v.getName(), +v.position());
+				statisticsCollector.visit(tracker, v);
+				if (!v.active()) {
+					iterator.remove();
 				}
 			}
 			for (Od od : odMatrix.getOds()) {
@@ -106,15 +105,6 @@ public class DefaultSimulating extends AbstractPlugin implements ISimulating {
 			tracker.stepForward();
 		}
 
-		// logger.info("---- Output ----");
-		// for (Vehicle v : vehicles) {
-		// System.out.print(v.getName() + ": ");
-		//
-		// for (VehicleState vs : statistics.trajectory(v.getId())) {
-		// System.out.print("(" + vs.coord.x + "," + vs.coord.y + ") ");
-		// }
-		// logger.info();
-		// }
 	}
 
 }

@@ -38,6 +38,7 @@ import edu.trafficsim.model.network.DefaultConnectionLane;
 import edu.trafficsim.model.network.DefaultLane;
 import edu.trafficsim.model.network.DefaultLink;
 import edu.trafficsim.model.network.DefaultNetwork;
+import edu.trafficsim.model.network.DefaultNode;
 import edu.trafficsim.model.network.DefaultRoadInfo;
 
 /**
@@ -93,7 +94,7 @@ class DefaultNetworkFactory implements NetworkFactory {
 
 	@Override
 	public Node createNode(Long id, String name, String nodeType, Point point) {
-		return createNode(id, name, nodeType, point);
+		return new DefaultNode(id, name, nodeType, point);
 	}
 
 	@Override

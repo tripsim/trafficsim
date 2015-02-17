@@ -46,7 +46,7 @@ import edu.trafficsim.plugin.IVehicleGenerating;
  * 
  * @author Xuan Shi
  */
-@Component("poisson-vehicle-generating")
+@Component("Poisson Vehicle-generating")
 public class PoissonVehicleGenerating extends AbstractPlugin implements
 		IVehicleGenerating {
 	private static final long serialVersionUID = 1L;
@@ -124,7 +124,7 @@ public class PoissonVehicleGenerating extends AbstractPlugin implements
 				vehicle.refresh();
 			} catch (TransformException e) {
 				logger.error(
-						"Skipped generating vehicle for Transformation Error during vehicle generation on lane ",
+						"Skipped generating vehicle for Transformation Error during vehicle generation on lane {}",
 						lane);
 				continue;
 			}
@@ -150,7 +150,7 @@ public class PoissonVehicleGenerating extends AbstractPlugin implements
 			sb.append(" || ");
 			sb.append("DriverType -> ");
 			sb.append(dtypeToBuild);
-			System.out.println(sb.toString());
+			logger.info(sb.toString());
 		}
 
 		return vehicles;

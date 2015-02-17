@@ -39,7 +39,7 @@ public abstract class MovingObject<T> extends BaseEntity<T> implements Movable,
 
 	private static final long serialVersionUID = 1L;
 
-	private final int startFrame;
+	private final long startFrame;
 
 	protected double position;
 	protected double lateralOffset;
@@ -52,7 +52,7 @@ public abstract class MovingObject<T> extends BaseEntity<T> implements Movable,
 
 	protected boolean active;
 
-	public MovingObject(long id, String name, int startFrame) {
+	public MovingObject(long id, String name, long startFrame) {
 		super(id, name);
 		this.startFrame = startFrame;
 
@@ -68,7 +68,7 @@ public abstract class MovingObject<T> extends BaseEntity<T> implements Movable,
 	}
 
 	@Override
-	public final int getStartFrame() {
+	public final long getStartFrame() {
 		return startFrame;
 	}
 

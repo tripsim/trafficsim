@@ -48,9 +48,9 @@ public class DefaultVehicleFactory implements VehicleFactory {
 	public Vehicle createVehicle(String vehicleTypeName, String driverTypeName,
 			Tracker tracker) {
 
-		long vid = (long) tracker.getVehicleCount();
-		String name = DEFAULT_NAME_PRE + tracker.getVehicleCount();
-		int startFrame = tracker.getForwardedSteps();
+		long vid = (long) tracker.getAndIncrementVehicleCount();
+		String name = DEFAULT_NAME_PRE + vid;
+		long startFrame = tracker.getForwardedSteps();
 
 		VehicleType vehicleType = typesManager.getVehicleType(vehicleTypeName);
 		DriverType driverType = typesManager.getDriverType(driverTypeName);

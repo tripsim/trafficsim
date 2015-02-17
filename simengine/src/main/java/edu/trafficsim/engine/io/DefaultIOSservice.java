@@ -21,7 +21,7 @@ import edu.trafficsim.model.core.ModelInputException;
 @Service("default-io-service")
 class DefaultIOSservice implements IOService {
 
-	private final static Logger log = LoggerFactory
+	private final static Logger logger = LoggerFactory
 			.getLogger(DefaultIOSservice.class);
 
 	@Autowired
@@ -38,7 +38,7 @@ class DefaultIOSservice implements IOService {
 		try {
 			ProjectJsonExporter.exportProject(project, out);
 		} catch (IOException e) {
-			log.error("failed to export from source!");
+			logger.error("failed to export from source!");
 		}
 
 	}
@@ -50,7 +50,7 @@ class DefaultIOSservice implements IOService {
 					odFactory, typesFactory, typesManager);
 		} catch (IOException | ParseException | ModelInputException
 				| TransformException e) {
-			log.error("failed to import from source!");
+			logger.error("failed to import from source!");
 		}
 		return null;
 	}

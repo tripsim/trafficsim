@@ -56,7 +56,7 @@ public class DefaultVehicle extends MovingObject<DefaultVehicle> implements
 	private ConnectionLane preferredConnector = null;
 	private Lane currentLane = null;
 
-	public DefaultVehicle(long id, String name, int startFrame,
+	public DefaultVehicle(long id, String name, long startFrame,
 			VehicleClass vehicleClass, String vehicleType, String driverType) {
 		super(id, name, startFrame);
 		this.vehicleClass = vehicleClass;

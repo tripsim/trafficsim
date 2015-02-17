@@ -7,12 +7,18 @@ import edu.trafficsim.model.Vehicle;
 
 class StatisticsSnapshot {
 
-	double time;
+	final double startedTimestamp;
+
+	final double simulationTime;
+	final long sequence;
 
 	Map<Long, VehicleSnapshot> vehicles = new HashMap<Long, VehicleSnapshot>();
 
-	StatisticsSnapshot(double time) {
-		this.time = time;
+	StatisticsSnapshot(double startedTimestamp, double simulationTime,
+			long sequence) {
+		this.startedTimestamp = startedTimestamp;
+		this.simulationTime = simulationTime;
+		this.sequence = sequence;
 	}
 
 	void visitVehicle(Vehicle vehicle) {

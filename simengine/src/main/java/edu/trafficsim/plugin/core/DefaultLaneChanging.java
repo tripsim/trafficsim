@@ -27,7 +27,7 @@ import edu.trafficsim.plugin.ILaneChanging;
  * 
  * @author Xuan Shi
  */
-@Component("default-lane-changing")
+@Component("Default Lane-changing")
 public class DefaultLaneChanging extends AbstractPlugin implements
 		ILaneChanging {
 

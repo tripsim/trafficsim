@@ -2,19 +2,35 @@ package edu.trafficsim.web.service;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.opengis.referencing.operation.TransformException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import edu.trafficsim.engine.demo.DemoBuilder;
+import edu.trafficsim.engine.network.NetworkFactory;
+import edu.trafficsim.engine.od.OdFactory;
+import edu.trafficsim.engine.type.TypesManager;
 import edu.trafficsim.model.Network;
 
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration("/simframework-test.xml")
 public class MapJsonServiceTest {
 
 	Network network;
 	MapJsonService jsonService;
+	@Autowired
+	TypesManager typesManager;
+	@Autowired
+	NetworkFactory networkFactory;
+	@Autowired
+	OdFactory odFactory;
 
 	@Before
 	public void setUp() throws Exception {
-		DemoBuilder demo = new DemoBuilder();
+		DemoBuilder demo = new DemoBuilder(typesManager, networkFactory,
+				odFactory);
 		jsonService = new MapJsonService();
 		network = demo.getNetwork();
 	}

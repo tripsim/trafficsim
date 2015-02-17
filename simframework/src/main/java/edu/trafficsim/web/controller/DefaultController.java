@@ -34,6 +34,7 @@ import edu.trafficsim.engine.network.NetworkFactory;
 import edu.trafficsim.engine.od.OdFactory;
 import edu.trafficsim.engine.simulation.SimulationManager;
 import edu.trafficsim.engine.simulation.SimulationSettings;
+import edu.trafficsim.engine.type.TypesManager;
 import edu.trafficsim.model.Network;
 import edu.trafficsim.model.OdMatrix;
 import edu.trafficsim.model.core.ModelInputException;
@@ -62,6 +63,8 @@ public class DefaultController extends AbstractController {
 	@Autowired
 	SimulationManager simulationManager;
 	@Autowired
+	TypesManager typesManager;
+	@Autowired
 	NetworkFactory networkFactory;
 	@Autowired
 	OdFactory odFactory;
@@ -87,7 +90,8 @@ public class DefaultController extends AbstractController {
 	@RequestMapping(value = "getdemonetwork", method = RequestMethod.GET)
 	public @ResponseBody String demoNetwork(Model model)
 			throws ModelInputException, FactoryException, TransformException {
-		DemoBuilder demo = new DemoBuilder();
+		DemoBuilder demo = new DemoBuilder(typesManager, networkFactory,
+				odFactory);
 		model.addAttribute("sequence", new Sequence(demo.getNextId()));
 		model.addAttribute("network", demo.getNetwork());
 		model.addAttribute("odMatrix", demo.getOdMatrix());

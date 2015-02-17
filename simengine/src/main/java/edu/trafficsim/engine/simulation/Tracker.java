@@ -17,8 +17,6 @@
  */
 package edu.trafficsim.engine.simulation;
 
-import java.util.Date;
-
 import edu.trafficsim.util.Rand;
 
 /**
@@ -29,14 +27,18 @@ import edu.trafficsim.util.Rand;
 public class Tracker {
 
 	private final SimulationSettings settings;
-	private Date startTime;
+	private final long timestamp;
+
 	private Rand rand;
-	private int forwardedSteps;
+	private long forwardedSteps;
+	private long vehicleCount;
 
-	private int vehicleCount;
-
-	public Tracker(SimulationSettings settings) {
+	public Tracker(long timestamp, SimulationSettings settings) {
+		this.timestamp = timestamp;
 		this.settings = settings;
+		forwardedSteps = 0;
+		vehicleCount = 0;
+		rand = new Rand(getSeed());
 	}
 
 	public int getWarmup() {
@@ -92,8 +94,8 @@ public class Tracker {
 	}
 
 	// States
-	public Date getStartTime() {
-		return startTime;
+	public long getTimestamp() {
+		return timestamp;
 	}
 
 	public int getTotalSteps() {
@@ -108,16 +110,12 @@ public class Tracker {
 		return getStepSize() * (double) forwardedSteps;
 	}
 
-	public int getForwardedSteps() {
+	public long getForwardedSteps() {
 		return forwardedSteps;
 	}
 
-	public int getVehicleCount() {
-		return vehicleCount;
-	}
-
-	public void incrementVehicle() {
-		vehicleCount++;
+	public long getAndIncrementVehicleCount() {
+		return vehicleCount++;
 	}
 
 	public boolean isFinished() {
@@ -127,12 +125,4 @@ public class Tracker {
 	public void stepForward() {
 		forwardedSteps++;
 	}
-
-	public void begin() {
-		startTime = new Date();
-		forwardedSteps = 0;
-		vehicleCount = 0;
-		rand = new Rand(getSeed());
-	}
-
 }

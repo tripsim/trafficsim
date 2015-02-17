@@ -88,8 +88,8 @@ class DefaultTypesFactory implements TypesFactory {
 	private static void setVehicleTypeProperties(VehicleType type,
 			Map<String, Object> properties) {
 		if (properties == null) {
-			logger.debug("no properties to set for vehice type ",
-					type.getName(), "!");
+			logger.debug("no properties to set for vehice type '{}'!",
+					type.getName());
 			return;
 		}
 		for (Map.Entry<String, Object> entry : properties.entrySet()) {
@@ -124,15 +124,16 @@ class DefaultTypesFactory implements TypesFactory {
 					type.setMaxSpeed((Double) value);
 					break;
 				default:
-					logger.warn("no such property ", property,
-							" for vehicle type!");
+					logger.warn("no such property {} for vehicle type!",
+							property);
 				}
 			} catch (IllegalArgumentException | NullPointerException e) {
-				logger.debug("invalid value  ", value,
-						" encountered for property ", property, "!");
+				logger.debug("invalid value {}!  encountered for property {}!",
+						value, property);
 			} catch (ClassCastException e) {
-				logger.warn("not a valid number ", value,
-						" for vehcile type property ", property, "!");
+				logger.warn(
+						"not a valid number {}  for vehcile type property {}!",
+						value, property);
 			}
 		}
 	}
@@ -140,8 +141,8 @@ class DefaultTypesFactory implements TypesFactory {
 	private static void setDriverTypeProperties(DriverType type,
 			Map<String, Object> properties) {
 		if (properties == null) {
-			logger.debug("no properties to set for driver type ",
-					type.getName(), "!");
+			logger.debug("no properties to set for driver type {}!",
+					type.getName());
 			return;
 		}
 		for (Map.Entry<String, Object> entry : properties.entrySet()) {
@@ -163,15 +164,16 @@ class DefaultTypesFactory implements TypesFactory {
 					type.setDesiredSpeed((Double) value);
 					break;
 				default:
-					logger.warn("no such property ", property,
-							" for vehicle type!");
+					logger.warn("no such property {} for vehicle type!",
+							property);
 				}
 			} catch (IllegalArgumentException | NullPointerException e) {
-				logger.debug("invalid value  ", value,
-						" encountered for property ", property, "!");
+				logger.debug("invalid value {} encountered for property {}!  ",
+						value, property);
 			} catch (ClassCastException e) {
-				logger.warn("not a valid number ", value,
-						" for driver type property ", property, "!");
+				logger.warn(
+						"not a valid number {} for driver type property {}!",
+						value, property);
 			}
 		}
 	}
