@@ -48,6 +48,11 @@ public abstract class AbstractDaoImpl<E> implements GenericDao<E> {
 	}
 
 	@Override
+	public void save(Iterable<E> entities) {
+		datastore.save(entities);
+	}
+
+	@Override
 	public void delete(E entity) {
 		datastore.delete(entity);
 	}

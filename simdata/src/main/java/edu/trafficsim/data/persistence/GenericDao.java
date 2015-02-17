@@ -14,6 +14,8 @@ public interface GenericDao<E> {
 
 	void save(E entity);
 
+	void save(Iterable<E> entities);
+
 	void delete(E entity);
 
 	void deleteById(ObjectId id);

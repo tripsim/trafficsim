@@ -28,7 +28,9 @@ public class DefaultSimulationService implements SimulationService {
 		ISimulating impl = pluginManager.getSimulatingImpl(settings
 				.getSimulatingType());
 
-		impl.simulate(System.currentTimeMillis(), network, odMatrix, settings);
+		long simulationId = System.currentTimeMillis();
+		// TODO save simulation settings
+		impl.simulate(simulationId, network, odMatrix, settings);
 	}
 
 }

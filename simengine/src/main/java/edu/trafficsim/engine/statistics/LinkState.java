@@ -3,26 +3,23 @@ package edu.trafficsim.engine.statistics;
 import java.util.HashMap;
 import java.util.Map;
 
-import edu.trafficsim.model.Link;
-import edu.trafficsim.model.Vehicle;
+public class LinkState {
 
-class LinkState {
-
-	final double time;
+	final long sequence;
 
 	final long id;
 	final Map<Long, Double> speeds;
 	final Map<Long, Double> positions;
 
-	LinkState(double time, Link link) {
-		this.time = time;
-		id = link.getId();
+	LinkState(long sequence, long linkId) {
+		this.sequence = sequence;
+		id = linkId;
 		speeds = new HashMap<Long, Double>();
 		positions = new HashMap<Long, Double>();
 	}
 
-	void update(Vehicle vehicle) {
-		speeds.put(vehicle.getId(), vehicle.speed());
-		positions.put(vehicle.getId(), vehicle.position());
+	void update(long vid, double speed, double position) {
+		speeds.put(vid, speed);
+		positions.put(vid, position);
 	}
 }

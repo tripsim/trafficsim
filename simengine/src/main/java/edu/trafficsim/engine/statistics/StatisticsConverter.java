@@ -2,42 +2,97 @@ package edu.trafficsim.engine.statistics;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import edu.trafficsim.data.dom.StatisticsSnapshotDo;
-import edu.trafficsim.data.dom.VehicleStatisticsDo;
 
 final class StatisticsConverter {
 
-	static StatisticsSnapshotDo toSnapshotDo(StatisticsSnapshot snapshot) {
-		StatisticsSnapshotDo result = new StatisticsSnapshotDo();
-		result.setSequence(snapshot.sequence);
-		result.setSimulationId(snapshot.startedTimestamp);
-		result.setVechicleStatistics(toVehicleStatisticsDos(snapshot.vehicles));
-		return result;
-	}
-
-	static List<VehicleStatisticsDo> toVehicleStatisticsDos(
-			Map<Long, VehicleSnapshot> vehicleSnapshots) {
-		List<VehicleStatisticsDo> result = new ArrayList<VehicleStatisticsDo>(
-				vehicleSnapshots.size());
-		for (VehicleSnapshot snapshot : vehicleSnapshots.values()) {
-			result.add(toVehicleStatisticsDo(snapshot));
+	static List<StatisticsSnapshotDo> toSnapshotDo(StatisticsSnapshot snapshot) {
+		List<StatisticsSnapshotDo> result = new ArrayList<StatisticsSnapshotDo>();
+		for (VehicleSnapshot vs : snapshot.vehicles.values()) {
+			StatisticsSnapshotDo ssd = new StatisticsSnapshotDo();
+			ssd.setSequence(snapshot.sequence);
+			ssd.setSimulationId(snapshot.startTimestamp);
+			applyVehicleStatisticsDo(ssd, vs);
 		}
 		return result;
 	}
 
-	static VehicleStatisticsDo toVehicleStatisticsDo(VehicleSnapshot stat) {
-		VehicleStatisticsDo result = new VehicleStatisticsDo();
-		result.setVid(stat.vid);
-		result.setLat(stat.coord.x);
-		result.setLon(stat.coord.y);
-		result.setPosition(stat.position);
-		result.setAngle(stat.angle);
-		result.setSpeed(stat.speed);
-		result.setAccel(stat.accel);
-		result.setLinkId(stat.linkId);
-		result.setNodeId(stat.nodeId);
-		return result;
+	static void applyVehicleStatisticsDo(StatisticsSnapshotDo ssd,
+			VehicleSnapshot vs) {
+		ssd.setVid(vs.vid);
+		ssd.setLat(vs.coord.x);
+		ssd.setLon(vs.coord.y);
+		ssd.setPosition(vs.position);
+		ssd.setAngle(vs.angle);
+		ssd.setSpeed(vs.speed);
+		ssd.setAccel(vs.accel);
+		ssd.setLinkId(vs.linkId);
+		ssd.setNodeId(vs.nodeId);
+	}
+
+	static StatisticsFrames<VehicleState> toVehicleStates(
+			List<StatisticsSnapshotDo> snapshots) {
+		StatisticsFrames<VehicleState> frames = new StatisticsFrames<VehicleState>();
+		for (StatisticsSnapshotDo snapshot : snapshots) {
+			VehicleState vs = toVehicleState(snapshot);
+			frames.addState(vs.sequence, vs);
+		}
+		return frames;
+	}
+
+	protected static VehicleState toVehicleState(StatisticsSnapshotDo snapshot) {
+		VehicleState vs = new VehicleState();
+		vs.setSequence(snapshot.getSequence());
+		vs.setVid(snapshot.getVid());
+		vs.setLat(snapshot.getLat());
+		vs.setLon(snapshot.getLon());
+		vs.setPosition(snapshot.getPosition());
+		vs.setAngle(snapshot.getAngle());
+		vs.setSpeed(snapshot.getSpeed());
+		vs.setAccel(snapshot.getAccel());
+		return vs;
+	}
+
+	static StatisticsFrames<LinkState> toLinkStates(
+			List<StatisticsSnapshotDo> snapshots) {
+		StatisticsFrames<LinkState> frames = new StatisticsFrames<LinkState>();
+		for (StatisticsSnapshotDo snapshot : snapshots) {
+			applyLinkState(frames, snapshot);
+		}
+		return frames;
+	}
+
+	protected static void applyLinkState(StatisticsFrames<LinkState> frames,
+			StatisticsSnapshotDo snapshot) {
+		LinkState ls = frames.getState(snapshot.getSequence());
+		if (ls == null) {
+			frames.addState(
+					snapshot.getSequence(),
+					ls = new LinkState(snapshot.getSequence(), snapshot
+							.getLinkId()));
+		}
+		ls.update(snapshot.getVid(), snapshot.getSpeed(), snapshot.getAccel());
+	}
+
+	static StatisticsFrames<NodeState> toNodeStates(
+			List<StatisticsSnapshotDo> snapshots) {
+		StatisticsFrames<NodeState> frames = new StatisticsFrames<NodeState>();
+		for (StatisticsSnapshotDo snapshot : snapshots) {
+			applyNodeState(frames, snapshot);
+		}
+		return frames;
+	}
+
+	protected static void applyNodeState(StatisticsFrames<NodeState> frames,
+			StatisticsSnapshotDo snapshot) {
+		NodeState ns = frames.getState(snapshot.getSequence());
+		if (ns == null) {
+			frames.addState(
+					snapshot.getSequence(),
+					ns = new NodeState(snapshot.getSequence(), snapshot
+							.getLinkId()));
+		}
+		ns.update(snapshot.getVid(), snapshot.getSpeed(), snapshot.getAccel());
 	}
 }

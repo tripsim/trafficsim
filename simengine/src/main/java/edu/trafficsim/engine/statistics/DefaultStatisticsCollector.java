@@ -53,7 +53,7 @@ class DefaultStatisticsCollector implements StatisticsCollector {
 		StatisticsSnapshot snapshot = map.get(tracker);
 		if (snapshot == null) {
 			snapshot = newSnapshot(tracker);
-		} else if (snapshot.simulationTime != tracker.getForwardedTime()) {
+		} else if (snapshot.sequence != tracker.getForwardedSteps()) {
 			try {
 				committor.commit(snapshot);
 			} catch (InterruptedException e) {
@@ -68,8 +68,8 @@ class DefaultStatisticsCollector implements StatisticsCollector {
 
 	private StatisticsSnapshot newSnapshot(Tracker tracker) {
 		StatisticsSnapshot snapshot = new StatisticsSnapshot(
-				tracker.getTimestamp(), tracker.getForwardedTime(),
-				tracker.getForwardedSteps());
+				tracker.getTimestamp(), tracker.getForwardedSteps(),
+				tracker.getForwardedTime());
 		map.put(tracker, snapshot);
 		return snapshot;
 	}

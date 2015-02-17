@@ -4,7 +4,7 @@ import com.vividsolutions.jts.geom.Coordinate;
 
 import edu.trafficsim.model.Vehicle;
 
-public class VehicleSnapshot {
+class VehicleSnapshot {
 
 	final Long vid;
 	final Coordinate coord;

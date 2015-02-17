@@ -3,26 +3,23 @@ package edu.trafficsim.engine.statistics;
 import java.util.HashMap;
 import java.util.Map;
 
-import edu.trafficsim.model.Node;
-import edu.trafficsim.model.Vehicle;
+public class NodeState {
 
-class NodeState {
-
-	final double time;
+	final long sequence;
 
 	final long id;
 	final Map<Long, Double> speeds;
 	final Map<Long, Double> positions;
 
-	NodeState(double time, Node node) {
-		this.time = time;
-		id = node.getId();
+	NodeState(long sequence, long nodeId) {
+		this.sequence = sequence;
+		id = nodeId;
 		speeds = new HashMap<Long, Double>();
 		positions = new HashMap<Long, Double>();
 	}
 
-	void update(Vehicle vehicle) {
-		speeds.put(vehicle.getId(), vehicle.speed());
-		positions.put(vehicle.getId(), vehicle.position());
+	void update(long vid, double speed, double position) {
+		speeds.put(vid, speed);
+		positions.put(vid, position);
 	}
 }

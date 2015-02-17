@@ -1,51 +1,44 @@
 package edu.trafficsim.engine.statistics;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+import edu.trafficsim.engine.simulation.SimulationManager;
+
+@Service("default-statistics-aggregator")
 class DefaultStatisticsAggregator implements StatisticsAggregator {
 
-	
-	
-//	@Override
-//	public List<StatisticsFrame> getFrames() {
-//		return Collections.unmodifiableList(frames);
-//	}
-//
-//	@Override
-//	public VehicleState[] trajectory(Long vid) {
-//		List<VehicleState> trajectory = new ArrayList<VehicleState>();
-//		for (StatisticsFrame frame : frames) {
-//			VehicleState state = frame.getVehicleState(vid);
-//			if (state == null)
-//				continue;
-//			trajectory.add(state);
-//		}
-//		return trajectory.toArray(new VehicleState[0]);
-//	}
-//
-//	@Override
-//	public LinkState[] linkStats(Long id) {
-//		List<LinkState> linkStats = new ArrayList<LinkState>();
-//		for (StatisticsFrame frame : frames) {
-//			LinkState state = frame.getLinkState(id);
-//			if (state == null)
-//				continue;
-//			linkStats.add(state);
-//		}
-//		return linkStats.toArray(new LinkState[0]);
-//	}
-//
-//	@Override
-//	public Map<Long, List<VehicleState>> trajectories() {
-//		Map<Long, List<VehicleState>> trajectories = new HashMap<Long, List<VehicleState>>();
-//		for (StatisticsFrame frame : frames) {
-//			for (Long vid : frame.getVehicleIds()) {
-//				List<VehicleState> trajectory = trajectories.get(vid);
-//				if (trajectory == null)
-//					trajectories.put(vid,
-//							trajectory = new ArrayList<VehicleState>());
-//				trajectory.add(frame.getVehicleState(vid));
-//			}
-//		}
-//		return trajectories;
-//	}
+	@Autowired
+	StatisticsManager statisticsManager;
+	@Autowired
+	SimulationManager simulationManager;
+
+	@Override
+	public StatisticsFrames<VehicleState> getVehicleStates(long simulationId,
+			long startFrame, long endFrame) {
+		return statisticsManager.loadSnapshots(simulationId, startFrame,
+				endFrame);
+	}
+
+	@Override
+	public StatisticsFrames<VehicleState> getVehicleTrajectories(
+			long simulationId, long vid, long startFrame, long endFrame) {
+		return statisticsManager.loadSnapshots(simulationId, vid, startFrame,
+				endFrame);
+	}
+
+	@Override
+	public StatisticsFrames<LinkState> getLinkState(long simulationId,
+			long linkId, long startFrame, long endFrame) {
+		return statisticsManager.loadLinkSnapshots(simulationId, linkId,
+				startFrame, endFrame);
+	}
+
+	@Override
+	public StatisticsFrames<NodeState> getNodeState(long simulationId,
+			long nodeId, long startFrame, long endFrame) {
+		return statisticsManager.loadNodeSnapshots(simulationId, nodeId,
+				startFrame, endFrame);
+	}
+
 }
