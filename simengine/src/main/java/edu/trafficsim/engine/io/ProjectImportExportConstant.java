@@ -28,6 +28,7 @@ final class ProjectImportExportConstant {
 	static final String LINKTYPE = "linkType";
 
 	static final String ODMATRIX = "odMatrix";
+	static final String NETWORKNAME = "networkName";
 	static final String ODS = "ods";
 	static final String VEHICLECLASS = "vehicleClass";
 	static final String VEHICLETYPES = "vehicleTypes";

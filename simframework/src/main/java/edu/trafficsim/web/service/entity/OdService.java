@@ -42,7 +42,7 @@ public class OdService extends EntityService {
 	// in vph
 	private static final Integer[] DEFAULT_TIME_VPH = new Integer[] { 1000 };
 
-	private static final String DEFAULT_NAME = "";
+	private static final String DEFAULT_NAME = "odmatrix";
 
 	@Autowired
 	TypesManager typesManager;
@@ -53,7 +53,7 @@ public class OdService extends EntityService {
 	public void updateOd(Network network, OdMatrix odMatrix, Long id, Long dId,
 			String vcName, String dcName, double[] times, Integer[] vphs)
 			throws ModelInputException {
-		odMatrix.getOd(id).setDestination(network.getNode(dId));
+		odMatrix.getOd(id).setDestination(dId);
 		odMatrix.getOd(id).setVehicleComposition(
 				typesManager.getVehicleTypeComposition(vcName));
 		odMatrix.getOd(id).setDriverComposition(
@@ -63,9 +63,11 @@ public class OdService extends EntityService {
 
 	public Od createOd(Sequence sequence, OdMatrix odMatrix, Node origin,
 			Node destination) throws ModelInputException {
-		Od od = factory.createOd(sequence.nextId(), DEFAULT_NAME, origin,
-				destination, typesManager.getDefaultVehicleTypeComposition(),
-				typesManager.getDefaultDriverTypeComposition(),
+		Od od = factory.createOd(sequence.nextId(), DEFAULT_NAME,
+				origin.getId(),
+				destination == null ? null : destination.getId(),
+				typesManager.getDefaultVehicleTypeCompositionName(),
+				typesManager.getDefaultDriverTypeCompositionName(),
 				DEFAULT_TIME_POINTS, DEFAULT_TIME_VPH);
 		odMatrix.add(od);
 		return od;
@@ -75,8 +77,9 @@ public class OdService extends EntityService {
 		odMatrix.remove(id);
 	}
 
-	public OdMatrix createOdMatrix(Sequence sequence) {
-		return factory.createOdMatrix(sequence.nextId());
+	public OdMatrix createOdMatrix(Sequence sequence, String networkName) {
+		return factory.createOdMatrix(sequence.nextId(), DEFAULT_NAME,
+				networkName);
 	}
 
 }

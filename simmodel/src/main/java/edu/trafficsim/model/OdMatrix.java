@@ -28,11 +28,13 @@ import edu.trafficsim.model.core.ModelInputException;
  */
 public interface OdMatrix extends ObjectContainer {
 
+	String getNetworkName();
+
 	Od getOd(long id);
 
-	Collection<Od> getOdsFromNode(Node node);
+	Collection<Od> getOdsFromNode(Long nodeId);
 
-	Collection<Od> getOdsToNode(Node node);
+	Collection<Od> getOdsToNode(Long nodeId);
 
 	Collection<Od> getOds();
 

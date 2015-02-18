@@ -54,7 +54,7 @@ public class NetworkService extends EntityService {
 	private static final double DEFAULT_LANE_END = -10.0d;
 	private static final double DEFAULT_LANE_WIDTH = 4.0d;
 
-	private static final String DEFAULT_NEW_NAME = "New";
+	private static final String DEFAULT_NEW_NAME = "network";
 
 	@Autowired
 	NetworkFactory factory;
@@ -87,8 +87,8 @@ public class NetworkService extends EntityService {
 	}
 
 	public Node breakLink(Sequence sequence, Network network,
-			OdMatrix odMatrix, Link link, String nodeType,
-			double x, double y) throws TransformException, ModelInputException {
+			OdMatrix odMatrix, Link link, String nodeType, double x, double y)
+			throws TransformException, ModelInputException {
 
 		LineString[] linearGeoms = Coordinates.splitLinearGeom(
 				link.getLinearGeom(), new Coordinate(x, y));
@@ -165,8 +165,8 @@ public class NetworkService extends EntityService {
 	protected void removeNode(Network network, OdMatrix odMatrix, Node node,
 			MultiValuedMap<String, String> map) {
 		network.removeNode(node);
-		odMatrix.remove(odMatrix.getOdsFromNode(node));
-		odMatrix.remove(odMatrix.getOdsToNode(node));
+		odMatrix.remove(odMatrix.getOdsFromNode(node.getId()));
+		odMatrix.remove(odMatrix.getOdsToNode(node.getId()));
 		map.add("nodeIds", node.getId().toString());
 	}
 

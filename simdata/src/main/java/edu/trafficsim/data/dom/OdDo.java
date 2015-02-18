@@ -8,6 +8,7 @@ import org.mongodb.morphia.annotations.Embedded;
 public class OdDo {
 
 	private long odId;
+	private String name;
 	private long originNodeId;
 	private long destinationNodeId;
 	private String vehicleTypesComposition;
@@ -20,6 +21,14 @@ public class OdDo {
 
 	public void setOdId(long odId) {
 		this.odId = odId;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public long getOriginNodeId() {

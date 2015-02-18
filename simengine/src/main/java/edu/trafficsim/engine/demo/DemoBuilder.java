@@ -24,8 +24,6 @@ import com.vividsolutions.jts.geom.Coordinate;
 
 import edu.trafficsim.engine.network.NetworkFactory;
 import edu.trafficsim.engine.od.OdFactory;
-import edu.trafficsim.engine.type.LinkType;
-import edu.trafficsim.engine.type.NodeType;
 import edu.trafficsim.engine.type.TypesManager;
 import edu.trafficsim.model.Lane;
 import edu.trafficsim.model.Link;
@@ -117,24 +115,24 @@ public class DemoBuilder {
 				coord1859358892, coord53720208, coord53607075 };
 
 		// Nodes
-		NodeType nodeType = typesManager.getDefaultNodeType();
+		String nodeType = typesManager.getDefaultNodeTypeName();
 		Node node1 = networkFactory.createNode(id++, "Johnson at Randall",
-				nodeType.getName(), new Coordinate(coord53596818));
+				nodeType, new Coordinate(coord53596818));
 		Node node2 = networkFactory.createNode(id++, "Johnson at Orchardl",
-				nodeType.getName(), new Coordinate(coord1345424866));
+				nodeType, new Coordinate(coord1345424866));
 		Node node3 = networkFactory.createNode(id++, "Johnson at Charter",
-				nodeType.getName(), new Coordinate(coord53607075));
+				nodeType, new Coordinate(coord53607075));
 		node1.setId(1l);
 		node2.setId(2l);
 		node3.setId(3l);
 		// Node node4 = networkFactory.createNode("Johnson at Mill");
 		// Node node5 = networkFactory.createNode("Johnson at Park");
 		// Links
-		LinkType linkType = typesManager.getDefaultLinkType();
-		Link link1 = networkFactory.createLink(id++, "Johson1",
-				linkType.getName(), node1, node2, coords1, null);
-		Link link2 = networkFactory.createLink(id++, "Johson2",
-				linkType.getName(), node2, node3, coords2, null);
+		String linkType = typesManager.getDefaultLinkTypeName();
+		Link link1 = networkFactory.createLink(id++, "Johson1", linkType,
+				node1, node2, coords1, null);
+		Link link2 = networkFactory.createLink(id++, "Johson2", linkType,
+				node2, node3, coords2, null);
 		link1.setId(1l);
 		link2.setId(2l);
 
@@ -174,11 +172,13 @@ public class DemoBuilder {
 		// no destination 100s~200s 800vph
 		double[] times = new double[] { 300, 500 };
 		Integer[] vphs = new Integer[] { 4000, 4800 };
-		Od od = odFactory.createOd(id++, "od", node1, null,
-				typesManager.getDefaultVehicleTypeComposition(),
-				typesManager.getDefaultDriverTypeComposition(), times, vphs);
+		Od od = odFactory
+				.createOd(id++, "od", node1.getId(), null,
+						typesManager.getDefaultVehicleTypeCompositionName(),
+						typesManager.getDefaultDriverTypeCompositionName(),
+						times, vphs);
 
-		odMatrix = odFactory.createOdMatrix(id++, "odm");
+		odMatrix = odFactory.createOdMatrix(id++, "odm", "networkName");
 		odMatrix.add(od);
 
 		// Turn Percentage

@@ -81,9 +81,9 @@ public class NetworkCreator {
 				// start node for next link
 				if (endOsmNode.isShared() || i == osmWay.osmNodes.size() - 1) {
 					create(network, nodes, startOsmNode, endOsmNode, osmWay,
-							coords, roadInfo, networkFactory, typesManager
-									.getDefaultNodeType().getName(),
-							typesManager.getDefaultLinkType().getName(), id);
+							coords, roadInfo, networkFactory,
+							typesManager.getDefaultNodeTypeName(),
+							typesManager.getDefaultLinkTypeName(), id);
 					coords.clear();
 					startOsmNode = endOsmNode;
 					coords.add(startOsmNode.asCoord());

@@ -75,7 +75,7 @@ public class DefaultController extends AbstractController {
 		if (session.isNew()) {
 			Sequence sequence = new Sequence();
 			Network network = networkService.createNetwork(sequence);
-			OdMatrix odMatrix = odService.createOdMatrix(sequence);
+			OdMatrix odMatrix = odService.createOdMatrix(sequence, network.getName());
 			SimulationSettings settings = simulationManager
 					.getDefaultSimulationSettings();
 

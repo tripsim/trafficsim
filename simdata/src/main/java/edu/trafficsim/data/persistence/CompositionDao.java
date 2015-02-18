@@ -7,6 +7,10 @@ import edu.trafficsim.data.dom.TypeCategoryDo;
 
 public interface CompositionDao extends GenericDao<CompositionDo> {
 
+	String getDefaultCompositionName(TypeCategoryDo category);
+
+	List<?> getCompositionField(TypeCategoryDo category, String field);
+
 	CompositionDo getByName(TypeCategoryDo category, String name);
 
 	CompositionDo getDefaultByCategory(TypeCategoryDo category);

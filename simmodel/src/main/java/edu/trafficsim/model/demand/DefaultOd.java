@@ -20,7 +20,6 @@ package edu.trafficsim.model.demand;
 import java.util.Collection;
 
 import edu.trafficsim.model.BaseEntity;
-import edu.trafficsim.model.Node;
 import edu.trafficsim.model.Od;
 import edu.trafficsim.model.TypesComposition;
 import edu.trafficsim.model.core.AbstractDynamicProperty;
@@ -45,38 +44,38 @@ public class DefaultOd extends BaseEntity<DefaultOd> implements Od {
 		private static final long serialVersionUID = 1L;
 	}
 
-	private Node origin;
-	private Node destination;
+	private Long originNodeId;
+	private Long destinationNodeId;
 	private TypesComposition vehicleComposition;
 	private TypesComposition driverComposition;
 
 	private final DynamicFlow dynamicFlow = new DynamicFlow();
 
-	public DefaultOd(long id, String name, Node origin, Node destination,
-			TypesComposition vehicleComposition,
+	public DefaultOd(long id, String name, Long originNodeId,
+			Long destinationNodeId, TypesComposition vehicleComposition,
 			TypesComposition driverComposition, double[] times, Integer[] vphs)
 			throws ModelInputException {
 		super(id, name);
-		this.origin = origin;
-		this.destination = destination;
+		this.originNodeId = originNodeId;
+		this.destinationNodeId = destinationNodeId;
 		this.vehicleComposition = vehicleComposition;
 		this.driverComposition = driverComposition;
 		setVphs(times, vphs);
 	}
 
 	@Override
-	public final Node getOrigin() {
-		return origin;
+	public final Long getOriginNodeId() {
+		return originNodeId;
 	}
 
 	@Override
-	public final Node getDestination() {
-		return destination;
+	public final Long getDestinationNodeId() {
+		return destinationNodeId;
 	}
 
 	@Override
-	public Node setDestination(Node destination) {
-		return this.destination = destination;
+	public Long setDestination(Long destinationNodeId) {
+		return this.destinationNodeId = destinationNodeId;
 	}
 
 	@Override

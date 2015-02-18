@@ -45,7 +45,11 @@ class DefaultNetworkManager implements NetworkManager {
 					"Network is null, cannot be saved to db!");
 		}
 		NetworkDo entity = networkDao.findByName(network.getName());
-		converter.applyNetworkDo(entity, network);
+		if (entity == null) {
+			entity = converter.toNetworkDo(network);
+		} else {
+			converter.applyNetworkDo(entity, network);
+		}
 		networkDao.save(entity);
 	}
 

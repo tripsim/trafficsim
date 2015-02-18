@@ -30,11 +30,11 @@ public interface Od extends ObjectContainer {
 
 	Long getId();
 
-	Node getOrigin();
+	Long getOriginNodeId();
 
-	Node getDestination();
+	Long getDestinationNodeId();
 
-	Node setDestination(Node destination);
+	Long setDestination(Long destinationNodeId);
 
 	int vph(double time);
 

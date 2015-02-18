@@ -17,10 +17,11 @@
  */
 package edu.trafficsim.engine.od;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import edu.trafficsim.engine.type.TypesManager;
 import edu.trafficsim.model.Link;
-import edu.trafficsim.model.Node;
 import edu.trafficsim.model.Od;
 import edu.trafficsim.model.OdMatrix;
 import edu.trafficsim.model.TurnPercentage;
@@ -40,23 +41,30 @@ public class DefaultOdFactory implements OdFactory {
 
 	private static final String DEFAULT_NAME = "Default";
 
+	@Autowired
+	TypesManager typesManager;
+
 	@Override
-	public OdMatrix createOdMatrix(Long id) {
-		return createOdMatrix(id, DEFAULT_NAME);
+	public OdMatrix createOdMatrix(Long id, String networkName) {
+		return createOdMatrix(id, DEFAULT_NAME, networkName);
 	}
 
 	@Override
-	public OdMatrix createOdMatrix(Long id, String name) {
-		return new DefaultOdMatrix(id, name);
+	public OdMatrix createOdMatrix(Long id, String name, String networkName) {
+		return new DefaultOdMatrix(id, name, networkName);
 	}
 
 	@Override
-	public Od createOd(Long id, String name, Node origin, Node destination,
-			TypesComposition vehicleTypeComposition,
-			TypesComposition driverTypeComposition, double[] times,
-			Integer[] vphs) throws ModelInputException {
-		return new DefaultOd(id, name, origin, destination,
-				vehicleTypeComposition, driverTypeComposition, times, vphs);
+	public Od createOd(Long id, String name, Long originNodeId,
+			Long destinationNodeId, String vehicleTypeComposition,
+			String driverTypeComposition, double[] times, Integer[] vphs)
+			throws ModelInputException {
+		TypesComposition vtCompo = typesManager
+				.getVehicleTypeComposition(vehicleTypeComposition);
+		TypesComposition dtCompo = typesManager
+				.getDriverTypeComposition(driverTypeComposition);
+		return new DefaultOd(id, name, originNodeId, destinationNodeId,
+				vtCompo, dtCompo, times, vphs);
 	}
 
 	@Override

@@ -34,6 +34,8 @@ import edu.trafficsim.engine.simulation.Tracker;
 import edu.trafficsim.engine.vehicle.VehicleFactory;
 import edu.trafficsim.model.Lane;
 import edu.trafficsim.model.Link;
+import edu.trafficsim.model.Network;
+import edu.trafficsim.model.Node;
 import edu.trafficsim.model.Od;
 import edu.trafficsim.model.Vehicle;
 import edu.trafficsim.model.util.Randoms;
@@ -62,7 +64,8 @@ public class PoissonVehicleGenerating extends AbstractPlugin implements
 	 * be based on headway (negative exponential dist)
 	 */
 	@Override
-	public final List<Vehicle> newVehicles(Od od, Tracker tracker) {
+	public final List<Vehicle> newVehicles(Od od, Network network,
+			Tracker tracker) {
 		double time = tracker.getForwardedTime();
 		double stepSize = tracker.getStepSize();
 		RandomGenerator rng = tracker.getRand().getRandomGenerator();
@@ -92,8 +95,13 @@ public class PoissonVehicleGenerating extends AbstractPlugin implements
 					dtypeToBuild, tracker);
 
 			// random initial link and lane
-			List<Link> links = new ArrayList<Link>(od.getOrigin()
-					.getDownstreams());
+			Node originNode = network.getNode(od.getOriginNodeId());
+			if (originNode == null) {
+				logger.warn("Node '{}' not exists in network '{}'",
+						od.getOriginNodeId(), network.getName());
+				continue;
+			}
+			List<Link> links = new ArrayList<Link>(originNode.getDownstreams());
 			if (links.isEmpty())
 				continue;
 			Link link = links.get(rand.nextInt(links.size()));

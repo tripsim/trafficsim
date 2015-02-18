@@ -17,6 +17,7 @@ import static edu.trafficsim.engine.io.ProjectImportExportConstant.LINKS;
 import static edu.trafficsim.engine.io.ProjectImportExportConstant.LINKTYPE;
 import static edu.trafficsim.engine.io.ProjectImportExportConstant.NAME;
 import static edu.trafficsim.engine.io.ProjectImportExportConstant.NETWORK;
+import static edu.trafficsim.engine.io.ProjectImportExportConstant.NETWORKNAME;
 import static edu.trafficsim.engine.io.ProjectImportExportConstant.NODES;
 import static edu.trafficsim.engine.io.ProjectImportExportConstant.NODESTINATION;
 import static edu.trafficsim.engine.io.ProjectImportExportConstant.NODETYPE;
@@ -77,7 +78,7 @@ final class ProjectJsonExporter {
 
 		// start project (root)
 		generator.writeStartObject();
-		
+
 		// start network
 		Network network = project.getNetwork();
 		generator.writeObjectFieldStart(NETWORK);
@@ -203,6 +204,8 @@ final class ProjectJsonExporter {
 			generator.writeNumber(odMatrix.getId());
 			generator.writeFieldName(NAME);
 			generator.writeString(odMatrix.getName());
+			generator.writeFieldName(NETWORKNAME);
+			generator.writeString(odMatrix.getNetworkName());
 
 			// start ods
 			generator.writeArrayFieldStart(ODS);
@@ -214,11 +217,11 @@ final class ProjectJsonExporter {
 				generator.writeFieldName(NAME);
 				generator.writeString(od.getName());
 				generator.writeFieldName(ORIGIN);
-				generator.writeNumber(od.getOrigin().getId());
+				generator.writeNumber(od.getOriginNodeId());
 				generator.writeFieldName(DESTINATION);
 				generator
-						.writeNumber(od.getDestination() == null ? NODESTINATION
-								: od.getDestination().getId());
+						.writeNumber(od.getDestinationNodeId() == null ? NODESTINATION
+								: od.getDestinationNodeId());
 				generator.writeFieldName(VEHICLECOMPOSITION);
 				generator.writeString(od.getVehicleComposition().getName());
 				generator.writeFieldName(DRIVERCOMPOSITION);

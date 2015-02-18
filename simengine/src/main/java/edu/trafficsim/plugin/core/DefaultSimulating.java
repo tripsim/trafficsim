@@ -59,8 +59,8 @@ public class DefaultSimulating extends AbstractPlugin implements ISimulating {
 	StatisticsCollector statisticsCollector;
 
 	@Override
-	public void simulate(String outcomeName, Network network, OdMatrix odMatrix,
-			SimulationSettings settings) {
+	public void simulate(String outcomeName, Network network,
+			OdMatrix odMatrix, SimulationSettings settings) {
 
 		IMoving moving = pluginManager
 				.getMovingImpl(PluginManager.DEFAULT_MOVING);
@@ -99,7 +99,7 @@ public class DefaultSimulating extends AbstractPlugin implements ISimulating {
 			}
 			for (Od od : odMatrix.getOds()) {
 				List<Vehicle> newVehicles = vehicleGenerating.newVehicles(od,
-						tracker);
+						network, tracker);
 				vehicles.addAll(newVehicles);
 			}
 			tracker.stepForward();

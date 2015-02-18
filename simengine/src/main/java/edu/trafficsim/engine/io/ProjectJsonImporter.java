@@ -34,7 +34,9 @@ import static edu.trafficsim.engine.io.ProjectImportExportConstant.LINKS;
 import static edu.trafficsim.engine.io.ProjectImportExportConstant.LINKTYPE;
 import static edu.trafficsim.engine.io.ProjectImportExportConstant.NAME;
 import static edu.trafficsim.engine.io.ProjectImportExportConstant.NETWORK;
+import static edu.trafficsim.engine.io.ProjectImportExportConstant.NETWORKNAME;
 import static edu.trafficsim.engine.io.ProjectImportExportConstant.NODES;
+import static edu.trafficsim.engine.io.ProjectImportExportConstant.NODESTINATION;
 import static edu.trafficsim.engine.io.ProjectImportExportConstant.NODETYPE;
 import static edu.trafficsim.engine.io.ProjectImportExportConstant.ODMATRIX;
 import static edu.trafficsim.engine.io.ProjectImportExportConstant.ODS;
@@ -225,19 +227,18 @@ final class ProjectJsonImporter {
 		jsonNode = rootNode.path(ODMATRIX);
 		id = jsonNode.get(ID).asLong();
 		name = jsonNode.get(NAME).asText();
-		OdMatrix odMatrix = odFactory.createOdMatrix(id, name);
+		String networkName = jsonNode.get(NETWORKNAME).asText();
+		OdMatrix odMatrix = odFactory.createOdMatrix(id, name, networkName);
 
 		jsonNode = jsonNode.path(ODS);
 		for (int i = 0; i < jsonNode.size(); i++) {
 			JsonNode child = jsonNode.get(i);
 			id = child.get(ID).asLong();
 			name = child.get(NAME).asText();
-			Node origin = network.getNode(child.get(ORIGIN).asLong());
-			Node destination = network.getNode(child.get(DESTINATION).asLong());
-			TypesComposition vc = typesManager.getVehicleTypeComposition(child
-					.get(VEHICLECOMPOSITION).asText());
-			TypesComposition dc = typesManager.getDriverTypeComposition(child
-					.get(DRIVERCOMPOSITION).asText());
+			Long origin = child.get(ORIGIN).asLong();
+			Long destination = child.get(DESTINATION).asLong();
+			String vc = child.get(VEHICLECOMPOSITION).asText();
+			String dc = child.get(DRIVERCOMPOSITION).asText();
 			JsonNode grandChild = child.get(TIMES);
 			double[] times = new double[grandChild.size()];
 			for (int j = 0; j < grandChild.size(); j++)
@@ -247,7 +248,8 @@ final class ProjectJsonImporter {
 			for (int j = 0; j < grandChild.size(); j++)
 				vphs[j] = grandChild.get(j).asInt();
 
-			Od od = odFactory.createOd(id, name, origin, destination, vc, dc,
+			Od od = odFactory.createOd(id, name, origin,
+					destination == NODESTINATION ? null : destination, vc, dc,
 					times, vphs);
 			odMatrix.add(od);
 		}
@@ -266,5 +268,4 @@ final class ProjectJsonImporter {
 
 		return new SimulationProject(network, odMatrix, settings);
 	}
-
 }

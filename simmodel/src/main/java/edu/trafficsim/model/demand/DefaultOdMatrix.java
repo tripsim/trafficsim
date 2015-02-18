@@ -26,7 +26,6 @@ import java.util.Set;
 
 import edu.trafficsim.model.BaseEntity;
 import edu.trafficsim.model.Link;
-import edu.trafficsim.model.Node;
 import edu.trafficsim.model.Od;
 import edu.trafficsim.model.OdMatrix;
 import edu.trafficsim.model.TurnPercentage;
@@ -46,14 +45,25 @@ public class DefaultOdMatrix extends BaseEntity<DefaultOdMatrix> implements
 
 	private static final long serialVersionUID = 1L;
 
+	public String networkName;
 	// origin, destination pair -> od
 	public final MultiValuedMap<OdKey, Od> ods;
 	public final Map<Long, Od> odsById;
 
-	public DefaultOdMatrix(long id, String name) {
+	public DefaultOdMatrix(long id, String name, String networkName) {
 		super(id, name);
+		this.networkName = networkName;
 		ods = new MultiValuedMap<OdKey, Od>();
 		odsById = new HashMap<Long, Od>();
+	}
+
+	@Override
+	public String getNetworkName() {
+		return networkName;
+	}
+
+	public void setNetworkName(String networkName) {
+		this.networkName = networkName;
 	}
 
 	@Override
@@ -62,20 +72,20 @@ public class DefaultOdMatrix extends BaseEntity<DefaultOdMatrix> implements
 	}
 
 	@Override
-	public Collection<Od> getOdsFromNode(Node node) {
+	public Collection<Od> getOdsFromNode(Long nodeId) {
 		Set<Od> newOds = new HashSet<Od>();
 		for (OdKey odKey : ods.keys()) {
-			if (odKey.primaryKey() == node)
+			if (odKey.primaryKey() == nodeId)
 				newOds.addAll(ods.get(odKey));
 		}
 		return Collections.unmodifiableCollection(newOds);
 	}
 
 	@Override
-	public Collection<Od> getOdsToNode(Node node) {
+	public Collection<Od> getOdsToNode(Long nodeId) {
 		Set<Od> newOds = new HashSet<Od>();
 		for (OdKey odKey : ods.keys()) {
-			if (odKey.secondaryKey() == node)
+			if (odKey.secondaryKey() == nodeId)
 				newOds.addAll(ods.get(odKey));
 		}
 		return Collections.unmodifiableCollection(newOds);
@@ -112,7 +122,7 @@ public class DefaultOdMatrix extends BaseEntity<DefaultOdMatrix> implements
 	}
 
 	private static final OdKey odKey(Od od) {
-		return new OdKey(od.getOrigin(), od.getDestination());
+		return new OdKey(od.getOriginNodeId(), od.getDestinationNodeId());
 	}
 
 	/**
@@ -120,10 +130,10 @@ public class DefaultOdMatrix extends BaseEntity<DefaultOdMatrix> implements
 	 * 
 	 * @author Xuan Shi
 	 */
-	private static final class OdKey extends MultiKey<Node, Node> {
+	private static final class OdKey extends MultiKey<Long, Long> {
 		private static final long serialVersionUID = 1L;
 
-		public OdKey(Node key1, Node key2) {
+		public OdKey(Long key1, Long key2) {
 			super(key1, key2);
 		}
 
