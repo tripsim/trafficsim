@@ -9,7 +9,7 @@ import edu.trafficsim.data.dom.StatisticsSnapshotDo;
 import edu.trafficsim.data.persistence.StatisticsSnapshotDao;
 
 @Repository("statistics-snapshot-dao")
-public class StatisticsSnapshotDaoImpl extends
+class StatisticsSnapshotDaoImpl extends
 		AbstractDaoImpl<StatisticsSnapshotDo> implements StatisticsSnapshotDao {
 
 	@Override

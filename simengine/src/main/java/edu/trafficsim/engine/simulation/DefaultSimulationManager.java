@@ -1,9 +1,16 @@
 package edu.trafficsim.engine.simulation;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import edu.trafficsim.data.dom.SimulationDo;
+import edu.trafficsim.data.persistence.SimulationDao;
 
 @Service("default-simulation-manager")
 public class DefaultSimulationManager implements SimulationManager {
+
+	@Autowired
+	SimulationDao simulationDao;
 
 	@Override
 	public SimulationSettings getDefaultSimulationSettings() {
@@ -12,8 +19,8 @@ public class DefaultSimulationManager implements SimulationManager {
 
 	@Override
 	public void insertSimulation(String outcomeName, SimulationSettings settings) {
-		// TODO Auto-generated method stub
-
+		SimulationDo entity = SimulationSettingsConverter.toSimulationDo(
+				outcomeName, settings);
+		simulationDao.save(entity);
 	}
-
 }

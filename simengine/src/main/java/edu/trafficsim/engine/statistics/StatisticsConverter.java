@@ -21,8 +21,8 @@ final class StatisticsConverter {
 	static void applyVehicleStatisticsDo(StatisticsSnapshotDo ssd,
 			VehicleSnapshot vs) {
 		ssd.setVid(vs.vid);
-		ssd.setLat(vs.coord.x);
-		ssd.setLon(vs.coord.y);
+		ssd.setLat(vs.coord.y);
+		ssd.setLon(vs.coord.x);
 		ssd.setPosition(vs.position);
 		ssd.setAngle(vs.angle);
 		ssd.setSpeed(vs.speed);

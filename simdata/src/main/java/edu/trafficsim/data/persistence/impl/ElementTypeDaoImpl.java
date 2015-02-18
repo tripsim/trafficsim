@@ -10,7 +10,7 @@ import edu.trafficsim.data.dom.TypeCategoryDo;
 import edu.trafficsim.data.persistence.ElementTypeDao;
 
 @Repository("element-type-dao")
-public class ElementTypeDaoImpl extends AbstractDaoImpl<ElementTypeDo>
+class ElementTypeDaoImpl extends AbstractDaoImpl<ElementTypeDo>
 		implements ElementTypeDao {
 
 	@Override

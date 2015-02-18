@@ -10,7 +10,7 @@ import edu.trafficsim.data.dom.TypeCategoryDo;
 import edu.trafficsim.data.persistence.CompositionDao;
 
 @Repository("composition-dao")
-public class CompositionDaoImpl extends AbstractDaoImpl<CompositionDo>
+class CompositionDaoImpl extends AbstractDaoImpl<CompositionDo>
 		implements CompositionDao {
 
 	@Override
