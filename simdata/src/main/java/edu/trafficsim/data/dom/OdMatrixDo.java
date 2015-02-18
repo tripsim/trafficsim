@@ -1,5 +1,6 @@
 package edu.trafficsim.data.dom;
 
+import java.util.Date;
 import java.util.List;
 
 import org.bson.types.ObjectId;
@@ -14,20 +15,13 @@ public class OdMatrixDo {
 
 	@Id
 	private ObjectId id;
+	private Date date;
 
 	private long matrixId;
 	private String name;
 	private String networkName;
 
 	List<OdDo> ods;
-
-	public long getMatrixId() {
-		return matrixId;
-	}
-
-	public void setMatrixId(long matrixId) {
-		this.matrixId = matrixId;
-	}
 
 	public ObjectId getId() {
 		return id;
@@ -37,12 +31,28 @@ public class OdMatrixDo {
 		this.id = id;
 	}
 
+	public Date getDate() {
+		return date;
+	}
+
+	public void setDate(Date date) {
+		this.date = date;
+	}
+
 	public String getName() {
 		return name;
 	}
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public long getMatrixId() {
+		return matrixId;
+	}
+
+	public void setMatrixId(long matrixId) {
+		this.matrixId = matrixId;
 	}
 
 	public String getNetworkName() {

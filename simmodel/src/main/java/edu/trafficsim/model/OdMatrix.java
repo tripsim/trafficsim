@@ -26,7 +26,7 @@ import edu.trafficsim.model.core.ModelInputException;
  * 
  * @author Xuan Shi
  */
-public interface OdMatrix extends ObjectContainer {
+public interface OdMatrix extends ObjectContainer, Persistable {
 
 	String getNetworkName();
 

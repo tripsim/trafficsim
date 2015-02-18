@@ -1,5 +1,6 @@
 package edu.trafficsim.data.dom;
 
+import java.util.Date;
 import java.util.List;
 
 import org.bson.types.ObjectId;
@@ -14,6 +15,7 @@ public class NetworkDo {
 	@Id
 	private ObjectId id;
 	private String name;
+	private Date date;
 
 	private long networkId;
 	private List<LinkDo> links;
@@ -35,6 +37,14 @@ public class NetworkDo {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public Date getDate() {
+		return date;
+	}
+
+	public void setDate(Date date) {
+		this.date = date;
 	}
 
 	public long getNetworkId() {

@@ -1,5 +1,7 @@
 package edu.trafficsim.data.persistence.impl;
 
+import java.util.Date;
+
 import org.mongodb.morphia.query.Query;
 import org.springframework.stereotype.Repository;
 
@@ -23,4 +25,18 @@ class NetworkDaoImpl extends AbstractDaoImpl<NetworkDo> implements NetworkDao {
 		return datastore.createQuery(NetworkDo.class).field("name").equal(name);
 	}
 
+	@Override
+	public void save(NetworkDo entity) {
+		entity.setDate(new Date());
+		super.save(entity);
+	}
+
+	@Override
+	public void save(Iterable<NetworkDo> entities) {
+		Date date = new Date();
+		for (NetworkDo entity : entities) {
+			entity.setDate(date);
+		}
+		super.save(entities);
+	}
 }

@@ -35,6 +35,8 @@ public class DefaultNetwork extends AbstractNetwork<DefaultNetwork> {
 
 	private static final long serialVersionUID = 1L;
 
+	private boolean modified = false;
+
 	public DefaultNetwork(long id, String name) {
 		super(id, name);
 	}
@@ -105,6 +107,16 @@ public class DefaultNetwork extends AbstractNetwork<DefaultNetwork> {
 	@Override
 	public boolean isDirty() {
 		return dirty;
+	}
+
+	@Override
+	public boolean isModified() {
+		return modified;
+	}
+
+	@Override
+	public void setModified(boolean modified) {
+		this.modified = modified;
 	}
 
 }

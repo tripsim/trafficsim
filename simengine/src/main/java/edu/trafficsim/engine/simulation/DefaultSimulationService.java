@@ -31,11 +31,17 @@ public class DefaultSimulationService implements SimulationService {
 	@Override
 	public void execute(String outcomeName, Network network, OdMatrix odMatrix,
 			SimulationSettings settings) {
-		// only save network/odmatrix if changed
-		networkManager.insertNetwork(network);
-		odManager.insertOdMatrix(odMatrix);
+		if (network.isModified()) {
+			networkManager.insertNetwork(network);
+			network.setModified(false);
+		}
+		if (odMatrix.isModified()) {
+			odManager.insertOdMatrix(odMatrix);
+			network.setModified(false);
+		}
 
-		simulationManager.insertSimulation(outcomeName, settings);
+		simulationManager.insertSimulation(outcomeName, network.getName(),
+				odMatrix.getName(), settings);
 
 		ISimulating impl = pluginManager.getSimulatingImpl(settings
 				.getSimulatingType());

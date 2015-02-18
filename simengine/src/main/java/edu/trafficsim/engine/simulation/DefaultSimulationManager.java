@@ -18,9 +18,11 @@ public class DefaultSimulationManager implements SimulationManager {
 	}
 
 	@Override
-	public void insertSimulation(String outcomeName, SimulationSettings settings) {
+	public void insertSimulation(String outcomeName, String networkName,
+			String odMatrixName, SimulationSettings settings) {
 		SimulationDo entity = SimulationSettingsConverter.toSimulationDo(
-				outcomeName, settings);
+				outcomeName, networkName, odMatrixName, settings);
 		simulationDao.save(entity);
 	}
+
 }

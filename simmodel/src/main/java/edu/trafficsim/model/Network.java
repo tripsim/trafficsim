@@ -26,7 +26,7 @@ import com.vividsolutions.jts.geom.Coordinate;
  * 
  * @author Xuan Shi
  */
-public interface Network extends ObjectContainer {
+public interface Network extends ObjectContainer, Persistable {
 
 	Collection<Node> getSources();
 

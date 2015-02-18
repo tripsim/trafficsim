@@ -45,10 +45,11 @@ public class DefaultOdMatrix extends BaseEntity<DefaultOdMatrix> implements
 
 	private static final long serialVersionUID = 1L;
 
-	public String networkName;
+	private String networkName;
 	// origin, destination pair -> od
-	public final MultiValuedMap<OdKey, Od> ods;
-	public final Map<Long, Od> odsById;
+	private final MultiValuedMap<OdKey, Od> ods;
+	private final Map<Long, Od> odsById;
+	private boolean modified;
 
 	public DefaultOdMatrix(long id, String name, String networkName) {
 		super(id, name);
@@ -235,6 +236,16 @@ public class DefaultOdMatrix extends BaseEntity<DefaultOdMatrix> implements
 				}
 			}
 		}
+	}
+
+	@Override
+	public boolean isModified() {
+		return modified;
+	}
+
+	@Override
+	public void setModified(boolean modified) {
+		this.modified = modified;
 	}
 
 }
