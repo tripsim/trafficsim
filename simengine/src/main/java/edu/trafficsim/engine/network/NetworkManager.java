@@ -4,8 +4,10 @@ import edu.trafficsim.model.Network;
 
 public interface NetworkManager {
 
-	void insertNetwork(String name, Network network);
+	void insertNetwork(Network network);
 
-	Network loadNetwork(long networkId, String name);
+	void saveNetwork(Network network);
+
+	Network loadNetwork(String name);
 
 }

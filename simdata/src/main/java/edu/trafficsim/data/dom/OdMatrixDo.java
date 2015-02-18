@@ -14,11 +14,11 @@ public class OdMatrixDo {
 
 	@Id
 	private ObjectId id;
-
-	private long matrixId;
 	private String name;
+
 	private String networkName;
 
+	private long matrixId;
 	List<OdDo> ods;
 
 	public long getMatrixId() {

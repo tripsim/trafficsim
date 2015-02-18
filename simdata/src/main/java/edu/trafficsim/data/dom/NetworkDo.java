@@ -6,20 +6,20 @@ import org.bson.types.ObjectId;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
 import org.mongodb.morphia.annotations.Index;
-import org.mongodb.morphia.annotations.Indexes;
 
 @Entity(value = "networks", noClassnameStored = true)
-@Indexes({ @Index(value = "name", unique = true), @Index(value = "networkName") })
+@Index(value = "name", unique = true)
 public class NetworkDo {
 
 	@Id
 	private ObjectId id;
-
-	private long networkId;
 	private String name;
 
+	private long networkId;
 	private List<LinkDo> links;
 	private List<NodeDo> nodes;
+
+	private List<RoadInfoDo> roadInfos;
 
 	public ObjectId getId() {
 		return id;
@@ -29,20 +29,20 @@ public class NetworkDo {
 		this.id = id;
 	}
 
-	public long getNetworkId() {
-		return networkId;
-	}
-
-	public void setNetworkId(long networkId) {
-		this.networkId = networkId;
-	}
-
 	public String getName() {
 		return name;
 	}
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public long getNetworkId() {
+		return networkId;
+	}
+
+	public void setNetworkId(long networkId) {
+		this.networkId = networkId;
 	}
 
 	public List<LinkDo> getLinks() {
@@ -59,6 +59,14 @@ public class NetworkDo {
 
 	public void setNodes(List<NodeDo> nodes) {
 		this.nodes = nodes;
+	}
+
+	public List<RoadInfoDo> getRoadInfos() {
+		return roadInfos;
+	}
+
+	public void setRoadInfos(List<RoadInfoDo> roadInfos) {
+		this.roadInfos = roadInfos;
 	}
 
 }

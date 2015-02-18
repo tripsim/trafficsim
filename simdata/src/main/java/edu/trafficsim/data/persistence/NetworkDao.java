@@ -4,5 +4,7 @@ import edu.trafficsim.data.dom.NetworkDo;
 
 public interface NetworkDao extends GenericDao<NetworkDo> {
 
-	NetworkDo findByName(long networkId, String name);
+	NetworkDo findByName(String name);
+
+	long countByName(String name);
 }

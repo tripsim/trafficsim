@@ -4,7 +4,9 @@ import edu.trafficsim.model.OdMatrix;
 
 public interface OdManager {
 
-	void insertOdMatrix(String name, OdMatrix odMatrix);
+	void insertOdMatrix(OdMatrix odMatrix);
 
-	OdMatrix loadOdMatrix(long odMatrixId, String name);
+	void saveOdMatrix(OdMatrix odMatrix);
+
+	OdMatrix loadOdMatrix(String name);
 }

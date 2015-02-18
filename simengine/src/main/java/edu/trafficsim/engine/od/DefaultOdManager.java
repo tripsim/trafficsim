@@ -16,14 +16,20 @@ class DefaultOdManager implements OdManager {
 	OdConverter converter;
 
 	@Override
-	public void insertOdMatrix(String name, OdMatrix odMatrix) {
-		OdMatrixDo entity = converter.toOdMatrixDo(name, odMatrix);
+	public void insertOdMatrix(OdMatrix odMatrix) {
+		OdMatrixDo entity = converter.toOdMatrixDo(odMatrix);
 		odMatrixDao.save(entity);
 	}
 
 	@Override
-	public OdMatrix loadOdMatrix(long odMatrixId, String name) {
-		OdMatrixDo odMatrix = odMatrixDao.findByName(odMatrixId, name);
+	public void saveOdMatrix(OdMatrix odMatrix) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public OdMatrix loadOdMatrix(String name) {
+		OdMatrixDo odMatrix = odMatrixDao.findByName(name);
 		return converter.toOdMatrix(odMatrix);
 	}
 

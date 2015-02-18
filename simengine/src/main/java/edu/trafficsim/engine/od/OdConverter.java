@@ -12,7 +12,7 @@ class OdConverter {
 	@Autowired
 	OdFactory factory;
 
-	final OdMatrixDo toOdMatrixDo(String name, OdMatrix odMatrix) {
+	final OdMatrixDo toOdMatrixDo(OdMatrix odMatrix) {
 		OdMatrixDo result = new OdMatrixDo();
 
 		return result;

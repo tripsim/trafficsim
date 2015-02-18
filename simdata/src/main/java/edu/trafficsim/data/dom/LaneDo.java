@@ -6,8 +6,10 @@ import org.mongodb.morphia.annotations.Embedded;
 public class LaneDo {
 
 	private long laneId;
-	private double length;
+	private double start;
+	private double end;
 	private double width;
+	private double length;
 	private double shift;
 
 	public long getLaneId() {
@@ -18,12 +20,20 @@ public class LaneDo {
 		this.laneId = laneId;
 	}
 
-	public double getLength() {
-		return length;
+	public double getStart() {
+		return start;
 	}
 
-	public void setLength(double length) {
-		this.length = length;
+	public void setStart(double start) {
+		this.start = start;
+	}
+
+	public double getEnd() {
+		return end;
+	}
+
+	public void setEnd(double end) {
+		this.end = end;
 	}
 
 	public double getWidth() {
@@ -32,6 +42,14 @@ public class LaneDo {
 
 	public void setWidth(double width) {
 		this.width = width;
+	}
+
+	public double getLength() {
+		return length;
+	}
+
+	public void setLength(double length) {
+		this.length = length;
 	}
 
 	public double getShift() {

@@ -8,9 +8,9 @@ import org.mongodb.morphia.annotations.Embedded;
 public class NodeDo {
 
 	private long nodeId;
+	private String name;
 	private String nodeType;
-	private double lat;
-	private double lon;
+	private String geom;
 
 	private List<ConnectorDo> connectors;
 
@@ -22,6 +22,14 @@ public class NodeDo {
 		this.nodeId = nodeId;
 	}
 
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
 	public String getNodeType() {
 		return nodeType;
 	}
@@ -30,20 +38,12 @@ public class NodeDo {
 		this.nodeType = nodeType;
 	}
 
-	public double getLat() {
-		return lat;
+	public String getGeom() {
+		return geom;
 	}
 
-	public void setLat(double lat) {
-		this.lat = lat;
-	}
-
-	public double getLon() {
-		return lon;
-	}
-
-	public void setLon(double lon) {
-		this.lon = lon;
+	public void setGeom(String geom) {
+		this.geom = geom;
 	}
 
 	public List<ConnectorDo> getConnectors() {
