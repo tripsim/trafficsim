@@ -14,6 +14,7 @@ final class StatisticsConverter {
 			ssd.setSequence(snapshot.sequence);
 			ssd.setName(snapshot.outcomeName);
 			applyVehicleStatisticsDo(ssd, vs);
+			result.add(ssd);
 		}
 		return result;
 	}

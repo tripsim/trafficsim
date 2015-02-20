@@ -23,4 +23,12 @@ class StatisticsSnapshot {
 		VehicleSnapshot s = new VehicleSnapshot(vehicle);
 		vehicles.put(s.linkId, s);
 	}
+
+	@Override
+	public String toString() {
+		return "StatisticsSnapshot [outcomeName=" + outcomeName + ", sequence="
+				+ sequence + ", simulatedTime=" + simulatedTime + ", vehicles="
+				+ vehicles + "]";
+	}
+
 }

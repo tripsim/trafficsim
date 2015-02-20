@@ -56,6 +56,7 @@ class StatisticsCommittor implements SmartLifecycle {
 			}
 			executor = Executors.newSingleThreadExecutor();
 			executor.execute(new DbCommittor());
+			started = true;
 		} finally {
 			lock.unlock();
 		}
@@ -69,7 +70,7 @@ class StatisticsCommittor implements SmartLifecycle {
 				return;
 			}
 			logger.info("stopping satatistics committor thread!");
-			executor.shutdown();
+			executor.shutdownNow();
 		} finally {
 			lock.unlock();
 		}
