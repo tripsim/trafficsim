@@ -12,6 +12,7 @@ import com.mongodb.DBObject;
 import edu.trafficsim.data.dom.ElementTypeDo;
 import edu.trafficsim.data.dom.TypeCategoryDo;
 import edu.trafficsim.data.persistence.ElementTypeDao;
+import edu.trafficsim.model.util.StringUtils;
 
 @Repository("element-type-dao")
 class ElementTypeDaoImpl extends AbstractDaoImpl<ElementTypeDo> implements
@@ -20,7 +21,8 @@ class ElementTypeDaoImpl extends AbstractDaoImpl<ElementTypeDo> implements
 	@SuppressWarnings("unchecked")
 	@Override
 	public String getDefaultTypeName(TypeCategoryDo category) {
-		DBObject query = new BasicDBObjectBuilder().add("category", category)
+		DBObject query = new BasicDBObjectBuilder()
+				.add("category", StringUtils.toString(category))
 				.add("defaultType", true).get();
 		List<String> result = datastore.getCollection(ElementTypeDo.class)
 				.distinct("name", query);
@@ -30,7 +32,7 @@ class ElementTypeDaoImpl extends AbstractDaoImpl<ElementTypeDo> implements
 	@Override
 	public List<?> getTypeField(TypeCategoryDo category, String field) {
 		return datastore.getCollection(ElementTypeDo.class).distinct(field,
-				new BasicDBObject("category", category));
+				new BasicDBObject("category", StringUtils.toString(category)));
 	}
 
 	@Override

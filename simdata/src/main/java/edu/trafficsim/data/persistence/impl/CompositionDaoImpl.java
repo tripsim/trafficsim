@@ -12,6 +12,7 @@ import com.mongodb.DBObject;
 import edu.trafficsim.data.dom.CompositionDo;
 import edu.trafficsim.data.dom.TypeCategoryDo;
 import edu.trafficsim.data.persistence.CompositionDao;
+import edu.trafficsim.model.util.StringUtils;
 
 @Repository("composition-dao")
 class CompositionDaoImpl extends AbstractDaoImpl<CompositionDo> implements
@@ -20,8 +21,9 @@ class CompositionDaoImpl extends AbstractDaoImpl<CompositionDo> implements
 	@SuppressWarnings("unchecked")
 	@Override
 	public String getDefaultCompositionName(TypeCategoryDo category) {
-		DBObject query = new BasicDBObjectBuilder().add("category", category)
-				.add("defaultType", true).get();
+		DBObject query = new BasicDBObjectBuilder()
+				.add("category", StringUtils.toString(category))
+				.add("defaultComposition", true).get();
 		List<String> result = datastore.getCollection(CompositionDo.class)
 				.distinct("name", query);
 		return result.size() > 0 ? result.get(0) : null;
@@ -30,7 +32,7 @@ class CompositionDaoImpl extends AbstractDaoImpl<CompositionDo> implements
 	@Override
 	public List<?> getCompositionField(TypeCategoryDo category, String field) {
 		return datastore.getCollection(CompositionDo.class).distinct(field,
-				new BasicDBObject("category", category));
+				new BasicDBObject("category", StringUtils.toString(category)));
 	}
 
 	@Override
