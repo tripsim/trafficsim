@@ -27,7 +27,7 @@ class NetworkDaoImpl extends AbstractDaoImpl<NetworkDo> implements NetworkDao {
 
 	@Override
 	public void save(NetworkDo entity) {
-		entity.setDate(new Date());
+		entity.setTimestamp(new Date());
 		super.save(entity);
 	}
 
@@ -35,7 +35,7 @@ class NetworkDaoImpl extends AbstractDaoImpl<NetworkDo> implements NetworkDao {
 	public void save(Iterable<NetworkDo> entities) {
 		Date date = new Date();
 		for (NetworkDo entity : entities) {
-			entity.setDate(date);
+			entity.setTimestamp(date);
 		}
 		super.save(entities);
 	}

@@ -15,7 +15,7 @@ public class NetworkDo {
 	@Id
 	private ObjectId id;
 	private String name;
-	private Date date;
+	private Date timestamp;
 
 	private long networkId;
 	private List<LinkDo> links;
@@ -39,12 +39,12 @@ public class NetworkDo {
 		this.name = name;
 	}
 
-	public Date getDate() {
-		return date;
+	public Date getTimestamp() {
+		return timestamp;
 	}
 
-	public void setDate(Date date) {
-		this.date = date;
+	public void setTimestamp(Date timestamp) {
+		this.timestamp = timestamp;
 	}
 
 	public long getNetworkId() {

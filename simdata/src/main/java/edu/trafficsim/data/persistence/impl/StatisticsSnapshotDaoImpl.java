@@ -9,44 +9,43 @@ import edu.trafficsim.data.dom.StatisticsSnapshotDo;
 import edu.trafficsim.data.persistence.StatisticsSnapshotDao;
 
 @Repository("statistics-snapshot-dao")
-class StatisticsSnapshotDaoImpl extends
-		AbstractDaoImpl<StatisticsSnapshotDo> implements StatisticsSnapshotDao {
+class StatisticsSnapshotDaoImpl extends AbstractDaoImpl<StatisticsSnapshotDo>
+		implements StatisticsSnapshotDao {
 
 	@Override
-	public List<StatisticsSnapshotDo> loadSnapshots(double simulationId,
+	public List<StatisticsSnapshotDo> loadSnapshots(String simulationName,
 			long startFrame, long endFrame) {
-		return createQuery(simulationId, startFrame, endFrame).asList();
+		return createQuery(simulationName, startFrame, endFrame).asList();
 	}
 
 	@Override
-	public List<StatisticsSnapshotDo> loadSnapshots(double simulationId,
+	public List<StatisticsSnapshotDo> loadSnapshots(String simulationName,
 			long vid, long startFrame, long endFrame) {
-		Query<StatisticsSnapshotDo> query = createQuery(simulationId,
+		Query<StatisticsSnapshotDo> query = createQuery(simulationName,
 				startFrame, endFrame).field("vid").equal(vid);
 		return query.asList();
 	}
 
 	@Override
-	public List<StatisticsSnapshotDo> loadSnapshotsByLink(double simulationId,
-			long linkId, long startFrame, long endFrame) {
-		Query<StatisticsSnapshotDo> query = createQuery(simulationId,
+	public List<StatisticsSnapshotDo> loadSnapshotsByLink(
+			String simulationName, long linkId, long startFrame, long endFrame) {
+		Query<StatisticsSnapshotDo> query = createQuery(simulationName,
 				startFrame, endFrame).field("linkId").equal(linkId);
 		return query.asList();
 	}
 
 	@Override
-	public List<StatisticsSnapshotDo> loadSnapshotsByNode(double simulationId,
-			long nodeId, long startFrame, long endFrame) {
-		Query<StatisticsSnapshotDo> query = createQuery(simulationId,
+	public List<StatisticsSnapshotDo> loadSnapshotsByNode(
+			String simulationName, long nodeId, long startFrame, long endFrame) {
+		Query<StatisticsSnapshotDo> query = createQuery(simulationName,
 				startFrame, endFrame).field("nodeId").equal(nodeId);
 		return query.asList();
 	}
 
-	private Query<StatisticsSnapshotDo> createQuery(double simulationId,
+	private Query<StatisticsSnapshotDo> createQuery(String simulationName,
 			long startFrame, long endFrame) {
-		return datastore.createQuery(StatisticsSnapshotDo.class)
-				.field("simulationId").equal(simulationId)
-				.filter("sequence >", startFrame)
+		return datastore.createQuery(StatisticsSnapshotDo.class).field("name")
+				.equal(simulationName).filter("sequence >", startFrame)
 				.filter("sequence <", endFrame);
 	}
 

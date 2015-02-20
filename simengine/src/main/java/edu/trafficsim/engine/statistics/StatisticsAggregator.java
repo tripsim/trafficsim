@@ -2,15 +2,15 @@ package edu.trafficsim.engine.statistics;
 
 public interface StatisticsAggregator {
 
-	StatisticsFrames<VehicleState> getVehicleStates(long simulationId,
+	StatisticsFrames<VehicleState> getVehicleStates(String simulationName,
 			long startFrame, long endFrame);
 
-	StatisticsFrames<VehicleState> getVehicleTrajectories(long simulationId,
-			long vid, long startFrame, long endFrame);
+	StatisticsFrames<VehicleState> getVehicleTrajectories(
+			String simulationName, long vid, long startFrame, long endFrame);
 
-	StatisticsFrames<LinkState> getLinkState(long simulationId, long linkId,
-			long startFrame, long endFrame);
+	StatisticsFrames<LinkState> getLinkState(String simulationName,
+			long linkId, long startFrame, long endFrame);
 
-	StatisticsFrames<NodeState> getNodeState(long simulationId, long nodeId,
-			long startFrame, long endFrame);
+	StatisticsFrames<NodeState> getNodeState(String simulationName,
+			long nodeId, long startFrame, long endFrame);
 }

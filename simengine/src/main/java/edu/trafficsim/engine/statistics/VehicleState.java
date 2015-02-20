@@ -76,4 +76,11 @@ public class VehicleState {
 		this.angle = angle;
 	}
 
+	@Override
+	public String toString() {
+		return "VehicleState [sequence=" + sequence + ", vid=" + vid + ", lon="
+				+ lon + ", lat=" + lat + ", position=" + position + ", speed="
+				+ speed + ", accel=" + accel + ", angle=" + angle + "]";
+	}
+
 }

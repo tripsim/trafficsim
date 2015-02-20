@@ -30,6 +30,7 @@ public class Tracker {
 	private final String outcomeName;
 	private final Rand rand;
 
+	private long totalSteps;
 	private long forwardedSteps;
 	private long vehicleCount;
 
@@ -37,6 +38,7 @@ public class Tracker {
 		this.outcomeName = outcomeName;
 		this.settings = settings;
 		rand = new Rand(getSeed());
+		totalSteps = Math.round(getDuration() / getStepSize());
 		forwardedSteps = 0;
 		vehicleCount = 0;
 	}
@@ -98,8 +100,8 @@ public class Tracker {
 		return outcomeName;
 	}
 
-	public int getTotalSteps() {
-		return (int) Math.round(getDuration() / getStepSize());
+	public long getTotalSteps() {
+		return totalSteps;
 	}
 
 	public Rand getRand() {
@@ -119,7 +121,7 @@ public class Tracker {
 	}
 
 	public boolean isFinished() {
-		return getDuration() < forwardedSteps * getStepSize();
+		return totalSteps < forwardedSteps;
 	}
 
 	public void stepForward() {

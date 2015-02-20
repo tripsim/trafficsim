@@ -22,52 +22,52 @@ public class DefaultStatisticsManager implements StatisticsManager {
 	}
 
 	@Override
-	public StatisticsFrames<VehicleState> loadSnapshots(long simulationId,
+	public StatisticsFrames<VehicleState> loadSnapshots(String simulationName,
 			long startFrame, long endFrame) {
 		List<StatisticsSnapshotDo> snapshots = statisticsSnapshotDao
-				.loadSnapshots(simulationId, startFrame, endFrame);
+				.loadSnapshots(simulationName, startFrame, endFrame);
 		StatisticsFrames<VehicleState> frames = StatisticsConverter
 				.toVehicleStates(snapshots);
-		applySimulationInfo(simulationId, frames);
+		setSimulationInfo(simulationName, frames);
 		return frames;
 	}
 
 	@Override
-	public StatisticsFrames<VehicleState> loadSnapshots(long simulationId,
+	public StatisticsFrames<VehicleState> loadSnapshots(String simulationName,
 			long vid, long startFrame, long endFrame) {
 		List<StatisticsSnapshotDo> snapshots = statisticsSnapshotDao
-				.loadSnapshots(simulationId, vid, startFrame, endFrame);
+				.loadSnapshots(simulationName, vid, startFrame, endFrame);
 		StatisticsFrames<VehicleState> frames = StatisticsConverter
 				.toVehicleStates(snapshots);
-		applySimulationInfo(simulationId, frames);
+		setSimulationInfo(simulationName, frames);
 		return frames;
 	}
 
 	@Override
-	public StatisticsFrames<LinkState> loadLinkSnapshots(long simulationId,
+	public StatisticsFrames<LinkState> loadLinkSnapshots(String simulationName,
 			long linkId, long startFrame, long endFrame) {
 		List<StatisticsSnapshotDo> snapshots = statisticsSnapshotDao
-				.loadSnapshots(simulationId, linkId, startFrame, endFrame);
+				.loadSnapshots(simulationName, linkId, startFrame, endFrame);
 		StatisticsFrames<LinkState> frames = StatisticsConverter
 				.toLinkStates(snapshots);
-		applySimulationInfo(simulationId, frames);
+		setSimulationInfo(simulationName, frames);
 		return frames;
 	}
 
 	@Override
-	public StatisticsFrames<NodeState> loadNodeSnapshots(long simulationId,
+	public StatisticsFrames<NodeState> loadNodeSnapshots(String simulationName,
 			long nodeId, long startFrame, long endFrame) {
 		List<StatisticsSnapshotDo> snapshots = statisticsSnapshotDao
-				.loadSnapshots(simulationId, nodeId, startFrame, endFrame);
+				.loadSnapshots(simulationName, nodeId, startFrame, endFrame);
 		StatisticsFrames<NodeState> frames = StatisticsConverter
 				.toNodeStates(snapshots);
-		applySimulationInfo(simulationId, frames);
+		setSimulationInfo(simulationName, frames);
 		return frames;
 	}
 
-	private void applySimulationInfo(long simulationId,
+	private void setSimulationInfo(String simulationName,
 			StatisticsFrames<?> frames) {
-		frames.simulationId = simulationId;
-		// load simulation settings info
+		frames.simulationName = simulationName;
+		// set simulation settings info
 	}
 }

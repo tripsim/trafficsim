@@ -22,4 +22,11 @@ public class LinkState {
 		speeds.put(vid, speed);
 		positions.put(vid, position);
 	}
+
+	@Override
+	public String toString() {
+		return "LinkState [sequence=" + sequence + ", id=" + id + ", speeds="
+				+ speeds + ", positions=" + positions + "]";
+	}
+
 }

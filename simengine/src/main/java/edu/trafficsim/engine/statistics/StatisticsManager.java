@@ -4,15 +4,15 @@ public interface StatisticsManager {
 
 	void insertSnapshot(StatisticsSnapshot snapshot);
 
-	StatisticsFrames<VehicleState> loadSnapshots(long simulationId,
+	StatisticsFrames<VehicleState> loadSnapshots(String simulationName,
 			long startFrame, long endFrame);
 
-	StatisticsFrames<VehicleState> loadSnapshots(long simulationId, long vid,
-			long startFrame, long endFrame);
+	StatisticsFrames<VehicleState> loadSnapshots(String simulationName,
+			long vid, long startFrame, long endFrame);
 
-	StatisticsFrames<LinkState> loadLinkSnapshots(long simulationId,
+	StatisticsFrames<LinkState> loadLinkSnapshots(String simulationName,
 			long linkId, long startFrame, long endFrame);
 
-	StatisticsFrames<NodeState> loadNodeSnapshots(long simulationId,
+	StatisticsFrames<NodeState> loadNodeSnapshots(String simulationName,
 			long nodeId, long startFrame, long endFrame);
 }

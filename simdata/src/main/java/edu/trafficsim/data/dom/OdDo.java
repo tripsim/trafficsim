@@ -1,6 +1,6 @@
 package edu.trafficsim.data.dom;
 
-import java.util.Map;
+import java.util.List;
 
 import org.mongodb.morphia.annotations.Embedded;
 
@@ -10,10 +10,12 @@ public class OdDo {
 	private long odId;
 	private String name;
 	private long originNodeId;
-	private long destinationNodeId;
+	private Long destinationNodeId;
 	private String vehicleTypesComposition;
 	private String driverTypesComposition;
-	private Map<Double, Integer> vphs;
+
+	private List<Double> times;
+	private List<Integer> vphs;
 
 	public long getOdId() {
 		return odId;
@@ -39,11 +41,11 @@ public class OdDo {
 		this.originNodeId = originNodeId;
 	}
 
-	public long getDestinationNodeId() {
+	public Long getDestinationNodeId() {
 		return destinationNodeId;
 	}
 
-	public void setDestinationNodeId(long destinationNodeId) {
+	public void setDestinationNodeId(Long destinationNodeId) {
 		this.destinationNodeId = destinationNodeId;
 	}
 
@@ -63,11 +65,19 @@ public class OdDo {
 		this.driverTypesComposition = driverTypesComposition;
 	}
 
-	public Map<Double, Integer> getVphs() {
+	public List<Double> getTimes() {
+		return times;
+	}
+
+	public void setTimes(List<Double> times) {
+		this.times = times;
+	}
+
+	public List<Integer> getVphs() {
 		return vphs;
 	}
 
-	public void setVphs(Map<Double, Integer> vphs) {
+	public void setVphs(List<Integer> vphs) {
 		this.vphs = vphs;
 	}
 

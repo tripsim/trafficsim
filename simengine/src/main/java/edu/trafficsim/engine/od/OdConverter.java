@@ -2,11 +2,10 @@ package edu.trafficsim.engine.od;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +17,9 @@ import edu.trafficsim.model.core.ModelInputException;
 
 @Service("od-converter")
 class OdConverter {
+
+	private static final Logger logger = LoggerFactory
+			.getLogger(OdConverter.class);
 
 	@Autowired
 	OdFactory factory;
@@ -45,18 +47,8 @@ class OdConverter {
 		result.setDestinationNodeId(od.getDestinationNodeId());
 		result.setVehicleTypesComposition(od.getVehicleComposition().getName());
 		result.setDriverTypesComposition(od.getDriverComposition().getName());
-		result.setVphs(toVphsMap(od.getJumpTimes(), od.getVphs()));
-		return result;
-	}
-
-	private Map<Double, Integer> toVphsMap(Collection<Double> times,
-			Collection<Integer> vphs) {
-		Map<Double, Integer> result = new HashMap<Double, Integer>();
-		Iterator<Double> it1 = times.iterator();
-		Iterator<Integer> it2 = vphs.iterator();
-		while (it1.hasNext() && it2.hasNext()) {
-			result.put(it1.next(), it2.next());
-		}
+		result.setTimes(new ArrayList<Double>(od.getJumpTimes()));
+		result.setVphs(new ArrayList<Integer>(od.getVphs()));
 		return result;
 	}
 
@@ -82,13 +74,19 @@ class OdConverter {
 
 	private void addOdDo(OdMatrix result, OdDo entity)
 			throws ModelInputException {
-		double[] times = new double[entity.getVphs().size()];
-		Integer[] vphs = new Integer[entity.getVphs().size()];
-		int i = 0;
-		for (Map.Entry<Double, Integer> entry : entity.getVphs().entrySet()) {
-			times[i] = entry.getKey();
-			vphs[i] = entry.getValue();
-			i++;
+		if (entity.getTimes().size() != entity.getVphs().size()) {
+			logger.warn(
+					"inconsistent od encounted in od matrix '{}', od from {} to {} ignored",
+					result.getName(), entity.getOriginNodeId(),
+					entity.getDestinationNodeId());
+		}
+		int size = entity.getTimes().size();
+		double[] times = new double[size];
+		Integer[] vphs = new Integer[size];
+
+		for (int i = 0; i < size; i++) {
+			times[i] = entity.getTimes().get(i);
+			vphs[i] = entity.getVphs().get(i);
 		}
 		Od od = factory.createOd(entity.getOdId(), entity.getName(),
 				entity.getOriginNodeId(), entity.getDestinationNodeId(),

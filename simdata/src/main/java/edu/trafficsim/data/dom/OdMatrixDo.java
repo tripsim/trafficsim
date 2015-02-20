@@ -15,7 +15,7 @@ public class OdMatrixDo {
 
 	@Id
 	private ObjectId id;
-	private Date date;
+	private Date timestamp;
 
 	private long matrixId;
 	private String name;
@@ -31,12 +31,12 @@ public class OdMatrixDo {
 		this.id = id;
 	}
 
-	public Date getDate() {
-		return date;
+	public Date getTimestamp() {
+		return timestamp;
 	}
 
-	public void setDate(Date date) {
-		this.date = date;
+	public void setTimestamp(Date timestamp) {
+		this.timestamp = timestamp;
 	}
 
 	public String getName() {

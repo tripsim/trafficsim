@@ -5,8 +5,8 @@ import java.util.Map;
 
 public class StatisticsFrames<T> {
 
-	long simulationId;
-	
+	String simulationName;
+
 	final Map<Long, T> states;
 
 	public StatisticsFrames() {
@@ -24,4 +24,11 @@ public class StatisticsFrames<T> {
 	T getState(long sequence) {
 		return states.get(sequence);
 	}
+
+	@Override
+	public String toString() {
+		return "StatisticsFrames [simulationName=" + simulationName
+				+ ", states=" + states + "]";
+	}
+
 }

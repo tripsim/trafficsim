@@ -35,6 +35,11 @@ class NetworkConverter {
 	@Autowired
 	NetworkFactory factory;
 
+
+	//--------------------------------------------------
+	// to Entity
+	//--------------------------------------------------
+
 	final void applyNetworkDo(NetworkDo entity, Network network) {
 		entity.setName(network.getName());
 		entity.setNetworkId(network.getId());
@@ -147,6 +152,9 @@ class NetworkConverter {
 		return result;
 	}
 
+	//--------------------------------------------------
+	// from Entity
+	//--------------------------------------------------
 	final Network toNetwork(NetworkDo entity) throws ParseException,
 			ModelInputException, TransformException {
 		Network result = factory.createNetwork(entity.getNetworkId(),

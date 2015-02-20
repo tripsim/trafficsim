@@ -3,6 +3,7 @@ package edu.trafficsim.engine.simulation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import edu.trafficsim.data.persistence.SimulationDao;
 import edu.trafficsim.engine.network.NetworkManager;
 import edu.trafficsim.engine.od.OdManager;
 import edu.trafficsim.model.Network;
@@ -21,6 +22,8 @@ public class DefaultSimulationService implements SimulationService {
 	OdManager odManager;
 	@Autowired
 	SimulationManager simulationManager;
+	@Autowired
+	SimulationDao simulationDao;
 
 	@Override
 	public void execute(String outcomeName, Network network, OdMatrix odMatrix) {
@@ -31,13 +34,16 @@ public class DefaultSimulationService implements SimulationService {
 	@Override
 	public void execute(String outcomeName, Network network, OdMatrix odMatrix,
 			SimulationSettings settings) {
+
+		network.setModified(true);
+		odMatrix.setModified(true);
 		if (network.isModified()) {
 			networkManager.insertNetwork(network);
 			network.setModified(false);
 		}
 		if (odMatrix.isModified()) {
 			odManager.insertOdMatrix(odMatrix);
-			network.setModified(false);
+			odMatrix.setModified(false);
 		}
 
 		simulationManager.insertSimulation(outcomeName, network.getName(),

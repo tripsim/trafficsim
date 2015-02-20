@@ -7,22 +7,22 @@ import org.mongodb.morphia.annotations.Embedded;
 @Embedded
 public class LinkDo {
 
-	private long linkId;
+	private Long linkId;
 	private String name;
 	private String linkType;
-	private long roadInfoId;
+	private Long roadInfoId;
 	private long startNodeId;
 	private long endNodeId;
-	private long reverseLinkId;
+	private Long reverseLinkId;
 	private String linearGeom;
 
 	private List<LaneDo> lanes;
 
-	public long getLinkId() {
+	public Long getLinkId() {
 		return linkId;
 	}
 
-	public void setLinkId(long linkId) {
+	public void setLinkId(Long linkId) {
 		this.linkId = linkId;
 	}
 
@@ -42,11 +42,11 @@ public class LinkDo {
 		this.linkType = linkType;
 	}
 
-	public long getRoadInfoId() {
+	public Long getRoadInfoId() {
 		return roadInfoId;
 	}
 
-	public void setRoadInfoId(long roadInfoId) {
+	public void setRoadInfoId(Long roadInfoId) {
 		this.roadInfoId = roadInfoId;
 	}
 
@@ -66,11 +66,11 @@ public class LinkDo {
 		this.endNodeId = endNodeId;
 	}
 
-	public long getReverseLinkId() {
+	public Long getReverseLinkId() {
 		return reverseLinkId;
 	}
 
-	public void setReverseLinkId(long reverseLinkId) {
+	public void setReverseLinkId(Long reverseLinkId) {
 		this.reverseLinkId = reverseLinkId;
 	}
 

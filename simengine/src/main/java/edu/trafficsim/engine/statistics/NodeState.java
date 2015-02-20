@@ -22,4 +22,11 @@ public class NodeState {
 		speeds.put(vid, speed);
 		positions.put(vid, position);
 	}
+
+	@Override
+	public String toString() {
+		return "NodeState [sequence=" + sequence + ", id=" + id + ", speeds="
+				+ speeds + ", positions=" + positions + "]";
+	}
+
 }

@@ -35,7 +35,7 @@ class OdMatrixDoImpl extends AbstractDaoImpl<OdMatrixDo> implements OdMatrixDao 
 
 	@Override
 	public void save(OdMatrixDo entity) {
-		entity.setDate(new Date());
+		entity.setTimestamp(new Date());
 		super.save(entity);
 	}
 
@@ -43,7 +43,7 @@ class OdMatrixDoImpl extends AbstractDaoImpl<OdMatrixDo> implements OdMatrixDao 
 	public void save(Iterable<OdMatrixDo> entities) {
 		Date date = new Date();
 		for (OdMatrixDo entity : entities) {
-			entity.setDate(date);
+			entity.setTimestamp(date);
 		}
 		super.save(entities);
 	}

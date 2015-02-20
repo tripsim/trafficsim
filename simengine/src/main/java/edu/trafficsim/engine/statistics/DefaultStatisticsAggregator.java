@@ -14,30 +14,30 @@ class DefaultStatisticsAggregator implements StatisticsAggregator {
 	SimulationManager simulationManager;
 
 	@Override
-	public StatisticsFrames<VehicleState> getVehicleStates(long simulationId,
-			long startFrame, long endFrame) {
-		return statisticsManager.loadSnapshots(simulationId, startFrame,
+	public StatisticsFrames<VehicleState> getVehicleStates(
+			String simulationName, long startFrame, long endFrame) {
+		return statisticsManager.loadSnapshots(simulationName, startFrame,
 				endFrame);
 	}
 
 	@Override
 	public StatisticsFrames<VehicleState> getVehicleTrajectories(
-			long simulationId, long vid, long startFrame, long endFrame) {
-		return statisticsManager.loadSnapshots(simulationId, vid, startFrame,
+			String simulationName, long vid, long startFrame, long endFrame) {
+		return statisticsManager.loadSnapshots(simulationName, vid, startFrame,
 				endFrame);
 	}
 
 	@Override
-	public StatisticsFrames<LinkState> getLinkState(long simulationId,
+	public StatisticsFrames<LinkState> getLinkState(String simulationName,
 			long linkId, long startFrame, long endFrame) {
-		return statisticsManager.loadLinkSnapshots(simulationId, linkId,
+		return statisticsManager.loadLinkSnapshots(simulationName, linkId,
 				startFrame, endFrame);
 	}
 
 	@Override
-	public StatisticsFrames<NodeState> getNodeState(long simulationId,
+	public StatisticsFrames<NodeState> getNodeState(String simulationName,
 			long nodeId, long startFrame, long endFrame) {
-		return statisticsManager.loadNodeSnapshots(simulationId, nodeId,
+		return statisticsManager.loadNodeSnapshots(simulationName, nodeId,
 				startFrame, endFrame);
 	}
 
