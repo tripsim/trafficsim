@@ -54,4 +54,11 @@ public class NodeDo {
 		this.connectors = connectors;
 	}
 
+	@Override
+	public String toString() {
+		return "NodeDo [nodeId=" + nodeId + ", name=" + name + ", nodeType="
+				+ nodeType + ", geom=" + geom + ", connectors=" + connectors
+				+ "]";
+	}
+
 }

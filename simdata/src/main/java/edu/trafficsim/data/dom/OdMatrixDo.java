@@ -71,4 +71,11 @@ public class OdMatrixDo {
 		this.ods = ods;
 	}
 
+	@Override
+	public String toString() {
+		return "OdMatrixDo [id=" + id + ", timestamp=" + timestamp
+				+ ", matrixId=" + matrixId + ", name=" + name
+				+ ", networkName=" + networkName + ", ods=" + ods + "]";
+	}
+
 }

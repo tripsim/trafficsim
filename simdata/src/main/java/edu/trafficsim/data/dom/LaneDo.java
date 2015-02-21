@@ -60,4 +60,11 @@ public class LaneDo {
 		this.shift = shift;
 	}
 
+	@Override
+	public String toString() {
+		return "LaneDo [laneId=" + laneId + ", start=" + start + ", end=" + end
+				+ ", width=" + width + ", length=" + length + ", shift="
+				+ shift + "]";
+	}
+
 }

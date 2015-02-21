@@ -11,6 +11,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import edu.trafficsim.engine.demo.DemoBuilder;
 import edu.trafficsim.engine.network.NetworkFactory;
 import edu.trafficsim.engine.od.OdFactory;
+import edu.trafficsim.engine.simulation.SimulationProject;
 import edu.trafficsim.engine.type.TypesManager;
 import edu.trafficsim.model.Network;
 
@@ -27,10 +28,12 @@ public class MapJsonServiceTest {
 	@Autowired
 	OdFactory odFactory;
 
+	@Autowired
+	DemoBuilder demoBuilder;
+
 	@Before
 	public void setUp() throws Exception {
-		DemoBuilder demo = new DemoBuilder(typesManager, networkFactory,
-				odFactory);
+		SimulationProject demo = demoBuilder.getDemo();
 		jsonService = new MapJsonService();
 		network = demo.getNetwork();
 	}

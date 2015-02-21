@@ -59,39 +59,52 @@ class OdConverter {
 	}
 
 	final OdMatrix toOdMatrix(OdMatrixDo entity) throws ModelInputException {
-		OdMatrix result = factory.createOdMatrix(entity.getMatrixId(),
-				entity.getName(), entity.getNetworkName());
-		addOdDos(result, entity.getOds());
-		return result;
+		return new Builder(entity).build();
 	}
 
-	private void addOdDos(OdMatrix result, List<OdDo> entities)
-			throws ModelInputException {
-		for (OdDo entity : entities) {
-			addOdDo(result, entity);
+	private final class Builder {
+
+		OdMatrixDo entity;
+		OdMatrix result;
+
+		Builder(OdMatrixDo entity) {
+			this.entity = entity;
+		}
+
+		OdMatrix build() throws ModelInputException {
+			result = factory.createOdMatrix(entity.getMatrixId(),
+					entity.getName(), entity.getNetworkName());
+			addOdDos(entity.getOds());
+			return result;
+		}
+
+		private void addOdDos(List<OdDo> entities) throws ModelInputException {
+			for (OdDo entity : entities) {
+				addOdDo(entity);
+			}
+		}
+
+		private void addOdDo(OdDo entity) throws ModelInputException {
+			if (entity.getTimes().size() != entity.getVphs().size()) {
+				logger.warn(
+						"inconsistent od encounted in od matrix '{}', od from {} to {} ignored",
+						result.getName(), entity.getOriginNodeId(),
+						entity.getDestinationNodeId());
+			}
+			int size = entity.getTimes().size();
+			double[] times = new double[size];
+			Integer[] vphs = new Integer[size];
+
+			for (int i = 0; i < size; i++) {
+				times[i] = entity.getTimes().get(i);
+				vphs[i] = entity.getVphs().get(i);
+			}
+			Od od = factory.createOd(entity.getOdId(), entity.getName(),
+					entity.getOriginNodeId(), entity.getDestinationNodeId(),
+					entity.getVehicleTypesComposition(),
+					entity.getDriverTypesComposition(), times, vphs);
+			result.add(od);
 		}
 	}
 
-	private void addOdDo(OdMatrix result, OdDo entity)
-			throws ModelInputException {
-		if (entity.getTimes().size() != entity.getVphs().size()) {
-			logger.warn(
-					"inconsistent od encounted in od matrix '{}', od from {} to {} ignored",
-					result.getName(), entity.getOriginNodeId(),
-					entity.getDestinationNodeId());
-		}
-		int size = entity.getTimes().size();
-		double[] times = new double[size];
-		Integer[] vphs = new Integer[size];
-
-		for (int i = 0; i < size; i++) {
-			times[i] = entity.getTimes().get(i);
-			vphs[i] = entity.getVphs().get(i);
-		}
-		Od od = factory.createOd(entity.getOdId(), entity.getName(),
-				entity.getOriginNodeId(), entity.getDestinationNodeId(),
-				entity.getVehicleTypesComposition(),
-				entity.getDriverTypesComposition(), times, vphs);
-		result.add(od);
-	}
 }

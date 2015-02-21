@@ -81,4 +81,13 @@ public class OdDo {
 		this.vphs = vphs;
 	}
 
+	@Override
+	public String toString() {
+		return "OdDo [odId=" + odId + ", name=" + name + ", originNodeId="
+				+ originNodeId + ", destinationNodeId=" + destinationNodeId
+				+ ", vehicleTypesComposition=" + vehicleTypesComposition
+				+ ", driverTypesComposition=" + driverTypesComposition
+				+ ", times=" + times + ", vphs=" + vphs + "]";
+	}
+
 }

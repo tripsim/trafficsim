@@ -42,4 +42,11 @@ public class RoadInfoDo {
 	public void setHighway(String highway) {
 		this.highway = highway;
 	}
+
+	@Override
+	public String toString() {
+		return "RoadInfoDo [id=" + id + ", name=" + name + ", roadId=" + roadId
+				+ ", highway=" + highway + "]";
+	}
+
 }

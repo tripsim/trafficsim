@@ -79,4 +79,11 @@ public class NetworkDo {
 		this.roadInfos = roadInfos;
 	}
 
+	@Override
+	public String toString() {
+		return "NetworkDo [id=" + id + ", name=" + name + ", timestamp="
+				+ timestamp + ", networkId=" + networkId + ", links=" + links
+				+ ", nodes=" + nodes + ", roadInfos=" + roadInfos + "]";
+	}
+
 }

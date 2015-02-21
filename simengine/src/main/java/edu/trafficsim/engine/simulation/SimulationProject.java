@@ -9,10 +9,20 @@ public class SimulationProject implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
+	public static final long DEFAULT_INIT_SEQ = 1000000000;
+
 	String name;
 	Network network;
 	OdMatrix odMatrix;
 	SimulationSettings settings;
+	long nextSeq = DEFAULT_INIT_SEQ;
+
+	public SimulationProject(Network network, OdMatrix odMatrix, long nextSeq) {
+		this.network = network;
+		this.odMatrix = odMatrix;
+		this.settings = null;
+		this.nextSeq = nextSeq;
+	}
 
 	public SimulationProject(Network network, OdMatrix odMatrix,
 			SimulationSettings settings) {
@@ -51,6 +61,14 @@ public class SimulationProject implements Serializable {
 
 	public void setSettings(SimulationSettings settings) {
 		this.settings = settings;
+	}
+
+	public long getNextSeq() {
+		return nextSeq;
+	}
+
+	public void setNextSeq(long nextSeq) {
+		this.nextSeq = nextSeq;
 	}
 
 }

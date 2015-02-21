@@ -14,6 +14,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import edu.trafficsim.engine.demo.DemoBuilder;
 import edu.trafficsim.engine.network.NetworkFactory;
 import edu.trafficsim.engine.od.OdFactory;
+import edu.trafficsim.engine.simulation.SimulationProject;
 import edu.trafficsim.engine.simulation.SimulationService;
 import edu.trafficsim.engine.statistics.StatisticsAggregator;
 import edu.trafficsim.engine.statistics.StatisticsFrames;
@@ -33,12 +34,13 @@ public class DemoTest {
 	NetworkFactory networkFactory;
 	@Autowired
 	OdFactory odFactory;
+	@Autowired
+	DemoBuilder demoBuilder;
 
 	@Test
 	public void testSimulation() throws ModelInputException, FactoryException,
 			TransformException {
-		DemoBuilder demo = new DemoBuilder(typesManager, networkFactory,
-				odFactory);
+		SimulationProject demo = demoBuilder.getDemo();
 		simulationService
 				.execute("demo", demo.getNetwork(), demo.getOdMatrix());
 
@@ -48,18 +50,17 @@ public class DemoTest {
 			FactoryException, TransformException {
 		ApplicationContext context = new ClassPathXmlApplicationContext(
 				"simengine-test.xml");
-		TypesManager typesManager = context.getBean(TypesManager.class);
-		NetworkFactory networkFactory = context.getBean(NetworkFactory.class);
-		OdFactory odFactory = context.getBean(OdFactory.class);
 		SimulationService simulationService = context
 				.getBean(SimulationService.class);
-		DemoBuilder demo = new DemoBuilder(typesManager, networkFactory,
-				odFactory);
+		DemoBuilder demoBuilder = context.getBean(DemoBuilder.class);
+		SimulationProject demo = demoBuilder.getDemo();
 		simulationService
 				.execute("demo", demo.getNetwork(), demo.getOdMatrix());
-		
-		StatisticsAggregator aggregator = context.getBean(StatisticsAggregator.class);
-		StatisticsFrames<VehicleState> frames = aggregator.getVehicleStates("demo", 0, 100);
+
+		StatisticsAggregator aggregator = context
+				.getBean(StatisticsAggregator.class);
+		StatisticsFrames<VehicleState> frames = aggregator.getVehicleStates(
+				"demo", 0, 100);
 		System.out.println(frames);
 		((ConfigurableApplicationContext) context).close();
 	}

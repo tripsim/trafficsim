@@ -90,4 +90,12 @@ public class LinkDo {
 		this.lanes = lanes;
 	}
 
+	@Override
+	public String toString() {
+		return "LinkDo [linkId=" + linkId + ", name=" + name + ", linkType="
+				+ linkType + ", roadInfoId=" + roadInfoId + ", startNodeId="
+				+ startNodeId + ", endNodeId=" + endNodeId + ", reverseLinkId="
+				+ reverseLinkId + ", linearGeom=" + linearGeom + ", lanes="
+				+ lanes + "]";
+	}
 }

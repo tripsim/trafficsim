@@ -33,6 +33,7 @@ import edu.trafficsim.engine.demo.DemoBuilder;
 import edu.trafficsim.engine.network.NetworkFactory;
 import edu.trafficsim.engine.od.OdFactory;
 import edu.trafficsim.engine.simulation.SimulationManager;
+import edu.trafficsim.engine.simulation.SimulationProject;
 import edu.trafficsim.engine.simulation.SimulationSettings;
 import edu.trafficsim.engine.type.TypesManager;
 import edu.trafficsim.model.Network;
@@ -69,13 +70,17 @@ public class DefaultController extends AbstractController {
 	@Autowired
 	OdFactory odFactory;
 
+	@Autowired
+	DemoBuilder demoBuilder;
+
 	@RequestMapping(value = "/")
 	public String home(Model model, HttpSession session)
 			throws ModelInputException {
 		if (session.isNew()) {
 			Sequence sequence = new Sequence();
 			Network network = networkService.createNetwork(sequence);
-			OdMatrix odMatrix = odService.createOdMatrix(sequence, network.getName());
+			OdMatrix odMatrix = odService.createOdMatrix(sequence,
+					network.getName());
 			SimulationSettings settings = simulationManager
 					.getDefaultSimulationSettings();
 
@@ -90,9 +95,8 @@ public class DefaultController extends AbstractController {
 	@RequestMapping(value = "getdemonetwork", method = RequestMethod.GET)
 	public @ResponseBody String demoNetwork(Model model)
 			throws ModelInputException, FactoryException, TransformException {
-		DemoBuilder demo = new DemoBuilder(typesManager, networkFactory,
-				odFactory);
-		model.addAttribute("sequence", new Sequence(demo.getNextId()));
+		SimulationProject demo = demoBuilder.getDemo();
+		model.addAttribute("sequence", new Sequence(demo.getNextSeq()));
 		model.addAttribute("network", demo.getNetwork());
 		model.addAttribute("odMatrix", demo.getOdMatrix());
 		return mapJsonService.getNetworkJson(demo.getNetwork());
