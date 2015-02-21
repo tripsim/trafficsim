@@ -34,15 +34,12 @@ public class DefaultSimulationService implements SimulationService {
 	@Override
 	public void execute(String outcomeName, Network network, OdMatrix odMatrix,
 			SimulationSettings settings) {
-
-		network.setModified(true);
-		odMatrix.setModified(true);
 		if (network.isModified()) {
-			networkManager.insertNetwork(network);
+			networkManager.saveNetwork(network);
 			network.setModified(false);
 		}
 		if (odMatrix.isModified()) {
-			odManager.insertOdMatrix(odMatrix);
+			odManager.saveOdMatrix(odMatrix);
 			odMatrix.setModified(false);
 		}
 

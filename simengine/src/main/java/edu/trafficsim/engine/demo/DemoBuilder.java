@@ -140,7 +140,7 @@ public class DemoBuilder {
 		link2.setRoadInfo(info2);
 
 		// Network
-		network = networkFactory.createNetwork(id++, "test");
+		network = networkFactory.createNetwork(id++, "demo network");
 		network.add(node1, node2, node3);
 		network.add(link1, link2);
 		network.discover();
@@ -173,7 +173,7 @@ public class DemoBuilder {
 						typesManager.getDefaultDriverTypeCompositionName(),
 						times, vphs);
 
-		odMatrix = odFactory.createOdMatrix(id++, "odm", "networkName");
+		odMatrix = odFactory.createOdMatrix(id++, "demo od matrix", "networkName");
 		odMatrix.add(od);
 
 		// Turn Percentage
