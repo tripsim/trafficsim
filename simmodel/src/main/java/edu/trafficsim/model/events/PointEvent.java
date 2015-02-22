@@ -17,11 +17,10 @@
  */
 package edu.trafficsim.model.events;
 
-import org.opengis.referencing.operation.TransformException;
-
 import com.vividsolutions.jts.geom.Point;
 
 import edu.trafficsim.model.core.AbstractLocation;
+import edu.trafficsim.model.core.ModelInputException;
 
 /**
  * 
@@ -48,13 +47,12 @@ public abstract class PointEvent<T> extends AbstractEvent<T> {
 		}
 
 		@Override
-		public void onGeomUpdated() throws TransformException {
-			// TODO Auto-generated method stub
-
+		public void onGeomUpdated() throws ModelInputException {
 		}
 
 	}
 
+	@SuppressWarnings("unused")
 	private EventLocation location;
 
 	public PointEvent(long id, String name, double startTime, double endTime,

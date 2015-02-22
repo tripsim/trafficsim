@@ -67,9 +67,9 @@
 	<!-- **************************************************************** -->
 	<!-- SPRING ANNOTATION PROCESSING -->
 	<!-- **************************************************************** -->
+	<import resource="classpath:simengine.xml" />
 	<mvc:annotation-driven enable-matrix-variables="true" />
 	<context:component-scan base-package="edu.trafficsim.web" />
-	<import resource="classpath:simengine.xml" />
 	<context:property-placeholder location="classpath:db.local.properties" />
 
 	<!-- **************************************************************** -->

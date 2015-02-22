@@ -19,7 +19,6 @@ package edu.trafficsim.plugin.core;
 
 import java.util.Collection;
 
-import org.opengis.referencing.operation.TransformException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -29,6 +28,7 @@ import edu.trafficsim.model.ConnectionLane;
 import edu.trafficsim.model.Link;
 import edu.trafficsim.model.OdMatrix;
 import edu.trafficsim.model.Vehicle;
+import edu.trafficsim.model.core.ModelInputException;
 import edu.trafficsim.model.util.Randoms;
 import edu.trafficsim.plugin.AbstractPlugin;
 import edu.trafficsim.plugin.IMoving;
@@ -54,8 +54,10 @@ public class DefaultMoving extends AbstractPlugin implements IMoving {
 		if (vehicle.active()) {
 			try {
 				vehicle.refresh();
-			} catch (TransformException e) {
-				logger.error("Deactivate vehicle '{}' for Transformation Error in moving vehicle!", vehicle.getId());
+			} catch (ModelInputException e) {
+				logger.error(
+						"Deactivate vehicle '{}' due to failed refresh in moving vehicle!",
+						vehicle.getId());
 				vehicle.deactivate();
 			}
 		}

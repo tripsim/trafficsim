@@ -22,7 +22,6 @@ import org.springframework.stereotype.Service;
 
 import edu.trafficsim.engine.od.OdFactory;
 import edu.trafficsim.engine.type.TypesManager;
-import edu.trafficsim.model.Network;
 import edu.trafficsim.model.Node;
 import edu.trafficsim.model.Od;
 import edu.trafficsim.model.OdMatrix;
@@ -50,8 +49,8 @@ public class OdService extends EntityService {
 	@Autowired
 	OdFactory factory;
 
-	public void updateOd(Network network, OdMatrix odMatrix, Long id, Long dId,
-			String vcName, String dcName, double[] times, Integer[] vphs)
+	public void updateOd(OdMatrix odMatrix, Long id, Long dId, String vcName,
+			String dcName, double[] times, Integer[] vphs)
 			throws ModelInputException {
 		odMatrix.getOd(id).setDestination(dId);
 		odMatrix.getOd(id).setVehicleComposition(
@@ -59,6 +58,7 @@ public class OdService extends EntityService {
 		odMatrix.getOd(id).setDriverComposition(
 				typesManager.getDriverTypeComposition(dcName));
 		odMatrix.getOd(id).setVphs(times, vphs);
+		odMatrix.setModified(true);
 	}
 
 	public Od createOd(Sequence sequence, OdMatrix odMatrix, Node origin,
@@ -70,16 +70,20 @@ public class OdService extends EntityService {
 				typesManager.getDefaultDriverTypeCompositionName(),
 				DEFAULT_TIME_POINTS, DEFAULT_TIME_VPH);
 		odMatrix.add(od);
+		odMatrix.setModified(true);
 		return od;
 	}
 
 	public void removeOd(OdMatrix odMatrix, long id) {
 		odMatrix.remove(id);
+		odMatrix.setModified(true);
 	}
 
 	public OdMatrix createOdMatrix(Sequence sequence, String networkName) {
-		return factory.createOdMatrix(sequence.nextId(), DEFAULT_NAME,
-				networkName);
+		OdMatrix odMatrix = factory.createOdMatrix(sequence.nextId(),
+				DEFAULT_NAME, networkName);
+		odMatrix.setModified(true);
+		return odMatrix;
 	}
 
 }

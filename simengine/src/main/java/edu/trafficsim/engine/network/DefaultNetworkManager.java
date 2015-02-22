@@ -1,6 +1,5 @@
 package edu.trafficsim.engine.network;
 
-import org.opengis.referencing.operation.TransformException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,7 +60,7 @@ class DefaultNetworkManager implements NetworkManager {
 		}
 		try {
 			return converter.toNetwork(network);
-		} catch (ParseException | ModelInputException | TransformException e) {
+		} catch (ParseException | ModelInputException e) {
 			throw new RuntimeException(e);
 		}
 	}

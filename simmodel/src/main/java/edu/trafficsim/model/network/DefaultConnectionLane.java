@@ -20,8 +20,6 @@ package edu.trafficsim.model.network;
 import java.util.Collection;
 import java.util.Collections;
 
-import org.opengis.referencing.operation.TransformException;
-
 import edu.trafficsim.model.ConnectionLane;
 import edu.trafficsim.model.Lane;
 import edu.trafficsim.model.Node;
@@ -42,7 +40,7 @@ public class DefaultConnectionLane extends AbstractLane<DefaultConnectionLane>
 	private Lane toLane;
 
 	public DefaultConnectionLane(long id, Lane fromLane, Lane toLane,
-			double width) throws TransformException, ModelInputException {
+			double width) throws ModelInputException {
 		super(id, toLane.getSegment(), 0.0, 0.0, width, 0.0);
 		this.fromLane = fromLane;
 		this.toLane = toLane;
@@ -76,10 +74,15 @@ public class DefaultConnectionLane extends AbstractLane<DefaultConnectionLane>
 	}
 
 	@Override
-	public void onGeomUpdated() throws TransformException {
+	public void onGeomUpdated() throws ModelInputException {
 		linearGeom = Coordinates.getConnectLineString(fromLane.getLinearGeom(),
 				toLane.getLinearGeom());
-		length = Coordinates.orthodromicDistance(getCrs(), getLinearGeom());
+		try {
+			length = Coordinates.orthodromicDistance(getCrs(), getLinearGeom());
+		} catch (Exception e) {
+			throw new ModelInputException(
+					"Geometry update failed on connector!", e);
+		}
 	}
 
 	@Override

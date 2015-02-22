@@ -3,7 +3,6 @@ package edu.trafficsim.web.service;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.opengis.referencing.operation.TransformException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -39,7 +38,7 @@ public class MapJsonServiceTest {
 	}
 
 	@Test
-	public void test() throws TransformException {
+	public void test() {
 		String output;
 
 		output = jsonService.getLinkJson(network, 2);

@@ -17,9 +17,9 @@
  */
 package edu.trafficsim.model;
 
-import org.opengis.referencing.operation.TransformException;
-
 import com.vividsolutions.jts.geom.Point;
+
+import edu.trafficsim.model.core.ModelInputException;
 
 /**
  * 
@@ -32,6 +32,6 @@ public interface Location extends GeoReferenced {
 
 	public double getRadius();
 
-	public void setRadius(double radius) throws TransformException;
+	public void setRadius(double radius) throws ModelInputException;
 
 }

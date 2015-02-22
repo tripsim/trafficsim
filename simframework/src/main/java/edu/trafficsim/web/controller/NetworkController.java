@@ -19,7 +19,6 @@ package edu.trafficsim.web.controller;
 
 import java.util.Map;
 
-import org.opengis.referencing.operation.TransformException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -40,6 +39,7 @@ import edu.trafficsim.model.Network;
 import edu.trafficsim.model.Node;
 import edu.trafficsim.model.OdMatrix;
 import edu.trafficsim.model.core.ModelInputException;
+import edu.trafficsim.util.WktUtils;
 import edu.trafficsim.web.Sequence;
 import edu.trafficsim.web.service.MapJsonService;
 import edu.trafficsim.web.service.entity.NetworkService;
@@ -73,9 +73,6 @@ public class NetworkController extends AbstractController {
 	@RequestMapping(value = "/view", method = RequestMethod.GET)
 	public String networkView(@ModelAttribute("network") Network network,
 			Model model) {
-		if (network.isDirty())
-			network.discover();
-
 		model.addAttribute("linkCount", network.getLinks().size());
 		model.addAttribute("nodeCount", network.getNodes().size());
 		model.addAttribute("sourceCount", network.getSources().size());
@@ -126,8 +123,8 @@ public class NetworkController extends AbstractController {
 			@ModelAttribute("odMatrix") OdMatrix odMatrix) {
 
 		try {
-			CoordinateSequence points = ((LineString) MapJsonService.reader
-					.read(linearGeomWkt)).getCoordinateSequence();
+			CoordinateSequence points = ((LineString) WktUtils
+					.fromWKT(linearGeomWkt)).getCoordinateSequence();
 
 			// get start node
 			Node startNode;
@@ -182,14 +179,11 @@ public class NetworkController extends AbstractController {
 					startNode, endNode, points);
 			if (startNode.getFromNode(endNode) != null) {
 				link.setReverseLink(startNode.getFromNode(endNode));
-				networkService.shiftLanes(startNode.getFromNode(endNode));
 			}
 
 			return successResponse("Link(s) created.", null,
 					mapJsonService.getNewLinkJson(link));
 
-		} catch (TransformException e) {
-			return failureResponse("Transformation issues!");
 		} catch (ModelInputException e) {
 			return failureResponse(e);
 		} catch (ParseException e) {

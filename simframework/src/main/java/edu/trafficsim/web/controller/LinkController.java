@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.opengis.referencing.operation.TransformException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -108,8 +107,7 @@ public class LinkController extends AbstractController {
 			@RequestParam("highway") String highway,
 			@RequestParam("roadName") String roadName,
 			@ModelAttribute("network") Network network) {
-		Link link = network.getLink(id);
-		networkService.saveLink(link, name, highway, roadName);
+		networkService.saveLink(network, id, name, highway, roadName);
 		return messageOnlySuccessResponse("Link saved.");
 	}
 
@@ -135,8 +133,8 @@ public class LinkController extends AbstractController {
 						mapJsonService.getEmptyLanesConnectorsJson());
 			}
 			return successResponse("Link removed.", null, data);
-		} catch (TransformException e) {
-			return failureResponse("Transformation issues!");
+		} catch (ModelInputException e) {
+			return failureResponse(e);
 		}
 	}
 
@@ -154,8 +152,6 @@ public class LinkController extends AbstractController {
 			data.put("lanesconnectors",
 					mapJsonService.getLanesConnectorsJson(network, id));
 			return successResponse("Link removed.", "link/view/" + id, data);
-		} catch (TransformException e) {
-			return failureResponse("Transformation issues!");
 		} catch (ModelInputException e) {
 			return failureResponse(e);
 		}

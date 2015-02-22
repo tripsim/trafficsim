@@ -22,8 +22,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import org.opengis.referencing.operation.TransformException;
-
 import com.vividsolutions.jts.geom.LineString;
 
 import edu.trafficsim.model.ConnectionLane;
@@ -49,8 +47,7 @@ public abstract class AbstractLink<T> extends AbstractSegment<T> implements
 	private Link reverseLink = null;
 
 	public AbstractLink(long id, String name, Node startNode, Node endNode,
-			LineString linearGeom) throws TransformException,
-			ModelInputException {
+			LineString linearGeom) throws ModelInputException {
 		super(id, name, startNode, endNode, linearGeom);
 		startNode.add(this);
 		endNode.add(this);
@@ -69,16 +66,16 @@ public abstract class AbstractLink<T> extends AbstractSegment<T> implements
 	@Override
 	public final void setLinearGeom(Location startLocation,
 			Location endLocation, LineString linearGeom)
-			throws TransformException, ModelInputException {
+			throws ModelInputException {
 		Node oldStart = getStartNode() == startLocation ? null : getStartNode();
 		Node oldEnd = getEndNode() == endLocation ? null : getEndNode();
 		super.setLinearGeom(startLocation, endLocation, linearGeom);
 		if (oldStart != null) {
-			oldStart.remove(this);
+			oldStart.removeDownstream(this);
 			getStartNode().add(this);
 		}
 		if (oldEnd != null) {
-			oldEnd.remove(this);
+			oldEnd.removeUpstream(this);
 			getEndNode().add(this);
 		}
 	}
@@ -100,7 +97,7 @@ public abstract class AbstractLink<T> extends AbstractSegment<T> implements
 	}
 
 	@Override
-	public void add(Lane lane) throws TransformException {
+	public void add(Lane lane) throws ModelInputException {
 		lane.setLaneId(subsegments.size());
 		subsegments.add(lane);
 		if (reverseLink == null) {
@@ -116,7 +113,7 @@ public abstract class AbstractLink<T> extends AbstractSegment<T> implements
 	}
 
 	@Override
-	public void remove(int laneId) throws TransformException {
+	public void remove(int laneId) throws ModelInputException {
 		Lane removed = (Lane) subsegments.remove(laneId);
 		if (reverseLink == null) {
 			for (int i = 0; i < laneId; i++) {
@@ -143,17 +140,47 @@ public abstract class AbstractLink<T> extends AbstractSegment<T> implements
 	}
 
 	@Override
-	public void setReverseLink(Link reverseLink) {
+	public void setReverseLink(Link reverseLink) throws ModelInputException {
+		if (reverseLink == null) {
+			if (this.reverseLink != null) {
+				removeReverseLink();
+			}
+			return;
+		}
+
+		if (reverseLink == this.reverseLink) {
+			return;
+		}
+
+		if (this.reverseLink != null) {
+			reverseLink.removeReverseLink();
+		}
+
 		this.reverseLink = reverseLink;
-		if (reverseLink != null && reverseLink.getReverseLink() != this)
+		shiftLanes();
+		if (reverseLink.getReverseLink() != this) {
 			reverseLink.setReverseLink(this);
+		}
 	}
 
 	@Override
-	public void removeReverseLink() {
+	public void removeReverseLink() throws ModelInputException {
 		reverseLink = null;
-		if (reverseLink.getReverseLink() != null)
+		shiftLanes();
+		if (reverseLink.getReverseLink() != null) {
 			reverseLink.removeReverseLink();
+		}
+	}
+
+	private void shiftLanes() throws ModelInputException {
+		double offset = getWidth() / 2;
+		if (getReverseLink() == null) {
+			for (Lane lane : getLanes())
+				lane.setShift(lane.getShift() - offset, false);
+		} else {
+			for (Lane lane : getLanes())
+				lane.setShift(lane.getShift() + offset, false);
+		}
 	}
 
 	@Override

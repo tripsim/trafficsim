@@ -17,8 +17,6 @@
  */
 package edu.trafficsim.model.core;
 
-import org.opengis.referencing.operation.TransformException;
-
 import com.vividsolutions.jts.algorithm.Angle;
 import com.vividsolutions.jts.geom.Coordinate;
 
@@ -122,14 +120,19 @@ public abstract class MovingObject<T> extends BaseEntity<T> implements Movable,
 		this.active = false;
 	}
 
-	protected final Coordinate computeCoord() throws TransformException {
-		return position < 0 ? coord : Coordinates.getOffsetCoordinate(
-				getSegment().getCrs(), getSubsegment().getLinearGeom(),
-				position, lateralOffset);
+	protected final Coordinate computeCoord() throws ModelInputException {
+		try {
+			return position < 0 ? coord : Coordinates.getOffsetCoordinate(
+					getSegment().getCrs(), getSubsegment().getLinearGeom(),
+					position, lateralOffset);
+		} catch (Exception e) {
+			throw new ModelInputException(
+					"vehicle coordinate transformation failed!", e);
+		}
 	}
 
 	@Override
-	public final void refresh() throws TransformException {
+	public final void refresh() throws ModelInputException {
 		Coordinate newCoord = computeCoord();
 		if (speed > 0)
 			this.angle = Angle.toDegrees(Angle.angle(coord, newCoord));

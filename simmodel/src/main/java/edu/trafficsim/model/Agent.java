@@ -17,7 +17,7 @@
  */
 package edu.trafficsim.model;
 
-import org.opengis.referencing.operation.TransformException;
+import edu.trafficsim.model.core.ModelInputException;
 
 /**
  * 
@@ -28,7 +28,7 @@ public interface Agent extends ObjectContainer {
 
 	public long getStartFrame();
 
-	public void refresh() throws TransformException;
+	public void refresh() throws ModelInputException;
 
 	public boolean active();
 

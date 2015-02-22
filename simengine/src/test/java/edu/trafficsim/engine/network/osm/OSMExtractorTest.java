@@ -9,7 +9,6 @@ import javax.xml.stream.XMLStreamException;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.opengis.referencing.operation.TransformException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -32,9 +31,9 @@ public class OSMExtractorTest {
 
 	@Ignore
 	@Test
-	protected void testExtractByUrl() throws TransformException,
-			JsonParseException, ProtocolException, ModelInputException,
-			IOException, XMLStreamException {
+	protected void testExtractByUrl() throws JsonParseException,
+			ProtocolException, ModelInputException, IOException,
+			XMLStreamException {
 		String urlPre = "http://api.openstreetmap.fr/xapi?";
 		String testQuery = "way[highway=*][bbox=-89.4114,43.0707,-89.3955,43.0753]";
 		extractor.extract(urlPre + testQuery, name);
@@ -42,8 +41,8 @@ public class OSMExtractorTest {
 
 	@Ignore
 	@Test
-	protected void testParseXml() throws TransformException,
-			JsonParseException, IOException, XMLStreamException {
+	protected void testParseXml() throws JsonParseException, IOException,
+			XMLStreamException {
 		InputStream in = DemoBuilder.class.getResourceAsStream("demo.xml");
 		@SuppressWarnings("unused")
 		Highways highways = OsmParser.parseXml(in);

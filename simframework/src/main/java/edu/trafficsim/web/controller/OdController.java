@@ -31,7 +31,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
-import edu.trafficsim.engine.od.OdFactory;
 import edu.trafficsim.engine.type.TypesManager;
 import edu.trafficsim.model.Network;
 import edu.trafficsim.model.Node;
@@ -92,11 +91,9 @@ public class OdController extends AbstractController {
 			@RequestParam("driverCompositionName") String dcName,
 			@RequestParam("times[]") double[] times,
 			@RequestParam("vphs[]") Integer[] vphs,
-			@ModelAttribute("network") Network network,
 			@ModelAttribute("odMatrix") OdMatrix odMatrix) {
 		try {
-			odService.updateOd(network, odMatrix, id, dId, vcName, dcName,
-					times, vphs);
+			odService.updateOd(odMatrix, id, dId, vcName, dcName, times, vphs);
 			return messageOnlySuccessResponse("Od saved.");
 		} catch (ModelInputException e) {
 			return failureResponse(e);
@@ -106,7 +103,6 @@ public class OdController extends AbstractController {
 	@RequestMapping(value = "/new", method = RequestMethod.POST)
 	public @ResponseBody Map<String, Object> newOd(
 			@RequestParam("originId") long oid,
-			@ModelAttribute("odFactory") OdFactory factory,
 			@ModelAttribute("sequence") Sequence sequence,
 			@ModelAttribute("network") Network network,
 			@ModelAttribute("odMatrix") OdMatrix odMatrix) {

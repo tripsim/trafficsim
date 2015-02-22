@@ -18,6 +18,7 @@ final class ProjectImportExportConstant {
 	static final String ENDNODE = "endNode";
 	static final String GEOM = "geom";
 	static final String ROADINFO = "roadInfo";
+	static final String REVERSELINKID = "reverseLinkId";
 	static final String START = "start";
 	static final String END = "end";
 	static final String SHIFT = "shift";

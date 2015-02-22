@@ -25,7 +25,9 @@ import java.util.Map;
 import edu.trafficsim.model.BaseEntity;
 import edu.trafficsim.model.Link;
 import edu.trafficsim.model.Network;
+import edu.trafficsim.model.NetworkEditListener;
 import edu.trafficsim.model.Node;
+import edu.trafficsim.model.core.ModelInputException;
 
 /**
  * 
@@ -35,7 +37,7 @@ import edu.trafficsim.model.Node;
  *            the generic type
  */
 public abstract class AbstractNetwork<T> extends BaseEntity<T> implements
-		Network {
+		Network, NetworkEditListener {
 
 	private static final long serialVersionUID = 1L;
 
@@ -84,49 +86,61 @@ public abstract class AbstractNetwork<T> extends BaseEntity<T> implements
 		return links.get(id);
 	}
 
-	@Override
-	public void add(Node node) {
-		nodes.put(node.getId(), node);
+	void add(Node node) throws ModelInputException {
+		if (node == null) {
+			throw new ModelInputException("Cannot add null link to network '"
+					+ getName() + "'!");
+		}
+		if (!nodes.containsKey(node.getId())) {
+			nodes.put(node.getId(), node);
+			onNodeAdded(node);
+		}
 	}
 
 	@Override
-	public void add(Link link) {
+	public void add(Link link) throws ModelInputException {
+		if (link == null) {
+			throw new ModelInputException("Cannot add null link to network '"
+					+ getName() + "'!");
+		}
 		links.put(link.getId(), link);
+		add(link.getStartNode());
+		add(link.getEndNode());
+		onLinkAdded(link);
 	}
 
 	@Override
-	public void add(Node... nodes) {
-		for (Node node : nodes)
-			add(node);
-	}
-
-	@Override
-	public void add(Link... links) {
-		for (Link link : links)
+	public void add(Link... links) throws ModelInputException {
+		for (Link link : links) {
 			add(link);
+		}
+	}
+
+	Node removeNode(long id) {
+		Node node = nodes.remove(id);
+		if (node != null) {
+			onNodeRemoved(node);
+		}
+		return node;
 	}
 
 	@Override
-	public Node removeNode(long id) {
-		return nodes.remove(id);
-	}
+	public Link removeLink(long linkId) throws ModelInputException {
+		Link link = links.remove(linkId);
+		if (link == null) {
+			return null;
+		}
+		link.getStartNode().removeDownstream(link);
+		link.getEndNode().removeUpstream(link);
 
-	@Override
-	public Link removeLink(long id) {
-		Link link = links.remove(id);
-		link.getStartNode().remove(link);
-		link.getEndNode().remove(link);
+		if (link.getStartNode().isEmpty()) {
+			removeNode(link.getStartNode().getId());
+		}
+		if (link.getEndNode().isEmpty()) {
+			removeNode(link.getEndNode().getId());
+		}
+		onLinkRemoved(link);
 		return link;
-	}
-
-	@Override
-	public Node removeNode(Node node) {
-		return removeNode(node.getId());
-	}
-
-	@Override
-	public Link removeLink(Link link) {
-		return removeLink(link.getId());
 	}
 
 }

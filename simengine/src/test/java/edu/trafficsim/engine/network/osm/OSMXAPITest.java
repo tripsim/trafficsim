@@ -7,11 +7,9 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.opengis.referencing.operation.TransformException;
-
 public class OSMXAPITest {
 
-	public static void main(String[] args) throws TransformException {
+	public static void main(String[] args) {
 		test();
 	}
 
@@ -39,7 +37,7 @@ public class OSMXAPITest {
 
 			System.out.println(conn.getRequestProperty("Accept"));
 			System.out.println(conn.getContentType());
-			
+
 			BufferedReader br = new BufferedReader(new InputStreamReader(
 					(conn.getInputStream())));
 

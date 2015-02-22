@@ -25,6 +25,7 @@ import static edu.trafficsim.engine.io.ProjectImportExportConstant.ODMATRIX;
 import static edu.trafficsim.engine.io.ProjectImportExportConstant.ODS;
 import static edu.trafficsim.engine.io.ProjectImportExportConstant.ORIGIN;
 import static edu.trafficsim.engine.io.ProjectImportExportConstant.PROBABILITIES;
+import static edu.trafficsim.engine.io.ProjectImportExportConstant.REVERSELINKID;
 import static edu.trafficsim.engine.io.ProjectImportExportConstant.ROADID;
 import static edu.trafficsim.engine.io.ProjectImportExportConstant.ROADINFO;
 import static edu.trafficsim.engine.io.ProjectImportExportConstant.ROADINFOS;
@@ -139,6 +140,11 @@ final class ProjectJsonExporter {
 				generator.writeString(link.getLinkType());
 				generator.writeFieldName(GEOM);
 				generator.writeString(WktUtils.toWKT(link.getLinearGeom()));
+				if (link.getReverseLink() != null) {
+					generator.writeFieldName(REVERSELINKID);
+					generator.writeNumber(link.getReverseLink().getId());
+				}
+				generator.writeNumber(link.getId());
 				generator.writeFieldName(STARTNODE);
 				generator.writeNumber(link.getStartNode().getId());
 				generator.writeFieldName(ENDNODE);

@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Random;
 
 import org.apache.commons.math3.random.RandomGenerator;
-import org.opengis.referencing.operation.TransformException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +37,7 @@ import edu.trafficsim.model.Network;
 import edu.trafficsim.model.Node;
 import edu.trafficsim.model.Od;
 import edu.trafficsim.model.Vehicle;
+import edu.trafficsim.model.core.ModelInputException;
 import edu.trafficsim.model.util.Randoms;
 import edu.trafficsim.plugin.AbstractPlugin;
 import edu.trafficsim.plugin.IRouting;
@@ -130,9 +130,9 @@ public class PoissonVehicleGenerating extends AbstractPlugin implements
 			vehicle.currentLane(lane);
 			try {
 				vehicle.refresh();
-			} catch (TransformException e) {
+			} catch (ModelInputException e) {
 				logger.error(
-						"Skipped generating vehicle for Transformation Error during vehicle generation on lane {}",
+						"Skipped generating vehicle for Refreseh Error during vehicle generation on lane {}",
 						lane);
 				continue;
 			}

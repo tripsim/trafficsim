@@ -26,6 +26,7 @@ import java.util.Set;
 
 import edu.trafficsim.model.BaseEntity;
 import edu.trafficsim.model.Link;
+import edu.trafficsim.model.Node;
 import edu.trafficsim.model.Od;
 import edu.trafficsim.model.OdMatrix;
 import edu.trafficsim.model.TurnPercentage;
@@ -49,7 +50,7 @@ public class DefaultOdMatrix extends BaseEntity<DefaultOdMatrix> implements
 	// origin, destination pair -> od
 	private final MultiValuedMap<OdKey, Od> ods;
 	private final Map<Long, Od> odsById;
-	private boolean modified;
+	private boolean modified = false;
 
 	public DefaultOdMatrix(long id, String name, String networkName) {
 		super(id, name);
@@ -112,14 +113,17 @@ public class DefaultOdMatrix extends BaseEntity<DefaultOdMatrix> implements
 	}
 
 	@Override
-	public void remove(Od od) {
-		remove(od.getId());
+	public boolean remove(Od od) {
+		return remove(od.getId()) == null;
 	}
 
 	@Override
-	public void remove(Collection<Od> ods) {
-		for (Od od : ods)
-			remove(od);
+	public boolean remove(Collection<Od> ods) {
+		boolean result = false;
+		for (Od od : ods) {
+			result = result || remove(od);
+		}
+		return result;
 	}
 
 	private static final OdKey odKey(Od od) {
@@ -138,6 +142,36 @@ public class DefaultOdMatrix extends BaseEntity<DefaultOdMatrix> implements
 			super(key1, key2);
 		}
 
+	}
+
+	@Override
+	public boolean isModified() {
+		return modified;
+	}
+
+	@Override
+	public void setModified(boolean modified) {
+		this.modified = modified;
+	}
+
+	@Override
+	public void onNodeAdded(Node node) {
+	}
+
+	@Override
+	public void onNodeRemoved(Node node) {
+		if (remove(getOdsFromNode(node.getId()))
+				|| remove(getOdsToNode(node.getId()))) {
+			modified = true;
+		}
+	}
+
+	@Override
+	public void onLinkAdded(Link link) {
+	}
+
+	@Override
+	public void onLinkRemoved(Link link) {
 	}
 
 	// turn percentage
@@ -236,16 +270,6 @@ public class DefaultOdMatrix extends BaseEntity<DefaultOdMatrix> implements
 				}
 			}
 		}
-	}
-
-	@Override
-	public boolean isModified() {
-		return modified;
-	}
-
-	@Override
-	public void setModified(boolean modified) {
-		this.modified = modified;
 	}
 
 }

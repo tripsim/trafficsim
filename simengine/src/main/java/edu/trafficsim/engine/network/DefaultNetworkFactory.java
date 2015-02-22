@@ -18,7 +18,6 @@
 package edu.trafficsim.engine.network;
 
 import org.geotools.geometry.jts.JTSFactoryFinder;
-import org.opengis.referencing.operation.TransformException;
 import org.springframework.stereotype.Component;
 
 import com.vividsolutions.jts.geom.Coordinate;
@@ -100,7 +99,7 @@ class DefaultNetworkFactory implements NetworkFactory {
 	@Override
 	public Link createLink(Long id, String name, String linkType,
 			Node startNode, Node endNode, Coordinate[] coords, RoadInfo roadInfo)
-			throws ModelInputException, TransformException {
+			throws ModelInputException {
 		return createLink(id, name, linkType, startNode, endNode,
 				createLineString(coords), roadInfo);
 	}
@@ -108,7 +107,7 @@ class DefaultNetworkFactory implements NetworkFactory {
 	@Override
 	public Link createLink(Long id, String name, String linkType,
 			Node startNode, Node endNode, CoordinateSequence points,
-			RoadInfo roadInfo) throws ModelInputException, TransformException {
+			RoadInfo roadInfo) throws ModelInputException {
 		return createLink(id, name, linkType, startNode, endNode,
 				createLineString(points), roadInfo);
 	}
@@ -116,7 +115,7 @@ class DefaultNetworkFactory implements NetworkFactory {
 	@Override
 	public Link createLink(Long id, String name, String linkType,
 			Node startNode, Node endNode, LineString lineString,
-			RoadInfo roadInfo) throws ModelInputException, TransformException {
+			RoadInfo roadInfo) throws ModelInputException {
 		if (roadInfo == null) {
 			roadInfo = new DefaultRoadInfo();
 		}
@@ -126,7 +125,7 @@ class DefaultNetworkFactory implements NetworkFactory {
 
 	@Override
 	public Link createReverseLink(Long id, String name, Link link)
-			throws ModelInputException, TransformException {
+			throws ModelInputException {
 		Link newLink = createLink(id, name, link.getLinkType(),
 				link.getEndNode(), link.getStartNode(), (LineString) link
 						.getLinearGeom().reverse(), link.getRoadInfo());
@@ -136,13 +135,13 @@ class DefaultNetworkFactory implements NetworkFactory {
 
 	@Override
 	public Lane createLane(Long id, Link link, double start, double end,
-			double width) throws ModelInputException, TransformException {
+			double width) throws ModelInputException {
 		return new DefaultLane(id, link, start, end, width);
 	}
 
 	@Override
 	public Lane[] createLanes(Long[] ids, Link link, double start, double end,
-			double width) throws ModelInputException, TransformException {
+			double width) throws ModelInputException {
 		for (Long id : ids) {
 			createLane(id, link, start, end, width);
 		}
@@ -151,7 +150,7 @@ class DefaultNetworkFactory implements NetworkFactory {
 
 	@Override
 	public ConnectionLane connect(Long id, Lane laneFrom, Lane laneTo,
-			double width) throws ModelInputException, TransformException {
+			double width) throws ModelInputException {
 		return new DefaultConnectionLane(id, laneFrom, laneTo, width);
 	}
 

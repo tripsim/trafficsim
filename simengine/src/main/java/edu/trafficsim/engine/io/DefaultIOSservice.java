@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import org.opengis.referencing.operation.TransformException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,8 +48,7 @@ class DefaultIOSservice implements IOService {
 		try {
 			return ProjectJsonImporter.importProject(in, networkFactory,
 					odFactory, typesFactory, typesManager);
-		} catch (IOException | ParseException | ModelInputException
-				| TransformException e) {
+		} catch (IOException | ParseException | ModelInputException e) {
 			logger.error("failed to import from source!");
 		}
 		return null;

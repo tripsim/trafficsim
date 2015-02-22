@@ -21,6 +21,8 @@ import java.util.Collection;
 
 import com.vividsolutions.jts.geom.Coordinate;
 
+import edu.trafficsim.model.core.ModelInputException;
+
 /**
  * 
  * 
@@ -48,36 +50,13 @@ public interface Network extends ObjectContainer, Persistable {
 
 	boolean containsLink(long id);
 
-	void add(Node node);
+	void add(Link link) throws ModelInputException;
 
-	void add(Link link);
+	void add(Link... links) throws ModelInputException;
 
-	Node removeNode(long id);
-
-	Link removeLink(long id);
-
-	Node removeNode(Node node);
-
-	Link removeLink(Link link);
-
-	void add(Node... nodes);
-
-	void add(Link... links);
+	Link removeLink(long linkId) throws ModelInputException;
 
 	Coordinate center();
-
-	boolean isSource(Node node);
-
-	boolean isSink(Node node);
-
-	void dirty();
-
-	boolean isDirty();
-
-	/**
-	 * discover its sources and sinks
-	 */
-	void discover();
 
 	// TODO implement as needed
 

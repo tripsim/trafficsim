@@ -19,8 +19,6 @@ package edu.trafficsim.model;
 
 import java.util.List;
 
-import org.opengis.referencing.operation.TransformException;
-
 import com.vividsolutions.jts.geom.LineString;
 
 import edu.trafficsim.model.core.ModelInputException;
@@ -42,8 +40,7 @@ public interface Segment extends GeoReferenced {
 	LineString getLinearGeom();
 
 	void setLinearGeom(Location startLocation, Location endLocation,
-			LineString linearGeom) throws TransformException,
-			ModelInputException;
+			LineString linearGeom) throws ModelInputException;
 
 	double getWidth();
 

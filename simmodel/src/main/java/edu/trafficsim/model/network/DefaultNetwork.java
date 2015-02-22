@@ -24,7 +24,9 @@ import java.util.Set;
 
 import com.vividsolutions.jts.geom.Coordinate;
 
+import edu.trafficsim.model.Link;
 import edu.trafficsim.model.Node;
+import edu.trafficsim.model.core.ModelInputException;
 
 /**
  * 
@@ -41,10 +43,10 @@ public class DefaultNetwork extends AbstractNetwork<DefaultNetwork> {
 		super(id, name);
 	}
 
-	private boolean dirty = true;
 	private final Set<Node> sources = new HashSet<Node>();
 	private final Set<Node> sinks = new HashSet<Node>();
-	private Coordinate center = null;
+	private double totalX = 0;
+	private double totalY = 0;
 
 	@Override
 	public Collection<Node> getSources() {
@@ -57,56 +59,50 @@ public class DefaultNetwork extends AbstractNetwork<DefaultNetwork> {
 	}
 
 	@Override
-	public void discover() {
-		sources.clear();
-		sinks.clear();
-		double x = 0, y = 0, n = (double) nodes.size();
-		if (n == 0)
-			return;
+	public void onNodeAdded(Node node) {
+		totalX += node.getPoint().getX();
+		totalY += node.getPoint().getY();
+	}
 
-		for (Node node : nodes.values()) {
-			x += node.getPoint().getX();
-			y += node.getPoint().getY();
-			if (node.getDownstreams().isEmpty())
-				sinks.add(node);
-			if (node.getUpstreams().isEmpty())
-				sources.add(node);
-			if (node.getUpstreams().size() == 1
-					&& node.getDownstreams().size() == 1
-					&& node.getUpstreams().iterator().next() == node
-							.getDownstreams().iterator().next()
-							.getReverseLink()) {
-				sinks.add(node);
-				sources.add(node);
-			}
+	@Override
+	public void onNodeRemoved(Node node) {
+		totalX -= node.getPoint().getX();
+		totalY -= node.getPoint().getY();
+	}
+
+	@Override
+	public void onLinkAdded(Link link) {
+		refreshEndPoints(link);
+		modified = true;
+	}
+
+	@Override
+	public void onLinkRemoved(Link link) throws ModelInputException {
+		refreshEndPoints(link);
+		link.removeReverseLink();
+		modified = true;
+	}
+
+	private void refreshEndPoints(Link link) {
+		refreshEndPoints(link.getStartNode());
+		refreshEndPoints(link.getEndNode());
+	}
+
+	private void refreshEndPoints(Node node) {
+		sources.remove(node);
+		sinks.remove(node);
+		if (node.isSink()) {
+			sinks.add(node);
 		}
-		center = new Coordinate(x / n, y / n);
-		dirty = false;
+		if (node.isSource()) {
+			sources.add(node);
+		}
 	}
 
 	@Override
 	public Coordinate center() {
-		return center;
-	}
-
-	@Override
-	public boolean isSource(Node node) {
-		return sources.contains(node);
-	}
-
-	@Override
-	public boolean isSink(Node node) {
-		return sinks.contains(node);
-	}
-
-	@Override
-	public void dirty() {
-		dirty = true;
-	}
-
-	@Override
-	public boolean isDirty() {
-		return dirty;
+		int n = nodes.size();
+		return n == 0 ? null : new Coordinate(totalX / n, totalY / n);
 	}
 
 	@Override

@@ -58,8 +58,6 @@ public class NodeController extends AbstractController {
 		if (node == null)
 			return "components/empty";
 
-		if (network.isDirty())
-			network.discover();
 		model.addAttribute("network", network);
 		model.addAttribute("ods", odMatrix.getOdsFromNode(node.getId()));
 		model.addAttribute("node", node);
@@ -89,12 +87,10 @@ public class NodeController extends AbstractController {
 	}
 
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
-	public @ResponseBody
-	Map<String, Object> saveNodek(@RequestParam("id") long id,
-			@RequestParam("name") String name,
+	public @ResponseBody Map<String, Object> saveNodek(
+			@RequestParam("id") long id, @RequestParam("name") String name,
 			@ModelAttribute("network") Network network) {
-		Node node = network.getNode(id);
-		networkService.saveNode(node, name);
+		networkService.saveNode(network, id, name);
 		return messageOnlySuccessResponse("Node saved.");
 	}
 }

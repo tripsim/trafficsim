@@ -17,8 +17,6 @@
  */
 package edu.trafficsim.model.network;
 
-import org.opengis.referencing.operation.TransformException;
-
 import com.vividsolutions.jts.geom.LineString;
 
 import edu.trafficsim.model.Node;
@@ -40,7 +38,7 @@ public class DefaultLink extends AbstractLink<DefaultLink> {
 
 	public DefaultLink(long id, String name, String linkType, Node startNode,
 			Node endNode, LineString linearGeom, RoadInfo roadInfo)
-			throws TransformException, ModelInputException {
+			throws ModelInputException {
 		super(id, name, startNode, endNode, linearGeom);
 		this.linkType = linkType;
 		this.roadInfo = roadInfo;

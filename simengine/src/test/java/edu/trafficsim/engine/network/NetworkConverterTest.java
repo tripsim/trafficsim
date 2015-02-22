@@ -2,7 +2,6 @@ package edu.trafficsim.engine.network;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.opengis.referencing.operation.TransformException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,8 +27,7 @@ public class NetworkConverterTest {
 	NetworkConverter converter;
 
 	@Test
-	public void test() throws ParseException, ModelInputException,
-			TransformException {
+	public void test() throws ParseException, ModelInputException {
 		Network network = demoBuilder.getDemo().getNetwork();
 		NetworkDo entity = converter.toNetworkDo(network);
 		logger.info("{}", entity);

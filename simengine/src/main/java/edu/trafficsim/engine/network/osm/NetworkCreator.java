@@ -22,8 +22,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.opengis.referencing.operation.TransformException;
-
 import com.vividsolutions.jts.geom.Coordinate;
 
 import edu.trafficsim.engine.network.NetworkExtractResult;
@@ -54,7 +52,7 @@ public class NetworkCreator {
 	// TODO the osm nodes that has only two links if possible
 	public static NetworkExtractResult createNetwork(Highways highways,
 			TypesManager typesManager, NetworkFactory networkFactory,
-			String name) throws ModelInputException, TransformException {
+			String name) throws ModelInputException {
 		NetworkExtractResult result = new NetworkExtractResult();
 		long id = DEFAULT_START_ID;
 		result.setStartId(id);
@@ -92,7 +90,6 @@ public class NetworkCreator {
 		}
 
 		CoordinateTransformer.transform(network, filter);
-		network.discover();
 
 		result.setEndId(id);
 		result.setObjectCount(result.getStartId() - result.getEndId());
@@ -104,17 +101,15 @@ public class NetworkCreator {
 			OsmNode startOsmNode, OsmNode endOsmNode, OsmWay osmWay,
 			List<Coordinate> coords, RoadInfo roadInfo,
 			NetworkFactory networkFactory, String nodeType, String linkType,
-			long id) throws ModelInputException, TransformException {
+			long id) throws ModelInputException {
 		Node startNode = nodes.get(startOsmNode);
 		if (startNode == null) {
 			startNode = createNode(startOsmNode, nodeType, networkFactory, id);
-			network.add(startNode);
 			nodes.put(startOsmNode, startNode);
 		}
 		Node endNode = nodes.get(endOsmNode);
 		if (endNode == null) {
 			endNode = createNode(endOsmNode, nodeType, networkFactory, id);
-			network.add(endNode);
 			nodes.put(endOsmNode, endNode);
 		}
 
@@ -144,7 +139,7 @@ public class NetworkCreator {
 	private static Link createLink(OsmWay osmWay, String linkType,
 			Node startNode, Node endNode, List<Coordinate> coords,
 			RoadInfo roadInfo, NetworkFactory networkFactory, long id)
-			throws ModelInputException, TransformException {
+			throws ModelInputException {
 		Link link = networkFactory
 				.createLink(id++, osmWay.name, linkType, startNode, endNode,
 						coords.toArray(new Coordinate[0]), roadInfo);
@@ -153,8 +148,7 @@ public class NetworkCreator {
 	}
 
 	private static Link createReverseLink(Link link,
-			NetworkFactory networkFactory, long id) throws ModelInputException,
-			TransformException {
+			NetworkFactory networkFactory, long id) throws ModelInputException {
 		Link reverseLink = networkFactory.createReverseLink(id++,
 				String.format("%s Reversed", link.getName()), link);
 		reverseLink.setRoadInfo(link.getRoadInfo());

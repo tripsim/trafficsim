@@ -20,7 +20,6 @@ package edu.trafficsim.web.controller;
 import javax.servlet.http.HttpSession;
 
 import org.opengis.referencing.FactoryException;
-import org.opengis.referencing.operation.TransformException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -51,7 +50,7 @@ import edu.trafficsim.web.service.entity.OdService;
  */
 @Controller
 @RequestMapping(value = "/")
-@SessionAttributes(value = { "seq", "network", "odMatrix", "settings" })
+@SessionAttributes(value = { "sequence", "network", "odMatrix", "settings" })
 public class DefaultController extends AbstractController {
 
 	@Autowired
@@ -84,7 +83,7 @@ public class DefaultController extends AbstractController {
 			SimulationSettings settings = simulationManager
 					.getDefaultSimulationSettings();
 
-			model.addAttribute("seq", sequence);
+			model.addAttribute("sequence", sequence);
 			model.addAttribute("network", network);
 			model.addAttribute("odMatrix", odMatrix);
 			model.addAttribute("settings", settings);
@@ -94,7 +93,7 @@ public class DefaultController extends AbstractController {
 
 	@RequestMapping(value = "getdemonetwork", method = RequestMethod.GET)
 	public @ResponseBody String demoNetwork(Model model)
-			throws ModelInputException, FactoryException, TransformException {
+			throws ModelInputException, FactoryException {
 		SimulationProject demo = demoBuilder.getDemo();
 		model.addAttribute("sequence", new Sequence(demo.getNextSeq()));
 		model.addAttribute("network", demo.getNetwork());

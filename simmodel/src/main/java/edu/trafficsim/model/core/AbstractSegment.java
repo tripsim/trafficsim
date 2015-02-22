@@ -22,7 +22,6 @@ import java.util.Collections;
 import java.util.List;
 
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.opengis.referencing.operation.TransformException;
 
 import com.vividsolutions.jts.geom.LineString;
 
@@ -56,7 +55,7 @@ public abstract class AbstractSegment<T> extends BaseEntity<T> implements
 
 	public AbstractSegment(long id, String name, Location startLocation,
 			Location endLocation, LineString linearGeom)
-			throws TransformException, ModelInputException {
+			throws ModelInputException {
 		super(id, name);
 		checkStartEnd(startLocation, endLocation, linearGeom);
 		this.linearGeom = linearGeom;
@@ -96,9 +95,8 @@ public abstract class AbstractSegment<T> extends BaseEntity<T> implements
 	}
 
 	@Override
-	public void setLinearGeom(Location startLocation,
-			Location endLocation, LineString linearGeom)
-			throws TransformException, ModelInputException {
+	public void setLinearGeom(Location startLocation, Location endLocation,
+			LineString linearGeom) throws ModelInputException {
 		checkStartEnd(startLocation, endLocation, linearGeom);
 		this.linearGeom = linearGeom;
 		this.startLocation = startLocation;
@@ -135,8 +133,12 @@ public abstract class AbstractSegment<T> extends BaseEntity<T> implements
 	}
 
 	@Override
-	public void onGeomUpdated() throws TransformException {
-		length = Coordinates.orthodromicDistance(getCrs(), getLinearGeom());
+	public void onGeomUpdated() throws ModelInputException {
+		try {
+			length = Coordinates.orthodromicDistance(getCrs(), getLinearGeom());
+		} catch (Exception e) {
+			new ModelInputException("Geometry update failed on segment!", e);
+		}
 		for (Subsegment subsegment : subsegments)
 			subsegment.onGeomUpdated();
 	}

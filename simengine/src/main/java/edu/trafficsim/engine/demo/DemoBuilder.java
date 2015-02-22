@@ -18,7 +18,6 @@
 package edu.trafficsim.engine.demo;
 
 import org.opengis.referencing.FactoryException;
-import org.opengis.referencing.operation.TransformException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -65,13 +64,12 @@ public class DemoBuilder {
 		try {
 			manualBuild();
 			return new SimulationProject(network, odMatrix, null);
-		} catch (ModelInputException | FactoryException | TransformException e) {
+		} catch (ModelInputException | FactoryException e) {
 		}
 		return null;
 	}
 
-	private void manualBuild() throws ModelInputException, FactoryException,
-			TransformException {
+	private void manualBuild() throws ModelInputException, FactoryException {
 		// TODO using WTKReader, or other well known format reader if viable
 
 		// Links and Nodes need to have there own coordinate object to avoid
@@ -141,9 +139,7 @@ public class DemoBuilder {
 
 		// Network
 		network = networkFactory.createNetwork(id++, "demo network");
-		network.add(node1, node2, node3);
 		network.add(link1, link2);
-		network.discover();
 
 		// Transform
 		TransformCoordinateFilter filter = GeoReferencing.getTransformFilter(
@@ -173,7 +169,8 @@ public class DemoBuilder {
 						typesManager.getDefaultDriverTypeCompositionName(),
 						times, vphs);
 
-		odMatrix = odFactory.createOdMatrix(id++, "demo od matrix", "networkName");
+		odMatrix = odFactory.createOdMatrix(id++, "demo od matrix",
+				"networkName");
 		odMatrix.add(od);
 
 		// Turn Percentage

@@ -29,4 +29,8 @@ public class ModelInputException extends Exception {
 	public ModelInputException(String message) {
 		super(message);
 	}
+
+	public ModelInputException(String message, Throwable cause) {
+		super(message, cause);
+	}
 }

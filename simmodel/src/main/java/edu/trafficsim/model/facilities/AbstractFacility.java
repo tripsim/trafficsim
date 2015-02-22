@@ -17,12 +17,11 @@
  */
 package edu.trafficsim.model.facilities;
 
-import org.opengis.referencing.operation.TransformException;
-
 import com.vividsolutions.jts.geom.Point;
 
 import edu.trafficsim.model.Facility;
 import edu.trafficsim.model.core.AbstractLocation;
+import edu.trafficsim.model.core.ModelInputException;
 
 /**
  * 
@@ -40,7 +39,7 @@ public abstract class AbstractFacility<T> extends AbstractLocation<T> implements
 		super(id, name, point);
 	}
 
-	public void onGeomUpdated() throws TransformException {
+	public void onGeomUpdated() throws ModelInputException {
 
 	}
 }

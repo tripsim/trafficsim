@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.opengis.referencing.operation.TransformException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -154,7 +153,7 @@ class NetworkConverter {
 	// from Entity
 	// --------------------------------------------------
 	final Network toNetwork(NetworkDo entity) throws ParseException,
-			ModelInputException, TransformException {
+			ModelInputException {
 		return new Builder(entity).build();
 	}
 
@@ -164,6 +163,8 @@ class NetworkConverter {
 
 		final Map<Long, RoadInfo> roadInfos;
 		final Map<Long, Lane> lanes;
+		final Map<Long, Node> nodes;
+		final Map<Long, Long> reverseLinks;
 
 		Builder(NetworkDo entity) {
 			this.entity = entity;
@@ -171,12 +172,14 @@ class NetworkConverter {
 					entity.getName());
 			roadInfos = getRoadInfos(entity);
 			lanes = new HashMap<Long, Lane>();
+			nodes = new HashMap<Long, Node>();
+			reverseLinks = new HashMap<Long, Long>();
 		}
 
-		Network build() throws ParseException, ModelInputException,
-				TransformException {
+		Network build() throws ParseException, ModelInputException {
 			addNodes(entity.getNodes());
 			addLinks(entity.getLinks());
+			addReverseLink();
 			addConnectors(entity.getNodes());
 			return result;
 		}
@@ -191,20 +194,20 @@ class NetworkConverter {
 			Node node = factory.createNode(entity.getNodeId(),
 					entity.getName(), entity.getNodeType(),
 					(Point) WktUtils.fromWKT(entity.getGeom()));
-			result.add(node);
+			nodes.put(node.getId(), node);
 		}
 
 		private void addLinks(List<LinkDo> entities)
-				throws ModelInputException, TransformException, ParseException {
+				throws ModelInputException, ParseException {
 			for (LinkDo entity : entities) {
 				addLink(entity);
 			}
 		}
 
 		private void addLink(LinkDo entity) throws ModelInputException,
-				TransformException, ParseException {
-			Node startNode = result.getNode(entity.getStartNodeId());
-			Node endNode = result.getNode(entity.getEndNodeId());
+				ParseException {
+			Node startNode = nodes.get(entity.getStartNodeId());
+			Node endNode = nodes.get(entity.getEndNodeId());
 			if (startNode == null || endNode == null) {
 				throw new RuntimeException(
 						"start Node or end Node cannot be found for link "
@@ -215,18 +218,36 @@ class NetworkConverter {
 					(LineString) WktUtils.fromWKT(entity.getLinearGeom()),
 					roadInfos.get(entity.getRoadInfoId()));
 			result.add(link);
+			if (entity.getReverseLinkId() != null) {
+				long id1 = entity.getLinkId();
+				long id2 = entity.getReverseLinkId();
+				if (!reverseLinks.containsKey(id1)
+						&& !reverseLinks.containsKey(id2)) {
+					reverseLinks.put(id1, id2);
+				}
+			}
 			addLanes(link, entity.getLanes());
 		}
 
+		private void addReverseLink() throws ModelInputException {
+			for (Map.Entry<Long, Long> entry : reverseLinks.entrySet()) {
+				long id1 = entry.getKey();
+				long id2 = entry.getValue();
+				Link link1 = result.getLink(id1);
+				Link link2 = result.getLink(id2);
+				link1.setReverseLink(link2);
+			}
+		}
+
 		private void addLanes(Link link, List<LaneDo> entities)
-				throws ModelInputException, TransformException {
+				throws ModelInputException {
 			for (LaneDo entity : entities) {
 				addLane(link, entity);
 			}
 		}
 
 		private void addLane(Link link, LaneDo entity)
-				throws ModelInputException, TransformException {
+				throws ModelInputException {
 			Lane lane = factory.createLane(entity.getLaneId(), link,
 					entity.getStart(), entity.getEnd(), entity.getWidth());
 			link.add(lane);
@@ -234,7 +255,7 @@ class NetworkConverter {
 		}
 
 		private void addConnectors(List<NodeDo> entities)
-				throws ModelInputException, TransformException {
+				throws ModelInputException {
 			for (NodeDo nodeDo : entities) {
 				for (ConnectorDo entity : nodeDo.getConnectors()) {
 					addConnector(entity);
@@ -243,7 +264,7 @@ class NetworkConverter {
 		}
 
 		private void addConnector(ConnectorDo entity)
-				throws ModelInputException, TransformException {
+				throws ModelInputException {
 			Lane laneFrom = lanes.get(entity.getLaneFromId());
 			Lane laneTo = lanes.get(entity.getLaneToId());
 			factory.connect(entity.getConnectorId(), laneFrom, laneTo,

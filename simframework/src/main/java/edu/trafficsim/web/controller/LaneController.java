@@ -19,7 +19,6 @@ package edu.trafficsim.web.controller;
 
 import java.util.Map;
 
-import org.opengis.referencing.operation.TransformException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -109,13 +108,10 @@ public class LaneController extends AbstractController {
 		}
 
 		try {
-			networkService.addLane(sequence, link);
+			networkService.addLane(sequence, network, link);
 		} catch (ModelInputException e) {
 			return failureResponse(e.toString());
-		} catch (TransformException e) {
-			return failureResponse("Transform issues.");
 		}
-
 		return laneUpdatedResponse(network, id);
 	}
 
@@ -131,9 +127,9 @@ public class LaneController extends AbstractController {
 		}
 
 		try {
-			networkService.removeLane(link, laneId);
-		} catch (TransformException e) {
-			return failureResponse("Transform issues.");
+			networkService.removeLane(network, link, laneId);
+		} catch (ModelInputException e) {
+			return failureResponse(e);
 		}
 
 		return laneUpdatedResponse(network, linkId);
@@ -156,13 +152,10 @@ public class LaneController extends AbstractController {
 			return failureResponse("lane doesn't exist.");
 
 		try {
-			networkService.saveLane(lane, start, end, width);
+			networkService.saveLane(network, lane, start, end, width);
 		} catch (ModelInputException e) {
 			return failureResponse(e.toString());
-		} catch (TransformException e) {
-			return failureResponse("Transform issues.");
 		}
-
 		return laneUpdatedResponse(network, id);
 	}
 

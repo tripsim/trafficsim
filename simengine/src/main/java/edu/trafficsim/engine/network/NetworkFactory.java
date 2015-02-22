@@ -17,8 +17,6 @@
  */
 package edu.trafficsim.engine.network;
 
-import org.opengis.referencing.operation.TransformException;
-
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.CoordinateSequence;
 import com.vividsolutions.jts.geom.LineString;
@@ -55,27 +53,27 @@ public interface NetworkFactory {
 
 	Link createLink(Long id, String name, String type, Node startNode,
 			Node endNode, Coordinate[] coords, RoadInfo roadInfo)
-			throws ModelInputException, TransformException;
+			throws ModelInputException;
 
 	Link createLink(Long id, String name, String type, Node startNode,
 			Node endNode, CoordinateSequence points, RoadInfo roadInfo)
-			throws ModelInputException, TransformException;
+			throws ModelInputException;
 
 	Link createLink(Long id, String name, String type, Node startNode,
 			Node endNode, LineString linearGeom, RoadInfo roadInfo)
-			throws ModelInputException, TransformException;
+			throws ModelInputException;
 
 	Link createReverseLink(Long id, String name, Link link)
-			throws ModelInputException, TransformException;
+			throws ModelInputException;
 
 	Lane createLane(Long id, Link link, double start, double end, double width)
-			throws ModelInputException, TransformException;
+			throws ModelInputException;
 
 	Lane[] createLanes(Long[] ids, Link link, double start, double end,
-			double width) throws ModelInputException, TransformException;
+			double width) throws ModelInputException;
 
 	ConnectionLane connect(Long id, Lane laneFrom, Lane laneTo, double width)
-			throws ModelInputException, TransformException;
+			throws ModelInputException;
 
 	RoadInfo createRoadInfo(Long id, String roadName, long roadId,
 			String highway);

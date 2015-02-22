@@ -24,14 +24,13 @@ import java.util.Set;
 import org.springframework.stereotype.Service;
 
 import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.io.WKTReader;
-import com.vividsolutions.jts.io.WKTWriter;
 
 import edu.trafficsim.model.ConnectionLane;
 import edu.trafficsim.model.Lane;
 import edu.trafficsim.model.Link;
 import edu.trafficsim.model.Network;
 import edu.trafficsim.model.Node;
+import edu.trafficsim.util.WktUtils;
 
 /**
  * 
@@ -41,11 +40,8 @@ import edu.trafficsim.model.Node;
 @Service
 public class MapJsonService {
 
-	private double defaultCenterX = -9952964.247717002;
-	private double defaultCenterY = 5323065.604899759;
-
-	public static WKTWriter writer = new WKTWriter();
-	public static WKTReader reader = new WKTReader();
+	private final double defaultCenterX = -9952964.247717002;
+	private final double defaultCenterY = 5323065.604899759;
 
 	/**
 	 * @param network
@@ -71,7 +67,7 @@ public class MapJsonService {
 		linkSb.append("\"");
 		linkSb.append(":");
 		linkSb.append("\"");
-		linkSb.append(writer.write(link.getLinearGeom()));
+		linkSb.append(WktUtils.toWKT(link.getLinearGeom()));
 		linkSb.append("\"");
 		return linkSb.toString();
 	}
@@ -100,7 +96,7 @@ public class MapJsonService {
 		nodeSb.append("\"");
 		nodeSb.append(":");
 		nodeSb.append("\"");
-		nodeSb.append(writer.write(node.getPoint()));
+		nodeSb.append(WktUtils.toWKT(node.getPoint()));
 		nodeSb.append("\"");
 		return nodeSb.toString();
 	}
@@ -145,7 +141,7 @@ public class MapJsonService {
 		laneSb.append("[");
 		for (Lane lane : link.getLanes()) {
 			laneSb.append("\"");
-			laneSb.append(writer.write(lane.getLinearGeom()));
+			laneSb.append(WktUtils.toWKT(lane.getLinearGeom()));
 			laneSb.append("\"");
 			laneSb.append(",");
 		}
@@ -234,7 +230,7 @@ public class MapJsonService {
 			connectorSb.append(getConnectorId(connector));
 			connectorSb.append(":");
 			connectorSb.append("\"");
-			connectorSb.append(writer.write(connector.getLinearGeom()));
+			connectorSb.append(WktUtils.toWKT(connector.getLinearGeom()));
 			connectorSb.append("\"");
 		}
 		return connectorSb.toString();
@@ -365,6 +361,6 @@ public class MapJsonService {
 	}
 
 	public String getWkt(Geometry geom) {
-		return writer.write(geom);
+		return WktUtils.toWKT(geom);
 	}
 }

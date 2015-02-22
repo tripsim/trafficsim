@@ -17,8 +17,6 @@
  */
 package edu.trafficsim.util;
 
-import org.opengis.referencing.operation.TransformException;
-
 import com.vividsolutions.jts.geom.CoordinateFilter;
 
 import edu.trafficsim.model.Link;
@@ -26,6 +24,7 @@ import edu.trafficsim.model.Location;
 import edu.trafficsim.model.Network;
 import edu.trafficsim.model.Node;
 import edu.trafficsim.model.Segment;
+import edu.trafficsim.model.core.ModelInputException;
 
 /**
  * 
@@ -38,26 +37,25 @@ public class CoordinateTransformer {
 	 * @param filter
 	 *            which is used to transform all the coordinates of the
 	 *            components in the network
-	 * @throws TransformException
+	 * @throws ModelInputException
 	 */
 	public static void transform(Location location, CoordinateFilter filter)
-			throws TransformException {
+			throws ModelInputException {
 		location.getPoint().apply(filter);
 		location.onGeomUpdated();
 	}
 
 	public static void transform(Segment segment, CoordinateFilter filter)
-			throws TransformException {
+			throws ModelInputException {
 		segment.getLinearGeom().apply(filter);
 		segment.onGeomUpdated();
 	}
 
 	public static void transform(Network network, CoordinateFilter filter)
-			throws TransformException {
+			throws ModelInputException {
 		for (Link link : network.getLinks())
 			transform(link, filter);
 		for (Node node : network.getNodes())
 			transform(node, filter);
-		network.discover();
 	}
 }

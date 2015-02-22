@@ -24,7 +24,6 @@ import java.net.URL;
 
 import javax.xml.stream.XMLStreamException;
 
-import org.opengis.referencing.operation.TransformException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,8 +74,7 @@ class OsmNetworkExtractor implements NetworkExtractor {
 		try {
 			highways = parse(urlStr);
 			return extract(highways, name);
-		} catch (ModelInputException | IOException | XMLStreamException
-				| TransformException e) {
+		} catch (ModelInputException | IOException | XMLStreamException e) {
 			logger.error("failed to create network");
 			throw new RuntimeException(e);
 		}
@@ -84,7 +82,7 @@ class OsmNetworkExtractor implements NetworkExtractor {
 
 	public NetworkExtractResult extract(Highways highways, String name)
 			throws ModelInputException, JsonParseException, ProtocolException,
-			IOException, TransformException {
+			IOException {
 		return NetworkCreator.createNetwork(highways, typesManager,
 				networkFactory, name);
 	}

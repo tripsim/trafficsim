@@ -18,7 +18,8 @@
 package edu.trafficsim.model;
 
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.opengis.referencing.operation.TransformException;
+
+import edu.trafficsim.model.core.ModelInputException;
 
 /**
  * 
@@ -29,5 +30,5 @@ public interface GeoReferenced extends ObjectContainer {
 
 	CoordinateReferenceSystem getCrs();
 
-	void onGeomUpdated() throws TransformException;
+	void onGeomUpdated() throws ModelInputException;
 }

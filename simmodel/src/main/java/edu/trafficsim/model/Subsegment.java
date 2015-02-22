@@ -17,8 +17,6 @@
  */
 package edu.trafficsim.model;
 
-import org.opengis.referencing.operation.TransformException;
-
 import com.vividsolutions.jts.geom.LineString;
 
 import edu.trafficsim.model.core.ModelInputException;
@@ -43,12 +41,12 @@ public interface Subsegment extends GeoReferenced {
 
 	public Segment getSegment();
 
-	void setStart(double start) throws ModelInputException, TransformException;
+	void setStart(double start) throws ModelInputException;
 
-	void setEnd(double end) throws ModelInputException, TransformException;
+	void setEnd(double end) throws ModelInputException;
 
-	void setShift(double shift, boolean update) throws TransformException;
+	void setShift(double shift, boolean update) throws ModelInputException;
 
-	void setWidth(double width, boolean update) throws TransformException;
+	void setWidth(double width, boolean update) throws ModelInputException;
 
 }

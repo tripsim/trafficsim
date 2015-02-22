@@ -19,7 +19,6 @@ package edu.trafficsim.web.controller;
 
 import java.util.Map;
 
-import org.opengis.referencing.operation.TransformException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -116,19 +115,19 @@ public class ConnectorController extends AbstractController {
 					return failureResponse("already connected");
 				}
 				ConnectionLane connector = networkService.connectLanes(
-						sequence, lane1, lane2);
+						sequence, network, lane1, lane2);
 				return connectSuccessResponse(connector, "Success 1!");
 			} else if (link1.getStartNode() == link2.getEndNode()) {
 				if (link1.getStartNode().isConnected(lane2, lane1)) {
 					return failureResponse("already connected");
 				}
 				ConnectionLane connector = networkService.connectLanes(
-						sequence, lane2, lane1);
+						sequence, network, lane2, lane1);
 				return connectSuccessResponse(connector, "Success 2!");
 			} else {
 				return failureResponse("no connection");
 			}
-		} catch (ModelInputException | TransformException e) {
+		} catch (ModelInputException e) {
 			e.printStackTrace();
 		}
 
@@ -161,7 +160,7 @@ public class ConnectorController extends AbstractController {
 		if (connector == null)
 			return failureResponse("no lane.");
 
-		networkService.removeConnector(connector);
+		networkService.removeConnector(network, connector);
 		return disconnectSuccessResponse(connector, "Success!");
 	}
 

@@ -8,7 +8,6 @@ import java.io.IOException;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.opengis.referencing.operation.TransformException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -37,7 +36,7 @@ public class ProjectImportExportTest {
 	@Ignore
 	@Test
 	public void testExport() throws IOException, ParseException,
-			ModelInputException, TransformException {
+			ModelInputException {
 		FileInputStream in = new FileInputStream(new File(
 				"/Users/Xuan/Desktop/test.json"));
 		SimulationProject project = ProjectJsonImporter.importProject(in,

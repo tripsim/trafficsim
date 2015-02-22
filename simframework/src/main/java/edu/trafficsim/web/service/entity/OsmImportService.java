@@ -22,7 +22,6 @@ import java.net.ProtocolException;
 
 import javax.xml.stream.XMLStreamException;
 
-import org.opengis.referencing.operation.TransformException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -51,8 +50,7 @@ public class OsmImportService extends EntityService {
 
 	public Network createNetwork(String url, String bbox, String highway,
 			Sequence sequence) throws ModelInputException, JsonParseException,
-			ProtocolException, IOException, TransformException,
-			XMLStreamException {
+			ProtocolException, IOException, XMLStreamException {
 
 		String highwayQuery = OsmHighwayValue.valueOf(highway) == null ? OsmHighwayValue.All.queryValue
 				: OsmHighwayValue.valueOf(highway).queryValue;

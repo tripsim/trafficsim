@@ -59,7 +59,9 @@ public interface Node extends Location {
 
 	void add(ConnectionLane connector) throws ModelInputException;
 
-	void remove(Link link);
+	void removeUpstream(Link link);
+
+	void removeDownstream(Link link);
 
 	void remove(ConnectionLane connector);
 
@@ -68,4 +70,8 @@ public interface Node extends Location {
 	Collection<ConnectionLane> getInConnectors(Link fromLink);
 
 	boolean isEmpty();
+
+	boolean isSource();
+
+	boolean isSink();
 }

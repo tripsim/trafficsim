@@ -22,8 +22,6 @@ import java.util.Collections;
 import java.util.NavigableSet;
 import java.util.TreeSet;
 
-import org.opengis.referencing.operation.TransformException;
-
 import edu.trafficsim.model.Lane;
 import edu.trafficsim.model.Link;
 import edu.trafficsim.model.Segment;
@@ -45,7 +43,7 @@ public abstract class AbstractLane<T> extends AbstractSubsegment<T> implements
 	private final NavigableSet<Vehicle> vehicles = new TreeSet<Vehicle>();
 
 	public AbstractLane(long id, Segment segment, double start, double end,
-			double width, double shift) throws TransformException {
+			double width, double shift) {
 		super(id, null, segment, start, end, width, shift);
 	}
 

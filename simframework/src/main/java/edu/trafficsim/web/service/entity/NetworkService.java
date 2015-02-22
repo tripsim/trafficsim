@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.opengis.referencing.operation.TransformException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,6 +30,7 @@ import com.vividsolutions.jts.geom.CoordinateSequence;
 import com.vividsolutions.jts.geom.LineString;
 
 import edu.trafficsim.engine.network.NetworkFactory;
+import edu.trafficsim.engine.type.TypesManager;
 import edu.trafficsim.model.ConnectionLane;
 import edu.trafficsim.model.Lane;
 import edu.trafficsim.model.Link;
@@ -58,10 +58,13 @@ public class NetworkService extends EntityService {
 
 	@Autowired
 	NetworkFactory factory;
+	@Autowired
+	TypesManager typesManager;
 
 	public Network createNetwork(Sequence sequence) {
 		Network network = factory.createNetwork(sequence.nextId(),
 				DEFAULT_NEW_NAME);
+		network.setModified(true);
 		return network;
 	}
 
@@ -69,17 +72,22 @@ public class NetworkService extends EntityService {
 			Coordinate coord) {
 		Node node = factory.createNode(sequence.nextId(), DEFAULT_NEW_NAME,
 				nodeType, coord);
-		network.add(node);
 		return node;
 	}
 
-	public void saveNode(Node node, String name) {
+	public Node saveNode(Network network, long nodeId, String name) {
+		Node node = network.getNode(nodeId);
+		if (node == null) {
+			return null;
+		}
 		node.setName(name);
+		network.setModified(true);
+		return node;
 	}
 
 	public Link createLink(Sequence sequence, Network network, String linkType,
 			Node startNode, Node endNode, CoordinateSequence points)
-			throws ModelInputException, TransformException {
+			throws ModelInputException {
 		Link link = factory.createLink(sequence.nextId(), DEFAULT_NEW_NAME,
 				linkType, startNode, endNode, points, null);
 		network.add(link);
@@ -88,8 +96,7 @@ public class NetworkService extends EntityService {
 
 	public Node breakLink(Sequence sequence, Network network,
 			OdMatrix odMatrix, Link link, String nodeType, double x, double y)
-			throws TransformException, ModelInputException {
-
+			throws ModelInputException {
 		LineString[] linearGeoms = Coordinates.splitLinearGeom(
 				link.getLinearGeom(), new Coordinate(x, y));
 
@@ -97,7 +104,6 @@ public class NetworkService extends EntityService {
 		Node newNode = factory.createNode(sequence.nextId(), DEFAULT_NEW_NAME,
 				nodeType, new Coordinate(linearGeoms[0].getEndPoint()
 						.getCoordinate()));
-		network.add(newNode);
 
 		Link newLink = breakLink(sequence, network, odMatrix, link, newNode,
 				link.getLinkType(), linearGeoms);
@@ -110,21 +116,20 @@ public class NetworkService extends EntityService {
 			newReverseLink.setReverseLink(link);
 		}
 
-		network.dirty();
+		network.setModified(true);
 		return newNode;
 	}
 
-	protected Link breakLink(Sequence sequence, Network network,
+	private Link breakLink(Sequence sequence, Network network,
 			OdMatrix odMatrix, Link link, Node newNode, String linkType,
-			LineString[] linearGeoms) throws TransformException,
-			ModelInputException {
+			LineString[] linearGeoms) throws ModelInputException {
 
 		// remove toConnectors from link
 		MultiValuedMap<Integer, Lane> connectionMap = new MultiValuedMap<Integer, Lane>();
 		for (ConnectionLane connector : link.getToConnectors()) {
 			connectionMap.add(connector.getFromLane().getLaneId(),
 					connector.getToLane());
-			removeConnector(connector);
+			removeConnector(network, connector);
 		}
 
 		// set original link with new linear geometry
@@ -143,96 +148,79 @@ public class NetworkService extends EntityService {
 				DEFAULT_LANE_START, DEFAULT_LANE_END, DEFAULT_LANE_WIDTH);
 		// connect old lanes
 		for (int i = 0; i < link.numOfLanes(); i++) {
-			connectLanes(sequence, link.getLane(i), newLanes[i]);
+			connectLanes(sequence, network, link.getLane(i), newLanes[i]);
 		}
 		for (Integer key : connectionMap.keys()) {
 			for (Lane lane : connectionMap.get(key)) {
-				connectLanes(sequence, newLanes[key], lane);
+				connectLanes(sequence, network, newLanes[key], lane);
 			}
 		}
 
-		// update existing turnpercentages if any
+		// turn precentage
 		odMatrix.updateFromLink(link, newLink);
 		return newLink;
 	}
 
-	public void saveLink(Link link, String name, String highway, String roadName) {
+	public Link saveLink(Network network, long linkId, String name,
+			String highway, String roadName) {
+		Link link = network.getLink(linkId);
+		if (link == null) {
+			return null;
+		}
 		link.setName(name);
 		link.getRoadInfo().setHighway(highway);
 		link.getRoadInfo().setName(roadName);
+		network.setModified(true);
+		return link;
 	}
 
-	protected void removeNode(Network network, OdMatrix odMatrix, Node node,
+	protected void removeNodeOd(Network network, OdMatrix odMatrix, Node node,
 			MultiValuedMap<String, String> map) {
-		network.removeNode(node);
-		odMatrix.remove(odMatrix.getOdsFromNode(node.getId()));
-		odMatrix.remove(odMatrix.getOdsToNode(node.getId()));
+		if (network.contains(node)) {
+			return;
+		}
 		map.add("nodeIds", node.getId().toString());
 	}
 
 	public Map<String, Set<String>> removeLink(Network network,
-			OdMatrix odMatrix, long id) throws TransformException {
+			OdMatrix odMatrix, long id) throws ModelInputException {
 		Link link = network.removeLink(id);
-		Link reverse = link.getReverseLink();
-		if (reverse != null) {
-			reverse.setReverseLink(null);
-			shiftLanes(reverse);
-		}
-
 		MultiValuedMap<String, String> map = new MultiValuedMap<String, String>();
-		Node node = link.getStartNode();
-		if (node.isEmpty()) {
-			removeNode(network, odMatrix, node, map);
-		} else {
-			for (ConnectionLane connector : node.getOutConnectors(link)) {
-				node.remove(connector);
-			}
+		if (!network.contains(link.getStartNode())) {
+			map.add("nodeIds", link.getStartNode().getId().toString());
+			odMatrix.onNodeRemoved(link.getStartNode());
 		}
-		node = link.getEndNode();
-		if (node.isEmpty()) {
-			removeNode(network, odMatrix, node, map);
-		} else {
-			for (ConnectionLane connector : node.getInConnectors(link)) {
-				node.remove(connector);
-			}
+		if (!network.contains(link.getEndNode())) {
+			map.add("nodeIds", link.getEndNode().getId().toString());
+			odMatrix.onNodeRemoved(link.getEndNode());
 		}
 
 		odMatrix.removeTurnPercentage(link);
-
-		network.dirty();
 		return map.asMap();
 	}
 
 	public Link createReverseLink(Sequence sequence, Network network,
-			long linkId) throws ModelInputException, TransformException {
+			long linkId) throws ModelInputException {
 		Link link = network.getLink(linkId);
-		if (link.getReverseLink() != null)
+		if (link.getReverseLink() != null) {
 			throw new RuntimeException("Reverse link already exists");
+		}
 		Link reverseLink = factory.createReverseLink(sequence.nextId(),
 				link.getName() + " reverse", link);
 		network.add(reverseLink);
-		shiftLanes(link);
 		return reverseLink;
 	}
 
-	public void shiftLanes(Link link) throws TransformException {
-		double offset = link.getWidth() / 2;
-		if (link.getReverseLink() == null) {
-			for (Lane lane : link.getLanes())
-				lane.setShift(lane.getShift() - offset, false);
-		} else {
-			for (Lane lane : link.getLanes())
-				lane.setShift(lane.getShift() + offset, false);
-		}
+	public Lane addLane(Sequence sequence, Network network, Link link)
+			throws ModelInputException {
+		Lane lane = factory.createLane(sequence.nextId(), link,
+				DEFAULT_LANE_START, DEFAULT_LANE_END, DEFAULT_LANE_WIDTH);
+		network.setModified(true);
+		return lane;
 	}
 
-	public Lane addLane(Sequence sequence, Link link)
-			throws ModelInputException, TransformException {
-		return factory.createLane(sequence.nextId(), link, DEFAULT_LANE_START,
-				DEFAULT_LANE_END, DEFAULT_LANE_WIDTH);
-	}
-
-	public void removeLane(Link link, int laneId) throws TransformException {
+	public void removeLane(Network network, Link link, int laneId)
+			throws ModelInputException {
 		Lane lane = link.getLane(laneId);
 		List<ConnectionLane> toRemove = new ArrayList<ConnectionLane>();
 		for (ConnectionLane connector : link.getStartNode().getOutConnectors(
@@ -246,23 +234,28 @@ public class NetworkService extends EntityService {
 			connector.getNode().remove(connector);
 		}
 		link.remove(laneId);
+		network.setModified(true);
 	}
 
-	public void saveLane(Lane lane, double start, double end, double width)
-			throws TransformException, ModelInputException {
+	public void saveLane(Network network, Lane lane, double start, double end,
+			double width) throws ModelInputException {
 		lane.setStart(start);
 		lane.setEnd(end);
 		lane.setWidth(width, true);
+		network.setModified(true);
 	}
 
-	public ConnectionLane connectLanes(Sequence sequence, Lane laneFrom,
-			Lane laneTo) throws ModelInputException, TransformException {
-		return factory.connect(sequence.nextId(), laneFrom, laneTo,
-				DEFAULT_LANE_WIDTH);
+	public ConnectionLane connectLanes(Sequence sequence, Network network,
+			Lane laneFrom, Lane laneTo) throws ModelInputException {
+		ConnectionLane connector = factory.connect(sequence.nextId(), laneFrom,
+				laneTo, DEFAULT_LANE_WIDTH);
+		network.setModified(true);
+		return connector;
 	}
 
-	public void removeConnector(ConnectionLane connector) {
+	public void removeConnector(Network network, ConnectionLane connector) {
 		connector.getNode().remove(connector);
+		network.setModified(true);
 	}
 
 }

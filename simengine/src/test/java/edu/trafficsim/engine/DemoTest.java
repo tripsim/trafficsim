@@ -3,7 +3,6 @@ package edu.trafficsim.engine;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.opengis.referencing.FactoryException;
-import org.opengis.referencing.operation.TransformException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -38,8 +37,7 @@ public class DemoTest {
 	DemoBuilder demoBuilder;
 
 	@Test
-	public void testSimulation() throws ModelInputException, FactoryException,
-			TransformException {
+	public void testSimulation() throws ModelInputException, FactoryException {
 		SimulationProject demo = demoBuilder.getDemo();
 		simulationService
 				.execute("demo", demo.getNetwork(), demo.getOdMatrix());
@@ -47,7 +45,7 @@ public class DemoTest {
 	}
 
 	public static void main(String[] args) throws ModelInputException,
-			FactoryException, TransformException {
+			FactoryException {
 		ApplicationContext context = new ClassPathXmlApplicationContext(
 				"simengine-test.xml");
 		SimulationService simulationService = context

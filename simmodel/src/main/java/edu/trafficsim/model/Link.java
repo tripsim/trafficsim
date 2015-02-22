@@ -19,7 +19,7 @@ package edu.trafficsim.model;
 
 import java.util.Collection;
 
-import org.opengis.referencing.operation.TransformException;
+import edu.trafficsim.model.core.ModelInputException;
 
 /**
  * 
@@ -40,9 +40,9 @@ public interface Link extends Segment {
 
 	int numOfLanes();
 
-	void add(Lane lane) throws TransformException;
+	void add(Lane lane) throws ModelInputException;
 
-	void remove(int laneId) throws TransformException;
+	void remove(int laneId) throws ModelInputException;
 
 	Collection<ConnectionLane> getConnectors(Link destLink);
 
@@ -52,9 +52,9 @@ public interface Link extends Segment {
 
 	Link getReverseLink();
 
-	void setReverseLink(Link reverseLink);
+	void setReverseLink(Link reverseLink) throws ModelInputException;
 
-	void removeReverseLink();
+	void removeReverseLink() throws ModelInputException;
 
 	RoadInfo getRoadInfo();
 

@@ -42,6 +42,7 @@ import static edu.trafficsim.engine.io.ProjectImportExportConstant.ODMATRIX;
 import static edu.trafficsim.engine.io.ProjectImportExportConstant.ODS;
 import static edu.trafficsim.engine.io.ProjectImportExportConstant.ORIGIN;
 import static edu.trafficsim.engine.io.ProjectImportExportConstant.PROBABILITIES;
+import static edu.trafficsim.engine.io.ProjectImportExportConstant.REVERSELINKID;
 import static edu.trafficsim.engine.io.ProjectImportExportConstant.ROADID;
 import static edu.trafficsim.engine.io.ProjectImportExportConstant.ROADINFO;
 import static edu.trafficsim.engine.io.ProjectImportExportConstant.ROADINFOS;
@@ -64,8 +65,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
-
-import org.opengis.referencing.operation.TransformException;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonParser;
@@ -103,12 +102,14 @@ final class ProjectJsonImporter {
 			NetworkFactory networkFactory, OdFactory odFactory,
 			TypesFactory typesFactory, TypesManager typesManager)
 			throws JsonParseException, IOException, ParseException,
-			ModelInputException, TransformException {
+			ModelInputException {
 		JsonParser jsonParse = JsonSerializer.createJsonParser(in);
 		JsonNode rootNode = JsonSerializer.readTree(jsonParse);
 
 		Map<Long, RoadInfo> roadInfos = new HashMap<Long, RoadInfo>();
 		Map<Long, Lane> lanes = new HashMap<Long, Lane>();
+		Map<Long, Node> nodes = new HashMap<Long, Node>();
+		Map<Long, Long> reverseLinks = new HashMap<Long, Long>();
 
 		// create network
 		JsonNode jsonNode = rootNode.get(NETWORK);
@@ -125,7 +126,7 @@ final class ProjectJsonImporter {
 			Point pt = (Point) WktUtils.fromWKT(child.get(GEOM).asText());
 			String type = child.get(NODETYPE).asText();
 			Node node = networkFactory.createNode(id, name, type, pt);
-			network.add(node);
+			nodes.put(id, node);
 		}
 
 		// import road info
@@ -150,12 +151,19 @@ final class ProjectJsonImporter {
 			LineString geom = (LineString) WktUtils.fromWKT(child.get(GEOM)
 					.asText());
 			String type = child.get(LINKTYPE).asText();
-			Node startNode = network.getNode(child.get(STARTNODE).asLong());
-			Node endNode = network.getNode(child.get(ENDNODE).asLong());
+			Node startNode = nodes.get(child.get(STARTNODE).asLong());
+			Node endNode = nodes.get(child.get(ENDNODE).asLong());
 			RoadInfo info = roadInfos.get(child.get(ROADINFO).asLong());
 			Link link = networkFactory.createLink(id, name, type, startNode,
 					endNode, geom, info);
 			network.add(link);
+			if (child.get(REVERSELINKID) != null) {
+				Long reverseId = child.get(REVERSELINKID).asLong();
+				if (reverseId != null && !reverseLinks.containsKey(id)
+						&& !reverseLinks.containsKey(reverseId)) {
+					reverseLinks.put(id, reverseId);
+				}
+			}
 			JsonNode grandChild = child.get(LANES);
 			for (int j = 0; j < grandChild.size(); j++) {
 				JsonNode n = grandChild.get(j);
@@ -168,6 +176,15 @@ final class ProjectJsonImporter {
 						width);
 				lanes.put(id, lane);
 			}
+		}
+
+		// set reverse links
+		for (Map.Entry<Long, Long> entry : reverseLinks.entrySet()) {
+			long id1 = entry.getKey();
+			long id2 = entry.getValue();
+			Link link1 = network.getLink(id1);
+			Link link2 = network.getLink(id2);
+			link1.setReverseLink(link2);
 		}
 
 		// import connectors

@@ -24,8 +24,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.opengis.referencing.operation.TransformException;
-
 import com.vividsolutions.jts.geom.Point;
 
 import edu.trafficsim.model.ConnectionLane;
@@ -75,9 +73,19 @@ public abstract class AbstractNode<T> extends AbstractLocation<T> implements
 	}
 
 	@Override
-	public final void remove(Link link) {
+	public final void removeUpstream(Link link) {
 		upstreams.remove(link);
+		for (ConnectionLane connector : getInConnectors(link)) {
+			remove(connector);
+		}
+	}
+
+	@Override
+	public final void removeDownstream(Link link) {
 		downstreams.remove(link);
+		for (ConnectionLane connector : getOutConnectors(link)) {
+			remove(connector);
+		}
 	}
 
 	@Override
@@ -195,7 +203,24 @@ public abstract class AbstractNode<T> extends AbstractLocation<T> implements
 	}
 
 	@Override
-	public void onGeomUpdated() throws TransformException {
+	public boolean isSource() {
+		return upstreams.isEmpty() || isEndPoint();
+	}
+
+	@Override
+	public boolean isSink() {
+		return downstreams.isEmpty() || isEndPoint();
+	}
+
+	private boolean isEndPoint() {
+		return getUpstreams().size() == 1
+				&& getDownstreams().size() == 1
+				&& getUpstreams().iterator().next() == getDownstreams()
+						.iterator().next().getReverseLink();
+	}
+
+	@Override
+	public void onGeomUpdated() throws ModelInputException {
 		// TODO trimming lane linear geom if necessary (Coordinates.trimxxxx)
 	}
 }

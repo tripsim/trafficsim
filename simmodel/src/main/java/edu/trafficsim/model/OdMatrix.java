@@ -26,7 +26,8 @@ import edu.trafficsim.model.core.ModelInputException;
  * 
  * @author Xuan Shi
  */
-public interface OdMatrix extends ObjectContainer, Persistable {
+public interface OdMatrix extends ObjectContainer, Persistable,
+		NetworkEditListener {
 
 	String getNetworkName();
 
@@ -42,9 +43,9 @@ public interface OdMatrix extends ObjectContainer, Persistable {
 
 	Od remove(long id);
 
-	void remove(Od od);
+	boolean remove(Od od);
 
-	void remove(Collection<Od> ods);
+	boolean remove(Collection<Od> ods);
 
 	TurnPercentage getTurnPercentage(Link link, VehicleClass vehicleClass,
 			double time);

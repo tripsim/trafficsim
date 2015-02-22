@@ -18,7 +18,6 @@
 package edu.trafficsim.model.core;
 
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.opengis.referencing.operation.TransformException;
 
 import com.vividsolutions.jts.geom.Point;
 
@@ -71,10 +70,10 @@ public abstract class AbstractLocation<T> extends BaseEntity<T> implements
 	}
 
 	@Override
-	public final void setRadius(double radius) throws TransformException {
+	public final void setRadius(double radius) throws ModelInputException {
 		this.radius = radius;
 		// TODO reconsider the necessity for radius
-		// onGeomUpdated();
+		onGeomUpdated();
 	}
 
 }

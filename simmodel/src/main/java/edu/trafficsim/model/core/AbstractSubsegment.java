@@ -18,7 +18,6 @@
 package edu.trafficsim.model.core;
 
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.opengis.referencing.operation.TransformException;
 
 import com.vividsolutions.jts.geom.LineString;
 
@@ -54,8 +53,7 @@ public abstract class AbstractSubsegment<T> extends BaseEntity<T> implements
 	protected final Segment segment;
 
 	public AbstractSubsegment(long id, String name, Segment segment,
-			double start, double end, double width, double shift)
-			throws TransformException {
+			double start, double end, double width, double shift) {
 
 		super(id, name);
 		this.segment = segment;
@@ -105,8 +103,7 @@ public abstract class AbstractSubsegment<T> extends BaseEntity<T> implements
 	}
 
 	@Override
-	public final void setStart(double start) throws ModelInputException,
-			TransformException {
+	public final void setStart(double start) throws ModelInputException {
 		if (this.start == start)
 			return;
 		checkStartEnd(start, end);
@@ -120,8 +117,7 @@ public abstract class AbstractSubsegment<T> extends BaseEntity<T> implements
 	}
 
 	@Override
-	public final void setEnd(double end) throws ModelInputException,
-			TransformException {
+	public final void setEnd(double end) throws ModelInputException {
 		if (this.end == end)
 			return;
 
@@ -137,7 +133,7 @@ public abstract class AbstractSubsegment<T> extends BaseEntity<T> implements
 
 	@Override
 	public final void setShift(double shift, boolean update)
-			throws TransformException {
+			throws ModelInputException {
 		if (update) {
 			onShiftUpdate(shift - this.shift);
 		}
@@ -154,7 +150,7 @@ public abstract class AbstractSubsegment<T> extends BaseEntity<T> implements
 
 	@Override
 	public final void setWidth(double width, boolean update)
-			throws TransformException {
+			throws ModelInputException {
 		if (update) {
 			onWidthUpdate(width - this.width);
 		}
@@ -170,18 +166,23 @@ public abstract class AbstractSubsegment<T> extends BaseEntity<T> implements
 	}
 
 	@Override
-	public void onGeomUpdated() throws TransformException {
-		linearGeom = Coordinates.getOffSetLineString(getCrs(),
-				segment.getLinearGeom(), shift);
-		fixkStartEnd(start, end);
-		linearGeom = Coordinates.trimLinearGeom(getCrs(), linearGeom, start,
-				-end);
-		length = Coordinates.orthodromicDistance(getCrs(), linearGeom);
+	public void onGeomUpdated() throws ModelInputException {
+		try {
+			linearGeom = Coordinates.getOffSetLineString(getCrs(),
+					segment.getLinearGeom(), shift);
+			fixkStartEnd(start, end);
+			linearGeom = Coordinates.trimLinearGeom(getCrs(), linearGeom,
+					start, -end);
+			length = Coordinates.orthodromicDistance(getCrs(), linearGeom);
+		} catch (Exception e) {
+			throw new ModelInputException("Geometry update failed on subsegment!",
+					e);
+		}
 	}
 
 	abstract protected void onShiftUpdate(double offset)
-			throws TransformException;
+			throws ModelInputException;
 
 	abstract protected void onWidthUpdate(double offset)
-			throws TransformException;
+			throws ModelInputException;
 }
