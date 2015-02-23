@@ -76,4 +76,8 @@ public abstract class AbstractLocation<T> extends BaseEntity<T> implements
 		onGeomUpdated();
 	}
 
+	@Override
+	public void onTransformDone(CoordinateReferenceSystem crs) {
+		this.crs = crs;
+	}
 }

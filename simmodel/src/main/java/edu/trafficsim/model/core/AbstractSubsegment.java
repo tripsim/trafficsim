@@ -175,8 +175,8 @@ public abstract class AbstractSubsegment<T> extends BaseEntity<T> implements
 					start, -end);
 			length = Coordinates.orthodromicDistance(getCrs(), linearGeom);
 		} catch (Exception e) {
-			throw new ModelInputException("Geometry update failed on subsegment!",
-					e);
+			throw new ModelInputException(
+					"Geometry update failed on subsegment!", e);
 		}
 	}
 
@@ -185,4 +185,8 @@ public abstract class AbstractSubsegment<T> extends BaseEntity<T> implements
 
 	abstract protected void onWidthUpdate(double offset)
 			throws ModelInputException;
+
+	@Override
+	public void onTransformDone(CoordinateReferenceSystem crs) {
+	}
 }

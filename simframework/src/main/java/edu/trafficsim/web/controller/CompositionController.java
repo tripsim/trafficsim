@@ -68,7 +68,6 @@ public class CompositionController extends AbstractController {
 	public String vehicleCompositionInfo(@PathVariable String name, Model model) {
 		TypesComposition comp = typesManager.getVehicleTypeComposition(name);
 
-		model.addAttribute("types", typesManager.getVehicleTypes());
 		model.addAttribute("composition", comp);
 		model.addAttribute("dataType", "vehicle");
 		return "components/composition-fragments :: info";
@@ -101,7 +100,7 @@ public class CompositionController extends AbstractController {
 		} catch (ModelInputException e) {
 			return failureResponse(e);
 		}
-		return messageOnlySuccessResponse("Vehicle Composition updated.");
+		return successResponse("Vehicle Composition updated.");
 	}
 
 	@RequestMapping(value = "/vehicle/new", method = RequestMethod.POST)
@@ -121,7 +120,7 @@ public class CompositionController extends AbstractController {
 	public @ResponseBody Map<String, Object> removeVehicleComposition(
 			@RequestParam("name") String name) {
 		compositionService.removeVehicleComposition(name);
-		return messageOnlySuccessResponse("Vehicle Composition removed.");
+		return successResponse("Vehicle Composition removed.");
 	}
 
 	@RequestMapping(value = "/driver/info/{name}", method = RequestMethod.GET)
@@ -161,7 +160,7 @@ public class CompositionController extends AbstractController {
 		} catch (ModelInputException e) {
 			return failureResponse(e);
 		}
-		return messageOnlySuccessResponse("Driver Composition updated.");
+		return successResponse("Driver Composition updated.");
 	}
 
 	@RequestMapping(value = "/driver/new", method = RequestMethod.POST)
@@ -181,7 +180,7 @@ public class CompositionController extends AbstractController {
 	public @ResponseBody Map<String, Object> removeDriverComposition(
 			@RequestParam("name") String name) {
 		compositionService.removeDriverComposition(name);
-		return messageOnlySuccessResponse("Driver Composition removed.");
+		return successResponse("Driver Composition removed.");
 	}
 
 }

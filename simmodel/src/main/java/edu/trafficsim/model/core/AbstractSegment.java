@@ -142,4 +142,9 @@ public abstract class AbstractSegment<T> extends BaseEntity<T> implements
 		for (Subsegment subsegment : subsegments)
 			subsegment.onGeomUpdated();
 	}
+
+	@Override
+	public void onTransformDone(CoordinateReferenceSystem crs) {
+		this.crs = crs;
+	}
 }

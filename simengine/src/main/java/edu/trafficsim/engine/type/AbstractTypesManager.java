@@ -144,7 +144,7 @@ abstract class AbstractTypesManager implements TypesManager {
 	@Override
 	public List<VehicleType> getVehicleTypes() {
 		List<VehicleType> result = new ArrayList<VehicleType>();
-		for (String name : getNodeTypeNames()) {
+		for (String name : getVehicleTypeNames()) {
 			result.add(getVehicleType(name));
 		}
 		return result;

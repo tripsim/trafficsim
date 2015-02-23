@@ -26,7 +26,9 @@ final class TypesConverter {
 			return null;
 		}
 		checkType(elementTypeDo.getCategory(), TypeCategoryDo.LINK_TYPE);
-		return typesFactory.createLinkType(elementTypeDo.getName());
+		LinkType type = typesFactory.createLinkType(elementTypeDo.getName());
+		type.setDefault(elementTypeDo.isDefaultType());
+		return type;
 	}
 
 	public List<LinkType> toLinkTypes(List<ElementTypeDo> elementTypeDos) {
@@ -42,7 +44,9 @@ final class TypesConverter {
 			return null;
 		}
 		checkType(elementTypeDo.getCategory(), TypeCategoryDo.NODE_TYPE);
-		return typesFactory.createNodeType(elementTypeDo.getName());
+		NodeType type = typesFactory.createNodeType(elementTypeDo.getName());
+		type.setDefault(elementTypeDo.isDefaultType());
+		return type;
 	}
 
 	public List<NodeType> toNodeTypes(List<ElementTypeDo> elementTypeDos) {
@@ -58,8 +62,10 @@ final class TypesConverter {
 			return null;
 		}
 		checkType(elementTypeDo.getCategory(), TypeCategoryDo.VEHICLE_TYPE);
-		return typesFactory.createVehicleType(elementTypeDo.getName(),
-				elementTypeDo.getProperties());
+		VehicleType type = typesFactory.createVehicleType(
+				elementTypeDo.getName(), elementTypeDo.getProperties());
+		type.setDefault(elementTypeDo.isDefaultType());
+		return type;
 	}
 
 	public List<VehicleType> toVehicleTypes(List<ElementTypeDo> elementTypeDos) {
@@ -75,8 +81,10 @@ final class TypesConverter {
 			return null;
 		}
 		checkType(elementTypeDo.getCategory(), TypeCategoryDo.DRIVER_TYPE);
-		return typesFactory.createDriverType(elementTypeDo.getName(),
-				elementTypeDo.getProperties());
+		DriverType type = typesFactory.createDriverType(
+				elementTypeDo.getName(), elementTypeDo.getProperties());
+		type.setDefault(elementTypeDo.isDefaultType());
+		return type;
 	}
 
 	public List<DriverType> toDriverTypes(List<ElementTypeDo> elementTypeDos) {
@@ -138,9 +146,12 @@ final class TypesConverter {
 			types.add(entry.getKey());
 			probabilities.add(entry.getValue());
 		}
-		return typesFactory.createTypesComposition(compositionDo.getName(),
+		TypesComposition comp = typesFactory.createTypesComposition(
+				compositionDo.getName(),
 				types.toArray(new String[types.size()]),
 				probabilities.toArray(new Double[probabilities.size()]));
+		comp.setDefault(compositionDo.isDefaultComposition());
+		return comp;
 	}
 
 	private static void checkType(TypeCategoryDo type,
@@ -154,7 +165,7 @@ final class TypesConverter {
 		if (elementTypeDo == null) {
 			return;
 		}
-		elementTypeDo.setDefaultType(type.isDefaultType());
+		elementTypeDo.setDefaultType(type.isDefault());
 		elementTypeDo.setCategory(TypeCategoryDo.LINK_TYPE);
 		elementTypeDo.setName(type.getName());
 	}
@@ -163,7 +174,7 @@ final class TypesConverter {
 		if (elementTypeDo == null) {
 			return;
 		}
-		elementTypeDo.setDefaultType(type.isDefaultType());
+		elementTypeDo.setDefaultType(type.isDefault());
 		elementTypeDo.setCategory(TypeCategoryDo.NODE_TYPE);
 		elementTypeDo.setName(type.getName());
 	}
@@ -172,7 +183,7 @@ final class TypesConverter {
 		if (elementTypeDo == null) {
 			return;
 		}
-		elementTypeDo.setDefaultType(type.isDefaultType());
+		elementTypeDo.setDefaultType(type.isDefault());
 		elementTypeDo.setCategory(TypeCategoryDo.VEHICLE_TYPE);
 		elementTypeDo.setName(type.getName());
 		elementTypeDo.setProperties(toVehicleTypeProperties(type));
@@ -199,7 +210,7 @@ final class TypesConverter {
 		if (elementTypeDo == null) {
 			return;
 		}
-		elementTypeDo.setDefaultType(type.isDefaultType());
+		elementTypeDo.setDefaultType(type.isDefault());
 		elementTypeDo.setCategory(TypeCategoryDo.DRIVER_TYPE);
 		elementTypeDo.setName(type.getName());
 		elementTypeDo.setProperties(toDriverProperties(type));

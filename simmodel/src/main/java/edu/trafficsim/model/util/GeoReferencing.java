@@ -290,10 +290,16 @@ public class GeoReferencing {
 			CoordinateFilter {
 
 		private MathTransform transform;
+		private CoordinateReferenceSystem targetCrs;
 
 		public TransformCoordinateFilter(CoordinateReferenceSystem sourceCrs,
 				CoordinateReferenceSystem targetCrs) throws FactoryException {
 			transform = getMathTransform(sourceCrs, targetCrs);
+			this.targetCrs = targetCrs;
+		}
+
+		public CoordinateReferenceSystem getTargetCrs() {
+			return targetCrs;
 		}
 
 		@Override

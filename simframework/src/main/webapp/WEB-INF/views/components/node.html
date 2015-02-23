@@ -15,11 +15,11 @@
 			</tr>
 			<tr>
 				<td>Source</td>
-				<td data-th-text="${network.isSource(node)} ? 'Yes' : 'No'"></td>
+				<td data-th-text="${node.source} ? 'Yes' : 'No'"></td>
 			</tr>
 			<tr>
 				<td>Sink</td>
-				<td data-th-text="${network.isSink(node)} ? 'Yes' : 'No'"></td>
+				<td data-th-text="${node.sink} ? 'Yes' : 'No'"></td>
 			</tr>
 			<tr data-th-if="${node.upstreams.isEmpty()} == false">
 				<td>Upstream Links</td>
@@ -39,7 +39,7 @@
 	</table>
 </div>
 
-<div data-th-if="${network.isSource(node)}">
+<div data-th-if="${node.source}">
 	<table>
 		<tr>
 			<td><h3>Vehicle Inputs</h3></td>

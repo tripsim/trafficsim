@@ -28,7 +28,7 @@ import edu.trafficsim.model.core.ModelInputException;
  * 
  * @author Xuan Shi
  */
-public interface Network extends ObjectContainer, Persistable {
+public interface Network extends ObjectContainer, Persistable, GeoReferenced {
 
 	Collection<Node> getSources();
 

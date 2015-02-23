@@ -91,10 +91,12 @@ public class OdController extends AbstractController {
 			@RequestParam("driverCompositionName") String dcName,
 			@RequestParam("times[]") double[] times,
 			@RequestParam("vphs[]") Integer[] vphs,
+			@ModelAttribute("network") Network network,
 			@ModelAttribute("odMatrix") OdMatrix odMatrix) {
 		try {
-			odService.updateOd(odMatrix, id, dId, vcName, dcName, times, vphs);
-			return messageOnlySuccessResponse("Od saved.");
+			odService.updateOd(odMatrix, network, id, dId, vcName, dcName,
+					times, vphs);
+			return successResponse("Od saved.");
 		} catch (ModelInputException e) {
 			return failureResponse(e);
 		}
@@ -123,7 +125,7 @@ public class OdController extends AbstractController {
 			@RequestParam("id") long id,
 			@ModelAttribute("odMatrix") OdMatrix odMatrix) {
 		odService.removeOd(odMatrix, id);
-		return messageOnlySuccessResponse("Od removed.");
+		return successResponse("Od removed.");
 	}
 
 }

@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 import edu.trafficsim.engine.od.OdFactory;
 import edu.trafficsim.engine.type.TypesManager;
+import edu.trafficsim.model.Network;
 import edu.trafficsim.model.Node;
 import edu.trafficsim.model.Od;
 import edu.trafficsim.model.OdMatrix;
@@ -49,15 +50,17 @@ public class OdService extends EntityService {
 	@Autowired
 	OdFactory factory;
 
-	public void updateOd(OdMatrix odMatrix, Long id, Long dId, String vcName,
-			String dcName, double[] times, Integer[] vphs)
+	public void updateOd(OdMatrix odMatrix, Network network, Long id, Long dId,
+			String vcName, String dcName, double[] times, Integer[] vphs)
 			throws ModelInputException {
-		odMatrix.getOd(id).setDestination(dId);
-		odMatrix.getOd(id).setVehicleComposition(
-				typesManager.getVehicleTypeComposition(vcName));
-		odMatrix.getOd(id).setDriverComposition(
-				typesManager.getDriverTypeComposition(dcName));
-		odMatrix.getOd(id).setVphs(times, vphs);
+		Od od = odMatrix.getOd(id);
+		if (od == null) {
+			throw new IllegalArgumentException("od '" + id + "' doesn't exist!");
+		}
+		od.setDestination(network.containsNode(dId) ? dId : null);
+		od.setVehicleComposition(typesManager.getVehicleTypeComposition(vcName));
+		od.setDriverComposition(typesManager.getDriverTypeComposition(dcName));
+		od.setVphs(times, vphs);
 		odMatrix.setModified(true);
 	}
 

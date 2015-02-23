@@ -58,7 +58,6 @@ public class NodeController extends AbstractController {
 		if (node == null)
 			return "components/empty";
 
-		model.addAttribute("network", network);
 		model.addAttribute("ods", odMatrix.getOdsFromNode(node.getId()));
 		model.addAttribute("node", node);
 		return "components/node";
@@ -91,6 +90,6 @@ public class NodeController extends AbstractController {
 			@RequestParam("id") long id, @RequestParam("name") String name,
 			@ModelAttribute("network") Network network) {
 		networkService.saveNode(network, id, name);
-		return messageOnlySuccessResponse("Node saved.");
+		return successResponse("Node saved.");
 	}
 }

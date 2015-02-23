@@ -22,6 +22,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
+
 import edu.trafficsim.model.BaseEntity;
 import edu.trafficsim.model.Link;
 import edu.trafficsim.model.Network;
@@ -41,6 +43,7 @@ public abstract class AbstractNetwork<T> extends BaseEntity<T> implements
 
 	private static final long serialVersionUID = 1L;
 
+	protected CoordinateReferenceSystem crs = null;
 	protected final Map<Long, Node> nodes = new HashMap<Long, Node>();
 	protected final Map<Long, Link> links = new HashMap<Long, Link>();
 
@@ -69,11 +72,11 @@ public abstract class AbstractNetwork<T> extends BaseEntity<T> implements
 	}
 
 	public boolean containsNode(long id) {
-		return nodes.get(id) == null;
+		return nodes.get(id) != null;
 	}
 
 	public boolean containsLink(long id) {
-		return links.get(id) == null;
+		return links.get(id) != null;
 	}
 
 	@Override
@@ -143,4 +146,8 @@ public abstract class AbstractNetwork<T> extends BaseEntity<T> implements
 		return link;
 	}
 
+	@Override
+	public CoordinateReferenceSystem getCrs() {
+		return crs;
+	}
 }

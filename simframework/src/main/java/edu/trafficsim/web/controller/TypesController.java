@@ -94,7 +94,7 @@ public class TypesController extends AbstractController {
 			@RequestParam("maxSpeed") double maxSpeed) {
 		typesService.updateVehicleType(name, newName, vehicleClass, width,
 				length, maxAccel, maxDecel, maxSpeed);
-		return messageOnlySuccessResponse("Vehicle type updated.");
+		return successResponse("Vehicle type updated.");
 	}
 
 	@RequestMapping(value = "/vehicle/remove", method = RequestMethod.POST)
@@ -135,7 +135,7 @@ public class TypesController extends AbstractController {
 
 		typesService.updateDriverType(name, newName, perceptionTime,
 				reactionTime, desiredHeadway, desiredSpeed);
-		return messageOnlySuccessResponse("Driver type updated.");
+		return successResponse("Driver type updated.");
 	}
 
 	@RequestMapping(value = "/driver/remove", method = RequestMethod.POST)

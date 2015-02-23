@@ -105,7 +105,7 @@ public class CompositionService extends EntityService {
 		TypesComposition composition = typesManager
 				.getDefaultDriverTypeComposition();
 		composition.setName(name);
-		typesManager.insertVehicleTypesComposition(composition);
+		typesManager.insertDriverTypesComposition(composition);
 		return composition;
 	}
 }

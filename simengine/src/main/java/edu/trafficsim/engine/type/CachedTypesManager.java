@@ -44,12 +44,24 @@ public class CachedTypesManager extends AbstractTypesManager implements
 	}
 
 	@Override
+	public void deleteVehicleType(String name) {
+		super.deleteVehicleType(name);
+		vehicleTypes.remove(name);
+	}
+
+	@Override
 	public DriverType getDriverType(String name) {
 		DriverType type = driverTypes.get(name);
 		if (type == null) {
 			driverTypes.put(name, type = fetchDriverType(name));
 		}
 		return type;
+	}
+
+	@Override
+	public void deleteDriverType(String name) {
+		super.deleteDriverType(name);
+		driverTypes.remove(name);
 	}
 
 	@Override
@@ -64,8 +76,8 @@ public class CachedTypesManager extends AbstractTypesManager implements
 
 	@Override
 	public void deleteVehicleTypesComposition(String name) {
-		vehicleCompositions.remove(name);
 		super.deleteVehicleTypesComposition(name);
+		vehicleCompositions.remove(name);
 	}
 
 	@Override
@@ -80,8 +92,8 @@ public class CachedTypesManager extends AbstractTypesManager implements
 
 	@Override
 	public void deleteDriverTypesComposition(String name) {
-		driverCompositions.remove(name);
 		super.deleteDriverTypesComposition(name);
+		driverCompositions.remove(name);
 	}
 
 }

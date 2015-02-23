@@ -17,14 +17,13 @@
  */
 package edu.trafficsim.util;
 
-import com.vividsolutions.jts.geom.CoordinateFilter;
-
 import edu.trafficsim.model.Link;
 import edu.trafficsim.model.Location;
 import edu.trafficsim.model.Network;
 import edu.trafficsim.model.Node;
 import edu.trafficsim.model.Segment;
 import edu.trafficsim.model.core.ModelInputException;
+import edu.trafficsim.model.util.GeoReferencing.TransformCoordinateFilter;
 
 /**
  * 
@@ -39,23 +38,26 @@ public class CoordinateTransformer {
 	 *            components in the network
 	 * @throws ModelInputException
 	 */
-	public static void transform(Location location, CoordinateFilter filter)
-			throws ModelInputException {
+	public static void transform(Location location,
+			TransformCoordinateFilter filter) throws ModelInputException {
 		location.getPoint().apply(filter);
 		location.onGeomUpdated();
+		location.onTransformDone(filter.getTargetCrs());
 	}
 
-	public static void transform(Segment segment, CoordinateFilter filter)
-			throws ModelInputException {
+	public static void transform(Segment segment,
+			TransformCoordinateFilter filter) throws ModelInputException {
 		segment.getLinearGeom().apply(filter);
 		segment.onGeomUpdated();
+		segment.onTransformDone(filter.getTargetCrs());
 	}
 
-	public static void transform(Network network, CoordinateFilter filter)
-			throws ModelInputException {
+	public static void transform(Network network,
+			TransformCoordinateFilter filter) throws ModelInputException {
 		for (Link link : network.getLinks())
 			transform(link, filter);
 		for (Node node : network.getNodes())
 			transform(node, filter);
+		network.onTransformDone(filter.getTargetCrs());
 	}
 }

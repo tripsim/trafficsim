@@ -70,7 +70,7 @@ public class SettingsController extends AbstractController {
 		settingsService.updateSettings(settings, duration, stepSize, warmup,
 				seed);
 		simulationService.execute(name, network, odMatrix, settings);
-		return messageOnlySuccessResponse("Simulation started.");
+		return successResponse("Simulation started.");
 	}
 
 }

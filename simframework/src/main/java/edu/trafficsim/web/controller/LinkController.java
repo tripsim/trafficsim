@@ -108,7 +108,7 @@ public class LinkController extends AbstractController {
 			@RequestParam("roadName") String roadName,
 			@ModelAttribute("network") Network network) {
 		networkService.saveLink(network, id, name, highway, roadName);
-		return messageOnlySuccessResponse("Link saved.");
+		return successResponse("Link saved.");
 	}
 
 	@RequestMapping(value = "/remove", method = RequestMethod.POST)

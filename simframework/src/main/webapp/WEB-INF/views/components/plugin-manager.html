@@ -2,52 +2,72 @@
 <div id="user-configuration-buttons">
 	<span id="user-configuration-button-close" class="button">close</span>
 </div>
-<div>
+<div id="user-configuration-plugin-manager">
 	<table>
 		<tbody>
-			<tr>
+			<tr data-th-attr="data-plugin='Simulating'">
 				<td>Simulating</td>
-				<td><th:block data-th-fragment="select(simulatings)">
+				<td
+					data-th-with="plugins=${simulatings}, selectedPlugin=${settings.simulatingType}"><th:block
+						data-th-fragment="select(plugins,selectedPlugin)">
 						<select>
-							<option data-th-each="simulating : ${simulatings}"
-								data-th-attr="value=${simulating}" data-th-text="${simulating}"></option>
+							<option data-th-each="plugin : ${plugins}"
+								data-th-attr="selected=${plugin.equals(selectedPlugin)} ? 'true' :'false', value=${plugin}"
+								data-th-text="${plugin}"></option>
 						</select>
 					</th:block></td>
 			</tr>
-			<tr>
+			<tr data-th-attr="data-plugin='Generating'">
 				<td>Vehicle Generating</td>
-				<td data-th-include=":: select(${generatings})"></td>
-			</tr>
-			<tr>
-				<td>Routing</td>
-				<td data-th-include=":: select(${routings})"></td>
+				<td
+					data-th-include="
+				::
+				select(plugins=${generatings},selectedPlugin=${settings.vehicleGeneratingType})">
+				</td>
 			</tr>
 		</tbody>
 		<tbody>
 			<tr>
 				<td><h3>Moving (Dynamics)</h3></td>
 			</tr>
-			<tr data-th-each="type : ${vehicleTypes}">
+			<tr data-th-attr="data-plugin='Moving'"
+				data-th-each="type : ${vehicleTypes}">
 				<td data-th-text="${type.name}"></td>
-				<td data-th-include=":: select(${movings})"></td>
+				<td
+					data-th-include=":: select(${movings},${settings.getMovingType(type.name)})"></td>
+			</tr>
+		</tbody>
+		<tbody>
+			<tr>
+				<td><h3>Routing</h3></td>
+			</tr>
+			<tr data-th-attr="data-plugin='Routing'"
+				data-th-each="type : ${vehicleTypes}">
+				<td data-th-text="${type.name}"></td>
+				<td
+					data-th-include=":: select(${routings},${settings.getRoutingType(type.name)})"></td>
 			</tr>
 		</tbody>
 		<tbody>
 			<tr>
 				<td><h3>Car Followings</h3></td>
 			</tr>
-			<tr data-th-each="type : ${vehicleTypes}">
+			<tr data-th-attr="data-plugin='CarFollowing'"
+				data-th-each="type : ${vehicleTypes}">
 				<td data-th-text="${type.name}"></td>
-				<td data-th-include=":: select(${carfollowings})"></td>
+				<td
+					data-th-include=":: select(${carfollowings},${settings.getCarFollowingType(type.name)})"></td>
 			</tr>
 		</tbody>
 		<tbody>
 			<tr>
 				<td><h3>Lane Changings</h3></td>
 			</tr>
-			<tr data-th-each="type : ${vehicleTypes}">
+			<tr data-th-attr="data-plugin='LaneChanging'"
+				data-th-each="type : ${vehicleTypes}">
 				<td data-th-text="${type.name}"></td>
-				<td data-th-include=":: select(${lanechangings})"></td>
+				<td
+					data-th-include=":: select(${lanechangings},${settings.getLaneChangingType(type.name)})"></td>
 			</tr>
 		</tbody>
 

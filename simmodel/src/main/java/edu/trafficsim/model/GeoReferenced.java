@@ -31,4 +31,6 @@ public interface GeoReferenced extends ObjectContainer {
 	CoordinateReferenceSystem getCrs();
 
 	void onGeomUpdated() throws ModelInputException;
+
+	void onTransformDone(CoordinateReferenceSystem crs);
 }

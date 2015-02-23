@@ -22,6 +22,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
+
 import com.vividsolutions.jts.geom.Coordinate;
 
 import edu.trafficsim.model.Link;
@@ -91,6 +93,10 @@ public class DefaultNetwork extends AbstractNetwork<DefaultNetwork> {
 	private void refreshEndPoints(Node node) {
 		sources.remove(node);
 		sinks.remove(node);
+		if (node.isEmpty()) {
+			return;
+		}
+
 		if (node.isSink()) {
 			sinks.add(node);
 		}
@@ -115,4 +121,17 @@ public class DefaultNetwork extends AbstractNetwork<DefaultNetwork> {
 		this.modified = modified;
 	}
 
+	@Override
+	public void onGeomUpdated() throws ModelInputException {
+	}
+
+	@Override
+	public void onTransformDone(CoordinateReferenceSystem crs) {
+		this.crs = crs;
+		totalX = 0;
+		totalY = 0;
+		for (Node node : nodes.values()) {
+			onNodeAdded(node);
+		}
+	}
 }

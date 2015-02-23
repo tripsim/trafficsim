@@ -40,7 +40,7 @@ public abstract class AbstractController {
 		return failureResponse(e.getMessage());
 	}
 
-	public static Map<String, Object> messageOnlySuccessResponse(String message) {
+	public static Map<String, Object> successResponse(String message) {
 		return response(true, message, null, null);
 	}
 

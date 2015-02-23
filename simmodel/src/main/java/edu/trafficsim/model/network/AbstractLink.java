@@ -148,12 +148,12 @@ public abstract class AbstractLink<T> extends AbstractSegment<T> implements
 			return;
 		}
 
-		if (reverseLink == this.reverseLink) {
+		if (this.reverseLink == reverseLink) {
 			return;
 		}
 
 		if (this.reverseLink != null) {
-			reverseLink.removeReverseLink();
+			this.reverseLink.removeReverseLink();
 		}
 
 		this.reverseLink = reverseLink;
@@ -165,11 +165,14 @@ public abstract class AbstractLink<T> extends AbstractSegment<T> implements
 
 	@Override
 	public void removeReverseLink() throws ModelInputException {
+		if (reverseLink == null) {
+			return;
+		}
+
+		Link temp = reverseLink;
 		reverseLink = null;
 		shiftLanes();
-		if (reverseLink.getReverseLink() != null) {
-			reverseLink.removeReverseLink();
-		}
+		temp.removeReverseLink();
 	}
 
 	private void shiftLanes() throws ModelInputException {

@@ -17,12 +17,19 @@
  */
 package edu.trafficsim.web.controller;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.SessionAttributes;
 
+import edu.trafficsim.engine.simulation.SimulationSettings;
 import edu.trafficsim.engine.type.TypesManager;
 import edu.trafficsim.plugin.PluginManager;
 
@@ -33,6 +40,7 @@ import edu.trafficsim.plugin.PluginManager;
  */
 @Controller
 @RequestMapping(value = "/plugin")
+@SessionAttributes(value = { "settings" })
 public class PluginController extends AbstractController {
 
 	@Autowired
@@ -41,9 +49,42 @@ public class PluginController extends AbstractController {
 	TypesManager typesManager;
 
 	@RequestMapping(value = "/manager", method = RequestMethod.GET)
-	public String managePlugins(Model model) {
+	public String managePlugins(
+			@ModelAttribute("settings") SimulationSettings settings, Model model) {
 		addModelAttribute(model);
+		model.addAttribute("settings", settings);
 		return "components/plugin-manager";
+	}
+
+	@RequestMapping(value = "/update", method = RequestMethod.POST)
+	public @ResponseBody Map<String, Object> updatePluginMapping(
+			@RequestParam("pluginType") String pluginType,
+			@RequestParam("pluginName") String pluginName,
+			@RequestParam("type") String type,
+			@ModelAttribute("settings") SimulationSettings settings) {
+		String message;
+		if ("Simulating".equals(pluginType)) {
+			settings.setSimulatingType(pluginName);
+			message = pluginType + "->" + pluginName;
+		} else if ("Generating".equals(pluginType)) {
+			settings.setVehicleGeneratingType(pluginName);
+			message = pluginType + "->" + pluginName;
+		} else if ("Moving".equals(pluginType)) {
+			settings.setMovingType(type, pluginName);
+			message = pluginType + "->" + type + "->" + pluginName;
+		} else if ("Routing".equals(pluginType)) {
+			settings.setRoutingType(type, pluginName);
+			message = pluginType + "->" + type + "->" + pluginName;
+		} else if ("CarFollowing".equals(pluginType)) {
+			settings.setCarFollowingType(type, pluginName);
+			message = pluginType + "->" + type + "->" + pluginName;
+		} else if ("LaneChanging".equals(pluginType)) {
+			settings.setLaneChangingType(type, pluginName);
+			message = pluginType + "->" + type + "->" + pluginName;
+		} else {
+			return failureResponse("Unknown plugin type " + pluginType);
+		}
+		return successResponse("Plugin mapping updated: " + message);
 	}
 
 	@RequestMapping(value = "/types", method = RequestMethod.GET)

@@ -2,6 +2,7 @@ package edu.trafficsim.data.persistence.impl;
 
 import java.util.List;
 
+import org.bson.types.ObjectId;
 import org.mongodb.morphia.query.Query;
 import org.springframework.stereotype.Repository;
 
@@ -62,4 +63,25 @@ class CompositionDaoImpl extends AbstractDaoImpl<CompositionDo> implements
 				"composition." + typeName + " exists", true).countAll();
 	}
 
+	@Override
+	public void delete(CompositionDo entity) {
+		if (entity.isDefaultComposition()) {
+			throw new IllegalStateException(
+					"default composition cannot be deleted!");
+		}
+		super.delete(entity);
+	}
+
+	@Override
+	public void deleteById(ObjectId id) {
+		CompositionDo entity = findById(id);
+		if (entity == null) {
+			return;
+		}
+		if (entity.isDefaultComposition()) {
+			throw new IllegalStateException(
+					"default composition cannot be deleted!");
+		}
+		super.deleteById(id);
+	}
 }

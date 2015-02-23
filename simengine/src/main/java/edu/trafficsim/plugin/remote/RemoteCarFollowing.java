@@ -7,7 +7,7 @@ import edu.trafficsim.model.Vehicle;
 import edu.trafficsim.plugin.AbstractRemotePlugin;
 import edu.trafficsim.plugin.ICarFollowing;
 
-@Component("remote-car-following")
+@Component("Remote Car-following")
 public class RemoteCarFollowing extends AbstractRemotePlugin implements
 		ICarFollowing {
 

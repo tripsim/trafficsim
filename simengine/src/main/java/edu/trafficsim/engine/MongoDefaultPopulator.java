@@ -64,7 +64,7 @@ public class MongoDefaultPopulator implements
 			if (type == null) {
 				type = typesFactory.createVehicleType(CAR, VehicleClass.Car);
 			}
-			type.setDefaultType(true);
+			type.setDefault(true);
 			typesManager.saveVehicleType(type);
 
 			type = typesManager.getVehicleType(TRUCK);
@@ -72,7 +72,7 @@ public class MongoDefaultPopulator implements
 				type = typesFactory
 						.createVehicleType(TRUCK, VehicleClass.Truck);
 			}
-			type.setDefaultType(true);
+			type.setDefault(true);
 			typesManager.saveVehicleType(type);
 		}
 	}
@@ -84,7 +84,7 @@ public class MongoDefaultPopulator implements
 			if (type == null) {
 				type = typesFactory.createDriverType(DRIVER);
 			}
-			type.setDefaultType(true);
+			type.setDefault(true);
 			typesManager.saveDriverType(type);
 		}
 	}
@@ -96,7 +96,7 @@ public class MongoDefaultPopulator implements
 			if (type == null) {
 				type = typesFactory.createLinkType(LINK);
 			}
-			type.setDefaultType(true);
+			type.setDefault(true);
 			typesManager.saveLinkType(type);
 		}
 	}
@@ -108,7 +108,7 @@ public class MongoDefaultPopulator implements
 			if (type == null) {
 				type = typesFactory.createNodeType(NODE);
 			}
-			type.setDefaultType(true);
+			type.setDefault(true);
 			typesManager.saveNodeType(type);
 		}
 	}

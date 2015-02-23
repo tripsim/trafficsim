@@ -18,11 +18,11 @@ public abstract class Type {
 		this.name = name;
 	}
 
-	public boolean isDefaultType() {
+	public boolean isDefault() {
 		return defaultType;
 	}
 
-	public void setDefaultType(boolean defaultType) {
+	public void setDefault(boolean defaultType) {
 		this.defaultType = defaultType;
 	}
 

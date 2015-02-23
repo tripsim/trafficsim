@@ -98,6 +98,8 @@ public class DefaultController extends AbstractController {
 		model.addAttribute("sequence", new Sequence(demo.getNextSeq()));
 		model.addAttribute("network", demo.getNetwork());
 		model.addAttribute("odMatrix", demo.getOdMatrix());
+		model.addAttribute("settings",
+				simulationManager.getDefaultSimulationSettings());
 		return mapJsonService.getNetworkJson(demo.getNetwork());
 	}
 }

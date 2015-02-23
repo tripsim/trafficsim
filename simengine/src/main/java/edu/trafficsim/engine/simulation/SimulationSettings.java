@@ -20,6 +20,8 @@ package edu.trafficsim.engine.simulation;
 import java.util.HashMap;
 import java.util.Map;
 
+import edu.trafficsim.plugin.PluginManager;
+
 /**
  * 
  * 
@@ -89,6 +91,9 @@ public class SimulationSettings {
 	}
 
 	public final String getSimulatingType() {
+		if (simulatingType == null) {
+			setSimulatingType(simulatingType = PluginManager.DEFAULT_SIMULATING);
+		}
 		return simulatingType;
 	}
 
@@ -97,6 +102,9 @@ public class SimulationSettings {
 	}
 
 	public final String getVehicleGeneratingType() {
+		if (vehicleGeneratingType == null) {
+			setVehicleGeneratingType(vehicleGeneratingType = PluginManager.DEFAULT_GENERATING);
+		}
 		return vehicleGeneratingType;
 	}
 
@@ -105,7 +113,11 @@ public class SimulationSettings {
 	}
 
 	public final String getMovingType(String vehicleType) {
-		return movingTypes.get(vehicleType);
+		String type = movingTypes.get(vehicleType);
+		if (type == null) {
+			setMovingType(vehicleType, type = PluginManager.DEFAULT_MOVING);
+		}
+		return type;
 	}
 
 	public final void setMovingType(String vehicleType, String movingType) {
@@ -113,7 +125,11 @@ public class SimulationSettings {
 	}
 
 	public final String getRoutingType(String vehicleType) {
-		return routingTypes.get(vehicleType);
+		String type = routingTypes.get(vehicleType);
+		if (type == null) {
+			setRoutingType(vehicleType, type = PluginManager.DEFAULT_ROUTING);
+		}
+		return type;
 	}
 
 	public final void setRoutingType(String vehicleType, String routingType) {
@@ -121,7 +137,12 @@ public class SimulationSettings {
 	}
 
 	public final String getCarFollowingType(String vehicleType) {
-		return carFollowingTypes.get(vehicleType);
+		String type = carFollowingTypes.get(vehicleType);
+		if (type == null) {
+			setCarFollowingType(vehicleType,
+					type = PluginManager.DEFAULT_CAR_FOLLOWING);
+		}
+		return type;
 	}
 
 	public final void setCarFollowingType(String vehicleType,
@@ -130,7 +151,12 @@ public class SimulationSettings {
 	}
 
 	public final String getLaneChangingType(String vehicleType) {
-		return laneChangingTypes.get(vehicleType);
+		String type = laneChangingTypes.get(vehicleType);
+		if (type == null) {
+			setLaneChangingType(vehicleType,
+					type = PluginManager.DEFAULT_LANE_CHANGING);
+		}
+		return type;
 	}
 
 	public final void setLaneChangingType(String vehicleType,
@@ -139,7 +165,12 @@ public class SimulationSettings {
 	}
 
 	public final String getVehicleImplType(String vehicleType) {
-		return vehicleImpls.get(vehicleType);
+		String type = vehicleImpls.get(vehicleType);
+		if (type == null) {
+			setVehicleImplType(vehicleType,
+					type = PluginManager.DEFAULT_VEHICLE_IMPL);
+		}
+		return type;
 	}
 
 	public final void setVehicleImplType(String vehicleType,
@@ -148,7 +179,12 @@ public class SimulationSettings {
 	}
 
 	public final String getDriverImplType(String vehicleType) {
-		return driverImpls.get(vehicleType);
+		String type = driverImpls.get(vehicleType);
+		if (type == null) {
+			setDriverImplType(vehicleType,
+					type = PluginManager.DEFAULT_DRIVER_IMPL);
+		}
+		return type;
 	}
 
 	public final void setDriverImplType(String vehicleType, String driverImpl) {

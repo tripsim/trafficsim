@@ -13,6 +13,7 @@
 				data-th-attr="data-name=${type.name}">
 				<td data-th-text="${type.name}"></td>
 				<td><span class="user-configuration-vehicle-type-edit button">edit</span><span
+					data-th-if="${!type.default}"
 					class="user-configuration-vehicle-type-remove button">remove</span></td>
 			</tr>
 			<tr>
@@ -27,6 +28,7 @@
 				data-th-attr="data-name=${type.name}">
 				<td data-th-text="${type.name}"></td>
 				<td><span class="user-configuration-driver-type-edit button">edit</span><span
+					data-th-if="${!type.default}"
 					class="user-configuration-driver-type-remove button">remove</span></td>
 			</tr>
 			<tr>

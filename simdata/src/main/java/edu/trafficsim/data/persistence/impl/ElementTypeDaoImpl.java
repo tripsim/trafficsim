@@ -2,6 +2,7 @@ package edu.trafficsim.data.persistence.impl;
 
 import java.util.List;
 
+import org.bson.types.ObjectId;
 import org.mongodb.morphia.query.Query;
 import org.springframework.stereotype.Repository;
 
@@ -54,4 +55,25 @@ class ElementTypeDaoImpl extends AbstractDaoImpl<ElementTypeDo> implements
 		return datastore.createQuery(ElementTypeDo.class).field("category")
 				.equal(category);
 	}
+
+	@Override
+	public void delete(ElementTypeDo entity) {
+		if (entity.isDefaultType()) {
+			throw new IllegalStateException("default type cannot be deleted!");
+		}
+		super.delete(entity);
+	}
+
+	@Override
+	public void deleteById(ObjectId id) {
+		ElementTypeDo entity = findById(id);
+		if (entity == null) {
+			return;
+		}
+		if (entity.isDefaultType()) {
+			throw new IllegalStateException("default type cannot be deleted!");
+		}
+		super.deleteById(id);
+	}
+
 }
