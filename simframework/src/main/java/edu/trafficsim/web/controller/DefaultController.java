@@ -76,19 +76,26 @@ public class DefaultController extends AbstractController {
 	public String home(Model model, HttpSession session)
 			throws ModelInputException {
 		if (session.isNew()) {
-			Sequence sequence = new Sequence();
-			Network network = networkService.createNetwork(sequence);
-			OdMatrix odMatrix = odService.createOdMatrix(sequence,
-					network.getName());
-			SimulationSettings settings = simulationManager
-					.getDefaultSimulationSettings();
-
-			model.addAttribute("sequence", sequence);
-			model.addAttribute("network", network);
-			model.addAttribute("odMatrix", odMatrix);
-			model.addAttribute("settings", settings);
+			return "redirect:/new";
 		}
 		return "index";
+	}
+
+	@RequestMapping(value = "/new")
+	public String newProject(Model model, HttpSession session)
+			throws ModelInputException {
+		Sequence sequence = new Sequence();
+		Network network = networkService.createNetwork(sequence);
+		OdMatrix odMatrix = odService.createOdMatrix(sequence,
+				network.getName());
+		SimulationSettings settings = simulationManager
+				.getDefaultSimulationSettings();
+
+		model.addAttribute("sequence", sequence);
+		model.addAttribute("network", network);
+		model.addAttribute("odMatrix", odMatrix);
+		model.addAttribute("settings", settings);
+		return "redirect:/";
 	}
 
 	@RequestMapping(value = "getdemonetwork", method = RequestMethod.GET)

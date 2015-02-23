@@ -1,17 +1,65 @@
 <h2>New Simulation Project</h2>
+<h3>Start New Project</h3>
+<p>
+	<span class="button user-configuration-project-new">Start</span>
+</p>
 <h3>Import Network from Open Street Map</h3>
 <p>
 	<span>Select area on map! </span><span
 		class="button user-configuration-project-select">Select</span>
 </p>
+<h3>Partially Load Previous Run Network and Od Matrix</h3>
+<div id="user-configuration-project-load">
+	<table>
+		<tbody>
+			<tr data-th-if="${!networkNames.isEmpty()}">
+				<td><span>Load Network</span></td>
+				<td><select name="network"><option
+							data-th-each="name : ${networkNames}"
+							data-th-attr="value=${name}" data-th-text="${name}"></option>
+				</select></td>
+				<td><span
+					class="button user-configuration-project-load">Load</span></td>
+			</tr>
+			<tr data-th-if="${!odMatrixNames.isEmpty()}">
+				<td><span>Load Od Matrix</span></td>
+				<td><select name="odMatrix"><option
+							data-th-each="name : ${odMatrixNames}"
+							data-th-attr="value=${name}" data-th-text="${name}"></option>
+				</select></td>
+				<td><span
+					class="button user-configuration-project-load">Load</span></td>
+			</tr>
+			<tr
+				data-th-if="${networkNames.isEmpty() and odMatrixNames.isEmpty()}">
+				<td><span>Nothing to load from database!</span></td>
+			</tr>
+		</tbody>
+	</table>
+</div>
 <h3>Load from Saved Project</h3>
 <div>
 	<form method="post" action="" enctype="multipart/form-data">
 		<span><input type="file" name="file" /> </span><span
-			class="button user-configuration-project-import">import</span>
+			class="button user-configuration-project-import">Import</span>
 	</form>
 </div>
-<h3>Export current Project</h3>
+<h3>Export Current Project</h3>
 <div>
-	<span class="button user-configuration-project-export">export</span>
+	<span class="button user-configuration-project-export">Export</span>
+</div>
+<h3>Save Current Project</h3>
+<div>
+	<table>
+		<tbody>
+			<tr data-th-attr="data-element='network'">
+				<td><span>Save Network</span></td>
+				<td><span class="button user-configuration-project-save">Save</span></td>
+			</tr>
+			<tr data-th-attr="data-element='odMatrix'">
+				<td><span>Save Od Matrix</span></td>
+				<td><span class="button user-configuration-project-save">Save</span></td>
+			</tr>
+		</tbody>
+	</table>
 </div>

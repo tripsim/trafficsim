@@ -25,14 +25,13 @@ class CompositionDaoImpl extends AbstractDaoImpl<CompositionDo> implements
 		DBObject query = new BasicDBObjectBuilder()
 				.add("category", StringUtils.toString(category))
 				.add("defaultComposition", true).get();
-		List<String> result = datastore.getCollection(CompositionDo.class)
-				.distinct("name", query);
+		List<String> result = (List<String>) getTypeField("name", query);
 		return result.size() > 0 ? result.get(0) : null;
 	}
 
 	@Override
 	public List<?> getCompositionField(TypeCategoryDo category, String field) {
-		return datastore.getCollection(CompositionDo.class).distinct(field,
+		return getTypeField(field,
 				new BasicDBObject("category", StringUtils.toString(category)));
 	}
 

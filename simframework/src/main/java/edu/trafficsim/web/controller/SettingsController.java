@@ -33,6 +33,7 @@ import edu.trafficsim.engine.simulation.SimulationService;
 import edu.trafficsim.engine.simulation.SimulationSettings;
 import edu.trafficsim.model.Network;
 import edu.trafficsim.model.OdMatrix;
+import edu.trafficsim.util.TimeUtils;
 import edu.trafficsim.web.service.SettingsService;
 
 /**
@@ -53,13 +54,18 @@ public class SettingsController extends AbstractController {
 	@RequestMapping(value = "/view", method = RequestMethod.GET)
 	public String settingsView(
 			@ModelAttribute("settings") SimulationSettings settings, Model model) {
+		model.addAttribute("simulationName", newSimulationName());
 		model.addAttribute("settings", settings);
 		return "components/settings";
 	}
 
+	private String newSimulationName() {
+		return "Simulation " + TimeUtils.newDate();
+	}
+
 	@RequestMapping(value = "/run", method = RequestMethod.POST)
 	public @ResponseBody Map<String, Object> runSimulation(
-			@RequestParam("name") String name,
+			@RequestParam("simulationName") String name,
 			@RequestParam("duration") int duration,
 			@RequestParam("stepSize") double stepSize,
 			@RequestParam("warmup") int warmup,

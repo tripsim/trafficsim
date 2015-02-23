@@ -93,10 +93,12 @@ var simwebhelper = {
 				}
 				if (data.status.panelUrl) {
 					simwebhelper.getPanel(data.status.panelUrl);
+				}
+				if (data.status.redirectUrl) {
+					simwebhelper.redirect(data.status.redirectUrl);
 				} else {
 					// simwebhelper.hidePanel();
 				}
-
 			}
 		});
 	}

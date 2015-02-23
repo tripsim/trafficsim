@@ -20,6 +20,11 @@ jQuery(document).ready(
 			/*******************************************************************
 			 * Panel, User Configuration, New Project
 			 ******************************************************************/
+			/* start new project */
+			jQuery('#user-configuration').on('click',
+					'.user-configuration-project-new', function() {
+						simwebhelper.redirect('new');
+					});
 			/* select area from map */
 			jQuery('#user-configuration').on('click',
 					'.user-configuration-project-select', function() {
@@ -51,5 +56,32 @@ jQuery(document).ready(
 						var url = jQuery('select#user-osm-xapi').val();
 						var highway = jQuery('select#user-osm-highway').val();
 						simulation.createNetworkFromOsm(url, highway);
+					});
+			/*******************************************************************
+			 * Panel, User Configuration, Load Network, OdMatrix
+			 ******************************************************************/
+			jQuery('#user-configuration').on(
+					'click',
+					'.user-configuration-project-load',
+					function() {
+						var select = jQuery(this).closest("tr").find('select')
+								.first();
+						var postData = {};
+						postData.name = select.val();
+						postData.element = select.attr("name");
+						simwebhelper.action('project/load', postData);
+					});
+			/*******************************************************************
+			 * Panel, User Configuration, Save Network, OdMatrix
+			 ******************************************************************/
+			jQuery('#user-configuration').on(
+					'click',
+					'.user-configuration-project-save',
+					function() {
+						var postData = {};
+						postData.name = prompt("Please enter a name: ");
+						postData.element = jQuery(this).closest('tr').attr(
+								'data-element');
+						simwebhelper.action('project/save', postData);
 					});
 		});

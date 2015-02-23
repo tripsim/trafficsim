@@ -1,5 +1,7 @@
 package edu.trafficsim.engine.network;
 
+import java.util.List;
+
 import edu.trafficsim.model.Network;
 
 public interface NetworkManager {
@@ -9,5 +11,7 @@ public interface NetworkManager {
 	void saveNetwork(Network network);
 
 	Network loadNetwork(String name);
+
+	List<String> getNetworkNames();
 
 }

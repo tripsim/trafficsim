@@ -25,14 +25,13 @@ class ElementTypeDaoImpl extends AbstractDaoImpl<ElementTypeDo> implements
 		DBObject query = new BasicDBObjectBuilder()
 				.add("category", StringUtils.toString(category))
 				.add("defaultType", true).get();
-		List<String> result = datastore.getCollection(ElementTypeDo.class)
-				.distinct("name", query);
+		List<String> result = (List<String>) getTypeField("name", query);
 		return result.size() > 0 ? result.get(0) : null;
 	}
 
 	@Override
 	public List<?> getTypeField(TypeCategoryDo category, String field) {
-		return datastore.getCollection(ElementTypeDo.class).distinct(field,
+		return getTypeField(field,
 				new BasicDBObject("category", StringUtils.toString(category)));
 	}
 

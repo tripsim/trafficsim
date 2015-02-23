@@ -11,4 +11,6 @@ public interface OdMatrixDao extends GenericDao<OdMatrixDo> {
 	long countByName(String name);
 
 	List<OdMatrixDo> findByNetworkName(String networkName);
+
+	List<String> getOdMatrixNames(String networkName);
 }

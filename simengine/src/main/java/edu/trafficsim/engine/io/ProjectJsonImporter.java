@@ -34,7 +34,6 @@ import static edu.trafficsim.engine.io.ProjectImportExportConstant.LINKS;
 import static edu.trafficsim.engine.io.ProjectImportExportConstant.LINKTYPE;
 import static edu.trafficsim.engine.io.ProjectImportExportConstant.NAME;
 import static edu.trafficsim.engine.io.ProjectImportExportConstant.NETWORK;
-import static edu.trafficsim.engine.io.ProjectImportExportConstant.NETWORKNAME;
 import static edu.trafficsim.engine.io.ProjectImportExportConstant.NODES;
 import static edu.trafficsim.engine.io.ProjectImportExportConstant.NODESTINATION;
 import static edu.trafficsim.engine.io.ProjectImportExportConstant.NODETYPE;
@@ -244,8 +243,10 @@ final class ProjectJsonImporter {
 		jsonNode = rootNode.path(ODMATRIX);
 		id = jsonNode.get(ID).asLong();
 		name = jsonNode.get(NAME).asText();
-		String networkName = jsonNode.get(NETWORKNAME).asText();
-		OdMatrix odMatrix = odFactory.createOdMatrix(id, name, networkName);
+		// ignore network name in file
+		// String networkName = jsonNode.get(NETWORKNAME).asText();
+		OdMatrix odMatrix = odFactory.createOdMatrix(id, name,
+				network.getName());
 
 		jsonNode = jsonNode.path(ODS);
 		for (int i = 0; i < jsonNode.size(); i++) {

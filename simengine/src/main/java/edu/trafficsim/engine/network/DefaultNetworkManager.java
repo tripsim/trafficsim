@@ -1,5 +1,7 @@
 package edu.trafficsim.engine.network;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,6 +65,12 @@ class DefaultNetworkManager implements NetworkManager {
 		} catch (ParseException | ModelInputException e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<String> getNetworkNames() {
+		return (List<String>) networkDao.getTypeField("name");
 	}
 
 }

@@ -27,11 +27,14 @@ public class ActionResponse {
 	private final boolean successful;
 	private final String message;
 	private final String panelUrl;
+	private final String redirectUrl;
 
-	public ActionResponse(boolean successful, String message, String panelUrl) {
+	public ActionResponse(boolean successful, String message, String panelUrl,
+			String redirectUrl) {
 		this.successful = successful;
 		this.message = message;
 		this.panelUrl = panelUrl;
+		this.redirectUrl = redirectUrl;
 	}
 
 	public boolean isSuccessful() {
@@ -44,6 +47,10 @@ public class ActionResponse {
 
 	public String getPanelUrl() {
 		return panelUrl;
+	}
+
+	public String getRedirectUrl() {
+		return redirectUrl;
 	}
 
 }

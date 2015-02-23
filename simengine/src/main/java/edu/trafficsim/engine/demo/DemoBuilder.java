@@ -170,7 +170,7 @@ public class DemoBuilder {
 						times, vphs);
 
 		odMatrix = odFactory.createOdMatrix(id++, "demo od matrix",
-				"networkName");
+				"demo network");
 		odMatrix.add(od);
 
 		// Turn Percentage

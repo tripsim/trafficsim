@@ -44,6 +44,11 @@ public abstract class AbstractController {
 		return response(true, message, null, null);
 	}
 
+	public static Map<String, Object> successResponseWithRedirect(
+			String message, String url) {
+		return response(true, message, null, url, null);
+	}
+
 	public static Map<String, Object> successResponse(String message,
 			String panelUrl) {
 		return response(true, message, panelUrl, null);
@@ -56,9 +61,14 @@ public abstract class AbstractController {
 
 	public static Map<String, Object> response(boolean successful,
 			String message, String panelUrl, Object data) {
+		return response(successful, message, panelUrl, null, data);
+	}
+
+	public static Map<String, Object> response(boolean successful,
+			String message, String panelUrl, String redirectUrl, Object data) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put(ACTION_RESPONSE_STATUS_KEY, new ActionResponse(successful,
-				message, panelUrl));
+				message, panelUrl, redirectUrl));
 		if (data != null)
 			map.put(ACTION_RESPONSE_DATA_KEY, data);
 		return map;

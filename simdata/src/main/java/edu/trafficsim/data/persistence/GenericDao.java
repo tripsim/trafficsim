@@ -19,4 +19,6 @@ public interface GenericDao<E> {
 	void delete(E entity);
 
 	void deleteById(ObjectId id);
+
+	List<?> getTypeField(String field);
 }

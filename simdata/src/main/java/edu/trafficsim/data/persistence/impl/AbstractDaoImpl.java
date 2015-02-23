@@ -9,6 +9,8 @@ import org.bson.types.ObjectId;
 import org.mongodb.morphia.AdvancedDatastore;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.mongodb.DBObject;
+
 import edu.trafficsim.data.persistence.GenericDao;
 
 public abstract class AbstractDaoImpl<E> implements GenericDao<E> {
@@ -62,4 +64,12 @@ public abstract class AbstractDaoImpl<E> implements GenericDao<E> {
 		datastore.delete(persistentClass, id);
 	}
 
+	@Override
+	public List<?> getTypeField(String field) {
+		return datastore.getCollection(persistentClass).distinct(field);
+	}
+
+	protected List<?> getTypeField(String field, DBObject query) {
+		return datastore.getCollection(persistentClass).distinct(field, query);
+	}
 }

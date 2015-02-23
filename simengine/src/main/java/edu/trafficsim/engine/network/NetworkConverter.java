@@ -177,10 +177,12 @@ class NetworkConverter {
 		}
 
 		Network build() throws ParseException, ModelInputException {
-			addNodes(entity.getNodes());
-			addLinks(entity.getLinks());
-			addReverseLink();
-			addConnectors(entity.getNodes());
+			if (entity.getNodes() != null && entity.getLinks() != null) {
+				addNodes(entity.getNodes());
+				addLinks(entity.getLinks());
+				addReverseLink();
+				addConnectors(entity.getNodes());
+			}
 			return result;
 		}
 
@@ -226,7 +228,9 @@ class NetworkConverter {
 					reverseLinks.put(id1, id2);
 				}
 			}
-			addLanes(link, entity.getLanes());
+			if (entity.getLanes() != null) {
+				addLanes(link, entity.getLanes());
+			}
 		}
 
 		private void addReverseLink() throws ModelInputException {
@@ -257,6 +261,9 @@ class NetworkConverter {
 		private void addConnectors(List<NodeDo> entities)
 				throws ModelInputException {
 			for (NodeDo nodeDo : entities) {
+				if (nodeDo.getConnectors() == null) {
+					continue;
+				}
 				for (ConnectorDo entity : nodeDo.getConnectors()) {
 					addConnector(entity);
 				}
@@ -274,8 +281,10 @@ class NetworkConverter {
 
 	private Map<Long, RoadInfo> getRoadInfos(NetworkDo entity) {
 		Map<Long, RoadInfo> roadInfos = new HashMap<Long, RoadInfo>();
-		for (RoadInfoDo roadInfoDo : entity.getRoadInfos()) {
-			roadInfos.put(roadInfoDo.getId(), toRoadInfo(roadInfoDo));
+		if (entity.getRoadInfos() != null) {
+			for (RoadInfoDo roadInfoDo : entity.getRoadInfos()) {
+				roadInfos.put(roadInfoDo.getId(), toRoadInfo(roadInfoDo));
+			}
 		}
 		return roadInfos;
 	}

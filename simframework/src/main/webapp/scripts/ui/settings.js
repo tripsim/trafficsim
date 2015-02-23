@@ -28,6 +28,8 @@ jQuery(document).ready(
 						simulation.clearFrames();
 						var tbody = jQuery(this).closest('tbody');
 						var postData = {
+							simulationName : tbody.find(
+									'input[name="simulationName"]').val(),
 							duration : tbody.find('input[name="duration"]')
 									.val(),
 							warmup : tbody.find('input[name="warmup"]').val(),

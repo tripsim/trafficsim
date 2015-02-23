@@ -6,6 +6,8 @@ import java.util.List;
 import org.mongodb.morphia.query.Query;
 import org.springframework.stereotype.Repository;
 
+import com.mongodb.BasicDBObject;
+
 import edu.trafficsim.data.dom.OdMatrixDo;
 import edu.trafficsim.data.persistence.OdMatrixDao;
 
@@ -46,5 +48,12 @@ class OdMatrixDoImpl extends AbstractDaoImpl<OdMatrixDo> implements OdMatrixDao 
 			entity.setTimestamp(date);
 		}
 		super.save(entities);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<String> getOdMatrixNames(String networkName) {
+		return (List<String>) getTypeField("name", new BasicDBObject(
+				"networkName", networkName));
 	}
 }
