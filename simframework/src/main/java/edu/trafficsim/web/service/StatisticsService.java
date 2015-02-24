@@ -17,19 +17,8 @@
  */
 package edu.trafficsim.web.service;
 
-import java.util.List;
-import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import com.vividsolutions.jts.geom.Coordinate;
-
-import edu.trafficsim.engine.network.NetworkFactory;
-import edu.trafficsim.engine.statistics.StatisticsCollector;
-import edu.trafficsim.model.Vehicle;
-import edu.trafficsim.model.core.MultiValuedMap;
-import edu.trafficsim.model.util.Colors;
 
 /**
  * 
@@ -41,6 +30,25 @@ public class StatisticsService {
 
 	@Autowired
 	MapJsonService mapJsonService;
+
+	public FramesDto getFrames(String simulationName, long startFrame,
+			long steps) {
+		return null;
+	}
+
+	public TrajectoriesDto getTrajectories(String simulationName, long nodeId,
+			long startFrame, long steps) {
+		return null;
+	}
+
+	public TsdDto getTsd(String simulationName, long linkId, long startFrame,
+			long steps) {
+		return null;
+	}
+
+	public FdDto getFd(String simulationName, long startFrame, long steps) {
+		return null;
+	}
 
 //	public String getTrajectory(StatisticsCollector statics,
 //			NetworkFactory factory, Long vid) {

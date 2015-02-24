@@ -14,39 +14,39 @@ class StatisticsSnapshotDaoImpl extends AbstractDaoImpl<StatisticsSnapshotDo>
 
 	@Override
 	public List<StatisticsSnapshotDo> loadSnapshots(String simulationName,
-			long startFrame, long endFrame) {
-		return createQuery(simulationName, startFrame, endFrame).asList();
+			long startFrame, long steps) {
+		return createQuery(simulationName, startFrame, steps).asList();
 	}
 
 	@Override
 	public List<StatisticsSnapshotDo> loadSnapshots(String simulationName,
-			long vid, long startFrame, long endFrame) {
+			long vid, long startFrame, long steps) {
 		Query<StatisticsSnapshotDo> query = createQuery(simulationName,
-				startFrame, endFrame).field("vid").equal(vid);
+				startFrame, steps).field("vid").equal(vid);
 		return query.asList();
 	}
 
 	@Override
 	public List<StatisticsSnapshotDo> loadSnapshotsByLink(
-			String simulationName, long linkId, long startFrame, long endFrame) {
+			String simulationName, long linkId, long startFrame, long steps) {
 		Query<StatisticsSnapshotDo> query = createQuery(simulationName,
-				startFrame, endFrame).field("linkId").equal(linkId);
+				startFrame, steps).field("linkId").equal(linkId);
 		return query.asList();
 	}
 
 	@Override
 	public List<StatisticsSnapshotDo> loadSnapshotsByNode(
-			String simulationName, long nodeId, long startFrame, long endFrame) {
+			String simulationName, long nodeId, long startFrame, long steps) {
 		Query<StatisticsSnapshotDo> query = createQuery(simulationName,
-				startFrame, endFrame).field("nodeId").equal(nodeId);
+				startFrame, steps).field("nodeId").equal(nodeId);
 		return query.asList();
 	}
 
 	private Query<StatisticsSnapshotDo> createQuery(String simulationName,
-			long startFrame, long endFrame) {
+			long startFrame, long steps) {
 		return datastore.createQuery(StatisticsSnapshotDo.class).field("name")
 				.equal(simulationName).filter("sequence >", startFrame)
-				.filter("sequence <", endFrame);
+				.filter("sequence <", startFrame + steps);
 	}
 
 }

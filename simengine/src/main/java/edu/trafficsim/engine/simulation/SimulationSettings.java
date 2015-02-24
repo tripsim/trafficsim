@@ -45,7 +45,7 @@ public class SimulationSettings {
 	final Map<String, String> vehicleImpls = new HashMap<String, String>();
 	final Map<String, String> driverImpls = new HashMap<String, String>();
 
-	public SimulationSettings(int duration, double stepSize) {
+	public SimulationSettings(long duration, double stepSize) {
 		this.duration = duration;
 		this.stepSize = stepSize;
 	}

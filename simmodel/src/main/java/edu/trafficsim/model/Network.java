@@ -18,6 +18,7 @@
 package edu.trafficsim.model;
 
 import java.util.Collection;
+import java.util.Set;
 
 import com.vividsolutions.jts.geom.Coordinate;
 
@@ -37,6 +38,10 @@ public interface Network extends ObjectContainer, Persistable, GeoReferenced {
 	Collection<Node> getNodes();
 
 	Collection<Link> getLinks();
+
+	Set<Long> getNodeIds();
+
+	Set<Long> getLinkIds();
 
 	Node getNode(long id);
 

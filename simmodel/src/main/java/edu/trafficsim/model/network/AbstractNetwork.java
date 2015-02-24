@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
@@ -59,6 +60,16 @@ public abstract class AbstractNetwork<T> extends BaseEntity<T> implements
 	@Override
 	public Collection<Link> getLinks() {
 		return Collections.unmodifiableCollection(links.values());
+	}
+
+	@Override
+	public Set<Long> getNodeIds() {
+		return nodes.keySet();
+	}
+
+	@Override
+	public Set<Long> getLinkIds() {
+		return links.keySet();
 	}
 
 	@Override

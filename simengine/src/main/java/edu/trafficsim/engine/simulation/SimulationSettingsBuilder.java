@@ -2,21 +2,21 @@ package edu.trafficsim.engine.simulation;
 
 final class SimulationSettingsBuilder {
 
-	private int duration = 100; // in seconds
+	private long duration = 100; // in seconds
 	private double stepSize = 0.5d; // in seconds
-	private int warmup = 0; // in seconds
+	private long warmup = 0; // in seconds
 	private long seed = 0l;
 	private double sd = 0.25d; // standard deviation for normal dist
 
 	SimulationSettingsBuilder() {
 	}
 
-	SimulationSettingsBuilder(int duration, double stepSize) {
+	SimulationSettingsBuilder(long duration, double stepSize) {
 		this.duration = duration;
 		this.stepSize = stepSize;
 	}
 
-	SimulationSettingsBuilder withWarmup(int warmup) {
+	SimulationSettingsBuilder withWarmup(long warmup) {
 		this.warmup = warmup;
 		return this;
 	}

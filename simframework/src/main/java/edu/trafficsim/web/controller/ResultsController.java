@@ -17,6 +17,8 @@
  */
 package edu.trafficsim.web.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,13 +26,19 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
-import edu.trafficsim.engine.network.NetworkFactory;
-import edu.trafficsim.engine.simulation.SimulationProject;
-import edu.trafficsim.engine.statistics.StatisticsCollector;
+import edu.trafficsim.engine.simulation.ExecutedSimulation;
+import edu.trafficsim.engine.simulation.SimulationManager;
+import edu.trafficsim.engine.simulation.SimulationService;
+import edu.trafficsim.model.Network;
+import edu.trafficsim.web.service.FdDto;
+import edu.trafficsim.web.service.FramesDto;
 import edu.trafficsim.web.service.StatisticsService;
+import edu.trafficsim.web.service.TrajectoriesDto;
+import edu.trafficsim.web.service.TsdDto;
 
 /**
  * 
@@ -43,43 +51,63 @@ import edu.trafficsim.web.service.StatisticsService;
 public class ResultsController extends AbstractController {
 
 	@Autowired
+	SimulationService simulationService;
+	@Autowired
 	StatisticsService statisticsService;
 
-//	@RequestMapping(value = "/view", method = RequestMethod.GET)
-//	public String view(
-//			@ModelAttribute("statistics") StatisticsCollector statistics,
-//			Model model) {
-//		if (!statistics.isDone())
-//			return "components/empty";
-//
-//		model.addAttribute("linkIds", statistics.getLinkIds());
-//		model.addAttribute("vehicleIds", statistics.getVehicleIds());
-//		return "components/results";
-//	}
-//
-//	@RequestMapping(value = "/frames", method = RequestMethod.GET)
-//	public @ResponseBody
-//	String anmation(@ModelAttribute("statistics") StatisticsCollector statistics) {
-//		return statisticsService.getFrames(statistics);
-//	}
-//
-//	@RequestMapping(value = "/trajectory/{vid}", method = RequestMethod.GET)
-//	public @ResponseBody
-//	String trajectory(@PathVariable long vid,
-//			@ModelAttribute("statistics") StatisticsCollector statistics,
-//			@ModelAttribute("networkFactory") NetworkFactory factory) {
-//		return statisticsService.getTrajectory(statistics, factory, vid);
-//	}
-//
-//	@RequestMapping(value = "/tsd/{id}", method = RequestMethod.GET)
-//	public @ResponseBody
-//	String tsd(@PathVariable long id,
-//			@ModelAttribute("statistics") StatisticsCollector statistics) {
-//		return statisticsService.getTsdPlotData(statistics, id);
-//	}
-//
-//	@ModelAttribute("statistics")
-//	public StatisticsCollector getStatistics() {
-//		return project.getStatistics();
-//	}
+	@Autowired
+	SimulationManager simulationManager;
+
+	@RequestMapping(value = "/view", method = RequestMethod.GET)
+	public String view(@RequestParam("simulationName") String simulationName,
+			@ModelAttribute("network") Network network, Model model) {
+		List<String> simulationNames = simulationManager
+				.getSimulationNames(network.getName());
+
+		ExecutedSimulation simulation = simulationName == null ? simulationManager
+				.findLatestSimulation(network.getName()) : simulationManager
+				.findSimulation(simulationName);
+		if (simulationNames.isEmpty() || simulation == null) {
+			return "components/empty";
+		}
+
+		model.addAttribute("latestSimulation", simulation);
+		model.addAttribute("simulationNames", simulationNames);
+		return "components/results";
+	}
+
+	@RequestMapping(value = "/frames/{simulationName}", method = RequestMethod.GET)
+	public @ResponseBody FramesDto getFrames(
+			@PathVariable("simulationName") String simulationName,
+			@RequestParam(value = "offset", required = false, defaultValue = "0") long offset,
+			@RequestParam(value = "limit", required = false, defaultValue = "1000") long limit) {
+		return statisticsService.getFrames(simulationName, offset, limit);
+	}
+
+	@RequestMapping(value = "/trajectories/{simulationName}", method = RequestMethod.GET)
+	public @ResponseBody TrajectoriesDto trajectory(
+			@PathVariable("simulationName") String simulationName,
+			@RequestParam("nodeId") long nodeId,
+			@RequestParam(value = "offset", required = false, defaultValue = "0") long offset,
+			@RequestParam(value = "limit", required = false, defaultValue = "1000") long limit) {
+		return statisticsService.getTrajectories(simulationName, nodeId,
+				offset, limit);
+	}
+
+	@RequestMapping(value = "/tsd/{simulationName}", method = RequestMethod.GET)
+	public @ResponseBody TsdDto getTsd(
+			@PathVariable("simulationName") String simulationName,
+			@RequestParam("linkId") long linkId,
+			@RequestParam(value = "offset", required = false, defaultValue = "0") long offset,
+			@RequestParam(value = "limit", required = false, defaultValue = "1000") long limit) {
+		return statisticsService.getTsd(simulationName, linkId, offset, limit);
+	}
+
+	@RequestMapping(value = "/fd/{simulationName}", method = RequestMethod.GET)
+	public @ResponseBody FdDto getFd(
+			@PathVariable("simulationName") String simulationName,
+			@RequestParam(value = "offset", required = false, defaultValue = "0") long offset,
+			@RequestParam(value = "limit", required = false, defaultValue = "1000") long limit) {
+		return statisticsService.getFd(simulationName, offset, limit);
+	}
 }

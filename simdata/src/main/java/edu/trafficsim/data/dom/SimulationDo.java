@@ -9,7 +9,7 @@ import org.mongodb.morphia.annotations.Index;
 import org.mongodb.morphia.annotations.Indexes;
 
 @Entity(value = "simulations", noClassnameStored = true)
-@Indexes({ @Index(value = "outcomeName", unique = true),
+@Indexes({ @Index(value = "name", unique = true),
 		@Index(value = "timestamp", unique = true) })
 public class SimulationDo {
 
@@ -17,14 +17,14 @@ public class SimulationDo {
 	private ObjectId id;
 	private Date timestamp;
 
-	private String outcomeName;
+	private String name;
 	private String networkName;
 	private String odMatrixName;
 
 	private long duration;
 	private double stepSize;
 	private long warmup;
-	private double seed;
+	private long seed;
 	private double sd;
 
 	public ObjectId getId() {
@@ -43,12 +43,12 @@ public class SimulationDo {
 		this.timestamp = timestamp;
 	}
 
-	public String getOutcomeName() {
-		return outcomeName;
+	public String getName() {
+		return name;
 	}
 
-	public void setOutcomeName(String outcomeName) {
-		this.outcomeName = outcomeName;
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public String getNetworkName() {
@@ -91,11 +91,11 @@ public class SimulationDo {
 		this.warmup = warmup;
 	}
 
-	public double getSeed() {
+	public long getSeed() {
 		return seed;
 	}
 
-	public void setSeed(double seed) {
+	public void setSeed(long seed) {
 		this.seed = seed;
 	}
 

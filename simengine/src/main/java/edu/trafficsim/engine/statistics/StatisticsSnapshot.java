@@ -7,14 +7,14 @@ import edu.trafficsim.model.Vehicle;
 
 class StatisticsSnapshot {
 
-	final String outcomeName;
+	final String simulationName;
 	final long sequence;
 	final double simulatedTime;
 
 	Map<Long, VehicleSnapshot> vehicles = new HashMap<Long, VehicleSnapshot>();
 
-	StatisticsSnapshot(String outcomeName, long sequence, double simulatedTime) {
-		this.outcomeName = outcomeName;
+	StatisticsSnapshot(String simulationName, long sequence, double simulatedTime) {
+		this.simulationName = simulationName;
 		this.sequence = sequence;
 		this.simulatedTime = simulatedTime;
 	}
@@ -26,7 +26,7 @@ class StatisticsSnapshot {
 
 	@Override
 	public String toString() {
-		return "StatisticsSnapshot [outcomeName=" + outcomeName + ", sequence="
+		return "StatisticsSnapshot [simulationName=" + simulationName + ", sequence="
 				+ sequence + ", simulatedTime=" + simulatedTime + ", vehicles="
 				+ vehicles + "]";
 	}

@@ -15,30 +15,30 @@ class DefaultStatisticsAggregator implements StatisticsAggregator {
 
 	@Override
 	public StatisticsFrames<VehicleState> getVehicleStates(
-			String simulationName, long startFrame, long endFrame) {
+			String simulationName, long startFrame, long steps) {
 		return statisticsManager.loadSnapshots(simulationName, startFrame,
-				endFrame);
+				steps);
 	}
 
 	@Override
 	public StatisticsFrames<VehicleState> getVehicleTrajectories(
-			String simulationName, long vid, long startFrame, long endFrame) {
+			String simulationName, long vid, long startFrame, long steps) {
 		return statisticsManager.loadSnapshots(simulationName, vid, startFrame,
-				endFrame);
+				steps);
 	}
 
 	@Override
 	public StatisticsFrames<LinkState> getLinkState(String simulationName,
-			long linkId, long startFrame, long endFrame) {
+			long linkId, long startFrame, long steps) {
 		return statisticsManager.loadLinkSnapshots(simulationName, linkId,
-				startFrame, endFrame);
+				startFrame, steps);
 	}
 
 	@Override
 	public StatisticsFrames<NodeState> getNodeState(String simulationName,
-			long nodeId, long startFrame, long endFrame) {
+			long nodeId, long startFrame, long steps) {
 		return statisticsManager.loadNodeSnapshots(simulationName, nodeId,
-				startFrame, endFrame);
+				startFrame, steps);
 	}
 
 }

@@ -1,5 +1,7 @@
 package edu.trafficsim.engine.simulation;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,27 +29,44 @@ public class DefaultSimulationManager implements SimulationManager {
 	}
 
 	@Override
-	public String insertSimulation(String outcomeName, String networkName,
+	public String insertSimulation(String simulationName, String networkName,
 			String odMatrixName, SimulationSettings settings) {
 		SimulationDo entity = SimulationSettingsConverter.toSimulationDo(
-				outcomeName, networkName, odMatrixName, settings);
+				simulationName, networkName, odMatrixName, settings);
 
 		long endTime = System.currentTimeMillis() + maxRetryTime;
 		while (System.currentTimeMillis() < endTime) {
 			try {
 				simulationDao.save(entity);
-				return entity.getOutcomeName();
+				return entity.getName();
 			} catch (DuplicateKeyException e) {
 				logger.info("simulation '{}' already exists retry inserting!",
-						entity.getOutcomeName());
-				entity.setOutcomeName(getUniqueName(outcomeName));
+						entity.getName());
+				entity.setName(getUniqueName(simulationName));
 			}
 		}
 		return null;
 	}
 
-	private String getUniqueName(String outcomeName) {
-		long count = simulationDao.countNameLike(outcomeName + nameDelim);
-		return outcomeName + nameDelim + "(" + (count + 1) + ")";
+	private String getUniqueName(String simulationName) {
+		long count = simulationDao.countNameLike(simulationName + nameDelim);
+		return simulationName + nameDelim + "(" + (count + 1) + ")";
+	}
+
+	@Override
+	public List<String> getSimulationNames(String networkName) {
+		return simulationDao.getSimulationNames(networkName);
+	}
+
+	@Override
+	public ExecutedSimulation findSimulation(String name) {
+		return SimulationSettingsConverter.toSimulation(simulationDao
+				.findByName(name));
+	}
+
+	@Override
+	public ExecutedSimulation findLatestSimulation(String networkName) {
+		return SimulationSettingsConverter.toSimulation(simulationDao
+				.findLatest(networkName));
 	}
 }

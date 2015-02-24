@@ -68,7 +68,7 @@ class DefaultStatisticsCollector implements StatisticsCollector {
 
 	private StatisticsSnapshot newSnapshot(Tracker tracker) {
 		StatisticsSnapshot snapshot = new StatisticsSnapshot(
-				tracker.getOutcomeName(), tracker.getForwardedSteps(),
+				tracker.getSimulationName(), tracker.getForwardedSteps(),
 				tracker.getForwardedTime());
 		map.put(tracker, snapshot);
 		return snapshot;
