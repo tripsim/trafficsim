@@ -72,13 +72,13 @@ public abstract class ContinuousEvent<T> extends AbstractEvent<T> {
 
 	}
 
+	@SuppressWarnings("unused")
 	private EventAgent agent;
 
 	public ContinuousEvent(long id, String name, double startTime,
 			double endTime, int startFrame) {
 		super(id, name, startTime, endTime);
-		// reoragnize
-		// agent = new EventAgent(startFrame);
+		agent = new EventAgent(startFrame, name, startFrame);
 	}
 
 }

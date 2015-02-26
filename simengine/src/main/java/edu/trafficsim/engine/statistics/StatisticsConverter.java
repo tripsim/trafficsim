@@ -12,7 +12,7 @@ final class StatisticsConverter {
 		for (VehicleSnapshot vs : snapshot.vehicles.values()) {
 			StatisticsSnapshotDo ssd = new StatisticsSnapshotDo();
 			ssd.setSequence(snapshot.sequence);
-			ssd.setName(snapshot.simulationName);
+			ssd.setSimulationName(snapshot.simulationName);
 			applyVehicleStatisticsDo(ssd, vs);
 			result.add(ssd);
 		}
@@ -37,7 +37,7 @@ final class StatisticsConverter {
 		StatisticsFrames<VehicleState> frames = new StatisticsFrames<VehicleState>();
 		for (StatisticsSnapshotDo snapshot : snapshots) {
 			VehicleState vs = toVehicleState(snapshot);
-			frames.addState(vs.sequence, vs);
+			frames.addState(vs.getVid(), vs.sequence, vs);
 		}
 		return frames;
 	}
@@ -66,9 +66,11 @@ final class StatisticsConverter {
 
 	protected static void applyLinkState(StatisticsFrames<LinkState> frames,
 			StatisticsSnapshotDo snapshot) {
-		LinkState ls = frames.getState(snapshot.getSequence());
+		LinkState ls = frames.getState(snapshot.getLinkId(),
+				snapshot.getSequence());
 		if (ls == null) {
 			frames.addState(
+					snapshot.getLinkId(),
 					snapshot.getSequence(),
 					ls = new LinkState(snapshot.getSequence(), snapshot
 							.getLinkId()));
@@ -87,9 +89,11 @@ final class StatisticsConverter {
 
 	protected static void applyNodeState(StatisticsFrames<NodeState> frames,
 			StatisticsSnapshotDo snapshot) {
-		NodeState ns = frames.getState(snapshot.getSequence());
+		NodeState ns = frames.getState(snapshot.getNodeId(),
+				snapshot.getSequence());
 		if (ns == null) {
 			frames.addState(
+					snapshot.getNodeId(),
 					snapshot.getSequence(),
 					ns = new NodeState(snapshot.getSequence(), snapshot
 							.getLinkId()));

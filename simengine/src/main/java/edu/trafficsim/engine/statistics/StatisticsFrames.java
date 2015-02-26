@@ -1,34 +1,28 @@
 package edu.trafficsim.engine.statistics;
 
-import java.util.HashMap;
-import java.util.Map;
+import edu.trafficsim.model.core.MultiKeyedMap;
 
 public class StatisticsFrames<T> {
 
 	String simulationName;
 
-	final Map<Long, T> states;
+	final MultiKeyedMap<Long, Long, T> states;
 
 	public StatisticsFrames() {
-		states = new HashMap<Long, T>();
+		states = new MultiKeyedMap<Long, Long, T>();
 	}
 
-	public T getStates(Long id) {
-		return states.get(id);
+	public T getState(Long id, Long sequence) {
+		return states.get(id, sequence);
 	}
 
-	void addState(long sequence, T state) {
-		states.put(sequence, state);
+	void addState(long id, long sequence, T state) {
+		states.put(id, sequence, state);
 	}
 
-	T getState(long sequence) {
-		return states.get(sequence);
+	public String getSimulationName() {
+		return simulationName;
 	}
 
-	@Override
-	public String toString() {
-		return "StatisticsFrames [simulationName=" + simulationName
-				+ ", states=" + states + "]";
-	}
 
 }

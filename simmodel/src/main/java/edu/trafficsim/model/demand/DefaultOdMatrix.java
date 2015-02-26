@@ -18,11 +18,12 @@
 package edu.trafficsim.model.demand;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
+import java.util.Map.Entry;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import edu.trafficsim.model.BaseEntity;
 import edu.trafficsim.model.Link;
@@ -31,10 +32,9 @@ import edu.trafficsim.model.Od;
 import edu.trafficsim.model.OdMatrix;
 import edu.trafficsim.model.TurnPercentage;
 import edu.trafficsim.model.VehicleClass;
-import edu.trafficsim.model.core.AbstractDynamicProperty;
 import edu.trafficsim.model.core.ModelInputException;
-import edu.trafficsim.model.core.MultiKey;
-import edu.trafficsim.model.core.MultiValuedMap;
+import edu.trafficsim.model.core.MultiKeyedHashMappedDynamicProperty;
+import edu.trafficsim.model.core.MultiKeyedMap;
 
 /**
  * 
@@ -46,16 +46,19 @@ public class DefaultOdMatrix extends BaseEntity<DefaultOdMatrix> implements
 
 	private static final long serialVersionUID = 1L;
 
+	private static final Logger logger = LoggerFactory
+			.getLogger(DefaultOdMatrix.class);
+
 	private String networkName;
 	// origin, destination pair -> od
-	private final MultiValuedMap<OdKey, Od> ods;
+	private final MultiKeyedMap<Long, Long, Od> ods;
 	private final Map<Long, Od> odsById;
 	private boolean modified = false;
 
 	public DefaultOdMatrix(long id, String name, String networkName) {
 		super(id, name);
 		this.networkName = networkName;
-		ods = new MultiValuedMap<OdKey, Od>();
+		ods = new MultiKeyedMap<Long, Long, Od>();
 		odsById = new HashMap<Long, Od>();
 	}
 
@@ -75,22 +78,12 @@ public class DefaultOdMatrix extends BaseEntity<DefaultOdMatrix> implements
 
 	@Override
 	public Collection<Od> getOdsFromNode(Long nodeId) {
-		Set<Od> newOds = new HashSet<Od>();
-		for (OdKey odKey : ods.keys()) {
-			if (odKey.primaryKey() == nodeId)
-				newOds.addAll(ods.get(odKey));
-		}
-		return Collections.unmodifiableCollection(newOds);
+		return ods.getByPrimary(nodeId).values();
 	}
 
 	@Override
 	public Collection<Od> getOdsToNode(Long nodeId) {
-		Set<Od> newOds = new HashSet<Od>();
-		for (OdKey odKey : ods.keys()) {
-			if (odKey.secondaryKey() == nodeId)
-				newOds.addAll(ods.get(odKey));
-		}
-		return Collections.unmodifiableCollection(newOds);
+		return ods.getBySecondary(nodeId).values();
 	}
 
 	@Override
@@ -100,15 +93,16 @@ public class DefaultOdMatrix extends BaseEntity<DefaultOdMatrix> implements
 
 	@Override
 	public void add(Od od) {
-		ods.add(odKey(od), od);
+		ods.put(od.getOriginNodeId(), od.getDestinationNodeId(), od);
 		odsById.put(od.getId(), od);
 	}
 
 	@Override
 	public Od remove(long id) {
 		Od od = odsById.remove(id);
-		if (od != null)
-			ods.remove(odKey(od), od);
+		if (od != null) {
+			ods.remove(od.getOriginNodeId(), od.getDestinationNodeId());
+		}
 		return od;
 	}
 
@@ -124,24 +118,6 @@ public class DefaultOdMatrix extends BaseEntity<DefaultOdMatrix> implements
 			result = result || remove(od);
 		}
 		return result;
-	}
-
-	private static final OdKey odKey(Od od) {
-		return new OdKey(od.getOriginNodeId(), od.getDestinationNodeId());
-	}
-
-	/**
-	 * 
-	 * 
-	 * @author Xuan Shi
-	 */
-	private static final class OdKey extends MultiKey<Long, Long> {
-		private static final long serialVersionUID = 1L;
-
-		public OdKey(Long key1, Long key2) {
-			super(key1, key2);
-		}
-
 	}
 
 	@Override
@@ -175,84 +151,55 @@ public class DefaultOdMatrix extends BaseEntity<DefaultOdMatrix> implements
 	}
 
 	// turn percentage
-	/**
-	 * 
-	 * 
-	 * @author Xuan Shi
-	 */
-	static final class DynamicTurnPercentage extends
-			AbstractDynamicProperty<TurnPercentage> {
-
+	static final class DynamicTurnPercentage
+			extends
+			MultiKeyedHashMappedDynamicProperty<Link, VehicleClass, TurnPercentage> {
 		private static final long serialVersionUID = 1L;
 
 	}
 
-	/**
-	 * 
-	 * 
-	 * @author Xuan Shi
-	 */
-	static final class TurnKey extends MultiKey<Link, VehicleClass> {
-
-		private static final long serialVersionUID = 1L;
-
-		public TurnKey(Link link, VehicleClass vehicleClass) {
-			super(link, vehicleClass);
-		}
-
-	}
-
-	private static final TurnKey turnKey(Link link, VehicleClass vehicleClass) {
-		return new TurnKey(link, vehicleClass);
-	}
-
-	private Map<TurnKey, DynamicTurnPercentage> dynamicTurnPercentages = new HashMap<TurnKey, DynamicTurnPercentage>();
+	private DynamicTurnPercentage dynamicTurnPercentages = new DynamicTurnPercentage();
 
 	@Override
 	public TurnPercentage getTurnPercentage(Link link,
 			VehicleClass vehicleClass, double time) {
-		TurnKey key = turnKey(link, vehicleClass);
-		return dynamicTurnPercentages.get(key) == null ? null
-				: dynamicTurnPercentages.get(key).getProperty(time);
+		return dynamicTurnPercentages.getProperty(link, vehicleClass, time);
 	}
 
 	@Override
 	public void setTurnPercentage(Link link, VehicleClass vehicleClass,
 			double[] times, TurnPercentage[] turnPercentages)
 			throws ModelInputException {
-		TurnKey key = turnKey(link, vehicleClass);
-		DynamicTurnPercentage dynamicTurnPercentage = dynamicTurnPercentages
-				.get(key);
-		if (dynamicTurnPercentage == null) {
-			dynamicTurnPercentage = new DynamicTurnPercentage();
-			dynamicTurnPercentages.put(key, dynamicTurnPercentage);
-		}
-		dynamicTurnPercentage.setProperties(times, turnPercentages);
+		dynamicTurnPercentages.setProperties(link, vehicleClass, times,
+				turnPercentages);
 	}
 
 	@Override
 	public void removeTurnPercentage(Link link) {
-		for (TurnKey key : dynamicTurnPercentages.keySet()) {
-			if (key.primaryKey() == link) {
-				dynamicTurnPercentages.remove(key);
-			} else {
-				for (TurnPercentage turnPercentage : dynamicTurnPercentages
-						.get(key).getValues()) {
-					turnPercentage.remove(link);
-					if (turnPercentage.isEmpty())
-						dynamicTurnPercentages.remove(key);
-				}
-			}
-		}
+		dynamicTurnPercentages.removePropertyByPrimaryKey(link);
 	}
 
 	@Override
 	public void updateFromLink(Link source, Link target) {
-		for (TurnKey key : dynamicTurnPercentages.keySet()) {
-			if (key.primaryKey() == source) {
-				DynamicTurnPercentage t = dynamicTurnPercentages.remove(key);
-				dynamicTurnPercentages.put(turnKey(target, key.secondaryKey()),
-						t);
+		Map<VehicleClass, Map<Double, TurnPercentage>> properties = dynamicTurnPercentages
+				.removePropertyByPrimaryKey(source);
+		for (Entry<VehicleClass, Map<Double, TurnPercentage>> entry : properties
+				.entrySet()) {
+			VehicleClass vc = entry.getKey();
+			double[] times = new double[entry.getValue().size()];
+			TurnPercentage[] values = new TurnPercentage[entry.getValue()
+					.size()];
+			int i = 0;
+			for (Entry<Double, TurnPercentage> entry2 : entry.getValue()
+					.entrySet()) {
+				times[i] = entry2.getKey();
+				values[i] = entry2.getValue();
+				i++;
+			}
+			try {
+				dynamicTurnPercentages.setProperties(target, vc, times, values);
+			} catch (ModelInputException e) {
+				logger.warn("Should not reach here, inconsistent data!");
 			}
 		}
 	}
@@ -260,14 +207,12 @@ public class DefaultOdMatrix extends BaseEntity<DefaultOdMatrix> implements
 	@Override
 	public void updateToLink(Link source, Link target)
 			throws ModelInputException {
-		for (TurnKey key : dynamicTurnPercentages.keySet()) {
-			if (key.primaryKey() != source) {
-				for (TurnPercentage turnPercentage : dynamicTurnPercentages
-						.get(key).getValues()) {
-					Double value = turnPercentage.remove(source);
-					if (value != null)
-						turnPercentage.put(target, value.doubleValue());
-				}
+		Collection<TurnPercentage> turnPercentages = dynamicTurnPercentages
+				.getPropertiesByPrimaaryKey(source);
+		for (TurnPercentage turnPercentage : turnPercentages) {
+			Double value = turnPercentage.remove(source);
+			if (value != null) {
+				turnPercentage.put(target, value.doubleValue());
 			}
 		}
 	}

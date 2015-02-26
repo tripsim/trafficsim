@@ -4,17 +4,75 @@ import org.bson.types.ObjectId;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
 import org.mongodb.morphia.annotations.Index;
+import org.mongodb.morphia.annotations.Indexes;
 
 @Entity(value = "vehicles", noClassnameStored = true)
-@Index(value = "simulationId")
+@Indexes({ @Index(value = "simulationName"),
+		@Index(value = "simulationName, vid") })
 public class VehicleDo {
 
 	@Id
 	private ObjectId id;
-	private ObjectId simulationId;
+	private String simulationName;
 
 	private String vid;
 	private double width;
 	private double length;
 	private double height;
+
+	public ObjectId getId() {
+		return id;
+	}
+
+	public void setId(ObjectId id) {
+		this.id = id;
+	}
+
+	public String getSimulationName() {
+		return simulationName;
+	}
+
+	public void setSimulationName(String simulationName) {
+		this.simulationName = simulationName;
+	}
+
+	public String getVid() {
+		return vid;
+	}
+
+	public void setVid(String vid) {
+		this.vid = vid;
+	}
+
+	public double getWidth() {
+		return width;
+	}
+
+	public void setWidth(double width) {
+		this.width = width;
+	}
+
+	public double getLength() {
+		return length;
+	}
+
+	public void setLength(double length) {
+		this.length = length;
+	}
+
+	public double getHeight() {
+		return height;
+	}
+
+	public void setHeight(double height) {
+		this.height = height;
+	}
+
+	@Override
+	public String toString() {
+		return "VehicleDo [id=" + id + ", simulationName=" + simulationName
+				+ ", vid=" + vid + ", width=" + width + ", length=" + length
+				+ ", height=" + height + "]";
+	}
+
 }

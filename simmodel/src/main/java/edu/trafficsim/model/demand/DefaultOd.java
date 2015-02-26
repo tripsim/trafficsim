@@ -22,8 +22,8 @@ import java.util.Collection;
 import edu.trafficsim.model.BaseEntity;
 import edu.trafficsim.model.Od;
 import edu.trafficsim.model.TypesComposition;
-import edu.trafficsim.model.core.AbstractDynamicProperty;
 import edu.trafficsim.model.core.ModelInputException;
+import edu.trafficsim.model.core.TreeBasedDynamicProperty;
 
 /**
  * 
@@ -31,16 +31,9 @@ import edu.trafficsim.model.core.ModelInputException;
  * @author Xuan Shi
  */
 public class DefaultOd extends BaseEntity<DefaultOd> implements Od {
-
 	private static final long serialVersionUID = 1L;
 
-	/**
-	 * 
-	 * 
-	 * @author Xuan Shi
-	 */
-	static final class DynamicFlow extends AbstractDynamicProperty<Integer> {
-
+	static final class DynamicFlow extends TreeBasedDynamicProperty<Integer> {
 		private static final long serialVersionUID = 1L;
 	}
 
@@ -85,7 +78,7 @@ public class DefaultOd extends BaseEntity<DefaultOd> implements Od {
 
 	@Override
 	public Collection<Integer> getVphs() {
-		return dynamicFlow.getValues();
+		return dynamicFlow.getProperties();
 	}
 
 	@Override

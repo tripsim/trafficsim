@@ -23,6 +23,8 @@ import java.util.NavigableMap;
 import java.util.Set;
 import java.util.TreeMap;
 
+import edu.trafficsim.model.DynamicProperty;
+
 /**
  * 
  * 
@@ -30,17 +32,15 @@ import java.util.TreeMap;
  * @param <T>
  *            the generic type
  */
-public abstract class AbstractDynamicProperty<T> implements Serializable {
+public class TreeBasedDynamicProperty<T> implements Serializable,
+		DynamicProperty<T> {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	// time
 	private final NavigableMap<Double, T> properties;
 
-	public AbstractDynamicProperty() {
+	public TreeBasedDynamicProperty() {
 		properties = new TreeMap<Double, T>();
 	}
 
@@ -56,8 +56,8 @@ public abstract class AbstractDynamicProperty<T> implements Serializable {
 		properties.put(time, value);
 	}
 
-	public final void removeProperty(double time) {
-		properties.remove(time);
+	public final T removeProperty(double time) {
+		return properties.remove(time);
 	}
 
 	public final void setProperties(double[] times, T[] values)
@@ -76,7 +76,7 @@ public abstract class AbstractDynamicProperty<T> implements Serializable {
 		return properties.keySet();
 	}
 
-	public final Collection<T> getValues() {
+	public final Collection<T> getProperties() {
 		return properties.values();
 	}
 
