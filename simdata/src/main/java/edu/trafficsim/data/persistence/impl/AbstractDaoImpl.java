@@ -7,6 +7,7 @@ import javax.annotation.PostConstruct;
 
 import org.bson.types.ObjectId;
 import org.mongodb.morphia.AdvancedDatastore;
+import org.mongodb.morphia.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.mongodb.DBObject;
@@ -71,5 +72,9 @@ public abstract class AbstractDaoImpl<E> implements GenericDao<E> {
 
 	protected List<?> getTypeField(String field, DBObject query) {
 		return datastore.getCollection(persistentClass).distinct(field, query);
+	}
+
+	protected Query<E> query() {
+		return datastore.createQuery(persistentClass);
 	}
 }

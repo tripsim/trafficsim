@@ -1,16 +1,108 @@
 package edu.trafficsim.engine.statistics;
 
-public interface StatisticsAggregator {
+import java.util.ArrayList;
+import java.util.List;
 
-	StatisticsFrames<VehicleState> getVehicleStates(String simulationName,
-			long startFrame, long steps);
+import edu.trafficsim.data.dom.StatisticsSnapshotDo;
+import edu.trafficsim.data.dom.VehicleDo;
 
-	StatisticsFrames<VehicleState> getVehicleTrajectories(
-			String simulationName, long vid, long startFrame, long steps);
+final class StatisticsAggregator {
 
-	StatisticsFrames<LinkState> getLinkState(String simulationName,
-			long linkId, long startFrame, long steps);
+	static List<StatisticsSnapshotDo> toSnapshotDo(StatisticsSnapshot snapshot) {
+		List<StatisticsSnapshotDo> result = new ArrayList<StatisticsSnapshotDo>();
+		for (VehicleSnapshot vs : snapshot.vehicles.values()) {
+			StatisticsSnapshotDo ssd = new StatisticsSnapshotDo();
+			ssd.setSequence(snapshot.sequence);
+			ssd.setSimulationName(snapshot.simulationName);
+			applyVehicleStatisticsDo(ssd, vs);
+			result.add(ssd);
+		}
+		return result;
+	}
 
-	StatisticsFrames<NodeState> getNodeState(String simulationName,
-			long nodeId, long startFrame, long steps);
+	static void applyVehicleStatisticsDo(StatisticsSnapshotDo ssd,
+			VehicleSnapshot vs) {
+		ssd.setVid(vs.vid);
+		ssd.setLat(vs.coord.y);
+		ssd.setLon(vs.coord.x);
+		ssd.setPosition(vs.position);
+		ssd.setAngle(vs.angle);
+		ssd.setSpeed(vs.speed);
+		ssd.setAccel(vs.accel);
+		ssd.setLinkId(vs.linkId);
+		ssd.setNodeId(vs.nodeId);
+	}
+
+	static StatisticsFrames<VehicleState> toVehicleStates(
+			List<StatisticsSnapshotDo> snapshots) {
+		StatisticsFrames<VehicleState> frames = new StatisticsFrames<VehicleState>();
+		for (StatisticsSnapshotDo snapshot : snapshots) {
+			VehicleState vs = toVehicleState(snapshot);
+			frames.addState(vs.getVid(), vs.sequence, vs);
+		}
+		return frames;
+	}
+
+	protected static VehicleState toVehicleState(StatisticsSnapshotDo snapshot) {
+		VehicleState vs = new VehicleState();
+		vs.setSequence(snapshot.getSequence());
+		vs.setVid(snapshot.getVid());
+		vs.setLat(snapshot.getLat());
+		vs.setLon(snapshot.getLon());
+		vs.setPosition(snapshot.getPosition());
+		vs.setAngle(snapshot.getAngle());
+		vs.setSpeed(snapshot.getSpeed());
+		vs.setAccel(snapshot.getAccel());
+		return vs;
+	}
+
+	static StatisticsFrames<LinkState> toLinkStates(
+			List<StatisticsSnapshotDo> snapshots) {
+		StatisticsFrames<LinkState> frames = new StatisticsFrames<LinkState>();
+		for (StatisticsSnapshotDo snapshot : snapshots) {
+			applyLinkState(frames, snapshot);
+		}
+		return frames;
+	}
+
+	protected static void applyLinkState(StatisticsFrames<LinkState> frames,
+			StatisticsSnapshotDo snapshot) {
+		LinkState ls = frames.getState(snapshot.getLinkId(),
+				snapshot.getSequence());
+		if (ls == null) {
+			frames.addState(
+					snapshot.getLinkId(),
+					snapshot.getSequence(),
+					ls = new LinkState(snapshot.getSequence(), snapshot
+							.getLinkId()));
+		}
+		ls.update(snapshot.getVid(), snapshot.getSpeed(), snapshot.getAccel());
+	}
+
+	static StatisticsFrames<NodeState> toNodeStates(
+			List<StatisticsSnapshotDo> snapshots) {
+		StatisticsFrames<NodeState> frames = new StatisticsFrames<NodeState>();
+		for (StatisticsSnapshotDo snapshot : snapshots) {
+			applyNodeState(frames, snapshot);
+		}
+		return frames;
+	}
+
+	protected static void applyNodeState(StatisticsFrames<NodeState> frames,
+			StatisticsSnapshotDo snapshot) {
+		NodeState ns = frames.getState(snapshot.getNodeId(),
+				snapshot.getSequence());
+		if (ns == null) {
+			frames.addState(
+					snapshot.getNodeId(),
+					snapshot.getSequence(),
+					ns = new NodeState(snapshot.getSequence(), snapshot
+							.getLinkId()));
+		}
+		ns.update(snapshot.getVid(), snapshot.getSpeed(), snapshot.getAccel());
+	}
+
+	static List<VehicleProperty> toVehicleProperties(List<VehicleDo> vehicles) {
+		return null;
+	}
 }

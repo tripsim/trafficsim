@@ -1,0 +1,66 @@
+package edu.trafficsim.engine.statistics;
+
+import java.io.Serializable;
+
+public class VehicleProperty implements Serializable {
+
+	private static final long serialVersionUID = 1L;
+
+	private long vid;
+
+	private long initFrame;
+	private long startNodeId;
+
+	private double width;
+	private double length;
+	private double height;
+
+	public VehicleProperty(long vid, long initFrame, long startNodeId) {
+		this.vid = vid;
+		this.initFrame = initFrame;
+		this.startNodeId = startNodeId;
+	}
+
+	public long getVid() {
+		return vid;
+	}
+
+	public long getInitFrame() {
+		return initFrame;
+	}
+
+	public long getStartNodeId() {
+		return startNodeId;
+	}
+
+	public double getWidth() {
+		return width;
+	}
+
+	void setWidth(double width) {
+		this.width = width;
+	}
+
+	public double getLength() {
+		return length;
+	}
+
+	void setLength(double length) {
+		this.length = length;
+	}
+
+	public double getHeight() {
+		return height;
+	}
+
+	void setHeight(double height) {
+		this.height = height;
+	}
+
+	@Override
+	public String toString() {
+		return "VehicleProperty [vid=" + vid + ", width=" + width + ", length="
+				+ length + ", height=" + height + "]";
+	}
+
+}

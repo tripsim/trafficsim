@@ -1,5 +1,6 @@
 package edu.trafficsim.data.persistence.impl;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.mongodb.morphia.query.Query;
@@ -23,6 +24,14 @@ class StatisticsSnapshotDaoImpl extends AbstractDaoImpl<StatisticsSnapshotDo>
 			long vid, long startFrame, long steps) {
 		Query<StatisticsSnapshotDo> query = createQuery(simulationName,
 				startFrame, steps).field("vid").equal(vid);
+		return query.asList();
+	}
+
+	@Override
+	public List<StatisticsSnapshotDo> loadSnapshots(String simulationName,
+			Collection<Long> vids, long startFrame, long steps) {
+		Query<StatisticsSnapshotDo> query = createQuery(simulationName,
+				startFrame, steps).field("vid").in(vids);
 		return query.asList();
 	}
 

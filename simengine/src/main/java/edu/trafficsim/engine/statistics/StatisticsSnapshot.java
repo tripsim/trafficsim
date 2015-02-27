@@ -13,7 +13,8 @@ class StatisticsSnapshot {
 
 	Map<Long, VehicleSnapshot> vehicles = new HashMap<Long, VehicleSnapshot>();
 
-	StatisticsSnapshot(String simulationName, long sequence, double simulatedTime) {
+	StatisticsSnapshot(String simulationName, long sequence,
+			double simulatedTime) {
 		this.simulationName = simulationName;
 		this.sequence = sequence;
 		this.simulatedTime = simulatedTime;
@@ -26,9 +27,9 @@ class StatisticsSnapshot {
 
 	@Override
 	public String toString() {
-		return "StatisticsSnapshot [simulationName=" + simulationName + ", sequence="
-				+ sequence + ", simulatedTime=" + simulatedTime + ", vehicles="
-				+ vehicles + "]";
+		return "StatisticsSnapshot [simulationName=" + simulationName
+				+ ", sequence=" + sequence + ", simulatedTime=" + simulatedTime
+				+ ", vehicles=" + vehicles + "]";
 	}
 
 }

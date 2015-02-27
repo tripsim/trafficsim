@@ -15,7 +15,10 @@ public class VehicleDo {
 	private ObjectId id;
 	private String simulationName;
 
-	private String vid;
+	private long initFrame;
+	private long startNodeId;
+
+	private long vid;
 	private double width;
 	private double length;
 	private double height;
@@ -36,12 +39,28 @@ public class VehicleDo {
 		this.simulationName = simulationName;
 	}
 
-	public String getVid() {
+	public long getVid() {
 		return vid;
 	}
 
-	public void setVid(String vid) {
+	public void setVid(long vid) {
 		this.vid = vid;
+	}
+
+	public long getInitFrame() {
+		return initFrame;
+	}
+
+	public void setInitFrame(long initFrame) {
+		this.initFrame = initFrame;
+	}
+
+	public long getStartNodeId() {
+		return startNodeId;
+	}
+
+	public void setStartNodeId(long startNodeId) {
+		this.startNodeId = startNodeId;
 	}
 
 	public double getWidth() {

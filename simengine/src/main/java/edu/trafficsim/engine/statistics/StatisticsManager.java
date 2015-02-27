@@ -1,18 +1,31 @@
 package edu.trafficsim.engine.statistics;
 
+import java.util.Collection;
+import java.util.List;
+
 public interface StatisticsManager {
 
 	void insertSnapshot(StatisticsSnapshot snapshot);
 
-	StatisticsFrames<VehicleState> loadSnapshots(String simulationName,
+	StatisticsFrames<VehicleState> getVehicleStatistics(String simulationName,
 			long startFrame, long steps);
 
-	StatisticsFrames<VehicleState> loadSnapshots(String simulationName,
+	StatisticsFrames<VehicleState> getVehicleStatistics(String simulationName,
 			long vid, long startFrame, long steps);
 
-	StatisticsFrames<LinkState> loadLinkSnapshots(String simulationName,
+	StatisticsFrames<VehicleState> getTrajectoriesFromNode(
+			String simulationName, long nodeId, long startFrame, long steps);
+
+	StatisticsFrames<LinkState> getLinkStatistics(String simulationName,
 			long linkId, long startFrame, long steps);
 
-	StatisticsFrames<NodeState> loadNodeSnapshots(String simulationName,
+	StatisticsFrames<NodeState> getNodeStatistics(String simulationName,
 			long nodeId, long startFrame, long steps);
+
+	List<VehicleProperty> getVehicleProperties(String simulationName);
+
+	List<VehicleProperty> getVehicleProperties(String simulationName,
+			Collection<Long> vids);
+
+	List<Long> getVehiclsFromNode(String simulationName, long nodeId);
 }

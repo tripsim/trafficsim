@@ -1,12 +1,16 @@
 package edu.trafficsim.engine.statistics;
 
-public class VehicleState {
+import java.io.Serializable;
+
+public class VehicleState implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 
 	long sequence;
 
 	long vid;
-	double lon;
-	double lat;
+	double lat; // y
+	double lon; // x
 	double position;
 	double speed;
 	double accel;
@@ -16,7 +20,7 @@ public class VehicleState {
 		return sequence;
 	}
 
-	public void setSequence(long sequence) {
+	void setSequence(long sequence) {
 		this.sequence = sequence;
 	}
 
@@ -24,7 +28,7 @@ public class VehicleState {
 		return vid;
 	}
 
-	public void setVid(long vid) {
+	void setVid(long vid) {
 		this.vid = vid;
 	}
 
@@ -32,7 +36,7 @@ public class VehicleState {
 		return lon;
 	}
 
-	public void setLon(double lon) {
+	void setLon(double lon) {
 		this.lon = lon;
 	}
 
@@ -40,7 +44,7 @@ public class VehicleState {
 		return lat;
 	}
 
-	public void setLat(double lat) {
+	void setLat(double lat) {
 		this.lat = lat;
 	}
 
@@ -48,7 +52,7 @@ public class VehicleState {
 		return position;
 	}
 
-	public void setPosition(double position) {
+	void setPosition(double position) {
 		this.position = position;
 	}
 
@@ -56,7 +60,7 @@ public class VehicleState {
 		return speed;
 	}
 
-	public void setSpeed(double speed) {
+	void setSpeed(double speed) {
 		this.speed = speed;
 	}
 
@@ -64,7 +68,7 @@ public class VehicleState {
 		return accel;
 	}
 
-	public void setAccel(double accel) {
+	void setAccel(double accel) {
 		this.accel = accel;
 	}
 
@@ -72,7 +76,7 @@ public class VehicleState {
 		return angle;
 	}
 
-	public void setAngle(double angle) {
+	void setAngle(double angle) {
 		this.angle = angle;
 	}
 

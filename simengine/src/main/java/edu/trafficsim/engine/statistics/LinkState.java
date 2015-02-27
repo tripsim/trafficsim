@@ -1,9 +1,12 @@
 package edu.trafficsim.engine.statistics;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class LinkState {
+public class LinkState implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 
 	final long sequence;
 
@@ -21,6 +24,18 @@ public class LinkState {
 	void update(long vid, double speed, double position) {
 		speeds.put(vid, speed);
 		positions.put(vid, position);
+	}
+
+	public long getSequence() {
+		return sequence;
+	}
+
+	public Map<Long, Double> getSpeeds() {
+		return speeds;
+	}
+
+	public Map<Long, Double> getPositions() {
+		return positions;
 	}
 
 	@Override
