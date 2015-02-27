@@ -26,8 +26,10 @@ import edu.trafficsim.engine.simulation.Tracker;
 import edu.trafficsim.engine.type.DriverType;
 import edu.trafficsim.engine.type.TypesManager;
 import edu.trafficsim.engine.type.VehicleType;
+import edu.trafficsim.model.Node;
 import edu.trafficsim.model.Vehicle;
 import edu.trafficsim.model.roadusers.DefaultVehicle;
+import edu.trafficsim.model.roadusers.DefaultVehicleBuilder;
 import edu.trafficsim.model.util.Randoms;
 
 /**
@@ -45,8 +47,8 @@ public class DefaultVehicleFactory implements VehicleFactory {
 	private TypesManager typesManager;
 
 	@Override
-	public Vehicle createVehicle(String vehicleTypeName, String driverTypeName,
-			Tracker tracker) {
+	public Vehicle createVehicle(Node origin, Node destination,
+			String vehicleTypeName, String driverTypeName, Tracker tracker) {
 
 		long vid = (long) tracker.getAndIncrementVehicleCount();
 		String name = DEFAULT_NAME_PRE + vid;
@@ -70,7 +72,8 @@ public class DefaultVehicleFactory implements VehicleFactory {
 				.withDesiredSpeed(desiredSpeed)
 				.withDesiredHeadway(desiredHeadway)
 				.withPerceptionTime(preceptionTime)
-				.withReactionTime(reactionTime).build();
+				.withReactionTime(reactionTime).withOrigin(origin)
+				.withDestination(destination).build();
 		return vehicle;
 	}
 

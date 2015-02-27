@@ -90,4 +90,10 @@ public class MultiValuedMap<K, V> implements Serializable {
 	public Map<K, Set<V>> asMap() {
 		return Collections.unmodifiableMap(map);
 	}
+
+	@Override
+	public String toString() {
+		return "MultiValuedMap [map=" + map + "]";
+	}
+
 }

@@ -1,10 +1,10 @@
-package edu.trafficsim.engine.vehicle;
+package edu.trafficsim.model.roadusers;
 
 import edu.trafficsim.model.CrusingType;
+import edu.trafficsim.model.Node;
 import edu.trafficsim.model.VehicleClass;
-import edu.trafficsim.model.roadusers.DefaultVehicle;
 
-final class DefaultVehicleBuilder {
+public final class DefaultVehicleBuilder {
 
 	final long id;
 	final String name;
@@ -17,6 +17,9 @@ final class DefaultVehicleBuilder {
 	long startFrame = 0;
 	double width = 2.5;
 	double length = 4.5;
+
+	Node origin = null;
+	Node destination = null;
 
 	// Driver Type Properties
 	double perceptionTime = 2;
@@ -35,52 +38,62 @@ final class DefaultVehicleBuilder {
 		this.driverType = driverType;
 	}
 
-	DefaultVehicleBuilder withCrusingType(CrusingType crusingType) {
+	public DefaultVehicleBuilder withCrusingType(CrusingType crusingType) {
 		this.crusingType = crusingType;
 		return this;
 	}
 
-	DefaultVehicleBuilder withStartFrame(long startFrame) {
+	public DefaultVehicleBuilder withStartFrame(long startFrame) {
 		this.startFrame = startFrame;
 		return this;
 	}
 
-	DefaultVehicleBuilder withWidth(double width) {
+	public DefaultVehicleBuilder withWidth(double width) {
 		this.width = width;
 		return this;
 	}
 
-	DefaultVehicleBuilder withLength(double length) {
+	public DefaultVehicleBuilder withLength(double length) {
 		this.length = length;
 		return this;
 	}
 
-	DefaultVehicleBuilder withPerceptionTime(double perceptionTime) {
+	public DefaultVehicleBuilder withPerceptionTime(double perceptionTime) {
 		this.perceptionTime = perceptionTime;
 		return this;
 	}
 
-	DefaultVehicleBuilder withReactionTime(double reactionTime) {
+	public DefaultVehicleBuilder withReactionTime(double reactionTime) {
 		this.reactionTime = reactionTime;
 		return this;
 	}
 
-	DefaultVehicleBuilder withDesiredHeadway(double headway) {
+	public DefaultVehicleBuilder withDesiredHeadway(double headway) {
 		this.desiredHeadway = headway;
 		return this;
 	}
 
-	DefaultVehicleBuilder withDesiredSpeed(double speed) {
+	public DefaultVehicleBuilder withDesiredSpeed(double speed) {
 		this.desiredSpeed = speed;
 		return this;
 	}
 
-	DefaultVehicleBuilder withMaxSpeed(double speed) {
+	public DefaultVehicleBuilder withMaxSpeed(double speed) {
 		this.maxSpeed = speed;
 		return this;
 	}
 
-	DefaultVehicle build() {
+	public DefaultVehicleBuilder withOrigin(Node origin) {
+		this.origin = origin;
+		return this;
+	}
+
+	public DefaultVehicleBuilder withDestination(Node destination) {
+		this.destination = destination;
+		return this;
+	}
+
+	public DefaultVehicle build() {
 		DefaultVehicle vehicle = new DefaultVehicle(id, name, startFrame,
 				vehicleClass, driverType, driverType);
 		vehicle.setName(name);
@@ -92,6 +105,8 @@ final class DefaultVehicleBuilder {
 		vehicle.setDesiredHeadway(desiredHeadway);
 		vehicle.setPerceptionTime(perceptionTime);
 		vehicle.setReactionTime(reactionTime);
+		vehicle.origin(origin);
+		vehicle.destination(destination);
 		return vehicle;
 	}
 }

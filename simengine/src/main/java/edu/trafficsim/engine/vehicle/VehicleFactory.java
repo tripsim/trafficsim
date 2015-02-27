@@ -18,6 +18,7 @@
 package edu.trafficsim.engine.vehicle;
 
 import edu.trafficsim.engine.simulation.Tracker;
+import edu.trafficsim.model.Node;
 import edu.trafficsim.model.Vehicle;
 
 /**
@@ -25,6 +26,7 @@ import edu.trafficsim.model.Vehicle;
  */
 public interface VehicleFactory {
 
-	Vehicle createVehicle(String vehicleType, String driverType, Tracker tracker);
+	Vehicle createVehicle(Node origin, Node destination, String vehicleType,
+			String driverType, Tracker tracker);
 
 }

@@ -42,7 +42,7 @@ class DefaultStatisticsCollector implements StatisticsCollector {
 	@Autowired
 	StatisticsCommittor committor;
 
-	private Map<Tracker, StatisticsSnapshot> map = new WeakHashMap<Tracker, StatisticsSnapshot>();
+	private Map<Tracker, Snapshot> map = new WeakHashMap<Tracker, Snapshot>();
 
 	@Override
 	public void visit(Tracker tracker, Vehicle vehicle) {
@@ -50,7 +50,7 @@ class DefaultStatisticsCollector implements StatisticsCollector {
 			return;
 		}
 
-		StatisticsSnapshot snapshot = map.get(tracker);
+		Snapshot snapshot = map.get(tracker);
 		if (snapshot == null) {
 			snapshot = newSnapshot(tracker);
 		} else if (snapshot.sequence != tracker.getForwardedSteps()) {
@@ -64,10 +64,13 @@ class DefaultStatisticsCollector implements StatisticsCollector {
 			snapshot = newSnapshot(tracker);
 		}
 		snapshot.visitVehicle(vehicle);
+		if (vehicle.getStartFrame() == tracker.getForwardedSteps()) {
+			snapshot.addNewVehicle(vehicle);
+		}
 	}
 
-	private StatisticsSnapshot newSnapshot(Tracker tracker) {
-		StatisticsSnapshot snapshot = new StatisticsSnapshot(
+	private Snapshot newSnapshot(Tracker tracker) {
+		Snapshot snapshot = new Snapshot(
 				tracker.getSimulationName(), tracker.getForwardedSteps(),
 				tracker.getForwardedTime());
 		map.put(tracker, snapshot);

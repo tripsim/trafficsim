@@ -23,7 +23,9 @@ class VehicleDaoImpl extends AbstractDaoImpl<VehicleDo> implements VehicleDao {
 	@Override
 	public List<VehicleDo> loadVehicles(String simulationName,
 			Collection<Long> vids) {
-		return createQuery(simulationName).field("vid").in(vids).asList();
+		Query<VehicleDo> query = createQuery(simulationName).field("vid").in(
+				vids);
+		return query.asList();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -32,7 +34,7 @@ class VehicleDaoImpl extends AbstractDaoImpl<VehicleDo> implements VehicleDao {
 		DBObject query = new BasicDBObjectBuilder()
 				.add("simulationName", simulationName)
 				.add("startNodeId", nodeId).get();
-		return (List<Long>) getTypeField("id", query);
+		return (List<Long>) getTypeField("vid", query);
 	}
 
 	protected Query<VehicleDo> createQuery(String simulationName) {

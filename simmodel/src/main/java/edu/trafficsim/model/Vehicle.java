@@ -65,6 +65,8 @@ public interface Vehicle extends Movable, Agent {
 
 	void preferredConnector(ConnectionLane lane);
 
+	Node origin();
+
 	Node destination();
 
 	Vehicle leadingVehicle();

@@ -15,9 +15,7 @@ import edu.trafficsim.engine.network.NetworkFactory;
 import edu.trafficsim.engine.od.OdFactory;
 import edu.trafficsim.engine.simulation.SimulationProject;
 import edu.trafficsim.engine.simulation.SimulationService;
-import edu.trafficsim.engine.statistics.StatisticsFrames;
 import edu.trafficsim.engine.statistics.StatisticsManager;
-import edu.trafficsim.engine.statistics.VehicleState;
 import edu.trafficsim.engine.type.TypesManager;
 import edu.trafficsim.model.core.ModelInputException;
 
@@ -56,9 +54,7 @@ public class DemoTest {
 				.execute("demo", demo.getNetwork(), demo.getOdMatrix());
 
 		StatisticsManager manager = context.getBean(StatisticsManager.class);
-		StatisticsFrames<VehicleState> frames = manager.getVehicleStatistics(
-				"demo", 0, 100);
-		System.out.println(frames);
+		manager.getVehicleStatistics("demo", 0, 100);
 		((ConfigurableApplicationContext) context).close();
 	}
 }

@@ -43,4 +43,10 @@ public class StatisticsFrames<T> {
 		return simulationName;
 	}
 
+	@Override
+	public String toString() {
+		return "StatisticsFrames [simulationName=" + simulationName
+				+ ", states=" + states + "]";
+	}
+
 }

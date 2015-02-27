@@ -66,4 +66,10 @@ public class MultiKeyedMap<K1, K2, V> implements Serializable {
 		}
 		return result;
 	}
+
+	@Override
+	public String toString() {
+		return map.toString();
+	}
+
 }

@@ -51,6 +51,7 @@ public class DefaultVehicle extends MovingObject<DefaultVehicle> implements
 	private double perceptionTime;
 	private double reactionTime;
 
+	private Node origin = null;
 	private Node destination = null;
 	private Link targetLink = null;
 	private ConnectionLane preferredConnector = null;
@@ -224,8 +225,21 @@ public class DefaultVehicle extends MovingObject<DefaultVehicle> implements
 	}
 
 	@Override
+	public Node origin() {
+		return origin;
+	}
+
+	void origin(Node origin) {
+		this.origin = origin;
+	}
+
+	@Override
 	public final Node destination() {
 		return destination;
+	}
+
+	void destination(Node destination) {
+		this.destination = destination;
 	}
 
 	@Override

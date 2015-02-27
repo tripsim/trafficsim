@@ -10,13 +10,13 @@ public class LinkState implements Serializable {
 
 	final long sequence;
 
-	final long id;
+	final long linkId;
 	final Map<Long, Double> speeds;
 	final Map<Long, Double> positions;
 
 	LinkState(long sequence, long linkId) {
 		this.sequence = sequence;
-		id = linkId;
+		this.linkId = linkId;
 		speeds = new HashMap<Long, Double>();
 		positions = new HashMap<Long, Double>();
 	}
@@ -40,8 +40,8 @@ public class LinkState implements Serializable {
 
 	@Override
 	public String toString() {
-		return "LinkState [sequence=" + sequence + ", id=" + id + ", speeds="
-				+ speeds + ", positions=" + positions + "]";
+		return "LinkState [sequence=" + sequence + ", linkId=" + linkId
+				+ ", speeds=" + speeds + ", positions=" + positions + "]";
 	}
 
 }

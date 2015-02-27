@@ -95,6 +95,7 @@ public class DefaultOdMatrix extends BaseEntity<DefaultOdMatrix> implements
 	public void add(Od od) {
 		ods.put(od.getOriginNodeId(), od.getDestinationNodeId(), od);
 		odsById.put(od.getId(), od);
+		modified = true;
 	}
 
 	@Override
@@ -102,6 +103,7 @@ public class DefaultOdMatrix extends BaseEntity<DefaultOdMatrix> implements
 		Od od = odsById.remove(id);
 		if (od != null) {
 			ods.remove(od.getOriginNodeId(), od.getDestinationNodeId());
+			modified = true;
 		}
 		return od;
 	}

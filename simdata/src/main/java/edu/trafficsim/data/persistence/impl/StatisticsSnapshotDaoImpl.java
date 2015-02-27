@@ -53,7 +53,7 @@ class StatisticsSnapshotDaoImpl extends AbstractDaoImpl<StatisticsSnapshotDo>
 
 	private Query<StatisticsSnapshotDo> createQuery(String simulationName,
 			long startFrame, long steps) {
-		return datastore.createQuery(StatisticsSnapshotDo.class).field("name")
+		return datastore.createQuery(StatisticsSnapshotDo.class).field("simulationName")
 				.equal(simulationName).filter("sequence >", startFrame)
 				.filter("sequence <", startFrame + steps);
 	}

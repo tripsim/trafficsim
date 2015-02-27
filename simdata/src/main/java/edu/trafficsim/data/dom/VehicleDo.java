@@ -17,6 +17,7 @@ public class VehicleDo {
 
 	private long initFrame;
 	private long startNodeId;
+	private Long destinationNodeId;
 
 	private long vid;
 	private double width;
@@ -63,6 +64,14 @@ public class VehicleDo {
 		this.startNodeId = startNodeId;
 	}
 
+	public Long getDestinationNodeId() {
+		return destinationNodeId;
+	}
+
+	public void setDestinationNodeId(Long destinationNodeId) {
+		this.destinationNodeId = destinationNodeId;
+	}
+
 	public double getWidth() {
 		return width;
 	}
@@ -90,8 +99,10 @@ public class VehicleDo {
 	@Override
 	public String toString() {
 		return "VehicleDo [id=" + id + ", simulationName=" + simulationName
-				+ ", vid=" + vid + ", width=" + width + ", length=" + length
-				+ ", height=" + height + "]";
+				+ ", initFrame=" + initFrame + ", startNodeId=" + startNodeId
+				+ ", destinationNodeId=" + destinationNodeId + ", vid=" + vid
+				+ ", width=" + width + ", length=" + length + ", height="
+				+ height + "]";
 	}
 
 }

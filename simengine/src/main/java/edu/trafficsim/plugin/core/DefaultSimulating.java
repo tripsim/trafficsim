@@ -100,6 +100,9 @@ public class DefaultSimulating extends AbstractPlugin implements ISimulating {
 			for (Od od : odMatrix.getOds()) {
 				List<Vehicle> newVehicles = vehicleGenerating.newVehicles(od,
 						network, tracker);
+				for (Vehicle v : newVehicles) {
+					statisticsCollector.visit(tracker, v);
+				}
 				vehicles.addAll(newVehicles);
 			}
 			tracker.stepForward();

@@ -5,7 +5,7 @@ import java.util.List;
 
 public interface StatisticsManager {
 
-	void insertSnapshot(StatisticsSnapshot snapshot);
+	void insertSnapshot(Snapshot snapshot);
 
 	StatisticsFrames<VehicleState> getVehicleStatistics(String simulationName,
 			long startFrame, long steps);
@@ -27,5 +27,5 @@ public interface StatisticsManager {
 	List<VehicleProperty> getVehicleProperties(String simulationName,
 			Collection<Long> vids);
 
-	List<Long> getVehiclsFromNode(String simulationName, long nodeId);
+	List<Long> getVehiclesFromNode(String simulationName, long nodeId);
 }

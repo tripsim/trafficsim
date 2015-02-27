@@ -1,4 +1,4 @@
-package edu.trafficsim.web.service;
+package edu.trafficsim.web.service.statistics;
 
 import java.io.Serializable;
 import java.util.ArrayList;

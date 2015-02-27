@@ -15,9 +15,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * 
  */
-package edu.trafficsim.web.service;
+package edu.trafficsim.web.service.statistics;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -148,7 +149,7 @@ public class StatisticsService {
 				simulationName, linkId, startFrame, steps);
 		MultiKeyedMap<Long, Long, Double> data = toSeriesesData(frames
 				.getStatesById(linkId));
-		List<List<String>> serieses = toSerieses(data);
+		List<List<List<Number>>> serieses = toSerieses(data);
 		TsdDto result = new TsdDto(linkId, startFrame);
 		result.setSerieses(serieses);
 		return result;
@@ -168,33 +169,27 @@ public class StatisticsService {
 			for (Map.Entry<Long, Double> entry : ls.getPositions().entrySet()) {
 				long vid = entry.getKey();
 				double position = entry.getValue();
-				result.put(sequence, vid, position);
+				result.put(vid, sequence, position);
 			}
-
 		}
 		return result;
 	}
 
-	private List<List<String>> toSerieses(MultiKeyedMap<Long, Long, Double> data) {
-		List<List<String>> result = new ArrayList<List<String>>();
+	private List<List<List<Number>>> toSerieses(
+			MultiKeyedMap<Long, Long, Double> data) {
+		List<List<List<Number>>> result = new ArrayList<List<List<Number>>>();
 		for (long vid : data.getPrimayKeys()) {
 			result.add(toSeries(data.getByPrimary(vid)));
 		}
 		return result;
 	}
 
-	private List<String> toSeries(Map<Long, Double> data) {
-		List<String> result = new ArrayList<String>();
+	private List<List<Number>> toSeries(Map<Long, Double> data) {
+		List<List<Number>> result = new ArrayList<List<Number>>();
 		for (Map.Entry<Long, Double> entry : data.entrySet()) {
-			StringBuilder sb = new StringBuilder();
 			long sequence = entry.getKey();
 			double position = entry.getValue();
-			sb.append("[");
-			sb.append(sequence);
-			sb.append(",");
-			sb.append(position);
-			sb.append("]");
-			result.add(sb.toString());
+			result.add(Arrays.asList((Number) sequence, (Number) position));
 		}
 		return result;
 	}
@@ -207,82 +202,82 @@ public class StatisticsService {
 		return fd;
 	}
 
-//	public String getTrajectory(StatisticsCollector statics,
-//			NetworkFactory factory, Long vid) {
-//		VehicleState[] vehicleStates = statics.trajectory(vid);
-//		Coordinate[] coords = new Coordinate[vehicleStates.length];
-//		for (int i = 0; i < vehicleStates.length; i++) {
-//			coords[i] = vehicleStates[i].coord;
-//		}
-//		return mapJsonService.getWkt(factory.createLineString(coords));
-//	}
-//
-//	public String getTsdPlotData(StatisticsCollector statics, Long id) {
-//		LinkState[] linkStats = statics.linkStats(id);
-//		MultiValuedMap<Long, String> data = new MultiValuedMap<Long, String>();
-//		for (int i = 0; i < linkStats.length; i++) {
-//			for (Map.Entry<Long, Double> entry : linkStats[i].positions
-//					.entrySet()) {
-//				data.add(entry.getKey(),
-//						"[" + linkStats[i].time + "," + entry.getValue() + "]");
-//			}
-//		}
-//		StringBuffer sb = new StringBuffer();
-//		for (Long vid : data.keys()) {
-//			sb.append(data.get(vid));
-//			sb.append(",");
-//		}
-//		if (sb.length() > 0)
-//			sb.deleteCharAt(sb.length() - 1);
-//		return "[" + sb.toString() + "]";
-//	}
-//
-//	public String getFrames(StatisticsCollector statics) {
-//		StringBuffer vehicleSb = new StringBuffer();
-//		StringBuffer frameSb = new StringBuffer();
-//
-//		for (Map.Entry<Long, List<VehicleState>> entry : statics.trajectories()
-//				.entrySet()) {
-//
-//			Vehicle vehicle = statics.getVehicle(entry.getKey());
-//
-//			String name = vehicle.getName();
-//			int initFrameId = vehicle.getStartFrame();
-//
-//			vehicleSb.append("\"");
-//			vehicleSb.append(name);
-//			vehicleSb.append(",");
-//			vehicleSb.append(vehicle.getWidth());
-//			vehicleSb.append(",");
-//			vehicleSb.append(vehicle.getLength());
-//			vehicleSb.append("\"");
-//			vehicleSb.append(",");
-//
-//			List<VehicleState> trajectory = entry.getValue();
-//			for (int i = 0; i < trajectory.size(); i++) {
-//
-//				frameSb.append("\"");
-//				frameSb.append(initFrameId + i);
-//				frameSb.append(",");
-//				frameSb.append(name);
-//				frameSb.append(",");
-//				frameSb.append(trajectory.get(i).coord.x);
-//				frameSb.append(",");
-//				frameSb.append(trajectory.get(i).coord.y);
-//				frameSb.append(",");
-//				frameSb.append(trajectory.get(i).angle);
-//				frameSb.append(",");
-//				String color = Colors.getVehicleColor(trajectory.get(i).speed);
-//				frameSb.append(color);
-//				frameSb.append("\"");
-//				frameSb.append(",");
-//			}
-//		}
-//		if (vehicleSb.length() > 0)
-//			vehicleSb.deleteCharAt(vehicleSb.length() - 1);
-//		if (frameSb.length() > 0)
-//			frameSb.deleteCharAt(frameSb.length() - 1);
-//		return "{vehicles:[" + vehicleSb.toString() + "], elements:["
-//				+ frameSb.toString() + "]}";
-//	}
+	// public String getTrajectory(StatisticsCollector statics,
+	// NetworkFactory factory, Long vid) {
+	// VehicleState[] vehicleStates = statics.trajectory(vid);
+	// Coordinate[] coords = new Coordinate[vehicleStates.length];
+	// for (int i = 0; i < vehicleStates.length; i++) {
+	// coords[i] = vehicleStates[i].coord;
+	// }
+	// return mapJsonService.getWkt(factory.createLineString(coords));
+	// }
+	//
+	// public String getTsdPlotData(StatisticsCollector statics, Long id) {
+	// LinkState[] linkStats = statics.linkStats(id);
+	// MultiValuedMap<Long, String> data = new MultiValuedMap<Long, String>();
+	// for (int i = 0; i < linkStats.length; i++) {
+	// for (Map.Entry<Long, Double> entry : linkStats[i].positions
+	// .entrySet()) {
+	// data.add(entry.getKey(),
+	// "[" + linkStats[i].time + "," + entry.getValue() + "]");
+	// }
+	// }
+	// StringBuffer sb = new StringBuffer();
+	// for (Long vid : data.keys()) {
+	// sb.append(data.get(vid));
+	// sb.append(",");
+	// }
+	// if (sb.length() > 0)
+	// sb.deleteCharAt(sb.length() - 1);
+	// return "[" + sb.toString() + "]";
+	// }
+	//
+	// public String getFrames(StatisticsCollector statics) {
+	// StringBuffer vehicleSb = new StringBuffer();
+	// StringBuffer frameSb = new StringBuffer();
+	//
+	// for (Map.Entry<Long, List<VehicleState>> entry : statics.trajectories()
+	// .entrySet()) {
+	//
+	// Vehicle vehicle = statics.getVehicle(entry.getKey());
+	//
+	// String name = vehicle.getName();
+	// int initFrameId = vehicle.getStartFrame();
+	//
+	// vehicleSb.append("\"");
+	// vehicleSb.append(name);
+	// vehicleSb.append(",");
+	// vehicleSb.append(vehicle.getWidth());
+	// vehicleSb.append(",");
+	// vehicleSb.append(vehicle.getLength());
+	// vehicleSb.append("\"");
+	// vehicleSb.append(",");
+	//
+	// List<VehicleState> trajectory = entry.getValue();
+	// for (int i = 0; i < trajectory.size(); i++) {
+	//
+	// frameSb.append("\"");
+	// frameSb.append(initFrameId + i);
+	// frameSb.append(",");
+	// frameSb.append(name);
+	// frameSb.append(",");
+	// frameSb.append(trajectory.get(i).coord.x);
+	// frameSb.append(",");
+	// frameSb.append(trajectory.get(i).coord.y);
+	// frameSb.append(",");
+	// frameSb.append(trajectory.get(i).angle);
+	// frameSb.append(",");
+	// String color = Colors.getVehicleColor(trajectory.get(i).speed);
+	// frameSb.append(color);
+	// frameSb.append("\"");
+	// frameSb.append(",");
+	// }
+	// }
+	// if (vehicleSb.length() > 0)
+	// vehicleSb.deleteCharAt(vehicleSb.length() - 1);
+	// if (frameSb.length() > 0)
+	// frameSb.deleteCharAt(frameSb.length() - 1);
+	// return "{vehicles:[" + vehicleSb.toString() + "], elements:["
+	// + frameSb.toString() + "]}";
+	// }
 }

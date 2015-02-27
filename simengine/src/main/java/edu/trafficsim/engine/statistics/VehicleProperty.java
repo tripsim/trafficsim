@@ -10,6 +10,7 @@ public class VehicleProperty implements Serializable {
 
 	private long initFrame;
 	private long startNodeId;
+	private Long destinationNodeId;
 
 	private double width;
 	private double length;
@@ -31,6 +32,14 @@ public class VehicleProperty implements Serializable {
 
 	public long getStartNodeId() {
 		return startNodeId;
+	}
+
+	public Long getDestinationNodeId() {
+		return destinationNodeId;
+	}
+
+	void setDestinationNodeId(Long destinationNodeId) {
+		this.destinationNodeId = destinationNodeId;
 	}
 
 	public double getWidth() {

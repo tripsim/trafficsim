@@ -31,14 +31,15 @@ public class DefaultSimulationService implements SimulationService {
 	private final Set<String> runningSimulations = new CopyOnWriteArraySet<String>();
 
 	@Override
-	public void execute(String simulationName, Network network, OdMatrix odMatrix) {
+	public void execute(String simulationName, Network network,
+			OdMatrix odMatrix) {
 		execute(simulationName, network, odMatrix,
 				simulationManager.getDefaultSimulationSettings());
 	}
 
 	@Override
-	public void execute(String simulationName, Network network, OdMatrix odMatrix,
-			SimulationSettings settings) {
+	public void execute(String simulationName, Network network,
+			OdMatrix odMatrix, SimulationSettings settings) {
 		if (network.isModified()) {
 			networkManager.saveNetwork(network);
 			network.setModified(false);
@@ -48,9 +49,9 @@ public class DefaultSimulationService implements SimulationService {
 			odMatrix.setModified(false);
 		}
 
-		String savedSimulationName = simulationManager.insertSimulation(
-				simulationName, network.getName(), odMatrix.getName(), settings);
-		if (savedSimulationName == null) {
+		simulationName = simulationManager.insertSimulation(simulationName,
+				network.getName(), odMatrix.getName(), settings);
+		if (simulationName == null) {
 			throw new IllegalStateException(
 					"simulation cannot start, no name is given!");
 		}

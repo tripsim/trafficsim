@@ -34,11 +34,11 @@ import edu.trafficsim.engine.simulation.ExecutedSimulation;
 import edu.trafficsim.engine.simulation.SimulationManager;
 import edu.trafficsim.engine.simulation.SimulationService;
 import edu.trafficsim.model.Network;
-import edu.trafficsim.web.service.FdDto;
-import edu.trafficsim.web.service.FramesDto;
-import edu.trafficsim.web.service.StatisticsService;
-import edu.trafficsim.web.service.TrajectoriesDto;
-import edu.trafficsim.web.service.TsdDto;
+import edu.trafficsim.web.service.statistics.FdDto;
+import edu.trafficsim.web.service.statistics.FramesDto;
+import edu.trafficsim.web.service.statistics.StatisticsService;
+import edu.trafficsim.web.service.statistics.TrajectoriesDto;
+import edu.trafficsim.web.service.statistics.TsdDto;
 
 /**
  * 

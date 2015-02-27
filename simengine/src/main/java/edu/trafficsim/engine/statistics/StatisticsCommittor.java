@@ -24,10 +24,11 @@ class StatisticsCommittor implements SmartLifecycle {
 	private Lock lock = new ReentrantLock();
 	private boolean started = false;
 
+	private long shutdownWaitTime = 10000;
 	ExecutorService executor;
-	BlockingQueue<StatisticsSnapshot> snapshots = new LinkedBlockingDeque<StatisticsSnapshot>();
+	BlockingQueue<Snapshot> snapshots = new LinkedBlockingDeque<Snapshot>();
 
-	public void commit(StatisticsSnapshot snapshot) throws InterruptedException {
+	public void commit(Snapshot snapshot) throws InterruptedException {
 		snapshots.put(snapshot);
 	}
 
@@ -37,7 +38,7 @@ class StatisticsCommittor implements SmartLifecycle {
 		public void run() {
 			try {
 				while (true) {
-					StatisticsSnapshot snapshot = snapshots.take();
+					Snapshot snapshot = snapshots.take();
 					statisticsManager.insertSnapshot(snapshot);
 				}
 			} catch (InterruptedException e) {
@@ -70,7 +71,31 @@ class StatisticsCommittor implements SmartLifecycle {
 				return;
 			}
 			logger.info("stopping satatistics committor thread!");
-			executor.shutdownNow();
+
+			executor.shutdown();
+			if (snapshots.size() > 0) {
+				long endTime = System.currentTimeMillis() + shutdownWaitTime;
+				while (snapshots.size() > 0) {
+					try {
+						if (System.currentTimeMillis() > endTime) {
+							executor.shutdownNow();
+							logger.warn(
+									"statistics committor cannot complete during shutdown waittime, {} snapshots not saved!",
+									snapshots.size());
+							break;
+						}
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+						logger.warn(
+								"statistics committor intrupted during shutdown, {} snapshots not saved!",
+								snapshots.size());
+						break;
+					} finally {
+						executor.shutdownNow();
+					}
+				}
+			}
+
 		} finally {
 			lock.unlock();
 		}

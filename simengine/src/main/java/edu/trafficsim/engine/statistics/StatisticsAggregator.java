@@ -8,9 +8,12 @@ import edu.trafficsim.data.dom.VehicleDo;
 
 final class StatisticsAggregator {
 
-	static List<StatisticsSnapshotDo> toSnapshotDo(StatisticsSnapshot snapshot) {
+	// --------------------------------------------------
+	// to Entities
+	// --------------------------------------------------
+	static List<StatisticsSnapshotDo> toStatisticsSnapshotDos(Snapshot snapshot) {
 		List<StatisticsSnapshotDo> result = new ArrayList<StatisticsSnapshotDo>();
-		for (VehicleSnapshot vs : snapshot.vehicles.values()) {
+		for (VehicleSnapshot vs : snapshot.vehicles) {
 			StatisticsSnapshotDo ssd = new StatisticsSnapshotDo();
 			ssd.setSequence(snapshot.sequence);
 			ssd.setSimulationName(snapshot.simulationName);
@@ -33,6 +36,32 @@ final class StatisticsAggregator {
 		ssd.setNodeId(vs.nodeId);
 	}
 
+	static List<VehicleDo> toVehicleDos(Snapshot snapshot) {
+		List<VehicleDo> entities = new ArrayList<VehicleDo>(
+				snapshot.newVehicles.size());
+		for (VehicleProperty vehicle : snapshot.newVehicles) {
+			VehicleDo entity = toVehicleDo(vehicle);
+			entity.setSimulationName(snapshot.simulationName);
+			entities.add(entity);
+		}
+		return entities;
+	}
+
+	private static VehicleDo toVehicleDo(VehicleProperty vehicle) {
+		VehicleDo entity = new VehicleDo();
+		entity.setVid(vehicle.getVid());
+		entity.setInitFrame(vehicle.getInitFrame());
+		entity.setStartNodeId(vehicle.getStartNodeId());
+		entity.setDestinationNodeId(vehicle.getDestinationNodeId());
+		entity.setWidth(vehicle.getWidth());
+		entity.setLength(vehicle.getLength());
+		entity.setHeight(vehicle.getLength());
+		return entity;
+	}
+
+	// --------------------------------------------------
+	// to Statistics
+	// --------------------------------------------------
 	static StatisticsFrames<VehicleState> toVehicleStates(
 			List<StatisticsSnapshotDo> snapshots) {
 		StatisticsFrames<VehicleState> frames = new StatisticsFrames<VehicleState>();
@@ -103,6 +132,20 @@ final class StatisticsAggregator {
 	}
 
 	static List<VehicleProperty> toVehicleProperties(List<VehicleDo> vehicles) {
-		return null;
+		List<VehicleProperty> result = new ArrayList<VehicleProperty>(
+				vehicles.size());
+		for (VehicleDo vehicle : vehicles) {
+			result.add(toVehicleProperty(vehicle));
+		}
+		return result;
+	}
+
+	private static VehicleProperty toVehicleProperty(VehicleDo vehicle) {
+		VehicleProperty property = new VehicleProperty(vehicle.getVid(),
+				vehicle.getInitFrame(), vehicle.getStartNodeId());
+		property.setWidth(vehicle.getWidth());
+		property.setLength(vehicle.getLength());
+		property.setHeight(vehicle.getHeight());
+		return property;
 	}
 }

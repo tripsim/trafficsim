@@ -82,6 +82,15 @@ public class PoissonVehicleGenerating extends AbstractPlugin implements
 
 		List<Vehicle> vehicles = new ArrayList<Vehicle>();
 		for (int i = 0; i < num; i++) {
+			// origin, destination
+			Node originNode = network.getNode(od.getOriginNodeId());
+			if (originNode == null) {
+				logger.warn("Node '{}' not exists in network '{}'",
+						od.getOriginNodeId(), network.getName());
+				continue;
+			}
+			Node destinationNode = od.getDestinationNodeId() == null ? null
+					: network.getNode(od.getDestinationNodeId());
 
 			// create vehicle with random vehicle type and driver type
 			String vtypeToBuild = Randoms.randomElement(
@@ -91,16 +100,10 @@ public class PoissonVehicleGenerating extends AbstractPlugin implements
 			if (vtypeToBuild == null || dtypeToBuild == null)
 				continue;
 
-			Vehicle vehicle = vehicleFactory.createVehicle(vtypeToBuild,
-					dtypeToBuild, tracker);
+			Vehicle vehicle = vehicleFactory.createVehicle(originNode,
+					destinationNode, vtypeToBuild, dtypeToBuild, tracker);
 
 			// random initial link and lane
-			Node originNode = network.getNode(od.getOriginNodeId());
-			if (originNode == null) {
-				logger.warn("Node '{}' not exists in network '{}'",
-						od.getOriginNodeId(), network.getName());
-				continue;
-			}
 			List<Link> links = new ArrayList<Link>(originNode.getDownstreams());
 			if (links.isEmpty())
 				continue;

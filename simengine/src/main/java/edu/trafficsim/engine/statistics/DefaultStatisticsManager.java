@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import edu.trafficsim.data.dom.StatisticsSnapshotDo;
+import edu.trafficsim.data.dom.VehicleDo;
 import edu.trafficsim.data.persistence.StatisticsSnapshotDao;
 import edu.trafficsim.data.persistence.VehicleDao;
 
@@ -19,10 +20,20 @@ class DefaultStatisticsManager implements StatisticsManager {
 	VehicleDao vehicleDao;
 
 	@Override
-	public void insertSnapshot(StatisticsSnapshot snapshot) {
+	public void insertSnapshot(Snapshot snapshot) {
+		insertStatisticsSnapshot(snapshot);
+		insertVehicleProperty(snapshot);
+	}
+
+	private void insertStatisticsSnapshot(Snapshot snapshot) {
 		List<StatisticsSnapshotDo> entities = StatisticsAggregator
-				.toSnapshotDo(snapshot);
+				.toStatisticsSnapshotDos(snapshot);
 		statisticsSnapshotDao.save(entities);
+	}
+
+	private void insertVehicleProperty(Snapshot snapshot) {
+		List<VehicleDo> entities = StatisticsAggregator.toVehicleDos(snapshot);
+		vehicleDao.save(entities);
 	}
 
 	@Override
@@ -52,8 +63,8 @@ class DefaultStatisticsManager implements StatisticsManager {
 			String simulationName, long nodeId, long startFrame, long steps) {
 		List<StatisticsSnapshotDo> snapshots = statisticsSnapshotDao
 				.loadSnapshots(simulationName,
-						getVehiclsFromNode(simulationName, nodeId), startFrame,
-						steps);
+						getVehiclesFromNode(simulationName, nodeId),
+						startFrame, steps);
 		StatisticsFrames<VehicleState> frames = StatisticsAggregator
 				.toVehicleStates(snapshots);
 		setSimulationInfo(simulationName, frames);
@@ -64,7 +75,7 @@ class DefaultStatisticsManager implements StatisticsManager {
 	public StatisticsFrames<LinkState> getLinkStatistics(String simulationName,
 			long linkId, long startFrame, long steps) {
 		List<StatisticsSnapshotDo> snapshots = statisticsSnapshotDao
-				.loadSnapshots(simulationName, linkId, startFrame, steps);
+				.loadSnapshotsByLink(simulationName, linkId, startFrame, steps);
 		StatisticsFrames<LinkState> frames = StatisticsAggregator
 				.toLinkStates(snapshots);
 		setSimulationInfo(simulationName, frames);
@@ -75,7 +86,7 @@ class DefaultStatisticsManager implements StatisticsManager {
 	public StatisticsFrames<NodeState> getNodeStatistics(String simulationName,
 			long nodeId, long startFrame, long steps) {
 		List<StatisticsSnapshotDo> snapshots = statisticsSnapshotDao
-				.loadSnapshots(simulationName, nodeId, startFrame, steps);
+				.loadSnapshotsByNode(simulationName, nodeId, startFrame, steps);
 		StatisticsFrames<NodeState> frames = StatisticsAggregator
 				.toNodeStates(snapshots);
 		setSimulationInfo(simulationName, frames);
@@ -102,7 +113,7 @@ class DefaultStatisticsManager implements StatisticsManager {
 	}
 
 	@Override
-	public List<Long> getVehiclsFromNode(String simulationName, long nodeId) {
+	public List<Long> getVehiclesFromNode(String simulationName, long nodeId) {
 		return vehicleDao.findVehicleIdsFrom(simulationName, nodeId);
 	}
 }
