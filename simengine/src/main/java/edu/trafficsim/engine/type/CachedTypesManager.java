@@ -9,6 +9,7 @@ import edu.trafficsim.util.WeakReferenceCache;
 public class CachedTypesManager extends AbstractTypesManager implements
 		TypesManager {
 
+	// WeakReferenceCache should be Thread-safe
 	WeakReferenceCache<String, LinkType> linkTypes = new WeakReferenceCache<String, LinkType>();
 	WeakReferenceCache<String, NodeType> nodeTypes = new WeakReferenceCache<String, NodeType>();
 	WeakReferenceCache<String, VehicleType> vehicleTypes = new WeakReferenceCache<String, VehicleType>();
