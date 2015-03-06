@@ -57,10 +57,11 @@ jQuery(document).ready(
 						var id = tbody.attr('data-id');
 						var postData = {
 							id : tbody.attr('data-id'),
-							name : tbody.find('input[name="name"]').val(),
+							desc : tbody.find('input[name="desc"]').val(),
 							highway : tbody.find('select[name="highway"]')
 									.val(),
-							roadName : tbody.find('input[name="name"]').val()
+							roadName : tbody.find('input[name="roadName"]')
+									.val()
 						};
 						simwebhelper.action('link/save', postData, function(
 								data) {
@@ -111,7 +112,7 @@ jQuery(document).ready(
 						var id = tbody.attr('data-id');
 						var postData = {
 							id : tbody.attr('data-id'),
-							name : tbody.find('input[name="name"]').val(),
+							desc : tbody.find('input[name="desc"]').val(),
 						};
 						simwebhelper.action('node/save', postData, function(
 								data) {

@@ -102,11 +102,11 @@ public class LinkController extends AbstractController {
 
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
 	public @ResponseBody Map<String, Object> saveLink(
-			@RequestParam("id") long id, @RequestParam("name") String name,
+			@RequestParam("id") long id, @RequestParam("desc") String desc,
 			@RequestParam("highway") String highway,
 			@RequestParam("roadName") String roadName,
 			@ModelAttribute("network") Network network) {
-		networkService.saveLink(network, id, name, highway, roadName);
+		networkService.saveLink(network, id, desc, highway, roadName);
 		return successResponse("Link saved.");
 	}
 

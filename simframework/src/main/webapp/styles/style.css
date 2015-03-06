@@ -1,4 +1,4 @@
-html,body,#map {
+html, body, #map {
 	margin: 0;
 	width: 100%;
 	height: 100%;
@@ -96,10 +96,6 @@ html,body,#map {
 	z-index: 1;
 }
 
-#user-configuration-buttons {
-	
-}
-
 .button {
 	background-color: #ff5600;
 	cursor: pointer;
@@ -139,6 +135,10 @@ html,body,#map {
 #user-configuration td input {
 	margin: 0 2px;
 	width: 80px;
+}
+
+#user-configuration-ods-tbody span {
+	white-space: nowrap;
 }
 
 /***********************************************************

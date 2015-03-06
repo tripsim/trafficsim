@@ -85,7 +85,6 @@ public class TypesService extends EntityService {
 					+ "' already exists.");
 		}
 		type = typesFactory.createDriverType(name);
-		typesManager.saveDriverType(type);
 		return type;
 	}
 
@@ -94,7 +93,7 @@ public class TypesService extends EntityService {
 			throw new RuntimeException("Cannot remove driver type '" + name
 					+ "', it is referenced.");
 		}
-		typesManager.deleteVehicleType(name);
+		typesManager.deleteDriverType(name);
 	}
 
 	public DriverType updateDriverType(String name, String newName,

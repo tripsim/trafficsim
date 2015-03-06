@@ -25,9 +25,9 @@ public interface ArcSection extends Arc {
 
 	Arc getParent();
 
-	double getStartOffset();
+	double getStart();
 
-	double getEndOffset();
+	double getEnd();
 
 	double getShift();
 

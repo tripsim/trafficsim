@@ -90,7 +90,7 @@ public abstract class AbstractArcSection extends AbstractArc implements
 	}
 
 	@Override
-	public final double getStartOffset() {
+	public final double getStart() {
 		return startOffset;
 	}
 
@@ -105,7 +105,7 @@ public abstract class AbstractArcSection extends AbstractArc implements
 	}
 
 	@Override
-	public final double getEndOffset() {
+	public final double getEnd() {
 		return endOffset;
 	}
 

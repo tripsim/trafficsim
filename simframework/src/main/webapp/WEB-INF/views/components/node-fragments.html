@@ -4,16 +4,16 @@
 		<td colspan="0" data-th-text="${node.id}"></td>
 	</tr>
 	<tr>
-		<td>Node Name</td>
-		<td><input type="text" name="name" data-th-value="${node.name}" /></td>
+		<td>Node Description</td>
+		<td><input type="text" name="desc" data-th-value="${node.description}" /></td>
 	</tr>
 	<tr>
 		<td>Source</td>
-		<td data-th-text="${network.isSource(node)} ? 'Yes' : 'No'"></td>
+		<td data-th-text="${node.isSource()} ? 'Yes' : 'No'"></td>
 	</tr>
 	<tr>
 		<td>Sink</td>
-		<td data-th-text="${network.isSink(node)} ? 'Yes' : 'No'"></td>
+		<td data-th-text="${node.isSink()} ? 'Yes' : 'No'"></td>
 	</tr>
 	<tr data-th-if="${node.upstreams.isEmpty()} == false">
 		<td>Upstream Links</td>

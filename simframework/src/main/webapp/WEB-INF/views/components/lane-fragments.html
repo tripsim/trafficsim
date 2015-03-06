@@ -1,6 +1,6 @@
 <tr data-th-fragment="info(lane)"
-	data-th-attr="data-id=${lane.link.id} + '-' + ${lane.laneId}">
-	<td data-th-text="${lane.laneId}"></td>
+	data-th-attr="data-id=${lane.link.id} + '-' + ${lane.lanePosition}">
+	<td data-th-text="${lane.lanePosition}"></td>
 	<td data-th-text="${lane.width}"></td>
 	<td data-th-text="${lane.start}"></td>
 	<td data-th-text="${lane.end}"></td>
@@ -10,8 +10,8 @@
 </tr>
 
 <tr data-th-fragment="form(lane)"
-	data-th-attr="data-id=${lane.link.id} + '-' + ${lane.laneId}">
-	<td data-th-text="${lane.laneId}"></td>
+	data-th-attr="data-id=${lane.link.id} + '-' + ${lane.lanePosition}">
+	<td data-th-text="${lane.lanePosition}"></td>
 	<td><input type="text" name="width" data-th-value="${lane.width}" /></td>
 	<td><input type="text" name="start" data-th-value="${lane.start}" /></td>
 	<td><input type="text" name="end" data-th-value="${lane.end}" /></td>

@@ -87,9 +87,9 @@ public class NodeController extends AbstractController {
 
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
 	public @ResponseBody Map<String, Object> saveNodek(
-			@RequestParam("id") long id, @RequestParam("name") String name,
+			@RequestParam("id") long id, @RequestParam("desc") String desc,
 			@ModelAttribute("network") Network network) {
-		networkService.saveNode(network, id, name);
+		networkService.saveNode(network, id, desc);
 		return successResponse("Node saved.");
 	}
 }

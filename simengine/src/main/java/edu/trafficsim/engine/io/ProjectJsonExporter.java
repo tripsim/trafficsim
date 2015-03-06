@@ -158,9 +158,9 @@ final class ProjectJsonExporter {
 					generator.writeFieldName(ID);
 					generator.writeNumber(lane.getId());
 					generator.writeFieldName(START);
-					generator.writeNumber(lane.getStartOffset());
+					generator.writeNumber(lane.getStart());
 					generator.writeFieldName(END);
-					generator.writeNumber(lane.getEndOffset());
+					generator.writeNumber(lane.getEnd());
 					generator.writeFieldName(WIDTH);
 					generator.writeNumber(lane.getWidth());
 					generator.writeFieldName(SHIFT);

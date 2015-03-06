@@ -114,11 +114,11 @@ public class MicroScopicLaneVehicleStream implements VehicleStream {
 	}
 
 	private double getEntranceLength() {
-		return lane.getStartOffset();
+		return lane.getStart();
 	}
 
 	private double getExitLength() {
-		return -lane.getEndOffset();
+		return -lane.getEnd();
 	}
 
 	@Override

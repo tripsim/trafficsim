@@ -102,8 +102,8 @@ class NetworkConverter {
 	private LaneDo toLaneDo(Lane lane) {
 		LaneDo result = new LaneDo();
 		result.setLaneId(lane.getId());
-		result.setStart(lane.getStartOffset());
-		result.setEnd(lane.getEndOffset());
+		result.setStart(lane.getStart());
+		result.setEnd(lane.getEnd());
 		result.setWidth(lane.getWidth());
 		result.setLength(lane.getLength());
 		result.setShift(lane.getShift());
