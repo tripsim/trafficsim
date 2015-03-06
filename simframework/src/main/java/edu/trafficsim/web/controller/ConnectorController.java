@@ -31,12 +31,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
+import edu.trafficsim.api.model.Connector;
+import edu.trafficsim.api.model.Lane;
+import edu.trafficsim.api.model.Link;
+import edu.trafficsim.api.model.Network;
 import edu.trafficsim.engine.network.NetworkFactory;
-import edu.trafficsim.model.ConnectionLane;
-import edu.trafficsim.model.Lane;
-import edu.trafficsim.model.Link;
-import edu.trafficsim.model.Network;
-import edu.trafficsim.model.core.ModelInputException;
 import edu.trafficsim.web.Sequence;
 import edu.trafficsim.web.service.MapJsonService;
 import edu.trafficsim.web.service.entity.NetworkService;
@@ -79,7 +78,7 @@ public class ConnectorController extends AbstractController {
 		if (toLane == null)
 			return "components/empty";
 
-		ConnectionLane connector = fromLane.getLink().getEndNode()
+		Connector connector = fromLane.getLink().getEndNode()
 				.getConnector(fromLane, toLane);
 		if (connector == null)
 			return "components/empty";
@@ -109,29 +108,23 @@ public class ConnectorController extends AbstractController {
 		if (lane2 == null)
 			return failureResponse("no lane.");
 
-		try {
-			if (link1.getEndNode() == link2.getStartNode()) {
-				if (link1.getEndNode().isConnected(lane1, lane2)) {
-					return failureResponse("already connected");
-				}
-				ConnectionLane connector = networkService.connectLanes(
-						sequence, network, lane1, lane2);
-				return connectSuccessResponse(connector, "Success 1!");
-			} else if (link1.getStartNode() == link2.getEndNode()) {
-				if (link1.getStartNode().isConnected(lane2, lane1)) {
-					return failureResponse("already connected");
-				}
-				ConnectionLane connector = networkService.connectLanes(
-						sequence, network, lane2, lane1);
-				return connectSuccessResponse(connector, "Success 2!");
-			} else {
-				return failureResponse("no connection");
+		if (link1.getEndNode() == link2.getStartNode()) {
+			if (link1.getEndNode().isConnected(lane1, lane2)) {
+				return failureResponse("already connected");
 			}
-		} catch (ModelInputException e) {
-			e.printStackTrace();
+			Connector connector = networkService.connectLanes(sequence,
+					network, lane1, lane2);
+			return connectSuccessResponse(connector, "Success 1!");
+		} else if (link1.getStartNode() == link2.getEndNode()) {
+			if (link1.getStartNode().isConnected(lane2, lane1)) {
+				return failureResponse("already connected");
+			}
+			Connector connector = networkService.connectLanes(sequence,
+					network, lane2, lane1);
+			return connectSuccessResponse(connector, "Success 2!");
+		} else {
+			return failureResponse("no connection");
 		}
-
-		return failureResponse("null");
 	}
 
 	@RequestMapping(value = "/remove", method = RequestMethod.POST)
@@ -155,7 +148,7 @@ public class ConnectorController extends AbstractController {
 		if (toLane == null)
 			return failureResponse("no lane.");
 
-		ConnectionLane connector = fromLane.getLink().getEndNode()
+		Connector connector = fromLane.getLink().getEndNode()
 				.getConnector(fromLane, toLane);
 		if (connector == null)
 			return failureResponse("no lane.");
@@ -164,14 +157,14 @@ public class ConnectorController extends AbstractController {
 		return disconnectSuccessResponse(connector, "Success!");
 	}
 
-	private Map<String, Object> connectSuccessResponse(
-			ConnectionLane connector, String message) {
+	private Map<String, Object> connectSuccessResponse(Connector connector,
+			String message) {
 		return successResponse(message, null,
 				mapJsonService.getConnectorJson(connector));
 	}
 
-	private Map<String, Object> disconnectSuccessResponse(
-			ConnectionLane connector, String message) {
+	private Map<String, Object> disconnectSuccessResponse(Connector connector,
+			String message) {
 		return successResponse(message, null,
 				mapJsonService.getConnectorsIdsJson(connector));
 	}

@@ -33,12 +33,11 @@ import com.vividsolutions.jts.geom.CoordinateSequence;
 import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.io.ParseException;
 
+import edu.trafficsim.api.model.Link;
+import edu.trafficsim.api.model.Network;
+import edu.trafficsim.api.model.Node;
+import edu.trafficsim.api.model.OdMatrix;
 import edu.trafficsim.engine.type.TypesManager;
-import edu.trafficsim.model.Link;
-import edu.trafficsim.model.Network;
-import edu.trafficsim.model.Node;
-import edu.trafficsim.model.OdMatrix;
-import edu.trafficsim.model.core.ModelInputException;
 import edu.trafficsim.util.WktUtils;
 import edu.trafficsim.web.Sequence;
 import edu.trafficsim.web.service.MapJsonService;
@@ -173,19 +172,17 @@ public class NetworkController extends AbstractController {
 			if (endNode == null)
 				return failureResponse("No ending node.");
 
-			if (startNode.getToNode(endNode) != null)
+			if (startNode.getLinkToNode(endNode) != null)
 				return failureResponse("Link already exists.");
 			Link link = networkService.createLink(sequence, network, linkType,
 					startNode, endNode, points);
-			if (startNode.getFromNode(endNode) != null) {
-				link.setReverseLink(startNode.getFromNode(endNode));
+			if (startNode.getLinkFromNode(endNode) != null) {
+				link.setReverseLink(startNode.getLinkFromNode(endNode));
 			}
 
 			return successResponse("Link(s) created.", null,
 					mapJsonService.getNewLinkJson(link));
 
-		} catch (ModelInputException e) {
-			return failureResponse(e);
 		} catch (ParseException e) {
 			return failureResponse(e);
 		}

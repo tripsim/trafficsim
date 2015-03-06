@@ -17,8 +17,7 @@
  */
 package edu.trafficsim.model.events;
 
-import edu.trafficsim.model.Segment;
-import edu.trafficsim.model.Subsegment;
+import edu.trafficsim.api.model.Motion;
 import edu.trafficsim.model.core.MovingObject;
 
 /**
@@ -28,45 +27,20 @@ import edu.trafficsim.model.core.MovingObject;
  * @param <T>
  *            the generic type
  */
-public abstract class ContinuousEvent<T> extends AbstractEvent<T> {
+public abstract class ContinuousEvent extends AbstractEvent {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
-	/**
-	 * 
-	 * 
-	 * @author Xuan Shi
-	 */
-	public final static class EventAgent extends MovingObject<EventAgent> {
+	public final static class EventAgent extends MovingObject {
 
-		/**
-		 * 
-		 */
 		private static final long serialVersionUID = 1L;
 
 		public EventAgent(long id, String name, int startFrame) {
-			super(id, name, startFrame);
-			// TODO Auto-generated constructor stub
+			super(id, startFrame);
 		}
 
 		@Override
-		public Segment getSegment() {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public Subsegment getSubsegment() {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		protected void onRefresh() {
-			// TODO Auto-generated method stub
+		protected void onUpdate(Motion motion) {
 
 		}
 
@@ -77,8 +51,8 @@ public abstract class ContinuousEvent<T> extends AbstractEvent<T> {
 
 	public ContinuousEvent(long id, String name, double startTime,
 			double endTime, int startFrame) {
-		super(id, name, startTime, endTime);
-		agent = new EventAgent(startFrame, name, startFrame);
+		super(id, startTime, endTime);
+		agent = new EventAgent(id, name, startFrame);
 	}
 
 }

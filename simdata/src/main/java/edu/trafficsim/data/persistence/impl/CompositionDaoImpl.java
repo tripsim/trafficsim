@@ -13,7 +13,7 @@ import com.mongodb.DBObject;
 import edu.trafficsim.data.dom.CompositionDo;
 import edu.trafficsim.data.dom.TypeCategoryDo;
 import edu.trafficsim.data.persistence.CompositionDao;
-import edu.trafficsim.model.util.StringUtils;
+import edu.trafficsim.util.StringUtils;
 
 @Repository("composition-dao")
 class CompositionDaoImpl extends AbstractDaoImpl<CompositionDo> implements

@@ -17,32 +17,37 @@
  */
 package edu.trafficsim.model.network;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+
 import com.vividsolutions.jts.geom.LineString;
 
-import edu.trafficsim.model.Node;
-import edu.trafficsim.model.RoadInfo;
-import edu.trafficsim.model.core.ModelInputException;
+import edu.trafficsim.api.model.Connector;
+import edu.trafficsim.api.model.Lane;
+import edu.trafficsim.api.model.Link;
+import edu.trafficsim.api.model.Node;
+import edu.trafficsim.api.model.Path;
+import edu.trafficsim.api.model.RoadInfo;
 
 /**
  * 
  * 
  * @author Xuan Shi
  */
-public class DefaultLink extends AbstractLink<DefaultLink> {
+public class DefaultLink extends AbstractLink {
 
 	private static final long serialVersionUID = 1L;
 
 	private String linkType;
-
 	private RoadInfo roadInfo;
 
-	public DefaultLink(long id, String name, String linkType, Node startNode,
-			Node endNode, LineString linearGeom, RoadInfo roadInfo)
-			throws ModelInputException {
-		super(id, name, startNode, endNode, linearGeom);
+	public DefaultLink(long id, String linkType, Node startNode, Node endNode,
+			LineString linearGeom, RoadInfo roadInfo) {
+		super(id, startNode, endNode, linearGeom);
 		this.linkType = linkType;
 		this.roadInfo = roadInfo;
-		onGeomUpdated();
 	}
 
 	@Override
@@ -62,6 +67,55 @@ public class DefaultLink extends AbstractLink<DefaultLink> {
 	@Override
 	public void setRoadInfo(RoadInfo roadInfo) {
 		this.roadInfo = roadInfo;
+	}
+
+	@Override
+	public Collection<Connector> getConnectors(Link destLink) {
+		List<Connector> connectors = new ArrayList<Connector>();
+		for (Lane fromLane : getLanes()) {
+			connectors.addAll(getEndNode().getConnectors(fromLane, destLink));
+		}
+		return Collections.unmodifiableCollection(connectors);
+	}
+
+	@Override
+	public Collection<Connector> getOutConnectors() {
+		return getEndNode().getConnectorsFromLink(this);
+	}
+
+	@Override
+	public Collection<Connector> getInConnectors() {
+		return getStartNode().getConnectorsToLink(this);
+	}
+
+	@Override
+	public List<Lane> getAuxiliaryLanes() {
+		return getLanes(true);
+	}
+
+	@Override
+	public List<Lane> getMainLanes() {
+		return getLanes(false);
+	}
+
+	protected List<Lane> getLanes(boolean auxiliary) {
+		List<Lane> list = new ArrayList<Lane>();
+		for (Lane lane : getLanes()) {
+			if (lane.isAuxiliary() == auxiliary) {
+				list.add(lane);
+			}
+		}
+		return list;
+	}
+
+	// --------------------------------------------------
+	// Path Implementation
+	// --------------------------------------------------
+
+	@Override
+	public Collection<? extends Path> getExits() {
+		return Collections
+				.unmodifiableCollection(getEndNode().getDownstreams());
 	}
 
 }

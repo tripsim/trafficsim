@@ -21,8 +21,8 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 import com.vividsolutions.jts.geom.Point;
 
-import edu.trafficsim.model.BaseEntity;
-import edu.trafficsim.model.Location;
+import edu.trafficsim.api.model.Location;
+import edu.trafficsim.model.BaseObject;
 
 /**
  * 
@@ -31,8 +31,7 @@ import edu.trafficsim.model.Location;
  * @param <T>
  *            the generic type
  */
-public abstract class AbstractLocation<T> extends BaseEntity<T> implements
-		Location {
+public abstract class AbstractLocation extends BaseObject implements Location {
 
 	private static final long serialVersionUID = 1L;
 
@@ -40,12 +39,12 @@ public abstract class AbstractLocation<T> extends BaseEntity<T> implements
 	protected Point point;
 	protected double radius;
 
-	public AbstractLocation(long id, String name, Point point) {
-		this(id, name, point, 0);
+	public AbstractLocation(long id, Point point) {
+		this(id, point, 0);
 	}
 
-	public AbstractLocation(long id, String name, Point point, double radius) {
-		super(id, name);
+	public AbstractLocation(long id, Point point, double radius) {
+		super(id);
 		this.point = point;
 		this.radius = radius;
 	}
@@ -70,7 +69,7 @@ public abstract class AbstractLocation<T> extends BaseEntity<T> implements
 	}
 
 	@Override
-	public final void setRadius(double radius) throws ModelInputException {
+	public final void setRadius(double radius) {
 		this.radius = radius;
 		// TODO reconsider the necessity for radius
 		onGeomUpdated();
@@ -79,5 +78,9 @@ public abstract class AbstractLocation<T> extends BaseEntity<T> implements
 	@Override
 	public void onTransformDone(CoordinateReferenceSystem crs) {
 		this.crs = crs;
+	}
+
+	@Override
+	public void onGeomUpdated() {
 	}
 }

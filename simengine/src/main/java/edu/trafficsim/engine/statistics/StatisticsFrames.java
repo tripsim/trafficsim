@@ -3,7 +3,7 @@ package edu.trafficsim.engine.statistics;
 import java.util.Collection;
 import java.util.Set;
 
-import edu.trafficsim.model.core.MultiKeyedMap;
+import edu.trafficsim.util.MultiKeyedMap;
 
 public class StatisticsFrames<T> {
 

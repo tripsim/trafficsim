@@ -2,7 +2,7 @@ package edu.trafficsim.engine.type;
 
 import java.util.List;
 
-import edu.trafficsim.model.TypesComposition;
+import edu.trafficsim.api.model.TypesComposition;
 
 public interface TypesManager {
 

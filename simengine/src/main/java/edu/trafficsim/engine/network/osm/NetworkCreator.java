@@ -24,16 +24,15 @@ import java.util.Map;
 
 import com.vividsolutions.jts.geom.Coordinate;
 
+import edu.trafficsim.api.model.Link;
+import edu.trafficsim.api.model.Network;
+import edu.trafficsim.api.model.Node;
+import edu.trafficsim.api.model.RoadInfo;
 import edu.trafficsim.engine.network.NetworkExtractResult;
 import edu.trafficsim.engine.network.NetworkFactory;
 import edu.trafficsim.engine.network.osm.Highways.OsmNode;
 import edu.trafficsim.engine.network.osm.Highways.OsmWay;
 import edu.trafficsim.engine.type.TypesManager;
-import edu.trafficsim.model.Link;
-import edu.trafficsim.model.Network;
-import edu.trafficsim.model.Node;
-import edu.trafficsim.model.RoadInfo;
-import edu.trafficsim.model.core.ModelInputException;
 import edu.trafficsim.model.util.GeoReferencing;
 import edu.trafficsim.model.util.GeoReferencing.TransformCoordinateFilter;
 import edu.trafficsim.util.CoordinateTransformer;
@@ -52,12 +51,12 @@ public class NetworkCreator {
 	// TODO the osm nodes that has only two links if possible
 	public static NetworkExtractResult createNetwork(Highways highways,
 			TypesManager typesManager, NetworkFactory networkFactory,
-			String name) throws ModelInputException {
+			String name) {
 		NetworkExtractResult result = new NetworkExtractResult();
 		long id = DEFAULT_START_ID;
 		result.setStartId(id);
 
-		Network network = networkFactory.createNetwork(id++, name);
+		Network network = networkFactory.createNetwork(name);
 		Map<OsmNode, Node> nodes = new HashMap<OsmNode, Node>(highways
 				.getOsmNodes().size());
 		for (OsmWay osmWay : highways.getOsmWays()) {
@@ -68,8 +67,8 @@ public class NetworkCreator {
 			OsmNode startOsmNode = osmWay.osmNodes.get(i);
 			coords.add(startOsmNode.asCoord());
 			OsmNode endOsmNode = null;
-			RoadInfo roadInfo = networkFactory.createRoadInfo(id++,
-					osmWay.name, osmWay.id, osmWay.highway);
+			RoadInfo roadInfo = networkFactory.createRoadInfo(id++, osmWay.id,
+					osmWay.name, osmWay.highway);
 			while (++i < osmWay.osmNodes.size()) {
 				// read the next osmnode and add to coords until end
 				endOsmNode = osmWay.osmNodes.get(i);
@@ -101,7 +100,7 @@ public class NetworkCreator {
 			OsmNode startOsmNode, OsmNode endOsmNode, OsmWay osmWay,
 			List<Coordinate> coords, RoadInfo roadInfo,
 			NetworkFactory networkFactory, String nodeType, String linkType,
-			long id) throws ModelInputException {
+			long id) {
 		Node startNode = nodes.get(startOsmNode);
 		if (startNode == null) {
 			startNode = createNode(startOsmNode, nodeType, networkFactory, id);
@@ -130,27 +129,28 @@ public class NetworkCreator {
 		for (OsmWay osmWay : osmNode.osmWays) {
 			name += " @ " + osmWay.name;
 		}
-		Node node = networkFactory.createNode(id++, name, nodeType,
-				osmNode.asCoord());
+		Node node = networkFactory
+				.createNode(id++, nodeType, osmNode.asCoord());
+		node.setDescription(name);
 		// TODO edit node
 		return node;
 	}
 
 	private static Link createLink(OsmWay osmWay, String linkType,
 			Node startNode, Node endNode, List<Coordinate> coords,
-			RoadInfo roadInfo, NetworkFactory networkFactory, long id)
-			throws ModelInputException {
-		Link link = networkFactory
-				.createLink(id++, osmWay.name, linkType, startNode, endNode,
-						coords.toArray(new Coordinate[0]), roadInfo);
+			RoadInfo roadInfo, NetworkFactory networkFactory, long id) {
+		Link link = networkFactory.createLink(id++, linkType, startNode,
+				endNode, coords.toArray(new Coordinate[0]), roadInfo);
+		link.setDescription(osmWay.name);
 		// TODO edit link
 		return link;
 	}
 
 	private static Link createReverseLink(Link link,
-			NetworkFactory networkFactory, long id) throws ModelInputException {
-		Link reverseLink = networkFactory.createReverseLink(id++,
-				String.format("%s Reversed", link.getName()), link);
+			NetworkFactory networkFactory, long id) {
+		Link reverseLink = networkFactory.createReverseLink(id++, link);
+		reverseLink.setDescription(String.format("%s Reversed",
+				link.getDescription()));
 		reverseLink.setRoadInfo(link.getRoadInfo());
 		return reverseLink;
 	}

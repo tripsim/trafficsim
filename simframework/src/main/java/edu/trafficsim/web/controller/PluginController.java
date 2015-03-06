@@ -31,7 +31,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 
 import edu.trafficsim.engine.simulation.SimulationSettings;
 import edu.trafficsim.engine.type.TypesManager;
-import edu.trafficsim.plugin.PluginManager;
+import edu.trafficsim.plugin.api.PluginManager;
 
 /**
  * 

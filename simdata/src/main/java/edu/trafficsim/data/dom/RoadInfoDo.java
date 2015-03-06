@@ -6,8 +6,8 @@ import org.mongodb.morphia.annotations.Embedded;
 public class RoadInfoDo {
 
 	private long id;
-	private String name;
 
+	private String roadName;
 	private long roadId;
 	private String highway;
 
@@ -19,12 +19,12 @@ public class RoadInfoDo {
 		this.id = id;
 	}
 
-	public String getName() {
-		return name;
+	public String getRoadName() {
+		return roadName;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setName(String roadName) {
+		this.roadName = roadName;
 	}
 
 	public long getRoadId() {
@@ -45,8 +45,8 @@ public class RoadInfoDo {
 
 	@Override
 	public String toString() {
-		return "RoadInfoDo [id=" + id + ", name=" + name + ", roadId=" + roadId
-				+ ", highway=" + highway + "]";
+		return "RoadInfoDo [id=" + id + ", roadName=" + roadName + ", roadId="
+				+ roadId + ", highway=" + highway + "]";
 	}
 
 }

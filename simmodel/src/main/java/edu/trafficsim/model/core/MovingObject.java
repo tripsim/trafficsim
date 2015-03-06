@@ -20,9 +20,11 @@ package edu.trafficsim.model.core;
 import com.vividsolutions.jts.algorithm.Angle;
 import com.vividsolutions.jts.geom.Coordinate;
 
-import edu.trafficsim.model.Agent;
-import edu.trafficsim.model.BaseEntity;
-import edu.trafficsim.model.Movable;
+import edu.trafficsim.api.Agent;
+import edu.trafficsim.api.model.Arc;
+import edu.trafficsim.api.model.Motion;
+import edu.trafficsim.api.model.Movable;
+import edu.trafficsim.model.BaseObject;
 import edu.trafficsim.model.util.Coordinates;
 
 /**
@@ -32,37 +34,25 @@ import edu.trafficsim.model.util.Coordinates;
  * @param <T>
  *            the generic type
  */
-public abstract class MovingObject<T> extends BaseEntity<T> implements Movable,
-		Agent {
+public abstract class MovingObject extends BaseObject implements Movable, Agent {
 
 	private static final long serialVersionUID = 1L;
 
 	private final long startFrame;
+	protected boolean active;
 
-	protected double position;
-	protected double lateralOffset;
-
-	protected double speed;
-	protected double acceleration;
-
+	protected final Motion motion;
 	protected double angle;
 	protected Coordinate coord;
 
-	protected boolean active;
-
-	public MovingObject(long id, String name, long startFrame) {
-		super(id, name);
+	public MovingObject(long id, long startFrame) {
+		super(id);
 		this.startFrame = startFrame;
+		this.active = true;
 
-		this.position = 0;
-		this.lateralOffset = 0;
-		this.speed = 0;
-		this.acceleration = 0;
-
+		this.motion = new DefaultMotion();
 		this.angle = 0;
 		this.coord = new Coordinate();
-
-		this.active = true;
 	}
 
 	@Override
@@ -71,47 +61,82 @@ public abstract class MovingObject<T> extends BaseEntity<T> implements Movable,
 	}
 
 	@Override
-	public final double position() {
-		return position;
+	public final Motion getMotion() {
+		return motion;
 	}
 
 	@Override
-	public final void position(double position) {
-		this.position = position;
+	public final double getPosition() {
+		return motion.getSpeed();
 	}
 
 	@Override
-	public final double speed() {
-		return speed;
+	public final void setPosition(double position) {
+		motion.setPosition(position);
 	}
 
 	@Override
-	public final void speed(double speed) {
-		this.speed = speed;
+	public double getLateralOffset() {
+		return motion.getLateralOffset();
 	}
 
 	@Override
-	public final double acceleration() {
-		return acceleration;
+	public void setLateralOffset(double lateralOffset) {
+		motion.setLateralOffset(lateralOffset);
 	}
 
 	@Override
-	public final void acceleration(double acceleration) {
-		this.acceleration = acceleration;
+	public double getDirection() {
+		return motion.getDirection();
 	}
 
 	@Override
-	public final double angle() {
+	public void setDirection(double direction) {
+		motion.setDirection(direction);
+	}
+
+	@Override
+	public final double getSpeed() {
+		return motion.getSpeed();
+	}
+
+	@Override
+	public final void setSpeed(double speed) {
+		motion.setSpeed(speed);
+	}
+
+	@Override
+	public final double getAcceleration() {
+		return motion.getAcceleration();
+	}
+
+	@Override
+	public final void setAcceleration(double acceleration) {
+		motion.setAcceleration(acceleration);
+	}
+
+	@Override
+	public double getWidth() {
+		return 0;
+	}
+
+	@Override
+	public double getLength() {
+		return 0;
+	}
+
+	@Override
+	public final double getAngle() {
 		return angle;
 	}
 
 	@Override
-	public final Coordinate coord() {
+	public final Coordinate getCoord() {
 		return coord;
 	}
 
 	@Override
-	public final boolean active() {
+	public final boolean isActive() {
 		return active;
 	}
 
@@ -120,26 +145,49 @@ public abstract class MovingObject<T> extends BaseEntity<T> implements Movable,
 		this.active = false;
 	}
 
-	protected final Coordinate computeCoord() throws ModelInputException {
+	protected final Coordinate computeCoord(Arc arc, double geomPosition) {
 		try {
-			return position < 0 ? coord : Coordinates.getOffsetCoordinate(
-					getSegment().getCrs(), getSubsegment().getLinearGeom(),
-					position, lateralOffset);
+			return getPosition() < 0 ? coord : Coordinates.getOffsetCoordinate(
+					arc.getCrs(), arc.getLinearGeom(), geomPosition,
+					getLateralOffset());
 		} catch (Exception e) {
-			throw new ModelInputException(
+			throw new RuntimeException(
 					"vehicle coordinate transformation failed!", e);
 		}
 	}
 
 	@Override
-	public final void refresh() throws ModelInputException {
-		Coordinate newCoord = computeCoord();
-		if (speed > 0)
+	public final void onMoved(Arc arc, double geomPosition) {
+		Coordinate newCoord = computeCoord(arc, geomPosition);
+		if (motion.getSpeed() > 0) {
 			this.angle = Angle.toDegrees(Angle.angle(coord, newCoord));
+		}
 		this.coord = newCoord;
-		onRefresh();
+		onUpdate(motion);
 	}
 
-	abstract protected void onRefresh();
+	@Override
+	public boolean isAheadOf(Movable movable) {
+		compareTo(movable);
+		return false;
+	}
 
+	/*
+	 * Determine the order of the vehicles in the NavigableSet of the lane
+	 * Vehicle Queue
+	 * 
+	 * WARN only works if they are in the same lane, do not rely on this
+	 */
+	@Override
+	public int compareTo(Object mo) {
+		if (mo instanceof Movable)
+			return motion.getPosition()
+					- ((Movable) mo).getMotion().getPosition() > 0 ? 1
+					: motion.getPosition()
+							- ((Movable) mo).getMotion().getPosition() < 0 ? -1
+							: 0;
+		throw new ClassCastException("cannot compare Non Movable object!");
+	}
+
+	abstract protected void onUpdate(Motion motion);
 }

@@ -31,11 +31,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
+import edu.trafficsim.api.model.Lane;
+import edu.trafficsim.api.model.Link;
+import edu.trafficsim.api.model.Network;
 import edu.trafficsim.engine.network.NetworkFactory;
-import edu.trafficsim.model.Lane;
-import edu.trafficsim.model.Link;
-import edu.trafficsim.model.Network;
-import edu.trafficsim.model.core.ModelInputException;
 import edu.trafficsim.web.Sequence;
 import edu.trafficsim.web.service.MapJsonService;
 import edu.trafficsim.web.service.entity.NetworkService;
@@ -107,11 +106,7 @@ public class LaneController extends AbstractController {
 			return failureResponse("link doesn't exist.");
 		}
 
-		try {
-			networkService.addLane(sequence, network, link);
-		} catch (ModelInputException e) {
-			return failureResponse(e.toString());
-		}
+		networkService.addLane(sequence, network, link);
 		return laneUpdatedResponse(network, id);
 	}
 
@@ -126,11 +121,7 @@ public class LaneController extends AbstractController {
 			return failureResponse("link doesn't exist.");
 		}
 
-		try {
-			networkService.removeLane(network, link, laneId);
-		} catch (ModelInputException e) {
-			return failureResponse(e);
-		}
+		networkService.removeLane(network, link, laneId);
 
 		return laneUpdatedResponse(network, linkId);
 	}
@@ -151,11 +142,7 @@ public class LaneController extends AbstractController {
 		if (lane == null)
 			return failureResponse("lane doesn't exist.");
 
-		try {
-			networkService.saveLane(network, lane, start, end, width);
-		} catch (ModelInputException e) {
-			return failureResponse(e.toString());
-		}
+		networkService.saveLane(network, lane, start, end, width);
 		return laneUpdatedResponse(network, id);
 	}
 

@@ -7,6 +7,8 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 
+import edu.trafficsim.api.model.TypesComposition;
+import edu.trafficsim.api.model.VehicleClass;
 import edu.trafficsim.data.dom.ElementTypeDo;
 import edu.trafficsim.data.dom.TypeCategoryDo;
 import edu.trafficsim.data.persistence.CompositionDao;
@@ -17,8 +19,6 @@ import edu.trafficsim.engine.type.NodeType;
 import edu.trafficsim.engine.type.TypesFactory;
 import edu.trafficsim.engine.type.TypesManager;
 import edu.trafficsim.engine.type.VehicleType;
-import edu.trafficsim.model.TypesComposition;
-import edu.trafficsim.model.VehicleClass;
 
 @Component
 public class MongoDefaultPopulator implements

@@ -1,6 +1,7 @@
 package edu.trafficsim.engine.io;
 
 import static edu.trafficsim.engine.io.ProjectImportExportConstant.CONNECTORS;
+import static edu.trafficsim.engine.io.ProjectImportExportConstant.DESCRIPTION;
 import static edu.trafficsim.engine.io.ProjectImportExportConstant.DESTINATION;
 import static edu.trafficsim.engine.io.ProjectImportExportConstant.DRIVERCOMPOSITION;
 import static edu.trafficsim.engine.io.ProjectImportExportConstant.DRIVERCOMPOSITIONS;
@@ -29,6 +30,7 @@ import static edu.trafficsim.engine.io.ProjectImportExportConstant.REVERSELINKID
 import static edu.trafficsim.engine.io.ProjectImportExportConstant.ROADID;
 import static edu.trafficsim.engine.io.ProjectImportExportConstant.ROADINFO;
 import static edu.trafficsim.engine.io.ProjectImportExportConstant.ROADINFOS;
+import static edu.trafficsim.engine.io.ProjectImportExportConstant.ROADNAME;
 import static edu.trafficsim.engine.io.ProjectImportExportConstant.SD;
 import static edu.trafficsim.engine.io.ProjectImportExportConstant.SEED;
 import static edu.trafficsim.engine.io.ProjectImportExportConstant.SETTINGS;
@@ -52,17 +54,17 @@ import java.util.Set;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 
+import edu.trafficsim.api.model.Connector;
+import edu.trafficsim.api.model.Lane;
+import edu.trafficsim.api.model.Link;
+import edu.trafficsim.api.model.Network;
+import edu.trafficsim.api.model.Node;
+import edu.trafficsim.api.model.Od;
+import edu.trafficsim.api.model.OdMatrix;
+import edu.trafficsim.api.model.RoadInfo;
+import edu.trafficsim.api.model.TypesComposition;
 import edu.trafficsim.engine.simulation.SimulationProject;
 import edu.trafficsim.engine.simulation.SimulationSettings;
-import edu.trafficsim.model.ConnectionLane;
-import edu.trafficsim.model.Lane;
-import edu.trafficsim.model.Link;
-import edu.trafficsim.model.Network;
-import edu.trafficsim.model.Node;
-import edu.trafficsim.model.Od;
-import edu.trafficsim.model.OdMatrix;
-import edu.trafficsim.model.RoadInfo;
-import edu.trafficsim.model.TypesComposition;
 import edu.trafficsim.util.JsonSerializer;
 import edu.trafficsim.util.WktUtils;
 
@@ -84,8 +86,6 @@ final class ProjectJsonExporter {
 		Network network = project.getNetwork();
 		generator.writeObjectFieldStart(NETWORK);
 		if (network != null) {
-			generator.writeFieldName(ID);
-			generator.writeNumber(network.getId());
 			generator.writeFieldName(NAME);
 			generator.writeString(network.getName());
 
@@ -96,8 +96,8 @@ final class ProjectJsonExporter {
 				generator.writeStartObject();
 				generator.writeFieldName(ID);
 				generator.writeNumber(node.getId());
-				generator.writeFieldName(NAME);
-				generator.writeString(node.getName());
+				generator.writeFieldName(DESCRIPTION);
+				generator.writeString(node.getDescription());
 				generator.writeFieldName(GEOM);
 				generator.writeString(WktUtils.toWKT(node.getPoint()));
 				generator.writeFieldName(NODETYPE);
@@ -105,13 +105,11 @@ final class ProjectJsonExporter {
 
 				// start connectors
 				generator.writeArrayFieldStart(CONNECTORS);
-				for (ConnectionLane connector : node.getConnectors()) {
+				for (Connector connector : node.getConnectors()) {
 					// start connector
 					generator.writeStartObject();
 					generator.writeFieldName(ID);
 					generator.writeNumber(connector.getId());
-					generator.writeFieldName(WIDTH);
-					generator.writeNumber(connector.getWidth());
 					generator.writeFieldName(FROMLANE);
 					generator.writeNumber(connector.getFromLane().getId());
 					generator.writeFieldName(TOLANE);
@@ -134,8 +132,8 @@ final class ProjectJsonExporter {
 				generator.writeStartObject();
 				generator.writeFieldName(ID);
 				generator.writeNumber(link.getId());
-				generator.writeFieldName(NAME);
-				generator.writeString(link.getName());
+				generator.writeFieldName(DESCRIPTION);
+				generator.writeString(link.getDescription());
 				generator.writeFieldName(LINKTYPE);
 				generator.writeString(link.getLinkType());
 				generator.writeFieldName(GEOM);
@@ -160,9 +158,9 @@ final class ProjectJsonExporter {
 					generator.writeFieldName(ID);
 					generator.writeNumber(lane.getId());
 					generator.writeFieldName(START);
-					generator.writeNumber(lane.getStart());
+					generator.writeNumber(lane.getStartOffset());
 					generator.writeFieldName(END);
-					generator.writeNumber(lane.getEnd());
+					generator.writeNumber(lane.getEndOffset());
 					generator.writeFieldName(WIDTH);
 					generator.writeNumber(lane.getWidth());
 					generator.writeFieldName(SHIFT);
@@ -191,8 +189,8 @@ final class ProjectJsonExporter {
 				generator.writeNumber(roadInfo.getId());
 				generator.writeFieldName(ROADID);
 				generator.writeNumber(roadInfo.getRoadId());
-				generator.writeFieldName(NAME);
-				generator.writeString(roadInfo.getName());
+				generator.writeFieldName(ROADNAME);
+				generator.writeString(roadInfo.getRoadName());
 				generator.writeFieldName(HIGHWAY);
 				generator.writeString(roadInfo.getHighway());
 				generator.writeEndObject();
@@ -206,8 +204,6 @@ final class ProjectJsonExporter {
 		OdMatrix odMatrix = project.getOdMatrix();
 		if (odMatrix != null) {
 			generator.writeObjectFieldStart(ODMATRIX);
-			generator.writeFieldName(ID);
-			generator.writeNumber(odMatrix.getId());
 			generator.writeFieldName(NAME);
 			generator.writeString(odMatrix.getName());
 			generator.writeFieldName(NETWORKNAME);
@@ -220,8 +216,6 @@ final class ProjectJsonExporter {
 				generator.writeStartObject();
 				generator.writeFieldName(ID);
 				generator.writeNumber(od.getId());
-				generator.writeFieldName(NAME);
-				generator.writeString(od.getName());
 				generator.writeFieldName(ORIGIN);
 				generator.writeNumber(od.getOriginNodeId());
 				generator.writeFieldName(DESTINATION);

@@ -20,7 +20,7 @@ package edu.trafficsim.plugin.core;
 import org.springframework.stereotype.Component;
 
 import edu.trafficsim.plugin.AbstractPlugin;
-import edu.trafficsim.plugin.IVehicle;
+import edu.trafficsim.plugin.api.IVehicle;
 
 /**
  * 
@@ -42,5 +42,10 @@ public class VehicleImpl extends AbstractPlugin implements IVehicle {
 	public double getMaxDecel(double speed) {
 
 		return speed > 7 ? -7 : -speed;
+	}
+
+	@Override
+	public String getName() {
+		return "Default Vehicle Impl";
 	}
 }

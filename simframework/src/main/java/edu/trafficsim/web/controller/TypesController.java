@@ -31,10 +31,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
+import edu.trafficsim.api.model.VehicleClass;
 import edu.trafficsim.engine.type.DriverType;
 import edu.trafficsim.engine.type.TypesManager;
 import edu.trafficsim.engine.type.VehicleType;
-import edu.trafficsim.model.VehicleClass;
 import edu.trafficsim.web.Sequence;
 import edu.trafficsim.web.service.entity.TypesService;
 

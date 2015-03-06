@@ -14,13 +14,12 @@ import org.opengis.referencing.operation.TransformException;
 
 import com.vividsolutions.jts.geom.Coordinate;
 
-import edu.trafficsim.model.core.ModelInputException;
 import edu.trafficsim.model.util.Coordinates;
 
 public class CoordinateTransformerTest {
 
-	public static void main(String[] args) throws ModelInputException,
-			NoSuchAuthorityCodeException, FactoryException, TransformException {
+	public static void main(String[] args) throws NoSuchAuthorityCodeException,
+			FactoryException, TransformException {
 
 		Coordinate cd1 = new Coordinate(43.072159, -89.405751);
 		Coordinate cd2 = new Coordinate(43.072141, -89.404089);

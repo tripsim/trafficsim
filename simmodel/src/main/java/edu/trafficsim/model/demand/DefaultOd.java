@@ -19,18 +19,17 @@ package edu.trafficsim.model.demand;
 
 import java.util.Collection;
 
-import edu.trafficsim.model.BaseEntity;
-import edu.trafficsim.model.Od;
-import edu.trafficsim.model.TypesComposition;
-import edu.trafficsim.model.core.ModelInputException;
-import edu.trafficsim.model.core.TreeBasedDynamicProperty;
+import edu.trafficsim.api.model.Od;
+import edu.trafficsim.api.model.TypesComposition;
+import edu.trafficsim.model.BaseObject;
+import edu.trafficsim.util.TreeBasedDynamicProperty;
 
 /**
  * 
  * 
  * @author Xuan Shi
  */
-public class DefaultOd extends BaseEntity<DefaultOd> implements Od {
+public class DefaultOd extends BaseObject implements Od {
 	private static final long serialVersionUID = 1L;
 
 	static final class DynamicFlow extends TreeBasedDynamicProperty<Integer> {
@@ -44,11 +43,10 @@ public class DefaultOd extends BaseEntity<DefaultOd> implements Od {
 
 	private final DynamicFlow dynamicFlow = new DynamicFlow();
 
-	public DefaultOd(long id, String name, Long originNodeId,
-			Long destinationNodeId, TypesComposition vehicleComposition,
-			TypesComposition driverComposition, double[] times, Integer[] vphs)
-			throws ModelInputException {
-		super(id, name);
+	public DefaultOd(long id, Long originNodeId, Long destinationNodeId,
+			TypesComposition vehicleComposition,
+			TypesComposition driverComposition, double[] times, Integer[] vphs) {
+		super(id);
 		this.originNodeId = originNodeId;
 		this.destinationNodeId = destinationNodeId;
 		this.vehicleComposition = vehicleComposition;
@@ -88,8 +86,7 @@ public class DefaultOd extends BaseEntity<DefaultOd> implements Od {
 	}
 
 	@Override
-	public final void setVphs(double[] times, Integer[] vphs)
-			throws ModelInputException {
+	public final void setVphs(double[] times, Integer[] vphs) {
 		dynamicFlow.setProperties(times, vphs);
 	}
 

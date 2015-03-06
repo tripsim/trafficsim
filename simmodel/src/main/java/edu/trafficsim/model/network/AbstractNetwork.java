@@ -25,12 +25,11 @@ import java.util.Set;
 
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
-import edu.trafficsim.model.BaseEntity;
-import edu.trafficsim.model.Link;
-import edu.trafficsim.model.Network;
-import edu.trafficsim.model.NetworkEditListener;
-import edu.trafficsim.model.Node;
-import edu.trafficsim.model.core.ModelInputException;
+import edu.trafficsim.api.model.Link;
+import edu.trafficsim.api.model.Network;
+import edu.trafficsim.api.model.NetworkEditListener;
+import edu.trafficsim.api.model.Node;
+import edu.trafficsim.model.PersistedObject;
 
 /**
  * 
@@ -39,7 +38,7 @@ import edu.trafficsim.model.core.ModelInputException;
  * @param <T>
  *            the generic type
  */
-public abstract class AbstractNetwork<T> extends BaseEntity<T> implements
+public abstract class AbstractNetwork<T> extends PersistedObject<T> implements
 		Network, NetworkEditListener {
 
 	private static final long serialVersionUID = 1L;
@@ -48,8 +47,8 @@ public abstract class AbstractNetwork<T> extends BaseEntity<T> implements
 	protected final Map<Long, Node> nodes = new HashMap<Long, Node>();
 	protected final Map<Long, Link> links = new HashMap<Long, Link>();
 
-	public AbstractNetwork(long id, String name) {
-		super(id, name);
+	public AbstractNetwork(String name) {
+		super(name);
 	}
 
 	@Override
@@ -100,10 +99,10 @@ public abstract class AbstractNetwork<T> extends BaseEntity<T> implements
 		return links.get(id);
 	}
 
-	void add(Node node) throws ModelInputException {
+	void add(Node node) {
 		if (node == null) {
-			throw new ModelInputException("Cannot add null link to network '"
-					+ getName() + "'!");
+			throw new IllegalArgumentException(
+					"Cannot add null link to network '" + getName() + "'!");
 		}
 		if (!nodes.containsKey(node.getId())) {
 			nodes.put(node.getId(), node);
@@ -112,10 +111,10 @@ public abstract class AbstractNetwork<T> extends BaseEntity<T> implements
 	}
 
 	@Override
-	public void add(Link link) throws ModelInputException {
+	public void add(Link link) {
 		if (link == null) {
-			throw new ModelInputException("Cannot add null link to network '"
-					+ getName() + "'!");
+			throw new IllegalArgumentException(
+					"Cannot add null link to network '" + getName() + "'!");
 		}
 		links.put(link.getId(), link);
 		add(link.getStartNode());
@@ -124,7 +123,7 @@ public abstract class AbstractNetwork<T> extends BaseEntity<T> implements
 	}
 
 	@Override
-	public void add(Link... links) throws ModelInputException {
+	public void add(Link... links) {
 		for (Link link : links) {
 			add(link);
 		}
@@ -139,7 +138,7 @@ public abstract class AbstractNetwork<T> extends BaseEntity<T> implements
 	}
 
 	@Override
-	public Link removeLink(long linkId) throws ModelInputException {
+	public Link removeLink(long linkId) {
 		Link link = links.remove(linkId);
 		if (link == null) {
 			return null;

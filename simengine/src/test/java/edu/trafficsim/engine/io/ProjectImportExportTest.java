@@ -19,7 +19,6 @@ import edu.trafficsim.engine.od.OdFactory;
 import edu.trafficsim.engine.simulation.SimulationProject;
 import edu.trafficsim.engine.type.TypesFactory;
 import edu.trafficsim.engine.type.TypesManager;
-import edu.trafficsim.model.core.ModelInputException;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/simengine-test.xml")
@@ -35,8 +34,7 @@ public class ProjectImportExportTest {
 
 	@Ignore
 	@Test
-	public void testExport() throws IOException, ParseException,
-			ModelInputException {
+	public void testExport() throws IOException, ParseException {
 		FileInputStream in = new FileInputStream(new File(
 				"/Users/Xuan/Desktop/test.json"));
 		SimulationProject project = ProjectJsonImporter.importProject(in,

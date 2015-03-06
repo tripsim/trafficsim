@@ -26,7 +26,7 @@ import com.vividsolutions.jts.geom.Point;
  * @param <T>
  *            the generic type
  */
-public abstract class TCD<T> extends Device<T> {
+public abstract class TCD extends Device {
 
 	private static final long serialVersionUID = 1L;
 

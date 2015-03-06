@@ -13,7 +13,7 @@ import com.mongodb.DBObject;
 import edu.trafficsim.data.dom.ElementTypeDo;
 import edu.trafficsim.data.dom.TypeCategoryDo;
 import edu.trafficsim.data.persistence.ElementTypeDao;
-import edu.trafficsim.model.util.StringUtils;
+import edu.trafficsim.util.StringUtils;
 
 @Repository("element-type-dao")
 class ElementTypeDaoImpl extends AbstractDaoImpl<ElementTypeDo> implements

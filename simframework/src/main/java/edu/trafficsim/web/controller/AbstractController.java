@@ -20,6 +20,12 @@ package edu.trafficsim.web.controller;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+
 import edu.trafficsim.web.model.ActionResponse;
 
 /**
@@ -31,6 +37,16 @@ public abstract class AbstractController {
 
 	private static final String ACTION_RESPONSE_STATUS_KEY = "status";
 	private static final String ACTION_RESPONSE_DATA_KEY = "data";
+
+	private static final Logger logger = LoggerFactory
+			.getLogger(AbstractController.class);
+
+	@ExceptionHandler(RuntimeException.class)
+	public Map<String, Object> handleError(HttpServletRequest req,
+			Exception exception) {
+		logger.warn("Failure request due to {}", exception);
+		return failureResponse(exception);
+	}
 
 	public static Map<String, Object> failureResponse(String message) {
 		return response(false, message, null, null);

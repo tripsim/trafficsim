@@ -1,7 +1,7 @@
 package edu.trafficsim.engine.simulation;
 
-import edu.trafficsim.model.Network;
-import edu.trafficsim.model.OdMatrix;
+import edu.trafficsim.api.model.Network;
+import edu.trafficsim.api.model.OdMatrix;
 
 public interface SimulationService {
 

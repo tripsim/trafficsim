@@ -17,7 +17,6 @@ import edu.trafficsim.engine.simulation.SimulationProject;
 import edu.trafficsim.engine.simulation.SimulationService;
 import edu.trafficsim.engine.statistics.StatisticsManager;
 import edu.trafficsim.engine.type.TypesManager;
-import edu.trafficsim.model.core.ModelInputException;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/simengine-test.xml")
@@ -35,15 +34,14 @@ public class DemoTest {
 	DemoBuilder demoBuilder;
 
 	@Test
-	public void testSimulation() throws ModelInputException, FactoryException {
+	public void testSimulation() throws FactoryException {
 		SimulationProject demo = demoBuilder.getDemo();
 		simulationService
 				.execute("demo", demo.getNetwork(), demo.getOdMatrix());
 
 	}
 
-	public static void main(String[] args) throws ModelInputException,
-			FactoryException {
+	public static void main(String[] args) throws FactoryException {
 		ApplicationContext context = new ClassPathXmlApplicationContext(
 				"simengine-test.xml");
 		SimulationService simulationService = context

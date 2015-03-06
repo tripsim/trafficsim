@@ -51,4 +51,9 @@ public class PipesCarFollowing extends AbstractCarFollowingImpl {
 		return accel;
 	}
 
+	@Override
+	public String getName() {
+		return "Pipe's Car Following";
+	}
+
 }

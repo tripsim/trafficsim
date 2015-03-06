@@ -31,9 +31,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
+import edu.trafficsim.api.model.TypesComposition;
 import edu.trafficsim.engine.type.TypesManager;
-import edu.trafficsim.model.TypesComposition;
-import edu.trafficsim.model.core.ModelInputException;
 import edu.trafficsim.web.Sequence;
 import edu.trafficsim.web.service.entity.CompositionService;
 
@@ -55,8 +54,7 @@ public class CompositionController extends AbstractController {
 	private static final String DEFAULT_NAME = "New";
 
 	@RequestMapping(value = "/view", method = RequestMethod.GET)
-	public String viechleCompositionView(Model model)
-			throws ModelInputException {
+	public String viechleCompositionView(Model model) {
 		model.addAttribute("vehicleCompositions",
 				typesManager.getVehicleTypeCompositions());
 		model.addAttribute("driverCompositions",
@@ -93,27 +91,17 @@ public class CompositionController extends AbstractController {
 			@RequestParam("newName") String newName,
 			@RequestParam("types[]") String[] vehicleTypes,
 			@RequestParam("values[]") double[] values) {
-
-		try {
-			compositionService.updateVehicleComposition(oldName, newName,
-					vehicleTypes, values);
-		} catch (ModelInputException e) {
-			return failureResponse(e);
-		}
+		compositionService.updateVehicleComposition(oldName, newName,
+				vehicleTypes, values);
 		return successResponse("Vehicle Composition updated.");
 	}
 
 	@RequestMapping(value = "/vehicle/new", method = RequestMethod.POST)
 	public @ResponseBody Map<String, Object> newVehicleComposition(
 			@ModelAttribute("sequence") Sequence sequence) {
-		try {
-			String name = compositionService.createVehicleComposition(
-					DEFAULT_NAME + sequence.nextId()).getName();
-			return successResponse("Vehicle Composition created.", null, name);
-		} catch (ModelInputException e) {
-			return failureResponse(e);
-		}
-
+		String name = compositionService.createVehicleComposition(
+				DEFAULT_NAME + sequence.nextId()).getName();
+		return successResponse("Vehicle Composition created.", null, name);
 	}
 
 	@RequestMapping(value = "/vehicle/remove", method = RequestMethod.POST)
@@ -153,26 +141,17 @@ public class CompositionController extends AbstractController {
 			@RequestParam("newName") String newName,
 			@RequestParam("types[]") String[] driverTypes,
 			@RequestParam("values[]") double[] values) {
-
-		try {
-			compositionService.updateDriverComposition(oldName, newName,
-					driverTypes, values);
-		} catch (ModelInputException e) {
-			return failureResponse(e);
-		}
+		compositionService.updateDriverComposition(oldName, newName,
+				driverTypes, values);
 		return successResponse("Driver Composition updated.");
 	}
 
 	@RequestMapping(value = "/driver/new", method = RequestMethod.POST)
 	public @ResponseBody Map<String, Object> newDriverComposition(
 			@ModelAttribute("sequence") Sequence sequencde) {
-		try {
-			String name = compositionService.createDriverComposition(
-					DEFAULT_NAME + sequencde.nextId()).getName();
-			return successResponse("Driver Composition created.", null, name);
-		} catch (ModelInputException e) {
-			return failureResponse(e);
-		}
+		String name = compositionService.createDriverComposition(
+				DEFAULT_NAME + sequencde.nextId()).getName();
+		return successResponse("Driver Composition created.", null, name);
 
 	}
 

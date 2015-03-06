@@ -17,31 +17,31 @@
  */
 package edu.trafficsim.model.network;
 
-import edu.trafficsim.model.BaseEntity;
-import edu.trafficsim.model.RoadInfo;
+import edu.trafficsim.api.model.RoadInfo;
+import edu.trafficsim.model.BaseObject;
 
 /**
  * 
  * 
  * @author Xuan Shi
  */
-public class DefaultRoadInfo extends BaseEntity<DefaultRoadInfo> implements
-		RoadInfo {
+public class DefaultRoadInfo extends BaseObject implements RoadInfo {
 
 	private static final long serialVersionUID = 1L;
-
-	private static final long DEFAULT_ID = 0;
+	private static final long DEFAULT_ID = -1;
 
 	private long roadId;
+	private String roadName;
 	private String highway;
 
 	public DefaultRoadInfo() {
-		super(DEFAULT_ID, "");
+		super(DEFAULT_ID);
 	}
 
 	public DefaultRoadInfo(Long id, String roadName, long roadId, String highway) {
-		super(id, roadName);
+		super(id);
 		this.roadId = roadId;
+		this.roadName = roadName;
 		this.highway = highway;
 	}
 
@@ -67,5 +67,15 @@ public class DefaultRoadInfo extends BaseEntity<DefaultRoadInfo> implements
 	@Override
 	public void setHighway(String highway) {
 		this.highway = highway;
+	}
+
+	@Override
+	public String getRoadName() {
+		return roadName;
+	}
+
+	@Override
+	public void setRoadName(String roadName) {
+		this.roadName = roadName;
 	}
 }

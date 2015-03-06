@@ -7,10 +7,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import edu.trafficsim.api.model.OdMatrix;
 import edu.trafficsim.data.dom.OdMatrixDo;
 import edu.trafficsim.data.persistence.OdMatrixDao;
-import edu.trafficsim.model.OdMatrix;
-import edu.trafficsim.model.core.ModelInputException;
 
 @Service("default-od-manager")
 class DefaultOdManager implements OdManager {
@@ -59,11 +58,7 @@ class DefaultOdManager implements OdManager {
 		if (odMatrix == null) {
 			return null;
 		}
-		try {
-			return converter.toOdMatrix(odMatrix);
-		} catch (ModelInputException e) {
-			throw new RuntimeException(e);
-		}
+		return converter.toOdMatrix(odMatrix);
 	}
 
 	@SuppressWarnings("unchecked")

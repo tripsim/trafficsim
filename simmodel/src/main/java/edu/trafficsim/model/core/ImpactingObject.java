@@ -17,7 +17,8 @@
  */
 package edu.trafficsim.model.core;
 
-import edu.trafficsim.model.BaseEntity;
+import edu.trafficsim.api.Agent;
+import edu.trafficsim.model.BaseObject;
 
 /**
  * 
@@ -26,17 +27,14 @@ import edu.trafficsim.model.BaseEntity;
  * @param <T>
  *            the generic type
  */
-public abstract class ImpactingObject<T> extends BaseEntity<T> {
+public abstract class ImpactingObject extends BaseObject implements Agent {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	private boolean active = true;
 
-	public ImpactingObject(long id, String name) {
-		super(id, name);
+	public ImpactingObject(long id) {
+		super(id);
 	}
 
 	public boolean isActive() {

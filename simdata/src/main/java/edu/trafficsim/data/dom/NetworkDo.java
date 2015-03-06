@@ -17,7 +17,6 @@ public class NetworkDo {
 	private String name;
 	private Date timestamp;
 
-	private long networkId;
 	private List<LinkDo> links;
 	private List<NodeDo> nodes;
 
@@ -47,14 +46,6 @@ public class NetworkDo {
 		this.timestamp = timestamp;
 	}
 
-	public long getNetworkId() {
-		return networkId;
-	}
-
-	public void setNetworkId(long networkId) {
-		this.networkId = networkId;
-	}
-
 	public List<LinkDo> getLinks() {
 		return links;
 	}
@@ -82,8 +73,8 @@ public class NetworkDo {
 	@Override
 	public String toString() {
 		return "NetworkDo [id=" + id + ", name=" + name + ", timestamp="
-				+ timestamp + ", networkId=" + networkId + ", links=" + links
-				+ ", nodes=" + nodes + ", roadInfos=" + roadInfos + "]";
+				+ timestamp + ", links=" + links + ", nodes=" + nodes
+				+ ", roadInfos=" + roadInfos + "]";
 	}
 
 }

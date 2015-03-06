@@ -17,26 +17,28 @@
  */
 package edu.trafficsim.engine.demo;
 
+import java.util.List;
+
 import org.opengis.referencing.FactoryException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.vividsolutions.jts.geom.Coordinate;
 
+import edu.trafficsim.api.model.Lane;
+import edu.trafficsim.api.model.Link;
+import edu.trafficsim.api.model.Network;
+import edu.trafficsim.api.model.Node;
+import edu.trafficsim.api.model.Od;
+import edu.trafficsim.api.model.OdMatrix;
+import edu.trafficsim.api.model.RoadInfo;
+import edu.trafficsim.api.model.TurnPercentage;
+import edu.trafficsim.api.model.VehicleClass;
 import edu.trafficsim.engine.network.NetworkFactory;
 import edu.trafficsim.engine.od.OdFactory;
 import edu.trafficsim.engine.simulation.SimulationProject;
+import edu.trafficsim.engine.simulation.SimulationProjectBuilder;
 import edu.trafficsim.engine.type.TypesManager;
-import edu.trafficsim.model.Lane;
-import edu.trafficsim.model.Link;
-import edu.trafficsim.model.Network;
-import edu.trafficsim.model.Node;
-import edu.trafficsim.model.Od;
-import edu.trafficsim.model.OdMatrix;
-import edu.trafficsim.model.RoadInfo;
-import edu.trafficsim.model.TurnPercentage;
-import edu.trafficsim.model.VehicleClass;
-import edu.trafficsim.model.core.ModelInputException;
 import edu.trafficsim.model.util.GeoReferencing;
 import edu.trafficsim.model.util.GeoReferencing.TransformCoordinateFilter;
 import edu.trafficsim.util.CoordinateTransformer;
@@ -63,13 +65,14 @@ public class DemoBuilder {
 	public SimulationProject getDemo() {
 		try {
 			manualBuild();
-			return new SimulationProject(network, odMatrix, null);
-		} catch (ModelInputException | FactoryException e) {
+			return new SimulationProjectBuilder().withNetwork(network)
+					.withOdMatrix(odMatrix).build();
+		} catch (FactoryException e) {
 		}
 		return null;
 	}
 
-	private void manualBuild() throws ModelInputException, FactoryException {
+	private void manualBuild() throws FactoryException {
 		// TODO using WTKReader, or other well known format reader if viable
 
 		// Links and Nodes need to have there own coordinate object to avoid
@@ -109,36 +112,36 @@ public class DemoBuilder {
 
 		// Nodes
 		String nodeType = typesManager.getDefaultNodeTypeName();
-		Node node1 = networkFactory.createNode(id++, "Johnson at Randall",
-				nodeType, new Coordinate(coord53596818));
-		Node node2 = networkFactory.createNode(id++, "Johnson at Orchardl",
-				nodeType, new Coordinate(coord1345424866));
-		Node node3 = networkFactory.createNode(id++, "Johnson at Charter",
-				nodeType, new Coordinate(coord53607075));
-		node1.setId(1l);
-		node2.setId(2l);
-		node3.setId(3l);
+		Node node1 = networkFactory.createNode(id++, nodeType, new Coordinate(
+				coord53596818));
+		Node node2 = networkFactory.createNode(id++, nodeType, new Coordinate(
+				coord1345424866));
+		Node node3 = networkFactory.createNode(id++, nodeType, new Coordinate(
+				coord53607075));
+		node1.setDescription("Johnson at Randall");
+		node2.setDescription("Johnson at Orchardl");
+		node3.setDescription("Johnson at Charter");
 		// Node node4 = networkFactory.createNode("Johnson at Mill");
 		// Node node5 = networkFactory.createNode("Johnson at Park");
 		// Links
 		String linkType = typesManager.getDefaultLinkTypeName();
-		Link link1 = networkFactory.createLink(id++, "Johson1", linkType,
-				node1, node2, coords1, null);
-		Link link2 = networkFactory.createLink(id++, "Johson2", linkType,
-				node2, node3, coords2, null);
-		link1.setId(1l);
-		link2.setId(2l);
+		Link link1 = networkFactory.createLink(id++, linkType, node1, node2,
+				coords1, null);
+		Link link2 = networkFactory.createLink(id++, linkType, node2, node3,
+				coords2, null);
+		link1.setDescription("Johson1");
+		link2.setDescription("Johson2");
 
 		// RoadInfo
-		RoadInfo info1 = networkFactory.createRoadInfo(id++, "Test name",
-				12345, "Test highway");
-		RoadInfo info2 = networkFactory.createRoadInfo(id++, "Test name",
-				54321, "Test highway");
+		RoadInfo info1 = networkFactory.createRoadInfo(id++, 12345,
+				"Test name", "Test highway");
+		RoadInfo info2 = networkFactory.createRoadInfo(id++, 54321,
+				"Test name", "Test highway");
 		link1.setRoadInfo(info1);
 		link2.setRoadInfo(info2);
 
 		// Network
-		network = networkFactory.createNetwork(id++, "demo network");
+		network = networkFactory.createNetwork("demo network");
 		network.add(link1, link2);
 
 		// Transform
@@ -149,14 +152,14 @@ public class DemoBuilder {
 
 		// Lanes
 
-		Lane[] lanes1 = networkFactory.createLanes(new Long[] { id++, id++,
+		List<Lane> lanes1 = networkFactory.createLanes(new Long[] { id++, id++,
 				id++ }, link1, 10, -10, 4);
-		Lane[] lanes2 = networkFactory.createLanes(new Long[] { id++, id++,
+		List<Lane> lanes2 = networkFactory.createLanes(new Long[] { id++, id++,
 				id++ }, link2, 10, -10, 4);
 		// Connectors
-		networkFactory.connect(id++, lanes1[0], lanes2[0], 4);
-		networkFactory.connect(id++, lanes1[1], lanes2[1], 4);
-		networkFactory.connect(id++, lanes1[2], lanes2[2], 4);
+		networkFactory.connect(id++, lanes1.get(0), lanes2.get(0));
+		networkFactory.connect(id++, lanes1.get(1), lanes2.get(1));
+		networkFactory.connect(id++, lanes1.get(2), lanes2.get(2));
 
 		// Origin Destination
 		// no destination 0s ~ 100s 1000vph
@@ -164,13 +167,12 @@ public class DemoBuilder {
 		double[] times = new double[] { 300, 500 };
 		Integer[] vphs = new Integer[] { 4000, 4800 };
 		Od od = odFactory
-				.createOd(id++, "od", node1.getId(), null,
+				.createOd(id++, node1.getId(), null,
 						typesManager.getDefaultVehicleTypeCompositionName(),
 						typesManager.getDefaultDriverTypeCompositionName(),
 						times, vphs);
 
-		odMatrix = odFactory.createOdMatrix(id++, "demo od matrix",
-				"demo network");
+		odMatrix = odFactory.createOdMatrix("demo od matrix", "demo network");
 		odMatrix.add(od);
 
 		// Turn Percentage
@@ -181,5 +183,4 @@ public class DemoBuilder {
 		odMatrix.setTurnPercentage(link1, VehicleClass.Car, times1,
 				turnPercentages);
 	}
-
 }

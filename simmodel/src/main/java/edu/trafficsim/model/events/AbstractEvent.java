@@ -17,8 +17,8 @@
  */
 package edu.trafficsim.model.events;
 
-import edu.trafficsim.model.Agent;
-import edu.trafficsim.model.Event;
+import edu.trafficsim.api.Agent;
+import edu.trafficsim.api.model.Event;
 import edu.trafficsim.model.core.ImpactingObject;
 
 /**
@@ -28,19 +28,16 @@ import edu.trafficsim.model.core.ImpactingObject;
  * @param <T>
  *            the generic type
  */
-public abstract class AbstractEvent<T> extends ImpactingObject<T> implements
-		Agent, Event {
+public abstract class AbstractEvent extends ImpactingObject implements Agent,
+		Event {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	private double startTime;
 	private double endTime;
 
-	public AbstractEvent(long id, String name, double startTime, double endTime) {
-		super(id, name);
+	public AbstractEvent(long id, double startTime, double endTime) {
+		super(id);
 		this.startTime = startTime;
 		this.endTime = endTime;
 	}

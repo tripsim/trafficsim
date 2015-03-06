@@ -25,11 +25,11 @@ import org.springframework.stereotype.Service;
 
 import com.vividsolutions.jts.geom.Geometry;
 
-import edu.trafficsim.model.ConnectionLane;
-import edu.trafficsim.model.Lane;
-import edu.trafficsim.model.Link;
-import edu.trafficsim.model.Network;
-import edu.trafficsim.model.Node;
+import edu.trafficsim.api.model.Connector;
+import edu.trafficsim.api.model.Lane;
+import edu.trafficsim.api.model.Link;
+import edu.trafficsim.api.model.Network;
+import edu.trafficsim.api.model.Node;
 import edu.trafficsim.util.WktUtils;
 
 /**
@@ -153,16 +153,16 @@ public class MapJsonService {
 	}
 
 	/**
-	 * @param ConnectionLane
+	 * @param Connector
 	 * @return { fromLinkId-fromLaneId-toLinkId-toLaneId : [connector WKT
 	 *         Strings] }
 	 */
-	public String getConnectorJson(ConnectionLane connector) {
+	public String getConnectorJson(Connector connector) {
 		return "{" + getConnector(connector) + "}";
 	}
 
 	/**
-	 * @param ConnectionLane
+	 * @param Connector
 	 * @return { fromLinkId-fromLaneId-toLinkId-toLaneId : [connector WKT
 	 *         Strings] }
 	 */
@@ -188,12 +188,12 @@ public class MapJsonService {
 	}
 
 	/**
-	 * @param ConnectionLanes
+	 * @param Connectors
 	 * @return [ fromLinkId-fromLaneId-toLinkId-toLaneId ] }
 	 */
-	public String getConnectorsIdsJson(ConnectionLane... connectors) {
+	public String getConnectorsIdsJson(Connector... connectors) {
 		StringBuffer connectorSb = new StringBuffer();
-		for (ConnectionLane connector : connectors) {
+		for (Connector connector : connectors) {
 			connectorSb.append(getConnectorId(connector));
 			connectorSb.append(",");
 		}
@@ -203,28 +203,28 @@ public class MapJsonService {
 	}
 
 	/**
-	 * @param ConnectionLane
+	 * @param Connector
 	 * @return "fromLinkId-fromLaneId-toLinkId-toLaneId"
 	 */
-	private StringBuffer getConnectorId(ConnectionLane connector) {
+	private StringBuffer getConnectorId(Connector connector) {
 		StringBuffer connectorSb = new StringBuffer();
 		connectorSb.append("\"");
 		connectorSb.append(connector.getFromLane().getLink().getId());
 		connectorSb.append("-");
-		connectorSb.append(connector.getFromLane().getLaneId());
+		connectorSb.append(connector.getFromLane().getLanePosition());
 		connectorSb.append("-");
 		connectorSb.append(connector.getToLane().getLink().getId());
 		connectorSb.append("-");
-		connectorSb.append(connector.getToLane().getLaneId());
+		connectorSb.append(connector.getToLane().getLanePosition());
 		connectorSb.append("\"");
 		return connectorSb;
 	}
 
 	/**
-	 * @param ConnectionLane
+	 * @param Connector
 	 * @return fromLinkId-fromLaneId-toLinkId-toLaneId : connector WKT Strings
 	 */
-	private String getConnector(ConnectionLane connector) {
+	private String getConnector(Connector connector) {
 		StringBuffer connectorSb = new StringBuffer();
 		if (connector != null) {
 			connectorSb.append(getConnectorId(connector));
@@ -242,11 +242,11 @@ public class MapJsonService {
 	 */
 	private StringBuffer getConnectors(Lane lane) {
 		StringBuffer connectorSb = new StringBuffer();
-		for (ConnectionLane connector : lane.getToConnectors()) {
+		for (Connector connector : lane.getOutConnectors()) {
 			connectorSb.append(getConnector(connector));
 			connectorSb.append(",");
 		}
-		for (ConnectionLane connector : lane.getFromConnectors()) {
+		for (Connector connector : lane.getInConnectors()) {
 			connectorSb.append(getConnector(connector));
 			connectorSb.append(",");
 		}
@@ -299,7 +299,7 @@ public class MapJsonService {
 			laneSb.append(",");
 		}
 		for (Node node : nodes) {
-			for (ConnectionLane connector : node.getConnectors()) {
+			for (Connector connector : node.getConnectors()) {
 				connectorSb.append(getConnector(connector));
 				connectorSb.append(",");
 			}

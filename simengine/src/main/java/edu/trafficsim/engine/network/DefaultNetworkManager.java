@@ -9,10 +9,9 @@ import org.springframework.stereotype.Service;
 
 import com.vividsolutions.jts.io.ParseException;
 
+import edu.trafficsim.api.model.Network;
 import edu.trafficsim.data.dom.NetworkDo;
 import edu.trafficsim.data.persistence.NetworkDao;
-import edu.trafficsim.model.Network;
-import edu.trafficsim.model.core.ModelInputException;
 
 @Service("default-network-manager")
 class DefaultNetworkManager implements NetworkManager {
@@ -62,7 +61,7 @@ class DefaultNetworkManager implements NetworkManager {
 		}
 		try {
 			return converter.toNetwork(network);
-		} catch (ParseException | ModelInputException e) {
+		} catch (ParseException e) {
 			throw new RuntimeException(e);
 		}
 	}

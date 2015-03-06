@@ -24,7 +24,7 @@ import com.vividsolutions.jts.geom.Point;
  * 
  * @author Xuan Shi
  */
-public class Signal extends TCD<Signal> {
+public class Signal extends TCD {
 
 	private static final long serialVersionUID = 1L;
 

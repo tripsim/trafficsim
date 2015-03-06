@@ -17,18 +17,19 @@
  */
 package edu.trafficsim.engine.network;
 
+import java.util.List;
+
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.CoordinateSequence;
 import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.Point;
 
-import edu.trafficsim.model.ConnectionLane;
-import edu.trafficsim.model.Lane;
-import edu.trafficsim.model.Link;
-import edu.trafficsim.model.Network;
-import edu.trafficsim.model.Node;
-import edu.trafficsim.model.RoadInfo;
-import edu.trafficsim.model.core.ModelInputException;
+import edu.trafficsim.api.model.Connector;
+import edu.trafficsim.api.model.Lane;
+import edu.trafficsim.api.model.Link;
+import edu.trafficsim.api.model.Network;
+import edu.trafficsim.api.model.Node;
+import edu.trafficsim.api.model.RoadInfo;
 
 /**
  * A factory for creating Network objects.
@@ -43,39 +44,33 @@ public interface NetworkFactory {
 
 	LineString createLineString(CoordinateSequence points);
 
-	Network createNetwork(Long id, String name);
+	Network createNetwork(String name);
 
-	Node createNode(Long id, String name, String type, double x, double y);
+	Node createNode(Long id, String type, double x, double y);
 
-	Node createNode(Long id, String name, String type, Coordinate coord);
+	Node createNode(Long id, String type, Coordinate coord);
 
-	Node createNode(Long id, String name, String type, Point point);
+	Node createNode(Long id, String type, Point point);
 
-	Link createLink(Long id, String name, String type, Node startNode,
-			Node endNode, Coordinate[] coords, RoadInfo roadInfo)
-			throws ModelInputException;
+	Link createLink(Long id, String type, Node startNode, Node endNode,
+			Coordinate[] coords, RoadInfo roadInfo);
 
-	Link createLink(Long id, String name, String type, Node startNode,
-			Node endNode, CoordinateSequence points, RoadInfo roadInfo)
-			throws ModelInputException;
+	Link createLink(Long id, String type, Node startNode, Node endNode,
+			CoordinateSequence points, RoadInfo roadInfo);
 
-	Link createLink(Long id, String name, String type, Node startNode,
-			Node endNode, LineString linearGeom, RoadInfo roadInfo)
-			throws ModelInputException;
+	Link createLink(Long id, String type, Node startNode, Node endNode,
+			LineString linearGeom, RoadInfo roadInfo);
 
-	Link createReverseLink(Long id, String name, Link link)
-			throws ModelInputException;
+	Link createReverseLink(Long id, Link link);
 
-	Lane createLane(Long id, Link link, double start, double end, double width)
-			throws ModelInputException;
+	Lane createLane(Long id, Link link, double start, double end, double width);
 
-	Lane[] createLanes(Long[] ids, Link link, double start, double end,
-			double width) throws ModelInputException;
+	List<Lane> createLanes(Long[] ids, Link link, double start, double end,
+			double width);
 
-	ConnectionLane connect(Long id, Lane laneFrom, Lane laneTo, double width)
-			throws ModelInputException;
+	Connector connect(Long id, Lane laneFrom, Lane laneTo);
 
-	RoadInfo createRoadInfo(Long id, String roadName, long roadId,
+	RoadInfo createRoadInfo(Long id, long roadId, String roadName,
 			String highway);
 
 	RoadInfo createRoadInfo(Long id, String roadName);

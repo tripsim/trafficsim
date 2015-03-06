@@ -26,7 +26,7 @@ import com.vividsolutions.jts.geom.Point;
  * @param <T>
  *            the generic type
  */
-public abstract class Device<T> extends AbstractFacility<T> {
+public abstract class Device extends AbstractFacility {
 
 	/**
 	 * 

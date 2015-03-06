@@ -31,12 +31,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
+import edu.trafficsim.api.model.Network;
+import edu.trafficsim.api.model.Node;
+import edu.trafficsim.api.model.Od;
+import edu.trafficsim.api.model.OdMatrix;
 import edu.trafficsim.engine.type.TypesManager;
-import edu.trafficsim.model.Network;
-import edu.trafficsim.model.Node;
-import edu.trafficsim.model.Od;
-import edu.trafficsim.model.OdMatrix;
-import edu.trafficsim.model.core.ModelInputException;
 import edu.trafficsim.web.Sequence;
 import edu.trafficsim.web.service.entity.OdService;
 
@@ -93,13 +92,9 @@ public class OdController extends AbstractController {
 			@RequestParam("vphs[]") Integer[] vphs,
 			@ModelAttribute("network") Network network,
 			@ModelAttribute("odMatrix") OdMatrix odMatrix) {
-		try {
-			odService.updateOd(odMatrix, network, id, dId, vcName, dcName,
-					times, vphs);
-			return successResponse("Od saved.");
-		} catch (ModelInputException e) {
-			return failureResponse(e);
-		}
+		odService.updateOd(odMatrix, network, id, dId, vcName, dcName, times,
+				vphs);
+		return successResponse("Od saved.");
 	}
 
 	@RequestMapping(value = "/new", method = RequestMethod.POST)
@@ -110,14 +105,9 @@ public class OdController extends AbstractController {
 			@ModelAttribute("odMatrix") OdMatrix odMatrix) {
 
 		Node origin = network.getNode(oid);
-		try {
-			long id = odService.createOd(sequence, odMatrix, origin, null)
-					.getId();
+		long id = odService.createOd(sequence, odMatrix, origin, null).getId();
 
-			return successResponse("New od created.", null, id);
-		} catch (ModelInputException e) {
-			return failureResponse(e.getMessage());
-		}
+		return successResponse("New od created.", null, id);
 	}
 
 	@RequestMapping(value = "/remove", method = RequestMethod.POST)

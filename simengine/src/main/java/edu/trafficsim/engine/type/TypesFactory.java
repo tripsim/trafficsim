@@ -19,8 +19,8 @@ package edu.trafficsim.engine.type;
 
 import java.util.Map;
 
-import edu.trafficsim.model.TypesComposition;
-import edu.trafficsim.model.VehicleClass;
+import edu.trafficsim.api.model.TypesComposition;
+import edu.trafficsim.api.model.VehicleClass;
 
 /**
  * A factory for creating Types objects.

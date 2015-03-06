@@ -28,6 +28,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
+import edu.trafficsim.api.model.Network;
+import edu.trafficsim.api.model.OdMatrix;
 import edu.trafficsim.engine.demo.DemoBuilder;
 import edu.trafficsim.engine.network.NetworkFactory;
 import edu.trafficsim.engine.od.OdFactory;
@@ -35,9 +37,6 @@ import edu.trafficsim.engine.simulation.SimulationManager;
 import edu.trafficsim.engine.simulation.SimulationProject;
 import edu.trafficsim.engine.simulation.SimulationSettings;
 import edu.trafficsim.engine.type.TypesManager;
-import edu.trafficsim.model.Network;
-import edu.trafficsim.model.OdMatrix;
-import edu.trafficsim.model.core.ModelInputException;
 import edu.trafficsim.web.Sequence;
 import edu.trafficsim.web.service.MapJsonService;
 import edu.trafficsim.web.service.entity.NetworkService;
@@ -73,8 +72,7 @@ public class DefaultController extends AbstractController {
 	DemoBuilder demoBuilder;
 
 	@RequestMapping(value = "/")
-	public String home(Model model, HttpSession session)
-			throws ModelInputException {
+	public String home(Model model, HttpSession session) {
 		if (session.isNew()) {
 			return "redirect:/new";
 		}
@@ -82,10 +80,9 @@ public class DefaultController extends AbstractController {
 	}
 
 	@RequestMapping(value = "/new")
-	public String newProject(Model model, HttpSession session)
-			throws ModelInputException {
+	public String newProject(Model model, HttpSession session) {
 		Sequence sequence = new Sequence();
-		Network network = networkService.createNetwork(sequence);
+		Network network = networkService.createNetwork();
 		OdMatrix odMatrix = odService.createOdMatrix(sequence,
 				network.getName());
 		SimulationSettings settings = simulationManager
@@ -100,7 +97,7 @@ public class DefaultController extends AbstractController {
 
 	@RequestMapping(value = "getdemonetwork", method = RequestMethod.GET)
 	public @ResponseBody String demoNetwork(Model model)
-			throws ModelInputException, FactoryException {
+			throws FactoryException {
 		SimulationProject demo = demoBuilder.getDemo();
 		model.addAttribute("sequence", new Sequence(demo.getNextSeq()));
 		model.addAttribute("network", demo.getNetwork());

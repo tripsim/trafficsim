@@ -17,7 +17,7 @@
  */
 package edu.trafficsim.engine.type;
 
-import edu.trafficsim.model.Aggressiveness;
+import edu.trafficsim.model.core.Aggressiveness;
 
 /**
  * 

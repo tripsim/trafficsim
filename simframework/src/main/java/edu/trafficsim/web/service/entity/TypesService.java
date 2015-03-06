@@ -20,11 +20,11 @@ package edu.trafficsim.web.service.entity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import edu.trafficsim.api.model.VehicleClass;
 import edu.trafficsim.engine.type.DriverType;
 import edu.trafficsim.engine.type.TypesFactory;
 import edu.trafficsim.engine.type.TypesManager;
 import edu.trafficsim.engine.type.VehicleType;
-import edu.trafficsim.model.VehicleClass;
 
 /**
  * 

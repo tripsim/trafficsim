@@ -17,7 +17,6 @@ public class OdMatrixDo {
 	private ObjectId id;
 	private Date timestamp;
 
-	private long matrixId;
 	private String name;
 	private String networkName;
 
@@ -47,14 +46,6 @@ public class OdMatrixDo {
 		this.name = name;
 	}
 
-	public long getMatrixId() {
-		return matrixId;
-	}
-
-	public void setMatrixId(long matrixId) {
-		this.matrixId = matrixId;
-	}
-
 	public String getNetworkName() {
 		return networkName;
 	}
@@ -73,9 +64,8 @@ public class OdMatrixDo {
 
 	@Override
 	public String toString() {
-		return "OdMatrixDo [id=" + id + ", timestamp=" + timestamp
-				+ ", matrixId=" + matrixId + ", name=" + name
-				+ ", networkName=" + networkName + ", ods=" + ods + "]";
+		return "OdMatrixDo [id=" + id + ", timestamp=" + timestamp + ", name="
+				+ name + ", networkName=" + networkName + ", ods=" + ods + "]";
 	}
 
 }

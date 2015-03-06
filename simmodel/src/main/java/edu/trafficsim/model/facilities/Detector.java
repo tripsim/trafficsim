@@ -24,7 +24,7 @@ import com.vividsolutions.jts.geom.Point;
  * 
  * @author Xuan Shi
  */
-public class Detector extends Device<Detector> {
+public class Detector extends Device {
 
 	private static final long serialVersionUID = 1L;
 

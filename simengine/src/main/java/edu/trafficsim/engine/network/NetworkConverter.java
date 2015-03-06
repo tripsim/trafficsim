@@ -13,19 +13,18 @@ import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.io.ParseException;
 
+import edu.trafficsim.api.model.Connector;
+import edu.trafficsim.api.model.Lane;
+import edu.trafficsim.api.model.Link;
+import edu.trafficsim.api.model.Network;
+import edu.trafficsim.api.model.Node;
+import edu.trafficsim.api.model.RoadInfo;
 import edu.trafficsim.data.dom.ConnectorDo;
 import edu.trafficsim.data.dom.LaneDo;
 import edu.trafficsim.data.dom.LinkDo;
 import edu.trafficsim.data.dom.NetworkDo;
 import edu.trafficsim.data.dom.NodeDo;
 import edu.trafficsim.data.dom.RoadInfoDo;
-import edu.trafficsim.model.ConnectionLane;
-import edu.trafficsim.model.Lane;
-import edu.trafficsim.model.Link;
-import edu.trafficsim.model.Network;
-import edu.trafficsim.model.Node;
-import edu.trafficsim.model.RoadInfo;
-import edu.trafficsim.model.core.ModelInputException;
 import edu.trafficsim.util.WktUtils;
 
 @Service("network-converter")
@@ -39,7 +38,6 @@ class NetworkConverter {
 	// --------------------------------------------------
 	final void applyNetworkDo(NetworkDo entity, Network network) {
 		entity.setName(network.getName());
-		entity.setNetworkId(network.getId());
 		Map<Long, RoadInfoDo> roadInfos = new HashMap<Long, RoadInfoDo>();
 		entity.setLinks(toLinkDos(network.getLinks(), roadInfos));
 		entity.setRoadInfos(new ArrayList<RoadInfoDo>(roadInfos.values()));
@@ -64,7 +62,6 @@ class NetworkConverter {
 	private LinkDo toLinkDo(Link link, Map<Long, RoadInfoDo> roadInfoEntities) {
 		LinkDo result = new LinkDo();
 		result.setLinkId(link.getId());
-		result.setName(link.getName());
 		result.setLinkType(link.getLinkType());
 		result.setRoadInfoId(link.getRoadInfo() == null ? null : link
 				.getRoadInfo().getId());
@@ -88,13 +85,13 @@ class NetworkConverter {
 	private RoadInfoDo toRoadInfoDo(RoadInfo roadInfo) {
 		RoadInfoDo result = new RoadInfoDo();
 		result.setId(roadInfo.getId());
-		result.setName(roadInfo.getName());
+		result.setName(roadInfo.getRoadName());
 		result.setRoadId(roadInfo.getRoadId());
 		result.setHighway(roadInfo.getHighway());
 		return result;
 	}
 
-	private List<LaneDo> toLanesDo(Lane[] lanes) {
+	private List<LaneDo> toLanesDo(List<Lane> lanes) {
 		List<LaneDo> result = new ArrayList<LaneDo>();
 		for (Lane lane : lanes) {
 			result.add(toLaneDo(lane));
@@ -105,8 +102,8 @@ class NetworkConverter {
 	private LaneDo toLaneDo(Lane lane) {
 		LaneDo result = new LaneDo();
 		result.setLaneId(lane.getId());
-		result.setStart(lane.getStart());
-		result.setEnd(lane.getEnd());
+		result.setStart(lane.getStartOffset());
+		result.setEnd(lane.getEndOffset());
 		result.setWidth(lane.getWidth());
 		result.setLength(lane.getLength());
 		result.setShift(lane.getShift());
@@ -124,36 +121,32 @@ class NetworkConverter {
 	private NodeDo toNodeDo(Node node) {
 		NodeDo result = new NodeDo();
 		result.setNodeId(node.getId());
-		result.setName(node.getName());
 		result.setNodeType(node.getNodeType());
 		result.setGeom(WktUtils.toWKT(node.getPoint()));
 		result.setConnectors(toConnectorDos(node.getConnectors()));
 		return result;
 	}
 
-	private List<ConnectorDo> toConnectorDos(
-			Collection<ConnectionLane> connectors) {
+	private List<ConnectorDo> toConnectorDos(Collection<Connector> connectors) {
 		List<ConnectorDo> result = new ArrayList<ConnectorDo>();
-		for (ConnectionLane connector : connectors) {
+		for (Connector connector : connectors) {
 			result.add(toConnectorDo(connector));
 		}
 		return result;
 	}
 
-	private ConnectorDo toConnectorDo(ConnectionLane connector) {
+	private ConnectorDo toConnectorDo(Connector connector) {
 		ConnectorDo result = new ConnectorDo();
 		result.setConnectorId(connector.getId());
 		result.setLaneFromId(connector.getFromLane().getId());
 		result.setLaneToId(connector.getToLane().getId());
-		result.setWidth(connector.getWidth());
 		return result;
 	}
 
 	// --------------------------------------------------
 	// from Entity
 	// --------------------------------------------------
-	final Network toNetwork(NetworkDo entity) throws ParseException,
-			ModelInputException {
+	final Network toNetwork(NetworkDo entity) throws ParseException {
 		return new Builder(entity).build();
 	}
 
@@ -168,15 +161,14 @@ class NetworkConverter {
 
 		Builder(NetworkDo entity) {
 			this.entity = entity;
-			result = factory.createNetwork(entity.getNetworkId(),
-					entity.getName());
+			result = factory.createNetwork(entity.getName());
 			roadInfos = getRoadInfos(entity);
 			lanes = new HashMap<Long, Lane>();
 			nodes = new HashMap<Long, Node>();
 			reverseLinks = new HashMap<Long, Long>();
 		}
 
-		Network build() throws ParseException, ModelInputException {
+		Network build() throws ParseException {
 			if (entity.getNodes() != null && entity.getLinks() != null) {
 				addNodes(entity.getNodes());
 				addLinks(entity.getLinks());
@@ -194,20 +186,18 @@ class NetworkConverter {
 
 		private void addNode(NodeDo entity) throws ParseException {
 			Node node = factory.createNode(entity.getNodeId(),
-					entity.getName(), entity.getNodeType(),
+					entity.getNodeType(),
 					(Point) WktUtils.fromWKT(entity.getGeom()));
 			nodes.put(node.getId(), node);
 		}
 
-		private void addLinks(List<LinkDo> entities)
-				throws ModelInputException, ParseException {
+		private void addLinks(List<LinkDo> entities) throws ParseException {
 			for (LinkDo entity : entities) {
 				addLink(entity);
 			}
 		}
 
-		private void addLink(LinkDo entity) throws ModelInputException,
-				ParseException {
+		private void addLink(LinkDo entity) throws ParseException {
 			Node startNode = nodes.get(entity.getStartNodeId());
 			Node endNode = nodes.get(entity.getEndNodeId());
 			if (startNode == null || endNode == null) {
@@ -216,7 +206,7 @@ class NetworkConverter {
 								+ entity.getLinkId());
 			}
 			Link link = factory.createLink(entity.getLinkId(),
-					entity.getName(), entity.getLinkType(), startNode, endNode,
+					entity.getLinkType(), startNode, endNode,
 					(LineString) WktUtils.fromWKT(entity.getLinearGeom()),
 					roadInfos.get(entity.getRoadInfoId()));
 			result.add(link);
@@ -233,7 +223,7 @@ class NetworkConverter {
 			}
 		}
 
-		private void addReverseLink() throws ModelInputException {
+		private void addReverseLink() {
 			for (Map.Entry<Long, Long> entry : reverseLinks.entrySet()) {
 				long id1 = entry.getKey();
 				long id2 = entry.getValue();
@@ -243,23 +233,20 @@ class NetworkConverter {
 			}
 		}
 
-		private void addLanes(Link link, List<LaneDo> entities)
-				throws ModelInputException {
+		private void addLanes(Link link, List<LaneDo> entities) {
 			for (LaneDo entity : entities) {
 				addLane(link, entity);
 			}
 		}
 
-		private void addLane(Link link, LaneDo entity)
-				throws ModelInputException {
+		private void addLane(Link link, LaneDo entity) {
 			Lane lane = factory.createLane(entity.getLaneId(), link,
 					entity.getStart(), entity.getEnd(), entity.getWidth());
 			link.add(lane);
 			lanes.put(lane.getId(), lane);
 		}
 
-		private void addConnectors(List<NodeDo> entities)
-				throws ModelInputException {
+		private void addConnectors(List<NodeDo> entities) {
 			for (NodeDo nodeDo : entities) {
 				if (nodeDo.getConnectors() == null) {
 					continue;
@@ -270,12 +257,10 @@ class NetworkConverter {
 			}
 		}
 
-		private void addConnector(ConnectorDo entity)
-				throws ModelInputException {
+		private void addConnector(ConnectorDo entity) {
 			Lane laneFrom = lanes.get(entity.getLaneFromId());
 			Lane laneTo = lanes.get(entity.getLaneToId());
-			factory.connect(entity.getConnectorId(), laneFrom, laneTo,
-					entity.getWidth());
+			factory.connect(entity.getConnectorId(), laneFrom, laneTo);
 		}
 	}
 
@@ -291,7 +276,7 @@ class NetworkConverter {
 
 	private RoadInfo toRoadInfo(RoadInfoDo entity) {
 		RoadInfo roadInfo = factory.createRoadInfo(entity.getId(),
-				entity.getName(), entity.getRoadId(), entity.getHighway());
+				entity.getRoadId(), entity.getRoadName(), entity.getHighway());
 		return roadInfo;
 	}
 

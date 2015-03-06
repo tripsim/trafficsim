@@ -25,8 +25,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import edu.trafficsim.engine.simulation.Tracker;
-import edu.trafficsim.model.Vehicle;
+import edu.trafficsim.api.model.Vehicle;
+import edu.trafficsim.engine.simulation.SimulationEnvironment;
 
 /**
  * 
@@ -42,18 +42,18 @@ class DefaultStatisticsCollector implements StatisticsCollector {
 	@Autowired
 	StatisticsCommittor committor;
 
-	private Map<Tracker, Snapshot> map = new WeakHashMap<Tracker, Snapshot>();
+	private Map<SimulationEnvironment, Snapshot> map = new WeakHashMap<SimulationEnvironment, Snapshot>();
 
 	@Override
-	public void visit(Tracker tracker, Vehicle vehicle) {
-		if (vehicle == null || !vehicle.active() || vehicle.position() < 0) {
+	public void visit(SimulationEnvironment environment, Vehicle vehicle) {
+		if (vehicle == null || !vehicle.isActive() || vehicle.getPosition() < 0) {
 			return;
 		}
 
-		Snapshot snapshot = map.get(tracker);
+		Snapshot snapshot = map.get(environment);
 		if (snapshot == null) {
-			snapshot = newSnapshot(tracker);
-		} else if (snapshot.sequence != tracker.getForwardedSteps()) {
+			snapshot = newSnapshot(environment);
+		} else if (snapshot.sequence != environment.getForwardedSteps()) {
 			try {
 				committor.commit(snapshot);
 			} catch (InterruptedException e) {
@@ -61,19 +61,18 @@ class DefaultStatisticsCollector implements StatisticsCollector {
 						"commiting staticstics from vehicle '{}' at step '{}' is interrupted",
 						vehicle, snapshot.sequence);
 			}
-			snapshot = newSnapshot(tracker);
+			snapshot = newSnapshot(environment);
 		}
 		snapshot.visitVehicle(vehicle);
-		if (vehicle.getStartFrame() == tracker.getForwardedSteps()) {
+		if (vehicle.getStartFrame() == environment.getForwardedSteps()) {
 			snapshot.addNewVehicle(vehicle);
 		}
 	}
 
-	private Snapshot newSnapshot(Tracker tracker) {
-		Snapshot snapshot = new Snapshot(
-				tracker.getSimulationName(), tracker.getForwardedSteps(),
-				tracker.getForwardedTime());
-		map.put(tracker, snapshot);
+	private Snapshot newSnapshot(SimulationEnvironment environment) {
+		Snapshot snapshot = new Snapshot(environment.getSimulationName(),
+				environment.getForwardedSteps(), environment.getForwardedTime());
+		map.put(environment, snapshot);
 		return snapshot;
 	}
 

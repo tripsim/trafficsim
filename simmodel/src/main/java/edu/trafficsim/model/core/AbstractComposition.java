@@ -23,7 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import edu.trafficsim.model.Composition;
+import edu.trafficsim.api.model.Composition;
 
 /**
  * 
@@ -47,19 +47,18 @@ public abstract class AbstractComposition<K> implements Composition<K> {
 			checkLength(keys, probabilities);
 			for (int i = 0; i < keys.length; i++)
 				culmulate(keys[i], probabilities[i]);
-		} catch (ModelInputException e) {
+		} catch (RuntimeException e) {
 			map.clear();
 			total = 0;
 		}
 	}
 
-	private void checkLength(K[] keys, Double[] probabilities)
-			throws ModelInputException {
+	private void checkLength(K[] keys, Double[] probabilities) {
 		if (keys == null || probabilities == null)
-			throw new ModelInputException(
+			throw new IllegalArgumentException(
 					"keys and probabilities cannot be null!");
 		else if (keys.length != probabilities.length)
-			throw new ModelInputException(
+			throw new IllegalArgumentException(
 					"keys and composition need to have the same length!");
 	}
 
@@ -88,14 +87,14 @@ public abstract class AbstractComposition<K> implements Composition<K> {
 	}
 
 	@Override
-	public void put(K key, double value) throws ModelInputException {
+	public void put(K key, double value) {
 		total -= map.get(key) != null ? map.get(key) : 0;
 		map.put(key, value);
 		total += value;
 	}
 
 	@Override
-	public void culmulate(K key, double value) throws ModelInputException {
+	public void culmulate(K key, double value) {
 		total += value;
 		value += map.get(key) != null ? map.get(key) : 0;
 		map.put(key, value);

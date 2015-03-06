@@ -17,14 +17,13 @@
  */
 package edu.trafficsim.plugin.core;
 
-import java.util.Random;
-
-import edu.trafficsim.model.Link;
-import edu.trafficsim.model.OdMatrix;
-import edu.trafficsim.model.VehicleClass;
-import edu.trafficsim.model.util.Randoms;
+import edu.trafficsim.api.model.Link;
+import edu.trafficsim.api.model.Node;
+import edu.trafficsim.api.model.VehicleClass;
+import edu.trafficsim.engine.simulation.SimulationEnvironment;
 import edu.trafficsim.plugin.AbstractPlugin;
-import edu.trafficsim.plugin.IRouting;
+import edu.trafficsim.plugin.api.IRouting;
+import edu.trafficsim.util.Randoms;
 
 /**
  * 
@@ -37,17 +36,21 @@ public abstract class AbstractRouting extends AbstractPlugin implements
 	private static final long serialVersionUID = 1L;
 
 	@Override
-	public Link getSucceedingLink(OdMatrix odMatrix, Link precedingLink,
-			VehicleClass vehicleClass, double forwardedTime, Random rand) {
-		return getSucceedingLink(precedingLink, vehicleClass, forwardedTime,
-				rand);
+	public Link searchNextLink(SimulationEnvironment environment, Node current,
+			Node destination) {
+		return randomSucceedingLink(environment, current);
 	}
 
 	@Override
-	public Link getSucceedingLink(Link precedingLink,
-			VehicleClass vehicleClass, double forwardedTime, Random rand) {
-		return Randoms.randomElement(precedingLink.getEndNode()
-				.getDownstreams(), rand);
+	public Link searchNextLink(SimulationEnvironment environment,
+			Link currentLink, Node destination, VehicleClass vehicleClass) {
+		return randomSucceedingLink(environment, currentLink.getEndNode());
+	}
+
+	protected Link randomSucceedingLink(SimulationEnvironment environment,
+			Node current) {
+		return Randoms.randomElement(current.getDownstreams(),
+				environment.getRandom());
 	}
 
 }

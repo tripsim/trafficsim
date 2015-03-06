@@ -17,8 +17,8 @@
  */
 package edu.trafficsim.engine.statistics;
 
-import edu.trafficsim.engine.simulation.Tracker;
-import edu.trafficsim.model.Vehicle;
+import edu.trafficsim.api.model.Vehicle;
+import edu.trafficsim.engine.simulation.SimulationEnvironment;
 
 /**
  * 
@@ -27,6 +27,6 @@ import edu.trafficsim.model.Vehicle;
  */
 public interface StatisticsCollector {
 
-	void visit(Tracker tracker, Vehicle vehicle);
+	void visit(SimulationEnvironment environment, Vehicle vehicle);
 
 }

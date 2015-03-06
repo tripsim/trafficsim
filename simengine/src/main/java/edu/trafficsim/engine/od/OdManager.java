@@ -2,7 +2,7 @@ package edu.trafficsim.engine.od;
 
 import java.util.List;
 
-import edu.trafficsim.model.OdMatrix;
+import edu.trafficsim.api.model.OdMatrix;
 
 public interface OdManager {
 

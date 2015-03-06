@@ -20,13 +20,12 @@ package edu.trafficsim.engine.od;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import edu.trafficsim.api.model.Link;
+import edu.trafficsim.api.model.Od;
+import edu.trafficsim.api.model.OdMatrix;
+import edu.trafficsim.api.model.TurnPercentage;
+import edu.trafficsim.api.model.TypesComposition;
 import edu.trafficsim.engine.type.TypesManager;
-import edu.trafficsim.model.Link;
-import edu.trafficsim.model.Od;
-import edu.trafficsim.model.OdMatrix;
-import edu.trafficsim.model.TurnPercentage;
-import edu.trafficsim.model.TypesComposition;
-import edu.trafficsim.model.core.ModelInputException;
 import edu.trafficsim.model.demand.DefaultOd;
 import edu.trafficsim.model.demand.DefaultOdMatrix;
 import edu.trafficsim.model.demand.DefaultTurnPercentage;
@@ -45,32 +44,30 @@ public class DefaultOdFactory implements OdFactory {
 	TypesManager typesManager;
 
 	@Override
-	public OdMatrix createOdMatrix(Long id, String networkName) {
-		return createOdMatrix(id, DEFAULT_NAME, networkName);
+	public OdMatrix createOdMatrix(String networkName) {
+		return createOdMatrix(DEFAULT_NAME, networkName);
 	}
 
 	@Override
-	public OdMatrix createOdMatrix(Long id, String name, String networkName) {
-		return new DefaultOdMatrix(id, name, networkName);
+	public OdMatrix createOdMatrix(String name, String networkName) {
+		return new DefaultOdMatrix(name, networkName);
 	}
 
 	@Override
-	public Od createOd(Long id, String name, Long originNodeId,
-			Long destinationNodeId, String vehicleTypeComposition,
-			String driverTypeComposition, double[] times, Integer[] vphs)
-			throws ModelInputException {
+	public Od createOd(Long id, Long originNodeId, Long destinationNodeId,
+			String vehicleTypeComposition, String driverTypeComposition,
+			double[] times, Integer[] vphs) {
 		TypesComposition vtCompo = typesManager
 				.getVehicleTypeComposition(vehicleTypeComposition);
 		TypesComposition dtCompo = typesManager
 				.getDriverTypeComposition(driverTypeComposition);
-		return new DefaultOd(id, name, originNodeId, destinationNodeId,
-				vtCompo, dtCompo, times, vphs);
+		return new DefaultOd(id, originNodeId, destinationNodeId, vtCompo,
+				dtCompo, times, vphs);
 	}
 
 	@Override
 	public TurnPercentage createTurnPercentage(String name, Link upstream,
-			Link[] downstreams, double[] percentages)
-			throws ModelInputException {
+			Link[] downstreams, double[] percentages) {
 		return new DefaultTurnPercentage(name, upstream, downstreams,
 				percentages);
 	}

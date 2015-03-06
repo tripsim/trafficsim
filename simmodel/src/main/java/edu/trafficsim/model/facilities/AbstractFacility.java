@@ -19,9 +19,8 @@ package edu.trafficsim.model.facilities;
 
 import com.vividsolutions.jts.geom.Point;
 
-import edu.trafficsim.model.Facility;
+import edu.trafficsim.api.model.Facility;
 import edu.trafficsim.model.core.AbstractLocation;
-import edu.trafficsim.model.core.ModelInputException;
 
 /**
  * 
@@ -30,16 +29,17 @@ import edu.trafficsim.model.core.ModelInputException;
  * @param <T>
  *            the generic type
  */
-public abstract class AbstractFacility<T> extends AbstractLocation<T> implements
+public abstract class AbstractFacility extends AbstractLocation implements
 		Facility {
 
 	private static final long serialVersionUID = 1L;
 
 	public AbstractFacility(long id, String name, Point point) {
-		super(id, name, point);
+		super(id, point);
 	}
 
-	public void onGeomUpdated() throws ModelInputException {
+	@Override
+	public void onGeomUpdated() {
 
 	}
 }

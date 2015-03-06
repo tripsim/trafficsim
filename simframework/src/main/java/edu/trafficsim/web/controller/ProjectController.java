@@ -36,13 +36,14 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import edu.trafficsim.api.model.Network;
+import edu.trafficsim.api.model.OdMatrix;
 import edu.trafficsim.engine.io.IOService;
 import edu.trafficsim.engine.network.NetworkManager;
 import edu.trafficsim.engine.od.OdManager;
 import edu.trafficsim.engine.simulation.SimulationProject;
+import edu.trafficsim.engine.simulation.SimulationProjectBuilder;
 import edu.trafficsim.engine.simulation.SimulationSettings;
-import edu.trafficsim.model.Network;
-import edu.trafficsim.model.OdMatrix;
 
 /**
  * 
@@ -122,8 +123,10 @@ public class ProjectController extends AbstractController {
 		response.setHeader("Content-Disposition",
 				"attachment; filename=\"project.json\"");
 		try {
-			ioService.exportProject(new SimulationProject(network, odMatrix,
-					settings), response.getOutputStream());
+			ioService.exportProject(
+					new SimulationProjectBuilder().withNetwork(network)
+							.withOdMatrix(odMatrix).withSettings(settings)
+							.build(), response.getOutputStream());
 		} catch (IOException e) {
 		}
 	}

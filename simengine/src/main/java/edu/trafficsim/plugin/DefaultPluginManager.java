@@ -26,6 +26,16 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import edu.trafficsim.plugin.api.ICarFollowing;
+import edu.trafficsim.plugin.api.IDriver;
+import edu.trafficsim.plugin.api.ILaneChanging;
+import edu.trafficsim.plugin.api.IMoving;
+import edu.trafficsim.plugin.api.IRouting;
+import edu.trafficsim.plugin.api.ISimulating;
+import edu.trafficsim.plugin.api.IVehicle;
+import edu.trafficsim.plugin.api.IVehicleGenerating;
+import edu.trafficsim.plugin.api.PluginManager;
+
 /**
  * 
  * 

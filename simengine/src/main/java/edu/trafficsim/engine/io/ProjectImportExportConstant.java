@@ -5,6 +5,7 @@ final class ProjectImportExportConstant {
 	static final String NETWORK = "network";
 	static final String ID = "id";
 	static final String NAME = "name";
+	static final String DESCRIPTION = "description";
 	static final String LINKS = "links";
 	static final String NODES = "nodes";
 	static final String LANES = "lanes";
@@ -25,6 +26,7 @@ final class ProjectImportExportConstant {
 	static final String WIDTH = "width";
 	static final String HIGHWAY = "highway";
 	static final String ROADID = "roadId";
+	static final String ROADNAME = "roadName";
 	static final String NODETYPE = "nodeType";
 	static final String LINKTYPE = "linkType";
 

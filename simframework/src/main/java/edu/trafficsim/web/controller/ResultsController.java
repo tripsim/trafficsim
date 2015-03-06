@@ -30,10 +30,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
+import edu.trafficsim.api.model.Network;
 import edu.trafficsim.engine.simulation.ExecutedSimulation;
 import edu.trafficsim.engine.simulation.SimulationManager;
 import edu.trafficsim.engine.simulation.SimulationService;
-import edu.trafficsim.model.Network;
 import edu.trafficsim.web.service.statistics.FdDto;
 import edu.trafficsim.web.service.statistics.FramesDto;
 import edu.trafficsim.web.service.statistics.StatisticsService;

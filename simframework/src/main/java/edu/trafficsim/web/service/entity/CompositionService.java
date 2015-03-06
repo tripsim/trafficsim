@@ -20,10 +20,9 @@ package edu.trafficsim.web.service.entity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import edu.trafficsim.api.model.Composition;
+import edu.trafficsim.api.model.TypesComposition;
 import edu.trafficsim.engine.type.TypesManager;
-import edu.trafficsim.model.Composition;
-import edu.trafficsim.model.TypesComposition;
-import edu.trafficsim.model.core.ModelInputException;
 
 /**
  * 
@@ -37,8 +36,7 @@ public class CompositionService extends EntityService {
 	TypesManager typesManager;
 
 	public TypesComposition updateVehicleComposition(String oldName,
-			String newName, String[] types, double[] values)
-			throws ModelInputException {
+			String newName, String[] types, double[] values) {
 		if (!oldName.equals(newName)
 				&& typesManager.getVehicleTypeComposition(newName) != null) {
 			throw new IllegalArgumentException("Vehicle composition" + newName
@@ -52,8 +50,7 @@ public class CompositionService extends EntityService {
 	}
 
 	private <T> void updateComposition(Composition<T> composition,
-			String newName, T[] types, double[] values)
-			throws ModelInputException {
+			String newName, T[] types, double[] values) {
 		composition.setName(newName);
 		composition.reset();
 		for (int i = 0; i < types.length; i++) {
@@ -65,8 +62,7 @@ public class CompositionService extends EntityService {
 		typesManager.deleteVehicleTypesComposition(name);
 	}
 
-	public TypesComposition createVehicleComposition(String name)
-			throws ModelInputException {
+	public TypesComposition createVehicleComposition(String name) {
 		if (typesManager.getVehicleTypeComposition(name) != null) {
 			throw new IllegalArgumentException("Vehicle type composition '"
 					+ name + "' already exists.");
@@ -79,8 +75,7 @@ public class CompositionService extends EntityService {
 	}
 
 	public TypesComposition updateDriverComposition(String oldName,
-			String newName, String[] types, double[] values)
-			throws ModelInputException {
+			String newName, String[] types, double[] values) {
 		if (!oldName.equals(newName)
 				&& typesManager.getDriverTypeComposition(newName) != null) {
 			throw new IllegalArgumentException(newName + " already existed!");
@@ -96,8 +91,7 @@ public class CompositionService extends EntityService {
 		typesManager.deleteDriverTypesComposition(name);
 	}
 
-	public TypesComposition createDriverComposition(String name)
-			throws ModelInputException {
+	public TypesComposition createDriverComposition(String name) {
 		if (typesManager.getDriverTypeComposition(name) != null) {
 			throw new IllegalArgumentException("Driver type composition '"
 					+ name + "' already exists.");

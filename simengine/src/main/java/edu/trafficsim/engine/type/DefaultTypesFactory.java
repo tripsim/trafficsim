@@ -23,12 +23,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import edu.trafficsim.api.model.TypesComposition;
+import edu.trafficsim.api.model.VehicleClass;
 import edu.trafficsim.engine.type.TypesConstant.DriverTypeProperty;
 import edu.trafficsim.engine.type.TypesConstant.VehicleTypeProperty;
-import edu.trafficsim.model.CrusingType;
-import edu.trafficsim.model.DefaultTypesComposition;
-import edu.trafficsim.model.TypesComposition;
-import edu.trafficsim.model.VehicleClass;
+import edu.trafficsim.model.core.CrusingType;
+import edu.trafficsim.model.core.DefaultTypesComposition;
 
 /**
  * A factory for creating DefaultTypes objects.

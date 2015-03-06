@@ -8,7 +8,6 @@ import org.mongodb.morphia.annotations.Embedded;
 public class LinkDo {
 
 	private Long linkId;
-	private String name;
 	private String linkType;
 	private Long roadInfoId;
 	private long startNodeId;
@@ -24,14 +23,6 @@ public class LinkDo {
 
 	public void setLinkId(Long linkId) {
 		this.linkId = linkId;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
 	}
 
 	public String getLinkType() {
@@ -92,9 +83,9 @@ public class LinkDo {
 
 	@Override
 	public String toString() {
-		return "LinkDo [linkId=" + linkId + ", name=" + name + ", linkType="
-				+ linkType + ", roadInfoId=" + roadInfoId + ", startNodeId="
-				+ startNodeId + ", endNodeId=" + endNodeId + ", reverseLinkId="
+		return "LinkDo [linkId=" + linkId + ", linkType=" + linkType
+				+ ", roadInfoId=" + roadInfoId + ", startNodeId=" + startNodeId
+				+ ", endNodeId=" + endNodeId + ", reverseLinkId="
 				+ reverseLinkId + ", linearGeom=" + linearGeom + ", lanes="
 				+ lanes + "]";
 	}

@@ -20,7 +20,7 @@ package edu.trafficsim.plugin.core;
 import org.springframework.stereotype.Component;
 
 import edu.trafficsim.plugin.AbstractPlugin;
-import edu.trafficsim.plugin.IDriver;
+import edu.trafficsim.plugin.api.IDriver;
 
 /**
  * 
@@ -42,6 +42,11 @@ public class DriverImpl extends AbstractPlugin implements IDriver {
 	public double getDesiredDecel(double speed) {
 
 		return speed > 2.8 ? -2.8 : -speed;
+	}
+
+	@Override
+	public String getName() {
+		return "Default Driver Impl";
 	}
 
 }

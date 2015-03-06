@@ -3,7 +3,7 @@ package edu.trafficsim.engine.statistics;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.trafficsim.model.Vehicle;
+import edu.trafficsim.api.model.Vehicle;
 
 class Snapshot {
 
@@ -27,11 +27,11 @@ class Snapshot {
 
 	void addNewVehicle(Vehicle vehicle) {
 		VehicleProperty vp = new VehicleProperty(vehicle.getId(),
-				vehicle.getStartFrame(), vehicle.origin().getId());
+				vehicle.getStartFrame(), vehicle.getOrigin().getId());
 		vp.setWidth(vehicle.getWidth());
 		vp.setLength(vehicle.getLength());
-		if (vehicle.destination() != null) {
-			vp.setDestinationNodeId(vehicle.destination().getId());
+		if (vehicle.getDestination() != null) {
+			vp.setDestinationNodeId(vehicle.getDestination().getId());
 		}
 		newVehicles.add(vp);
 	}

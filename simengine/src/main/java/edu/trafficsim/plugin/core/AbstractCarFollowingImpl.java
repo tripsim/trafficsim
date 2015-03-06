@@ -17,15 +17,16 @@
  */
 package edu.trafficsim.plugin.core;
 
-import java.util.Collection;
-
-import edu.trafficsim.engine.simulation.Tracker;
-import edu.trafficsim.model.ConnectionLane;
-import edu.trafficsim.model.Vehicle;
+import edu.trafficsim.api.model.Path;
+import edu.trafficsim.api.model.Vehicle;
+import edu.trafficsim.api.model.VehicleStream;
+import edu.trafficsim.api.model.VehicleWeb;
+import edu.trafficsim.engine.simulation.SimulationEnvironment;
 import edu.trafficsim.plugin.AbstractPlugin;
-import edu.trafficsim.plugin.ICarFollowing;
-import edu.trafficsim.plugin.IDriver;
-import edu.trafficsim.plugin.IVehicle;
+import edu.trafficsim.plugin.api.ICarFollowing;
+import edu.trafficsim.plugin.api.IDriver;
+import edu.trafficsim.plugin.api.IVehicle;
+import edu.trafficsim.util.Pair;
 
 /**
  * 
@@ -36,73 +37,114 @@ public abstract class AbstractCarFollowingImpl extends AbstractPlugin implements
 		ICarFollowing {
 	private static final long serialVersionUID = 1L;
 
-	private double impactingDistance = 50d;
-
-	private double spacing(Vehicle vehicle) {
-		if (vehicle.leadingVehicle() != null)
-			return vehicle.leadingVehicle().position() - vehicle.position();
-
-		double spacing = vehicle.currentLane().getLength() - vehicle.position();
-		spacing = searchSpacing(spacing, vehicle.currentLane()
-				.getToConnectors());
-		return spacing;
-	}
-
-	// search the maximum possible spacing downstream current LANE
-	private double searchSpacing(double spacing,
-			Collection<ConnectionLane> connectors) {
-		double h = 0;
-		for (ConnectionLane connector : connectors) {
-			if (connector.getTailVehicle() != null) {
-				h = h > connector.getTailVehicle().position() ? h : connector
-						.getTailVehicle().position();
-			} else if (connector.getToLane().getTailVehicle() != null) {
-				h = h > connector.getToLane().getTailVehicle().position() ? h
-						: connector.getToLane().getTailVehicle().position();
-			} else {
-				double nh = connector.getLength()
-						+ connector.getToLane().getLength();
-				if (spacing + nh < impactingDistance)
-					nh = searchSpacing(spacing + nh, connector.getToLane()
-							.getToConnectors());
-				else
-					return spacing + nh;
-				h = h > nh ? h : nh;
-			}
-		}
-		return h + spacing;
-	}
-
 	@Override
-	public final void update(Vehicle vehicle, Tracker tracker) {
-		if (!vehicle.active())
-			return;
-		Vehicle leading = vehicle.leadingVehicle();
+	public final void update(SimulationEnvironment environment,
+			Vehicle vehicle, VehicleStream stream, VehicleWeb web) {
+		CarFollowingEnvironment carFollowingEnvironment = new CarFollowingEnvironment(
+				environment, vehicle, stream, web);
+		carFollowingEnvironment.update();
+	}
 
-		IVehicle iVeh = pluginManager.getVehicleImpl(tracker
-				.getVehicleImplType(vehicle.getVehicleType()));
-		IDriver iDrv = pluginManager.getDriverImpl(tracker
-				.getDriverImplType(vehicle.getDriverType()));
-		double desiredSpeed = vehicle.getDesiredSpeed();
-		double desiredAccel = iDrv.getDesiredAccel(vehicle.speed(),
-				desiredSpeed);
+	private class CarFollowingEnvironment {
 
-		double accel;
-		if (leading == null) {
-			accel = desiredAccel;
-		} else {
-			double maxSpeed = vehicle.getMaxSpeed();
-			double maxAccel = iVeh.getMaxAccel(vehicle.speed(), maxSpeed);
-			double maxDecel = iVeh.getMaxDecel(vehicle.speed());
-			double desiredDecel = iDrv.getDesiredDecel(vehicle.speed());
+		private final SimulationEnvironment environment;
+		private final Vehicle vehicle;
+		private final VehicleStream stream;
+		private final VehicleWeb web;
 
-			accel = calculateAccel(spacing(vehicle), vehicle.getReactionTime(),
-					vehicle.getLength(), vehicle.speed(), desiredSpeed,
-					maxAccel, maxDecel, desiredAccel, desiredDecel,
-					leading.getLength(), leading.speed(), tracker.getStepSize());
+		CarFollowingEnvironment(SimulationEnvironment environment,
+				Vehicle vehicle, VehicleStream stream, VehicleWeb web) {
+			this.environment = environment;
+			this.vehicle = vehicle;
+			this.stream = stream;
+			this.web = web;
 		}
 
-		vehicle.acceleration(accel);
+		public final void update() {
+			if (!vehicle.isActive()) {
+				return;
+			}
+
+			IVehicle iVeh = environment
+					.getVehicleImpl(vehicle.getVehicleType());
+			IDriver iDrv = environment.getDriverImpl(vehicle.getDriverType());
+
+			double desiredSpeed = vehicle.getDesiredSpeed();
+			double desiredAccel = iDrv.getDesiredAccel(vehicle.getSpeed(),
+					desiredSpeed);
+			double lookAheadDistance = vehicle.getLookAheadDistance();
+
+			Pair<Double, Vehicle> pair = calculateSpacing(lookAheadDistance);
+			double spacing = pair.primary();
+			Vehicle leadingVehicle = pair.secondary();
+
+			double accel;
+			if (leadingVehicle == null) {
+				accel = desiredAccel;
+			} else {
+				double maxSpeed = vehicle.getMaxSpeed();
+				double maxAccel = iVeh
+						.getMaxAccel(vehicle.getSpeed(), maxSpeed);
+				double maxDecel = iVeh.getMaxDecel(vehicle.getSpeed());
+				double desiredDecel = iDrv.getDesiredDecel(vehicle.getSpeed());
+
+				accel = calculateAccel(spacing, vehicle.getReactionTime(),
+						vehicle.getLength(), vehicle.getSpeed(), desiredSpeed,
+						maxAccel, maxDecel, desiredAccel, desiredDecel,
+						leadingVehicle.getLength(), leadingVehicle.getSpeed(),
+						environment.getStepSize());
+
+				if (accel > maxAccel) {
+					accel = maxAccel;
+				}
+				if (accel < maxDecel) {
+					accel = maxDecel;
+				}
+			}
+
+			vehicle.setAcceleration(accel);
+		}
+
+		private Pair<Double, Vehicle> calculateSpacing(double maxSpacing) {
+			double spacing = stream.getSpacing(vehicle);
+			Vehicle leadingVehicle = stream.getLeadingVehicle(vehicle);
+			if (stream.isHead(vehicle) && spacing < maxSpacing) {
+				Pair<Double, Vehicle> pair = searchSpacing(
+						stream.getExitPath(vehicle), maxSpacing - spacing);
+				spacing += pair.primary();
+				leadingVehicle = pair.secondary();
+			}
+			return Pair.create(spacing, leadingVehicle);
+		}
+
+		// search the minimum spacing downstream current PATH
+		// assuming no lane changing
+		private Pair<Double, Vehicle> searchSpacing(Path path, double maxSpacing) {
+			if (path == null) {
+				return Pair.create(maxSpacing, (Vehicle) null);
+			}
+
+			double spacing = maxSpacing;
+			Vehicle leadingVehicle = null;
+			VehicleStream stream = web.getStream(path);
+			if (!stream.isEmpty()) {
+				spacing = stream.getSpacingToTail();
+				leadingVehicle = stream.getTailVehicle();
+			} else {
+				for (Path exit : path.getExits()) {
+					double h = stream.getPathLength();
+					Pair<Double, Vehicle> pair = searchSpacing(exit, maxSpacing
+							- h);
+					h += pair.primary();
+					if (h < spacing) {
+						spacing = h;
+						leadingVehicle = pair.secondary();
+					}
+				}
+			}
+			return Pair.create(spacing, leadingVehicle);
+		}
+
 	}
 
 	abstract protected double calculateAccel(double spacing,

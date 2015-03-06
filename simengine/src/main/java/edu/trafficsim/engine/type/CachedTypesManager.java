@@ -2,8 +2,8 @@ package edu.trafficsim.engine.type;
 
 import org.springframework.stereotype.Service;
 
-import edu.trafficsim.model.TypesComposition;
-import edu.trafficsim.model.core.WeakReferenceCache;
+import edu.trafficsim.api.model.TypesComposition;
+import edu.trafficsim.util.WeakReferenceCache;
 
 @Service("cached-types-manager")
 public class CachedTypesManager extends AbstractTypesManager implements

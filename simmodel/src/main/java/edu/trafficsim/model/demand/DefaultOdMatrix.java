@@ -25,27 +25,27 @@ import java.util.Map.Entry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import edu.trafficsim.model.BaseEntity;
-import edu.trafficsim.model.Link;
-import edu.trafficsim.model.Node;
-import edu.trafficsim.model.Od;
-import edu.trafficsim.model.OdMatrix;
-import edu.trafficsim.model.TurnPercentage;
-import edu.trafficsim.model.VehicleClass;
-import edu.trafficsim.model.core.ModelInputException;
-import edu.trafficsim.model.core.MultiKeyedHashMappedDynamicProperty;
-import edu.trafficsim.model.core.MultiKeyedMap;
+import edu.trafficsim.api.model.Link;
+import edu.trafficsim.api.model.Node;
+import edu.trafficsim.api.model.Od;
+import edu.trafficsim.api.model.OdMatrix;
+import edu.trafficsim.api.model.TurnPercentage;
+import edu.trafficsim.api.model.VehicleClass;
+import edu.trafficsim.model.PersistedObject;
+import edu.trafficsim.util.MultiKeyedHashMappedDynamicProperty;
+import edu.trafficsim.util.MultiKeyedMap;
 
 /**
  * 
  * 
  * @author Xuan Shi
  */
-public class DefaultOdMatrix extends BaseEntity<DefaultOdMatrix> implements
+public class DefaultOdMatrix extends PersistedObject<DefaultOdMatrix> implements
 		OdMatrix {
 
 	private static final long serialVersionUID = 1L;
 
+	@SuppressWarnings("unused")
 	private static final Logger logger = LoggerFactory
 			.getLogger(DefaultOdMatrix.class);
 
@@ -55,8 +55,8 @@ public class DefaultOdMatrix extends BaseEntity<DefaultOdMatrix> implements
 	private final Map<Long, Od> odsById;
 	private boolean modified = false;
 
-	public DefaultOdMatrix(long id, String name, String networkName) {
-		super(id, name);
+	public DefaultOdMatrix(String name, String networkName) {
+		super(name);
 		this.networkName = networkName;
 		ods = new MultiKeyedMap<Long, Long, Od>();
 		odsById = new HashMap<Long, Od>();
@@ -170,8 +170,7 @@ public class DefaultOdMatrix extends BaseEntity<DefaultOdMatrix> implements
 
 	@Override
 	public void setTurnPercentage(Link link, VehicleClass vehicleClass,
-			double[] times, TurnPercentage[] turnPercentages)
-			throws ModelInputException {
+			double[] times, TurnPercentage[] turnPercentages) {
 		dynamicTurnPercentages.setProperties(link, vehicleClass, times,
 				turnPercentages);
 	}
@@ -198,17 +197,12 @@ public class DefaultOdMatrix extends BaseEntity<DefaultOdMatrix> implements
 				values[i] = entry2.getValue();
 				i++;
 			}
-			try {
-				dynamicTurnPercentages.setProperties(target, vc, times, values);
-			} catch (ModelInputException e) {
-				logger.warn("Should not reach here, inconsistent data!");
-			}
+			dynamicTurnPercentages.setProperties(target, vc, times, values);
 		}
 	}
 
 	@Override
-	public void updateToLink(Link source, Link target)
-			throws ModelInputException {
+	public void updateToLink(Link source, Link target) {
 		Collection<TurnPercentage> turnPercentages = dynamicTurnPercentages
 				.getPropertiesByPrimaaryKey(source);
 		for (TurnPercentage turnPercentage : turnPercentages) {

@@ -9,11 +9,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import edu.trafficsim.api.model.Od;
+import edu.trafficsim.api.model.OdMatrix;
 import edu.trafficsim.data.dom.OdDo;
 import edu.trafficsim.data.dom.OdMatrixDo;
-import edu.trafficsim.model.Od;
-import edu.trafficsim.model.OdMatrix;
-import edu.trafficsim.model.core.ModelInputException;
 
 @Service("od-converter")
 class OdConverter {
@@ -25,7 +24,6 @@ class OdConverter {
 	OdFactory factory;
 
 	final void applyOdMatrixDo(OdMatrixDo entity, OdMatrix odMatrix) {
-		entity.setMatrixId(odMatrix.getId());
 		entity.setName(odMatrix.getName());
 		entity.setNetworkName(odMatrix.getNetworkName());
 		entity.setOds(toOdDos(odMatrix.getOds()));
@@ -42,7 +40,6 @@ class OdConverter {
 	private OdDo toOdDo(Od od) {
 		OdDo result = new OdDo();
 		result.setOdId(od.getId());
-		result.setName(od.getName());
 		result.setOriginNodeId(od.getOriginNodeId());
 		result.setDestinationNodeId(od.getDestinationNodeId());
 		result.setVehicleTypesComposition(od.getVehicleComposition().getName());
@@ -58,7 +55,7 @@ class OdConverter {
 		return result;
 	}
 
-	final OdMatrix toOdMatrix(OdMatrixDo entity) throws ModelInputException {
+	final OdMatrix toOdMatrix(OdMatrixDo entity) {
 		return new Builder(entity).build();
 	}
 
@@ -71,20 +68,20 @@ class OdConverter {
 			this.entity = entity;
 		}
 
-		OdMatrix build() throws ModelInputException {
-			result = factory.createOdMatrix(entity.getMatrixId(),
-					entity.getName(), entity.getNetworkName());
+		OdMatrix build() {
+			result = factory.createOdMatrix(entity.getName(),
+					entity.getNetworkName());
 			addOdDos(entity.getOds());
 			return result;
 		}
 
-		private void addOdDos(List<OdDo> entities) throws ModelInputException {
+		private void addOdDos(List<OdDo> entities) {
 			for (OdDo entity : entities) {
 				addOdDo(entity);
 			}
 		}
 
-		private void addOdDo(OdDo entity) throws ModelInputException {
+		private void addOdDo(OdDo entity) {
 			if (entity.getTimes().size() != entity.getVphs().size()) {
 				logger.warn(
 						"inconsistent od encounted in od matrix '{}', od from {} to {} ignored",
@@ -99,7 +96,7 @@ class OdConverter {
 				times[i] = entity.getTimes().get(i);
 				vphs[i] = entity.getVphs().get(i);
 			}
-			Od od = factory.createOd(entity.getOdId(), entity.getName(),
+			Od od = factory.createOd(entity.getOdId(),
 					entity.getOriginNodeId(), entity.getDestinationNodeId(),
 					entity.getVehicleTypesComposition(),
 					entity.getDriverTypesComposition(), times, vphs);

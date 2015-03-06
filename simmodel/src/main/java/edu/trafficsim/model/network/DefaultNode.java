@@ -24,7 +24,7 @@ import com.vividsolutions.jts.geom.Point;
  * 
  * @author Xuan Shi
  */
-public class DefaultNode extends AbstractNode<DefaultNode> {
+public class DefaultNode extends AbstractNode {
 
 	private static final long serialVersionUID = 1L;
 
@@ -34,12 +34,12 @@ public class DefaultNode extends AbstractNode<DefaultNode> {
 	// public static final short MOVEMENT_LEFT = 3;
 	// public static final short MOVEMENT_UTURN = 4;
 
-	private final static double DEFAULT_RADIUS = 0;
+	private final static double DEFAULT_RADIUS = 10;
 
 	private String nodeType;
 
-	public DefaultNode(long id, String name, String nodeType, Point point) {
-		super(id, name, point, DEFAULT_RADIUS);
+	public DefaultNode(long id, String nodeType, Point point) {
+		super(id, point, DEFAULT_RADIUS);
 		this.nodeType = nodeType;
 	}
 

@@ -1,24 +1,18 @@
 package edu.trafficsim.engine.simulation;
 
-import java.util.Set;
-import java.util.concurrent.CopyOnWriteArraySet;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import edu.trafficsim.api.model.Network;
+import edu.trafficsim.api.model.OdMatrix;
 import edu.trafficsim.data.persistence.SimulationDao;
 import edu.trafficsim.engine.network.NetworkManager;
 import edu.trafficsim.engine.od.OdManager;
-import edu.trafficsim.model.Network;
-import edu.trafficsim.model.OdMatrix;
-import edu.trafficsim.plugin.ISimulating;
-import edu.trafficsim.plugin.PluginManager;
+import edu.trafficsim.plugin.SimulationJobController;
 
 @Service("default-simulation-service")
 public class DefaultSimulationService implements SimulationService {
 
-	@Autowired
-	PluginManager pluginManager;
 	@Autowired
 	NetworkManager networkManager;
 	@Autowired
@@ -28,7 +22,8 @@ public class DefaultSimulationService implements SimulationService {
 	@Autowired
 	SimulationDao simulationDao;
 
-	private final Set<String> runningSimulations = new CopyOnWriteArraySet<String>();
+	@Autowired
+	SimulationJobController controller;
 
 	@Override
 	public void execute(String simulationName, Network network,
@@ -55,20 +50,16 @@ public class DefaultSimulationService implements SimulationService {
 			throw new IllegalStateException(
 					"simulation cannot start, no name is given!");
 		}
-		if (runningSimulations.contains(simulationName)) {
-			throw new IllegalStateException("simulation " + simulationName
-					+ " is already running!");
-		}
 
-		ISimulating impl = pluginManager.getSimulatingImpl(settings
-				.getSimulatingType());
-		impl.simulate(simulationName, network, odMatrix, settings);
-		runningSimulations.remove(simulationName);
+		SimulationProject project = new SimulationProjectBuilder(simulationName)
+				.withNetwork(network).withOdMatrix(odMatrix)
+				.withSettings(settings).build();
+		controller.submitJob(project);
 	}
 
 	@Override
 	public boolean isRunning(String simulationName) {
-		return runningSimulations.contains(simulationName);
+		return controller.isSimulationRunning(simulationName);
 	}
 
 }

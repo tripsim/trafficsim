@@ -2,7 +2,7 @@ package edu.trafficsim.engine.network;
 
 import java.util.List;
 
-import edu.trafficsim.model.Network;
+import edu.trafficsim.api.model.Network;
 
 public interface NetworkManager {
 

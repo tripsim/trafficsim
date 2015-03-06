@@ -34,8 +34,8 @@ import edu.trafficsim.engine.statistics.StatisticsFrames;
 import edu.trafficsim.engine.statistics.StatisticsManager;
 import edu.trafficsim.engine.statistics.VehicleProperty;
 import edu.trafficsim.engine.statistics.VehicleState;
-import edu.trafficsim.model.core.MultiKeyedMap;
 import edu.trafficsim.model.util.Colors;
+import edu.trafficsim.util.MultiKeyedMap;
 import edu.trafficsim.util.WktUtils;
 
 /**

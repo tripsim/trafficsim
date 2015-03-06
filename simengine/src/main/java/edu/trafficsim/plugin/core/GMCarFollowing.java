@@ -39,4 +39,9 @@ public class GMCarFollowing extends AbstractCarFollowingImpl {
 		return alpha * (speed - leadSpeed);
 	}
 
+	@Override
+	public String getName() {
+		return "GM Car Following";
+	}
+
 }

@@ -2,8 +2,8 @@ package edu.trafficsim.engine.simulation;
 
 import java.io.Serializable;
 
-import edu.trafficsim.model.Network;
-import edu.trafficsim.model.OdMatrix;
+import edu.trafficsim.api.model.Network;
+import edu.trafficsim.api.model.OdMatrix;
 
 public class SimulationProject implements Serializable {
 
@@ -11,55 +11,35 @@ public class SimulationProject implements Serializable {
 
 	public static final long DEFAULT_INIT_SEQ = 1000000000;
 
-	String name;
+	String simulationName;
 	Network network;
 	OdMatrix odMatrix;
 	SimulationSettings settings;
 	long nextSeq = DEFAULT_INIT_SEQ;
 
-	public SimulationProject(Network network, OdMatrix odMatrix, long nextSeq) {
+	SimulationProject(String simulationName, Network network, OdMatrix odMatrix) {
+		this.simulationName = simulationName;
 		this.network = network;
 		this.odMatrix = odMatrix;
-		this.settings = null;
-		this.nextSeq = nextSeq;
 	}
 
-	public SimulationProject(Network network, OdMatrix odMatrix,
-			SimulationSettings settings) {
-		this.network = network;
-		this.odMatrix = odMatrix;
-		this.settings = settings;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
+	public String getSimulationName() {
+		return simulationName;
 	}
 
 	public Network getNetwork() {
 		return network;
 	}
 
-	public void setNetwork(Network network) {
-		this.network = network;
-	}
-
 	public OdMatrix getOdMatrix() {
 		return odMatrix;
-	}
-
-	public void setOdMatrix(OdMatrix odMatrix) {
-		this.odMatrix = odMatrix;
 	}
 
 	public SimulationSettings getSettings() {
 		return settings;
 	}
 
-	public void setSettings(SimulationSettings settings) {
+	void setSettings(SimulationSettings settings) {
 		this.settings = settings;
 	}
 
@@ -67,8 +47,15 @@ public class SimulationProject implements Serializable {
 		return nextSeq;
 	}
 
-	public void setNextSeq(long nextSeq) {
+	void setNextSeq(long nextSeq) {
 		this.nextSeq = nextSeq;
+	}
+
+	public boolean isReady() {
+		return network != null && odMatrix != null && settings != null
+				&& odMatrix.getNetworkName() != null
+				&& network.getName() != null
+				&& odMatrix.getNetworkName() == network.getName();
 	}
 
 }

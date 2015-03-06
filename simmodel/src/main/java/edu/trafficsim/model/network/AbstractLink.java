@@ -18,19 +18,17 @@
 package edu.trafficsim.model.network;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
 import com.vividsolutions.jts.geom.LineString;
 
-import edu.trafficsim.model.ConnectionLane;
-import edu.trafficsim.model.Lane;
-import edu.trafficsim.model.Link;
-import edu.trafficsim.model.Location;
-import edu.trafficsim.model.Node;
-import edu.trafficsim.model.core.AbstractSegment;
-import edu.trafficsim.model.core.ModelInputException;
+import edu.trafficsim.api.model.ArcSection;
+import edu.trafficsim.api.model.Lane;
+import edu.trafficsim.api.model.Link;
+import edu.trafficsim.api.model.Location;
+import edu.trafficsim.api.model.Node;
+import edu.trafficsim.model.core.AbstractArc;
 
 /**
  * 
@@ -39,37 +37,51 @@ import edu.trafficsim.model.core.ModelInputException;
  * @param <T>
  *            the generic type
  */
-public abstract class AbstractLink<T> extends AbstractSegment<T> implements
-		Link {
+public abstract class AbstractLink extends AbstractArc implements Link {
 
 	private static final long serialVersionUID = 1L;
 
-	private Link reverseLink = null;
+	private Node startNode;
+	private Node endNode;
 
-	public AbstractLink(long id, String name, Node startNode, Node endNode,
-			LineString linearGeom) throws ModelInputException {
-		super(id, name, startNode, endNode, linearGeom);
+	private Link reverseLink = null;
+	private List<Lane> lanes = new ArrayList<Lane>();
+
+	public AbstractLink(long id, Node startNode, Node endNode,
+			LineString linearGeom) {
+		super(id, linearGeom);
 		startNode.add(this);
 		endNode.add(this);
+
+		checkStartEnd(startNode, endNode, linearGeom);
+	}
+
+	private void checkStartEnd(Location startLocation, Location endLocation,
+			LineString linearGeom) {
+		if (!linearGeom.getStartPoint().getCoordinate()
+				.equals(startLocation.getPoint().getCoordinate())
+				|| !linearGeom.getEndPoint().getCoordinate()
+						.equals(endLocation.getPoint().getCoordinate()))
+			throw new IllegalArgumentException(
+					"Nodes and linear geometry doesn't match");
 	}
 
 	@Override
 	public Node getStartNode() {
-		return (Node) startLocation;
+		return startNode;
 	}
 
 	@Override
 	public Node getEndNode() {
-		return (Node) endLocation;
+		return endNode;
 	}
 
 	@Override
-	public final void setLinearGeom(Location startLocation,
-			Location endLocation, LineString linearGeom)
-			throws ModelInputException {
-		Node oldStart = getStartNode() == startLocation ? null : getStartNode();
-		Node oldEnd = getEndNode() == endLocation ? null : getEndNode();
-		super.setLinearGeom(startLocation, endLocation, linearGeom);
+	public final void update(Node startNode, Node endNode, LineString linearGeom) {
+		checkStartEnd(startNode, endNode, linearGeom);
+		Node oldStart = getStartNode() == startNode ? null : getStartNode();
+		Node oldEnd = getEndNode() == endNode ? null : getEndNode();
+		super.setLinearGeom(linearGeom);
 		if (oldStart != null) {
 			oldStart.removeDownstream(this);
 			getStartNode().add(this);
@@ -81,57 +93,36 @@ public abstract class AbstractLink<T> extends AbstractSegment<T> implements
 	}
 
 	@Override
-	public Lane getLane(int laneId) {
-		return (Lane) (laneId < subsegments.size() ? subsegments.get(laneId)
-				: null);
+	public List<? extends ArcSection> getSections() {
+		return Collections.unmodifiableList(lanes);
 	}
 
 	@Override
-	public Lane[] getLanes() {
-		return subsegments.toArray(new Lane[0]);
+	public Lane getLane(int position) {
+		return position < numOfLanes() ? lanes.get(position) : null;
+	}
+
+	@Override
+	public List<Lane> getLanes() {
+		return Collections.unmodifiableList(lanes);
 	}
 
 	@Override
 	public int numOfLanes() {
-		return sizeOfSubsegments();
+		return lanes.size();
 	}
 
 	@Override
-	public void add(Lane lane) throws ModelInputException {
-		lane.setLaneId(subsegments.size());
-		subsegments.add(lane);
-		if (reverseLink == null) {
-			for (int i = 0; i < subsegments.size() - 1; i++)
-				getLane(i).setShift(
-						getLane(i).getShift() - lane.getWidth() / 2, false);
-
-			lane.setShift(getWidth() / 2 - lane.getWidth() / 2, false);
-		} else {
-			lane.setShift(getWidth() - lane.getWidth() / 2, false);
-		}
-		// Collections.sort(subsegments, null);
+	public void add(Lane lane) {
+		lane.setLanePosition(lanes.size());
+		lanes.add(lane);
+		onLaneAdded(lane);
 	}
 
 	@Override
-	public void remove(int laneId) throws ModelInputException {
-		Lane removed = (Lane) subsegments.remove(laneId);
-		if (reverseLink == null) {
-			for (int i = 0; i < laneId; i++) {
-				Lane l = getLane(i);
-				l.setShift(l.getShift() + removed.getWidth() / 2, false);
-			}
-			for (int i = laneId; i < subsegments.size(); i++) {
-				Lane l = getLane(i);
-				l.setLaneId(i);
-				l.setShift(l.getShift() - removed.getWidth() / 2, false);
-			}
-		} else {
-			for (int i = laneId; i < subsegments.size(); i++) {
-				Lane l = getLane(i);
-				l.setLaneId(i);
-				l.setShift(l.getShift() - removed.getWidth(), false);
-			}
-		}
+	public void remove(int lanePosition) {
+		Lane removed = lanes.remove(lanePosition);
+		onLaneRemoved(lanePosition, removed);
 	}
 
 	@Override
@@ -140,7 +131,7 @@ public abstract class AbstractLink<T> extends AbstractSegment<T> implements
 	}
 
 	@Override
-	public void setReverseLink(Link reverseLink) throws ModelInputException {
+	public void setReverseLink(Link reverseLink) {
 		if (reverseLink == null) {
 			if (this.reverseLink != null) {
 				removeReverseLink();
@@ -164,7 +155,7 @@ public abstract class AbstractLink<T> extends AbstractSegment<T> implements
 	}
 
 	@Override
-	public void removeReverseLink() throws ModelInputException {
+	public void removeReverseLink() {
 		if (reverseLink == null) {
 			return;
 		}
@@ -175,7 +166,7 @@ public abstract class AbstractLink<T> extends AbstractSegment<T> implements
 		temp.removeReverseLink();
 	}
 
-	private void shiftLanes() throws ModelInputException {
+	private void shiftLanes() {
 		double offset = getWidth() / 2;
 		if (getReverseLink() == null) {
 			for (Lane lane : getLanes())
@@ -187,23 +178,41 @@ public abstract class AbstractLink<T> extends AbstractSegment<T> implements
 	}
 
 	@Override
-	public Collection<ConnectionLane> getConnectors(Link destLink) {
-		List<ConnectionLane> connectionLanes = new ArrayList<ConnectionLane>();
-		for (Lane fromLane : getLanes()) {
-			connectionLanes.addAll(getEndNode().getConnectors(fromLane,
-					destLink));
+	public void onLaneAdded(Lane lane) {
+		if (reverseLink == null) {
+			for (int i = 0; i < lanes.size() - 1; i++)
+				getLane(i).setShift(
+						getLane(i).getShift() - lane.getWidth() / 2, false);
+
+			lane.setShift(getWidth() / 2 - lane.getWidth() / 2, false);
+		} else {
+			lane.setShift(getWidth() - lane.getWidth() / 2, false);
 		}
-		return Collections.unmodifiableCollection(connectionLanes);
+		startNode.onLaneAdded(lane);
+		endNode.onLaneAdded(lane);
 	}
 
 	@Override
-	public Collection<ConnectionLane> getToConnectors() {
-		return getEndNode().getInConnectors(this);
-	}
-
-	@Override
-	public Collection<ConnectionLane> getFromConnectors() {
-		return getStartNode().getOutConnectors(this);
+	public void onLaneRemoved(int lanePosition, Lane removed) {
+		if (reverseLink == null) {
+			for (int i = 0; i < lanePosition; i++) {
+				Lane l = getLane(i);
+				l.setShift(l.getShift() + removed.getWidth() / 2, false);
+			}
+			for (int i = lanePosition; i < lanes.size(); i++) {
+				Lane l = getLane(i);
+				l.setLanePosition(i);
+				l.setShift(l.getShift() - removed.getWidth() / 2, false);
+			}
+		} else {
+			for (int i = lanePosition; i < lanes.size(); i++) {
+				Lane l = getLane(i);
+				l.setLanePosition(i);
+				l.setShift(l.getShift() - removed.getWidth(), false);
+			}
+		}
+		startNode.onLaneRemoved(lanePosition, removed);
+		endNode.onLaneRemoved(lanePosition, removed);
 	}
 
 }

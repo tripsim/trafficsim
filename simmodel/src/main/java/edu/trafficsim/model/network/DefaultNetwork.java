@@ -26,23 +26,24 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 import com.vividsolutions.jts.geom.Coordinate;
 
-import edu.trafficsim.model.Link;
-import edu.trafficsim.model.Node;
-import edu.trafficsim.model.core.ModelInputException;
+import edu.trafficsim.api.model.Link;
+import edu.trafficsim.api.model.Network;
+import edu.trafficsim.api.model.Node;
 
 /**
  * 
  * 
  * @author Xuan Shi
  */
-public class DefaultNetwork extends AbstractNetwork<DefaultNetwork> {
+public class DefaultNetwork extends AbstractNetwork<DefaultNetwork> implements
+		Network {
 
 	private static final long serialVersionUID = 1L;
 
 	private boolean modified = false;
 
-	public DefaultNetwork(long id, String name) {
-		super(id, name);
+	public DefaultNetwork(String name) {
+		super(name);
 	}
 
 	private final Set<Node> sources = new HashSet<Node>();
@@ -79,7 +80,7 @@ public class DefaultNetwork extends AbstractNetwork<DefaultNetwork> {
 	}
 
 	@Override
-	public void onLinkRemoved(Link link) throws ModelInputException {
+	public void onLinkRemoved(Link link) {
 		refreshEndPoints(link);
 		link.removeReverseLink();
 		modified = true;
@@ -122,7 +123,7 @@ public class DefaultNetwork extends AbstractNetwork<DefaultNetwork> {
 	}
 
 	@Override
-	public void onGeomUpdated() throws ModelInputException {
+	public void onGeomUpdated() {
 	}
 
 	@Override

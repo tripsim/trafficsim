@@ -10,10 +10,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.vividsolutions.jts.io.ParseException;
 
+import edu.trafficsim.api.model.Network;
 import edu.trafficsim.data.dom.NetworkDo;
 import edu.trafficsim.engine.demo.DemoBuilder;
-import edu.trafficsim.model.Network;
-import edu.trafficsim.model.core.ModelInputException;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/simengine-test.xml")
@@ -27,7 +26,7 @@ public class NetworkConverterTest {
 	NetworkConverter converter;
 
 	@Test
-	public void test() throws ParseException, ModelInputException {
+	public void test() throws ParseException {
 		Network network = demoBuilder.getDemo().getNetwork();
 		NetworkDo entity = converter.toNetworkDo(network);
 		logger.info("{}", entity);

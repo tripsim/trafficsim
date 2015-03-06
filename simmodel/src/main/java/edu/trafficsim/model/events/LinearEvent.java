@@ -17,7 +17,7 @@
  */
 package edu.trafficsim.model.events;
 
-import edu.trafficsim.model.Location;
+import edu.trafficsim.api.model.Location;
 
 /**
  * 
@@ -26,37 +26,34 @@ import edu.trafficsim.model.Location;
  * @param <T>
  *            the generic type
  */
-public abstract class LinearEvent<T> extends AbstractEvent<T>
-		{
+public abstract class LinearEvent extends AbstractEvent {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
-	
-//	public final static class EventSegment extends AbstractSegment<EventSegment> {
-//
-//		/**
-//		 * 
-//		 */
-//		private static final long serialVersionUID = 1L;
-//
-//		public EventSegment() {
-//			// TODO a way to represent event area
-//		}
-//		
-//		@Override
-//		public LineString getLinearGeom() {
-//			// TODO Auto-generated method stub
-//			return null;
-//		}
-//		
-//	}
-//
-//	private EventSegment segment = new EventSegment();
-	
-	public LinearEvent(long id, String name, double startTime, double endTime, Location fromLocation, Location toLocation) {
-		super(id, name, startTime, endTime);
-	}
 
+	// public final static class EventSegment extends
+	// AbstractSegment<EventSegment> {
+	//
+	// /**
+	// *
+	// */
+	// private static final long serialVersionUID = 1L;
+	//
+	// public EventSegment() {
+	// // TODO a way to represent event area
+	// }
+	//
+	// @Override
+	// public LineString getLinearGeom() {
+	// // TODO Auto-generated method stub
+	// return null;
+	// }
+	//
+	// }
+	//
+	// private EventSegment segment = new EventSegment();
+
+	public LinearEvent(long id, String name, double startTime, double endTime,
+			Location fromLocation, Location toLocation) {
+		super(id, startTime, endTime);
+	}
 }

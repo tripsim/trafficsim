@@ -20,7 +20,7 @@ package edu.trafficsim.engine.simulation;
 import java.util.HashMap;
 import java.util.Map;
 
-import edu.trafficsim.plugin.PluginManager;
+import edu.trafficsim.plugin.api.PluginManager;
 
 /**
  * 

@@ -17,8 +17,8 @@
  */
 package edu.trafficsim.engine.type;
 
-import edu.trafficsim.model.CrusingType;
-import edu.trafficsim.model.VehicleClass;
+import edu.trafficsim.api.model.VehicleClass;
+import edu.trafficsim.model.core.CrusingType;
 
 /**
  * 

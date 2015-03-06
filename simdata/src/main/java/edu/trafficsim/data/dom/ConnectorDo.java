@@ -8,7 +8,6 @@ public class ConnectorDo {
 	private long connectorId;
 	private long laneFromId;
 	private long laneToId;
-	private double width;
 
 	public long getConnectorId() {
 		return connectorId;
@@ -32,14 +31,6 @@ public class ConnectorDo {
 
 	public void setLaneToId(long laneToId) {
 		this.laneToId = laneToId;
-	}
-
-	public double getWidth() {
-		return width;
-	}
-
-	public void setWidth(double width) {
-		this.width = width;
 	}
 
 }

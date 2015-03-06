@@ -19,8 +19,12 @@ package edu.trafficsim.plugin.core;
 
 import org.springframework.stereotype.Component;
 
+import edu.trafficsim.api.model.Vehicle;
+import edu.trafficsim.api.model.VehicleStream;
+import edu.trafficsim.api.model.VehicleWeb;
+import edu.trafficsim.engine.simulation.SimulationEnvironment;
 import edu.trafficsim.plugin.AbstractPlugin;
-import edu.trafficsim.plugin.ILaneChanging;
+import edu.trafficsim.plugin.api.ILaneChanging;
 
 /**
  * 
@@ -32,5 +36,15 @@ public class DefaultLaneChanging extends AbstractPlugin implements
 		ILaneChanging {
 
 	private static final long serialVersionUID = 1L;
+
+	@Override
+	public String getName() {
+		return "Default Lane Changing";
+	}
+
+	@Override
+	public final void update(SimulationEnvironment environment,
+			Vehicle vehicle, VehicleStream stream, VehicleWeb web) {
+	}
 
 }

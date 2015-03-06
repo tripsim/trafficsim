@@ -17,20 +17,21 @@
  */
 package edu.trafficsim.engine.vehicle;
 
+import org.apache.commons.math3.random.RandomGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import edu.trafficsim.engine.simulation.Tracker;
+import edu.trafficsim.api.model.Node;
+import edu.trafficsim.api.model.Vehicle;
+import edu.trafficsim.engine.simulation.SimulationEnvironment;
 import edu.trafficsim.engine.type.DriverType;
 import edu.trafficsim.engine.type.TypesManager;
 import edu.trafficsim.engine.type.VehicleType;
-import edu.trafficsim.model.Node;
-import edu.trafficsim.model.Vehicle;
-import edu.trafficsim.model.roadusers.DefaultVehicle;
-import edu.trafficsim.model.roadusers.DefaultVehicleBuilder;
-import edu.trafficsim.model.util.Randoms;
+import edu.trafficsim.model.vehicle.DefaultVehicle;
+import edu.trafficsim.model.vehicle.DefaultVehicleBuilder;
+import edu.trafficsim.util.Randoms;
 
 /**
  * A factory for creating DefaultVehicle objects.
@@ -41,31 +42,35 @@ import edu.trafficsim.model.util.Randoms;
 @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class DefaultVehicleFactory implements VehicleFactory {
 
-	private static final String DEFAULT_NAME_PRE = "vehicle-";
-
 	@Autowired
 	private TypesManager typesManager;
 
 	@Override
-	public Vehicle createVehicle(Node origin, Node destination,
-			String vehicleTypeName, String driverTypeName, Tracker tracker) {
+	public Vehicle createVehicle(SimulationEnvironment environment,
+			Node origin, Node destination, String vehicleTypeName,
+			String driverTypeName) {
 
-		long vid = (long) tracker.getAndIncrementVehicleCount();
-		String name = DEFAULT_NAME_PRE + vid;
-		long startFrame = tracker.getForwardedSteps();
+		long vid = environment.getAndIncrementVehicleCount();
+		long startFrame = environment.getForwardedSteps();
+		RandomGenerator randomGenerator = environment.getRandomGenerator();
+		double sd = environment.getSd();
 
 		VehicleType vehicleType = typesManager.getVehicleType(vehicleTypeName);
 		DriverType driverType = typesManager.getDriverType(driverTypeName);
 
-		double width = random(vehicleType.getWidth(), tracker);
-		double length = random(vehicleType.getLength(), tracker);
-		double maxSpeed = random(vehicleType.getMaxSpeed(), tracker);
-		double desiredSpeed = random(driverType.getDesiredSpeed(), tracker);
-		double desiredHeadway = random(driverType.getDesiredHeadway(), tracker);
-		double preceptionTime = random(driverType.getPerceptionTime(), tracker);
-		double reactionTime = random(driverType.getReactionTime(), tracker);
+		double width = random(vehicleType.getWidth(), sd, randomGenerator);
+		double length = random(vehicleType.getLength(), sd, randomGenerator);
+		double maxSpeed = random(vehicleType.getMaxSpeed(), sd, randomGenerator);
+		double desiredSpeed = random(driverType.getDesiredSpeed(), sd,
+				randomGenerator);
+		double desiredHeadway = random(driverType.getDesiredHeadway(), sd,
+				randomGenerator);
+		double preceptionTime = random(driverType.getPerceptionTime(), sd,
+				randomGenerator);
+		double reactionTime = random(driverType.getReactionTime(), sd,
+				randomGenerator);
 
-		DefaultVehicle vehicle = new DefaultVehicleBuilder(vid, name,
+		DefaultVehicle vehicle = new DefaultVehicleBuilder(vid,
 				vehicleType.getVehicleClass(), vehicleType.getName(),
 				driverType.getName()).withStartFrame(startFrame)
 				.withWidth(width).withLength(length).withMaxSpeed(maxSpeed)
@@ -77,9 +82,9 @@ public class DefaultVehicleFactory implements VehicleFactory {
 		return vehicle;
 	}
 
-	private double random(double value, Tracker tracker) {
+	private double random(double value, double sd,
+			RandomGenerator randomGenerator) {
 		// Normal distribution for desired values
-		return Randoms.normal(value, tracker.getSd(), tracker.getRand()
-				.getRandomGenerator());
+		return Randoms.normal(value, sd, randomGenerator);
 	}
 }

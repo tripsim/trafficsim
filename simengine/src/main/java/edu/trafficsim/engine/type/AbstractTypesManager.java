@@ -7,12 +7,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import edu.trafficsim.api.model.TypesComposition;
 import edu.trafficsim.data.dom.CompositionDo;
 import edu.trafficsim.data.dom.ElementTypeDo;
 import edu.trafficsim.data.dom.TypeCategoryDo;
 import edu.trafficsim.data.persistence.CompositionDao;
 import edu.trafficsim.data.persistence.ElementTypeDao;
-import edu.trafficsim.model.TypesComposition;
 
 abstract class AbstractTypesManager implements TypesManager {
 

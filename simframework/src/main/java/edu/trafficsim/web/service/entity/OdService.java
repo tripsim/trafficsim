@@ -20,13 +20,12 @@ package edu.trafficsim.web.service.entity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import edu.trafficsim.api.model.Network;
+import edu.trafficsim.api.model.Node;
+import edu.trafficsim.api.model.Od;
+import edu.trafficsim.api.model.OdMatrix;
 import edu.trafficsim.engine.od.OdFactory;
 import edu.trafficsim.engine.type.TypesManager;
-import edu.trafficsim.model.Network;
-import edu.trafficsim.model.Node;
-import edu.trafficsim.model.Od;
-import edu.trafficsim.model.OdMatrix;
-import edu.trafficsim.model.core.ModelInputException;
 import edu.trafficsim.web.Sequence;
 
 /**
@@ -51,8 +50,7 @@ public class OdService extends EntityService {
 	OdFactory factory;
 
 	public void updateOd(OdMatrix odMatrix, Network network, Long id, Long dId,
-			String vcName, String dcName, double[] times, Integer[] vphs)
-			throws ModelInputException {
+			String vcName, String dcName, double[] times, Integer[] vphs) {
 		Od od = odMatrix.getOd(id);
 		if (od == null) {
 			throw new IllegalArgumentException("od '" + id + "' doesn't exist!");
@@ -65,9 +63,8 @@ public class OdService extends EntityService {
 	}
 
 	public Od createOd(Sequence sequence, OdMatrix odMatrix, Node origin,
-			Node destination) throws ModelInputException {
-		Od od = factory.createOd(sequence.nextId(), DEFAULT_NAME,
-				origin.getId(),
+			Node destination) {
+		Od od = factory.createOd(sequence.nextId(), origin.getId(),
 				destination == null ? null : destination.getId(),
 				typesManager.getDefaultVehicleTypeCompositionName(),
 				typesManager.getDefaultDriverTypeCompositionName(),
@@ -83,8 +80,7 @@ public class OdService extends EntityService {
 	}
 
 	public OdMatrix createOdMatrix(Sequence sequence, String networkName) {
-		OdMatrix odMatrix = factory.createOdMatrix(sequence.nextId(),
-				DEFAULT_NAME, networkName);
+		OdMatrix odMatrix = factory.createOdMatrix(DEFAULT_NAME, networkName);
 		odMatrix.setModified(true);
 		return odMatrix;
 	}

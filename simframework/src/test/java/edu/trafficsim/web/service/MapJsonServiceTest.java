@@ -7,12 +7,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import edu.trafficsim.api.model.Network;
 import edu.trafficsim.engine.demo.DemoBuilder;
 import edu.trafficsim.engine.network.NetworkFactory;
 import edu.trafficsim.engine.od.OdFactory;
 import edu.trafficsim.engine.simulation.SimulationProject;
 import edu.trafficsim.engine.type.TypesManager;
-import edu.trafficsim.model.Network;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/simframework-test.xml")

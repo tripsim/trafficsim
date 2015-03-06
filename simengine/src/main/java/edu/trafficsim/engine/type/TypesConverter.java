@@ -2,6 +2,7 @@ package edu.trafficsim.engine.type;
 
 import edu.trafficsim.engine.type.TypesConstant.VehicleTypeProperty;
 import edu.trafficsim.engine.type.TypesConstant.DriverTypeProperty;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -10,10 +11,10 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import edu.trafficsim.api.model.TypesComposition;
 import edu.trafficsim.data.dom.CompositionDo;
 import edu.trafficsim.data.dom.ElementTypeDo;
 import edu.trafficsim.data.dom.TypeCategoryDo;
-import edu.trafficsim.model.TypesComposition;
 
 @Service("types-converter")
 final class TypesConverter {

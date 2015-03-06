@@ -8,7 +8,6 @@ import org.mongodb.morphia.annotations.Embedded;
 public class NodeDo {
 
 	private long nodeId;
-	private String name;
 	private String nodeType;
 	private String geom;
 
@@ -20,14 +19,6 @@ public class NodeDo {
 
 	public void setNodeId(long nodeId) {
 		this.nodeId = nodeId;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
 	}
 
 	public String getNodeType() {
@@ -56,9 +47,8 @@ public class NodeDo {
 
 	@Override
 	public String toString() {
-		return "NodeDo [nodeId=" + nodeId + ", name=" + name + ", nodeType="
-				+ nodeType + ", geom=" + geom + ", connectors=" + connectors
-				+ "]";
+		return "NodeDo [nodeId=" + nodeId + ", nodeType=" + nodeType
+				+ ", geom=" + geom + ", connectors=" + connectors + "]";
 	}
 
 }

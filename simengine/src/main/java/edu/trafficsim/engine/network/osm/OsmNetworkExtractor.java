@@ -35,7 +35,6 @@ import edu.trafficsim.engine.network.NetworkExtractResult;
 import edu.trafficsim.engine.network.NetworkExtractor;
 import edu.trafficsim.engine.network.NetworkFactory;
 import edu.trafficsim.engine.type.TypesManager;
-import edu.trafficsim.model.core.ModelInputException;
 
 /**
  * 
@@ -62,8 +61,8 @@ class OsmNetworkExtractor implements NetworkExtractor {
 		return OsmParser.parseXml(in);
 	}
 
-	public Highways parse(String urlStr) throws ModelInputException,
-			JsonParseException, IOException, XMLStreamException {
+	public Highways parse(String urlStr) throws JsonParseException,
+			IOException, XMLStreamException {
 		URL url = new URL(urlStr);
 		return OsmParser.parse(url);
 	}
@@ -74,15 +73,14 @@ class OsmNetworkExtractor implements NetworkExtractor {
 		try {
 			highways = parse(urlStr);
 			return extract(highways, name);
-		} catch (ModelInputException | IOException | XMLStreamException e) {
+		} catch (IOException | XMLStreamException e) {
 			logger.error("failed to create network");
 			throw new RuntimeException(e);
 		}
 	}
 
 	public NetworkExtractResult extract(Highways highways, String name)
-			throws ModelInputException, JsonParseException, ProtocolException,
-			IOException {
+			throws JsonParseException, ProtocolException, IOException {
 		return NetworkCreator.createNetwork(highways, typesManager,
 				networkFactory, name);
 	}

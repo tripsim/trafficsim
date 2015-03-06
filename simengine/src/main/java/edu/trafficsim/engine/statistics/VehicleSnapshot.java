@@ -2,7 +2,8 @@ package edu.trafficsim.engine.statistics;
 
 import com.vividsolutions.jts.geom.Coordinate;
 
-import edu.trafficsim.model.Vehicle;
+import edu.trafficsim.api.model.Link;
+import edu.trafficsim.api.model.Vehicle;
 
 class VehicleSnapshot {
 
@@ -18,14 +19,21 @@ class VehicleSnapshot {
 
 	public VehicleSnapshot(Vehicle vehicle) {
 		vid = vehicle.getId();
-		coord = vehicle.coord();
-		position = vehicle.position();
-		speed = vehicle.speed();
-		accel = vehicle.acceleration();
-		angle = vehicle.angle();
+		coord = vehicle.getCoord();
+		position = vehicle.getPosition();
+		speed = vehicle.getSpeed();
+		accel = vehicle.getAcceleration();
+		angle = vehicle.getAngle();
 
-		linkId = vehicle.getLink() == null ? null : vehicle.getLink().getId();
-		nodeId = vehicle.getNode() == null ? null : vehicle.getNode().getId();
+		Link link = vehicle.getCurrentLink();
+		linkId = link.getId();
+		if (position < link.getStartNode().getRadius()) {
+			nodeId = link.getStartNode().getId();
+		} else if (position > link.getLength() - link.getEndNode().getRadius()) {
+			nodeId = link.getEndNode().getId();
+		} else {
+			nodeId = null;
+		}
 	}
 
 }

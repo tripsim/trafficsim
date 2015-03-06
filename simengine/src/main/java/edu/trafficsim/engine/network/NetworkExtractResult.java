@@ -1,6 +1,6 @@
 package edu.trafficsim.engine.network;
 
-import edu.trafficsim.model.Network;
+import edu.trafficsim.api.model.Network;
 
 public class NetworkExtractResult {
 

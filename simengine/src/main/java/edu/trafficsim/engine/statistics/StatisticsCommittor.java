@@ -97,6 +97,7 @@ class StatisticsCommittor implements SmartLifecycle {
 			}
 
 		} finally {
+			started = false;
 			lock.unlock();
 		}
 	}

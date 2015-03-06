@@ -16,7 +16,6 @@ import edu.trafficsim.engine.od.OdFactory;
 import edu.trafficsim.engine.simulation.SimulationProject;
 import edu.trafficsim.engine.type.TypesFactory;
 import edu.trafficsim.engine.type.TypesManager;
-import edu.trafficsim.model.core.ModelInputException;
 
 @Service("default-io-service")
 class DefaultIOSservice implements IOService {
@@ -48,10 +47,9 @@ class DefaultIOSservice implements IOService {
 		try {
 			return ProjectJsonImporter.importProject(in, networkFactory,
 					odFactory, typesFactory, typesManager);
-		} catch (IOException | ParseException | ModelInputException e) {
+		} catch (IOException | ParseException e) {
 			logger.error("failed to import from source!");
 		}
 		return null;
 	}
-
 }

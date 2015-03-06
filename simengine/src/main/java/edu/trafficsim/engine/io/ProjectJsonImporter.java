@@ -17,48 +17,7 @@
  */
 package edu.trafficsim.engine.io;
 
-import static edu.trafficsim.engine.io.ProjectImportExportConstant.CONNECTORS;
-import static edu.trafficsim.engine.io.ProjectImportExportConstant.DESTINATION;
-import static edu.trafficsim.engine.io.ProjectImportExportConstant.DRIVERCOMPOSITION;
-import static edu.trafficsim.engine.io.ProjectImportExportConstant.DRIVERCOMPOSITIONS;
-import static edu.trafficsim.engine.io.ProjectImportExportConstant.DRIVERTYPES;
-import static edu.trafficsim.engine.io.ProjectImportExportConstant.DURATION;
-import static edu.trafficsim.engine.io.ProjectImportExportConstant.END;
-import static edu.trafficsim.engine.io.ProjectImportExportConstant.ENDNODE;
-import static edu.trafficsim.engine.io.ProjectImportExportConstant.FROMLANE;
-import static edu.trafficsim.engine.io.ProjectImportExportConstant.GEOM;
-import static edu.trafficsim.engine.io.ProjectImportExportConstant.HIGHWAY;
-import static edu.trafficsim.engine.io.ProjectImportExportConstant.ID;
-import static edu.trafficsim.engine.io.ProjectImportExportConstant.LANES;
-import static edu.trafficsim.engine.io.ProjectImportExportConstant.LINKS;
-import static edu.trafficsim.engine.io.ProjectImportExportConstant.LINKTYPE;
-import static edu.trafficsim.engine.io.ProjectImportExportConstant.NAME;
-import static edu.trafficsim.engine.io.ProjectImportExportConstant.NETWORK;
-import static edu.trafficsim.engine.io.ProjectImportExportConstant.NODES;
-import static edu.trafficsim.engine.io.ProjectImportExportConstant.NODESTINATION;
-import static edu.trafficsim.engine.io.ProjectImportExportConstant.NODETYPE;
-import static edu.trafficsim.engine.io.ProjectImportExportConstant.ODMATRIX;
-import static edu.trafficsim.engine.io.ProjectImportExportConstant.ODS;
-import static edu.trafficsim.engine.io.ProjectImportExportConstant.ORIGIN;
-import static edu.trafficsim.engine.io.ProjectImportExportConstant.PROBABILITIES;
-import static edu.trafficsim.engine.io.ProjectImportExportConstant.REVERSELINKID;
-import static edu.trafficsim.engine.io.ProjectImportExportConstant.ROADID;
-import static edu.trafficsim.engine.io.ProjectImportExportConstant.ROADINFO;
-import static edu.trafficsim.engine.io.ProjectImportExportConstant.ROADINFOS;
-import static edu.trafficsim.engine.io.ProjectImportExportConstant.SD;
-import static edu.trafficsim.engine.io.ProjectImportExportConstant.SEED;
-import static edu.trafficsim.engine.io.ProjectImportExportConstant.SETTINGS;
-import static edu.trafficsim.engine.io.ProjectImportExportConstant.START;
-import static edu.trafficsim.engine.io.ProjectImportExportConstant.STARTNODE;
-import static edu.trafficsim.engine.io.ProjectImportExportConstant.STEPSIZE;
-import static edu.trafficsim.engine.io.ProjectImportExportConstant.TIMES;
-import static edu.trafficsim.engine.io.ProjectImportExportConstant.TOLANE;
-import static edu.trafficsim.engine.io.ProjectImportExportConstant.VEHICLECOMPOSITION;
-import static edu.trafficsim.engine.io.ProjectImportExportConstant.VEHICLECOMPOSITIONS;
-import static edu.trafficsim.engine.io.ProjectImportExportConstant.VEHICLETYPES;
-import static edu.trafficsim.engine.io.ProjectImportExportConstant.VPHS;
-import static edu.trafficsim.engine.io.ProjectImportExportConstant.WARMUP;
-import static edu.trafficsim.engine.io.ProjectImportExportConstant.WIDTH;
+import static edu.trafficsim.engine.io.ProjectImportExportConstant.*;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -72,21 +31,21 @@ import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.io.ParseException;
 
+import edu.trafficsim.api.model.Lane;
+import edu.trafficsim.api.model.Link;
+import edu.trafficsim.api.model.Network;
+import edu.trafficsim.api.model.Node;
+import edu.trafficsim.api.model.Od;
+import edu.trafficsim.api.model.OdMatrix;
+import edu.trafficsim.api.model.RoadInfo;
+import edu.trafficsim.api.model.TypesComposition;
 import edu.trafficsim.engine.network.NetworkFactory;
 import edu.trafficsim.engine.od.OdFactory;
 import edu.trafficsim.engine.simulation.SimulationProject;
+import edu.trafficsim.engine.simulation.SimulationProjectBuilder;
 import edu.trafficsim.engine.simulation.SimulationSettings;
 import edu.trafficsim.engine.type.TypesFactory;
 import edu.trafficsim.engine.type.TypesManager;
-import edu.trafficsim.model.Lane;
-import edu.trafficsim.model.Link;
-import edu.trafficsim.model.Network;
-import edu.trafficsim.model.Node;
-import edu.trafficsim.model.Od;
-import edu.trafficsim.model.OdMatrix;
-import edu.trafficsim.model.RoadInfo;
-import edu.trafficsim.model.TypesComposition;
-import edu.trafficsim.model.core.ModelInputException;
 import edu.trafficsim.util.JsonSerializer;
 import edu.trafficsim.util.WktUtils;
 
@@ -100,8 +59,7 @@ final class ProjectJsonImporter {
 	public static SimulationProject importProject(InputStream in,
 			NetworkFactory networkFactory, OdFactory odFactory,
 			TypesFactory typesFactory, TypesManager typesManager)
-			throws JsonParseException, IOException, ParseException,
-			ModelInputException {
+			throws JsonParseException, IOException, ParseException {
 		JsonParser jsonParse = JsonSerializer.createJsonParser(in);
 		JsonNode rootNode = JsonSerializer.readTree(jsonParse);
 
@@ -112,19 +70,21 @@ final class ProjectJsonImporter {
 
 		// create network
 		JsonNode jsonNode = rootNode.get(NETWORK);
-		Long id = jsonNode.get(ID).asLong();
 		String name = jsonNode.get(NAME).asText();
-		Network network = networkFactory.createNetwork(id, name);
+		Network network = networkFactory.createNetwork(name);
 
+		Long id;
+		String desc;
 		// import nodes
 		jsonNode = rootNode.path(NETWORK).get(NODES);
 		for (int i = 0; i < jsonNode.size(); i++) {
 			JsonNode child = jsonNode.get(i);
 			id = child.get(ID).asLong();
-			name = child.get(NAME).asText();
+			desc = child.get(DESCRIPTION).asText();
 			Point pt = (Point) WktUtils.fromWKT(child.get(GEOM).asText());
 			String type = child.get(NODETYPE).asText();
-			Node node = networkFactory.createNode(id, name, type, pt);
+			Node node = networkFactory.createNode(id, type, pt);
+			node.setDescription(desc);
 			nodes.put(id, node);
 		}
 
@@ -133,10 +93,10 @@ final class ProjectJsonImporter {
 		for (int i = 0; i < jsonNode.size(); i++) {
 			JsonNode child = jsonNode.get(i);
 			id = child.get(ID).asLong();
-			name = child.get(NAME).asText();
+			name = child.get(ROADNAME).asText();
 			Long roadId = child.get(ROADID).asLong();
 			String highway = child.get(HIGHWAY).asText();
-			RoadInfo info = networkFactory.createRoadInfo(id, name, roadId,
+			RoadInfo info = networkFactory.createRoadInfo(id, roadId, name,
 					highway);
 			roadInfos.put(id, info);
 		}
@@ -146,15 +106,16 @@ final class ProjectJsonImporter {
 		for (int i = 0; i < jsonNode.size(); i++) {
 			JsonNode child = jsonNode.get(i);
 			id = child.get(ID).asLong();
-			name = child.get(NAME).asText();
+			desc = child.get(DESCRIPTION).asText();
 			LineString geom = (LineString) WktUtils.fromWKT(child.get(GEOM)
 					.asText());
 			String type = child.get(LINKTYPE).asText();
 			Node startNode = nodes.get(child.get(STARTNODE).asLong());
 			Node endNode = nodes.get(child.get(ENDNODE).asLong());
 			RoadInfo info = roadInfos.get(child.get(ROADINFO).asLong());
-			Link link = networkFactory.createLink(id, name, type, startNode,
-					endNode, geom, info);
+			Link link = networkFactory.createLink(id, type, startNode, endNode,
+					geom, info);
+			link.setDescription(desc);
 			network.add(link);
 			if (child.get(REVERSELINKID) != null) {
 				Long reverseId = child.get(REVERSELINKID).asLong();
@@ -195,8 +156,7 @@ final class ProjectJsonImporter {
 				id = grandChild.get(ID).asLong();
 				Lane laneFrom = lanes.get(grandChild.get(FROMLANE).asLong());
 				Lane laneTo = lanes.get(grandChild.get(TOLANE).asLong());
-				double width = grandChild.get(WIDTH).asDouble();
-				networkFactory.connect(id, laneFrom, laneTo, width);
+				networkFactory.connect(id, laneFrom, laneTo);
 			}
 		}
 
@@ -245,14 +205,12 @@ final class ProjectJsonImporter {
 		name = jsonNode.get(NAME).asText();
 		// ignore network name in file
 		// String networkName = jsonNode.get(NETWORKNAME).asText();
-		OdMatrix odMatrix = odFactory.createOdMatrix(id, name,
-				network.getName());
+		OdMatrix odMatrix = odFactory.createOdMatrix(name, network.getName());
 
 		jsonNode = jsonNode.path(ODS);
 		for (int i = 0; i < jsonNode.size(); i++) {
 			JsonNode child = jsonNode.get(i);
 			id = child.get(ID).asLong();
-			name = child.get(NAME).asText();
 			Long origin = child.get(ORIGIN).asLong();
 			Long destination = child.get(DESTINATION).asLong();
 			String vc = child.get(VEHICLECOMPOSITION).asText();
@@ -266,7 +224,7 @@ final class ProjectJsonImporter {
 			for (int j = 0; j < grandChild.size(); j++)
 				vphs[j] = grandChild.get(j).asInt();
 
-			Od od = odFactory.createOd(id, name, origin,
+			Od od = odFactory.createOd(id, origin,
 					destination == NODESTINATION ? null : destination, vc, dc,
 					times, vphs);
 			odMatrix.add(od);
@@ -284,6 +242,7 @@ final class ProjectJsonImporter {
 		settings.setSeed(seed);
 		settings.setSd(sd);
 
-		return new SimulationProject(network, odMatrix, settings);
+		return new SimulationProjectBuilder().withNetwork(network)
+				.withOdMatrix(odMatrix).withSettings(settings).build();
 	}
 }

@@ -20,7 +20,6 @@ package edu.trafficsim.model.events;
 import com.vividsolutions.jts.geom.Point;
 
 import edu.trafficsim.model.core.AbstractLocation;
-import edu.trafficsim.model.core.ModelInputException;
 
 /**
  * 
@@ -29,25 +28,20 @@ import edu.trafficsim.model.core.ModelInputException;
  * @param <T>
  *            the generic type
  */
-public abstract class PointEvent<T> extends AbstractEvent<T> {
+public abstract class PointEvent extends AbstractEvent {
 
 	private static final long serialVersionUID = 1L;
 
-	/**
-	 * 
-	 * 
-	 * @author Xuan Shi
-	 */
-	public static class EventLocation extends AbstractLocation<EventLocation> {
+	public static class EventLocation extends AbstractLocation {
 
 		private static final long serialVersionUID = 1L;
 
 		public EventLocation(long id, String name, Point point) {
-			super(id, name, point);
+			super(id, point);
 		}
 
 		@Override
-		public void onGeomUpdated() throws ModelInputException {
+		public void onGeomUpdated() {
 		}
 
 	}
@@ -57,7 +51,7 @@ public abstract class PointEvent<T> extends AbstractEvent<T> {
 
 	public PointEvent(long id, String name, double startTime, double endTime,
 			Point point) {
-		super(id, name, startTime, endTime);
+		super(id, startTime, endTime);
 		// reorganize
 		// location = new EventLocation(point);
 	}

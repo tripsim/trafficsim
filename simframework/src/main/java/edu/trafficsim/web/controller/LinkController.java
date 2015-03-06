@@ -18,10 +18,10 @@
 package edu.trafficsim.web.controller;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -34,11 +34,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
+import edu.trafficsim.api.model.Link;
+import edu.trafficsim.api.model.Network;
+import edu.trafficsim.api.model.OdMatrix;
 import edu.trafficsim.engine.network.NetworkFactory;
-import edu.trafficsim.model.Link;
-import edu.trafficsim.model.Network;
-import edu.trafficsim.model.OdMatrix;
-import edu.trafficsim.model.core.ModelInputException;
 import edu.trafficsim.web.Sequence;
 import edu.trafficsim.web.service.MapJsonService;
 import edu.trafficsim.web.service.entity.NetworkService;
@@ -116,26 +115,22 @@ public class LinkController extends AbstractController {
 			@RequestParam("id") long id,
 			@ModelAttribute("network") Network network,
 			@ModelAttribute("odMatrix") OdMatrix odMatrix) {
-		try {
-			Link reverse = network.getLink(id).getReverseLink();
-			Map<String, Object> data = new HashMap<String, Object>();
-			for (Map.Entry<String, Set<String>> entry : networkService
-					.removeLink(network, odMatrix, id).entrySet()) {
-				data.put(entry.getKey(), entry.getValue());
-			}
-			if (reverse != null) {
-				data.put(
-						"lanesconnectors",
-						mapJsonService.getLanesConnectorsJson(network,
-								reverse.getId()));
-			} else {
-				data.put("lanesconnectors",
-						mapJsonService.getEmptyLanesConnectorsJson());
-			}
-			return successResponse("Link removed.", null, data);
-		} catch (ModelInputException e) {
-			return failureResponse(e);
+		Link reverse = network.getLink(id).getReverseLink();
+		Map<String, Object> data = new HashMap<String, Object>();
+		for (Map.Entry<String, Collection<String>> entry : networkService
+				.removeLink(network, odMatrix, id).entrySet()) {
+			data.put(entry.getKey(), entry.getValue());
 		}
+		if (reverse != null) {
+			data.put(
+					"lanesconnectors",
+					mapJsonService.getLanesConnectorsJson(network,
+							reverse.getId()));
+		} else {
+			data.put("lanesconnectors",
+					mapJsonService.getEmptyLanesConnectorsJson());
+		}
+		return successResponse("Link removed.", null, data);
 	}
 
 	@RequestMapping(value = "/createreverse", method = RequestMethod.POST)
@@ -143,17 +138,11 @@ public class LinkController extends AbstractController {
 			@RequestParam("id") long id,
 			@ModelAttribute("sequence") Sequence sequence,
 			@ModelAttribute("network") Network network) {
-		try {
-			Link reverse = networkService.createReverseLink(sequence, network,
-					id);
-			Map<String, Object> data = new HashMap<String, Object>();
-			data.put("link",
-					mapJsonService.getLinkJson(network, reverse.getId()));
-			data.put("lanesconnectors",
-					mapJsonService.getLanesConnectorsJson(network, id));
-			return successResponse("Link removed.", "link/view/" + id, data);
-		} catch (ModelInputException e) {
-			return failureResponse(e);
-		}
+		Link reverse = networkService.createReverseLink(sequence, network, id);
+		Map<String, Object> data = new HashMap<String, Object>();
+		data.put("link", mapJsonService.getLinkJson(network, reverse.getId()));
+		data.put("lanesconnectors",
+				mapJsonService.getLanesConnectorsJson(network, id));
+		return successResponse("Link removed.", "link/view/" + id, data);
 	}
 }

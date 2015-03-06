@@ -8,10 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import edu.trafficsim.api.model.OdMatrix;
 import edu.trafficsim.data.dom.OdMatrixDo;
 import edu.trafficsim.engine.demo.DemoBuilder;
-import edu.trafficsim.model.OdMatrix;
-import edu.trafficsim.model.core.ModelInputException;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/simengine-test.xml")
@@ -24,7 +23,7 @@ public class OdConverterTest {
 	OdConverter converter;
 
 	@Test
-	public void test() throws ModelInputException {
+	public void test() {
 		OdMatrix odMatrix = demoBuilder.getDemo().getOdMatrix();
 		OdMatrixDo entity = converter.toOdMatrixDo(odMatrix);
 		logger.info("{}", entity);

@@ -27,10 +27,9 @@ import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonParseException;
 
+import edu.trafficsim.api.model.Network;
 import edu.trafficsim.engine.network.NetworkExtractResult;
 import edu.trafficsim.engine.network.NetworkExtractor;
-import edu.trafficsim.model.Network;
-import edu.trafficsim.model.core.ModelInputException;
 import edu.trafficsim.web.Sequence;
 
 /**
@@ -49,8 +48,8 @@ public class OsmImportService extends EntityService {
 	NetworkExtractor extractor;
 
 	public Network createNetwork(String url, String bbox, String highway,
-			Sequence sequence) throws ModelInputException, JsonParseException,
-			ProtocolException, IOException, XMLStreamException {
+			Sequence sequence) throws JsonParseException, ProtocolException,
+			IOException, XMLStreamException {
 
 		String highwayQuery = OsmHighwayValue.valueOf(highway) == null ? OsmHighwayValue.All.queryValue
 				: OsmHighwayValue.valueOf(highway).queryValue;

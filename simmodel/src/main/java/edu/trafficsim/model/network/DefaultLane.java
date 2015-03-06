@@ -17,92 +17,123 @@
  */
 package edu.trafficsim.model.network;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
-import edu.trafficsim.model.ConnectionLane;
-import edu.trafficsim.model.Lane;
-import edu.trafficsim.model.Link;
-import edu.trafficsim.model.core.ModelInputException;
+import edu.trafficsim.api.model.Connector;
+import edu.trafficsim.api.model.Lane;
+import edu.trafficsim.api.model.Link;
+import edu.trafficsim.api.model.Path;
+import edu.trafficsim.model.core.AbstractArcSection;
 
 /**
  * 
  * 
  * @author Xuan Shi
  */
-public class DefaultLane extends AbstractLane<DefaultLane> {
+public class DefaultLane extends AbstractArcSection implements Lane {
 
 	private static final long serialVersionUID = 1L;
 
-	private int laneId;
+	private boolean auxiliary;
+	private int lanePosition;
 
 	public DefaultLane(long id, Link link, double start, double end,
-			double width) throws ModelInputException {
+			double width) {
 		super(id, link, start, end, width, 0);
-		this.laneId = -2;
+		this.lanePosition = -2;
 		link.add(this);
-		onGeomUpdated();
 	}
 
 	@Override
-	public final String getName() {
-		return segment.getName() + " " + laneId;
+	public Link getLink() {
+		return (Link) parent;
 	}
 
 	@Override
-	public int getLaneId() {
-		return laneId;
+	public boolean isAuxiliary() {
+		return auxiliary;
+	}
+
+	public void setAuxiliary(boolean auxiliary) {
+		this.auxiliary = auxiliary;
 	}
 
 	@Override
-	public void setLaneId(int laneId) {
-		this.laneId = laneId;
+	public int getLanePosition() {
+		return lanePosition;
 	}
 
 	@Override
-	public int compareTo(DefaultLane lane) {
-		if (!segment.equals(lane.getSegment()))
+	public void setLanePosition(int lanePosition) {
+		this.lanePosition = lanePosition;
+	}
+
+	@Override
+	public int compareTo(Object o) {
+		if (!(o instanceof Lane)) {
+			throw new ClassCastException("cannot compare with non Lane Object!");
+		}
+		Lane lane = (Lane) o;
+
+		if (!getLink().equals(lane.getLink())) {
 			return super.compareTo(lane);
-		return laneId > lane.laneId ? 1 : (laneId > lane.laneId ? -1 : 0);
-	}
-
-	@Override
-	public void onGeomUpdated() throws ModelInputException {
-		super.onGeomUpdated();
-		for (ConnectionLane connectionLane : getToConnectors()) {
-			connectionLane.onGeomUpdated();
 		}
-		for (ConnectionLane connectionLane : getFromConnectors()) {
-			connectionLane.onGeomUpdated();
-		}
+		return lanePosition > lane.getLanePosition() ? 1 : (lanePosition > lane
+				.getLanePosition() ? -1 : 0);
 	}
 
 	@Override
-	public Collection<ConnectionLane> getToConnectors() {
-		return getLink().getEndNode().getInConnectors(this);
+	public Collection<Connector> getOutConnectors() {
+		return getLink().getEndNode().getConnectorsFromLane(this);
 	}
 
 	@Override
-	public Collection<ConnectionLane> getFromConnectors() {
-		return getLink().getStartNode().getOutConnectors(this);
+	public Collection<Connector> getInConnectors() {
+		return getLink().getStartNode().getConnectorsToLane(this);
 	}
 
 	@Override
-	protected void onShiftUpdate(double offset) throws ModelInputException {
+	protected void onShiftUpdate(double offset) {
 
 	}
 
 	@Override
-	protected void onWidthUpdate(double offset) throws ModelInputException {
+	protected void onWidthUpdate(double offset) {
 		this.setShift(shift + offset / 2, false);
-		Lane[] lanes = getLink().getLanes();
+		List<Lane> lanes = getLink().getLanes();
 		if (getLink().getReverseLink() == null) {
-			for (int i = laneId + 1; i < lanes.length; i++) {
-				lanes[i].setShift(lanes[i].getShift() + offset, false);
+			for (int i = lanePosition + 1; i < lanes.size(); i++) {
+				Lane lane = lanes.get(i);
+				lane.setShift(lane.getShift() + offset, false);
 			}
 		} else {
-			for (int i = laneId + 1; i < lanes.length; i++) {
-				lanes[i].setShift(lanes[i].getShift() + offset / 2, false);
+			for (int i = lanePosition + 1; i < lanes.size(); i++) {
+				Lane lane = lanes.get(i);
+				lane.setShift(lane.getShift() + offset / 2, false);
 			}
 		}
 	}
+
+	@Override
+	public void onGeomUpdated() {
+		super.onGeomUpdated();
+		for (Connector connector : getOutConnectors()) {
+			connector.onGeomUpdated();
+		}
+		for (Connector connector : getInConnectors()) {
+			connector.onGeomUpdated();
+		}
+	}
+
+	@Override
+	public Collection<? extends Path> getExits() {
+		List<Lane> exits = new ArrayList<Lane>();
+		for (Connector connector : getOutConnectors()) {
+			exits.add(connector.getToLane());
+		}
+		return exits;
+	}
+
 }

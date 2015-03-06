@@ -17,27 +17,24 @@
  */
 package edu.trafficsim.engine.od;
 
-import edu.trafficsim.model.Link;
-import edu.trafficsim.model.Od;
-import edu.trafficsim.model.OdMatrix;
-import edu.trafficsim.model.TurnPercentage;
-import edu.trafficsim.model.core.ModelInputException;
+import edu.trafficsim.api.model.Link;
+import edu.trafficsim.api.model.Od;
+import edu.trafficsim.api.model.OdMatrix;
+import edu.trafficsim.api.model.TurnPercentage;
 
 /**
  * A factory for creating Od objects.
  */
 public interface OdFactory {
 
-	OdMatrix createOdMatrix(Long id, String networkName);
+	OdMatrix createOdMatrix(String networkName);
 
-	OdMatrix createOdMatrix(Long id, String name, String networkName);
+	OdMatrix createOdMatrix(String name, String networkName);
 
-	Od createOd(Long id, String name, Long originNodeId,
-			Long destinationNodeId, String vehicleTypeComposition,
-			String driverTypeComposition, double[] times, Integer[] vphs)
-			throws ModelInputException;
+	Od createOd(Long id, Long originNodeId, Long destinationNodeId,
+			String vehicleTypeComposition, String driverTypeComposition,
+			double[] times, Integer[] vphs);
 
 	TurnPercentage createTurnPercentage(String name, Link upstream,
-			Link[] downstreams, double[] percentages)
-			throws ModelInputException;
+			Link[] downstreams, double[] percentages);
 }

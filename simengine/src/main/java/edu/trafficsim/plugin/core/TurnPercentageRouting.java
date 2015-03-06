@@ -21,11 +21,13 @@ import java.util.Random;
 
 import org.springframework.stereotype.Component;
 
-import edu.trafficsim.model.Link;
-import edu.trafficsim.model.OdMatrix;
-import edu.trafficsim.model.TurnPercentage;
-import edu.trafficsim.model.VehicleClass;
-import edu.trafficsim.model.util.Randoms;
+import edu.trafficsim.api.model.Link;
+import edu.trafficsim.api.model.Node;
+import edu.trafficsim.api.model.OdMatrix;
+import edu.trafficsim.api.model.TurnPercentage;
+import edu.trafficsim.api.model.VehicleClass;
+import edu.trafficsim.engine.simulation.SimulationEnvironment;
+import edu.trafficsim.util.Randoms;
 
 /**
  * 
@@ -38,12 +40,21 @@ public class TurnPercentageRouting extends AbstractRouting {
 	private static final long serialVersionUID = 1L;
 
 	@Override
-	public Link getSucceedingLink(OdMatrix odMatrix, Link precedingLink,
-			VehicleClass vehicleClass, double forwardedTime, Random rand) {
-		TurnPercentage turnPercentage = odMatrix.getTurnPercentage(
-				precedingLink, vehicleClass, forwardedTime);
+	public String getName() {
+		return "Turn Percentage Routing";
+	}
+
+	@Override
+	public Link searchNextLink(SimulationEnvironment environment,
+			Link currentLink, Node Destination, VehicleClass vehicleClass) {
+		OdMatrix odMatrix = environment.getOdMatrix();
+		double forwardedTime = environment.getForwardedTime();
+		Random random = environment.getRandom();
+
+		TurnPercentage turnPercentage = odMatrix.getTurnPercentage(currentLink,
+				vehicleClass, forwardedTime);
 		return turnPercentage != null ? Randoms.randomElement(turnPercentage,
-				rand) : getSucceedingLink(precedingLink, vehicleClass,
-				forwardedTime, rand);
+				random) : randomSucceedingLink(environment,
+				currentLink.getEndNode());
 	}
 }

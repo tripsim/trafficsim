@@ -26,13 +26,12 @@ import java.util.Set;
 
 import com.vividsolutions.jts.geom.Point;
 
-import edu.trafficsim.model.ConnectionLane;
-import edu.trafficsim.model.Lane;
-import edu.trafficsim.model.Link;
-import edu.trafficsim.model.Node;
+import edu.trafficsim.api.model.Connector;
+import edu.trafficsim.api.model.Lane;
+import edu.trafficsim.api.model.Link;
+import edu.trafficsim.api.model.Node;
 import edu.trafficsim.model.core.AbstractLocation;
-import edu.trafficsim.model.core.ModelInputException;
-import edu.trafficsim.model.core.MultiValuedMap;
+import edu.trafficsim.util.MultiValuedMap;
 
 /**
  * 
@@ -41,8 +40,7 @@ import edu.trafficsim.model.core.MultiValuedMap;
  * @param <T>
  *            the generic type
  */
-public abstract class AbstractNode<T> extends AbstractLocation<T> implements
-		Node {
+public abstract class AbstractNode extends AbstractLocation implements Node {
 
 	private static final long serialVersionUID = 1L;
 
@@ -52,30 +50,30 @@ public abstract class AbstractNode<T> extends AbstractLocation<T> implements
 	private final Set<Link> upstreams = new HashSet<Link>();
 
 	// TODO may not need to maps
-	private final MultiValuedMap<Lane, ConnectionLane> inConnectors = new MultiValuedMap<Lane, ConnectionLane>(
+	private final MultiValuedMap<Lane, Connector> inConnectors = new MultiValuedMap<Lane, Connector>(
 			DEFAULT_INITIAL_CONNECTOR_MAP_CAPACITY);
-	private final MultiValuedMap<Lane, ConnectionLane> outConnectors = new MultiValuedMap<Lane, ConnectionLane>(
+	private final MultiValuedMap<Lane, Connector> outConnectors = new MultiValuedMap<Lane, Connector>(
 			DEFAULT_INITIAL_CONNECTOR_MAP_CAPACITY);
 
-	public AbstractNode(long id, String name, Point point, double radius) {
-		super(id, name, point, radius);
+	public AbstractNode(long id, Point point, double radius) {
+		super(id, point, radius);
 	}
 
 	@Override
-	public final void add(Link link) throws ModelInputException {
+	public final void add(Link link) {
 		if (link.getEndNode() == this)
 			upstreams.add(link);
 		else if (link.getStartNode() == this)
 			downstreams.add(link);
 		else
-			throw new ModelInputException(
+			throw new IllegalStateException(
 					"The link doesn't start or end from the node.");
 	}
 
 	@Override
 	public final void removeUpstream(Link link) {
 		upstreams.remove(link);
-		for (ConnectionLane connector : getInConnectors(link)) {
+		for (Connector connector : getConnectorsFromLink(link)) {
 			remove(connector);
 		}
 	}
@@ -83,23 +81,23 @@ public abstract class AbstractNode<T> extends AbstractLocation<T> implements
 	@Override
 	public final void removeDownstream(Link link) {
 		downstreams.remove(link);
-		for (ConnectionLane connector : getOutConnectors(link)) {
+		for (Connector connector : getConnectorsToLink(link)) {
 			remove(connector);
 		}
 	}
 
 	@Override
-	public final boolean upstream(Link link) {
+	public final boolean isUpstream(Link link) {
 		return upstreams.contains(link);
 	}
 
 	@Override
-	public final boolean downstream(Link link) {
+	public final boolean isDownstream(Link link) {
 		return downstreams.contains(link);
 	}
 
 	@Override
-	public Link getFromNode(Node node) {
+	public Link getLinkFromNode(Node node) {
 		for (Link link : upstreams)
 			if (link.getStartNode() == node)
 				return link;
@@ -107,7 +105,7 @@ public abstract class AbstractNode<T> extends AbstractLocation<T> implements
 	}
 
 	@Override
-	public Link getToNode(Node node) {
+	public Link getLinkToNode(Node node) {
 		for (Link link : downstreams)
 			if (link.getEndNode() == node)
 				return link;
@@ -125,26 +123,26 @@ public abstract class AbstractNode<T> extends AbstractLocation<T> implements
 	}
 
 	@Override
-	public Collection<ConnectionLane> getConnectors() {
-		List<ConnectionLane> allConnectors = new ArrayList<ConnectionLane>();
+	public Collection<Connector> getConnectors() {
+		List<Connector> allConnectors = new ArrayList<Connector>();
 		allConnectors.addAll(inConnectors.values());
 		allConnectors.addAll(outConnectors.values());
 		return Collections.unmodifiableCollection(allConnectors);
 	}
 
 	@Override
-	public Collection<ConnectionLane> getInConnectors(Lane fromLane) {
+	public Collection<Connector> getConnectorsFromLane(Lane fromLane) {
 		return inConnectors.get(fromLane);
 	}
 
 	@Override
-	public Collection<ConnectionLane> getOutConnectors(Lane toLane) {
+	public Collection<Connector> getConnectorsToLane(Lane toLane) {
 		return outConnectors.get(toLane);
 	}
 
 	@Override
-	public Collection<ConnectionLane> getInConnectors(Link fromLink) {
-		List<ConnectionLane> allConnectors = new ArrayList<ConnectionLane>();
+	public Collection<Connector> getConnectorsFromLink(Link fromLink) {
+		List<Connector> allConnectors = new ArrayList<Connector>();
 		for (Lane lane : fromLink.getLanes()) {
 			allConnectors.addAll(inConnectors.get(lane));
 		}
@@ -152,8 +150,8 @@ public abstract class AbstractNode<T> extends AbstractLocation<T> implements
 	}
 
 	@Override
-	public Collection<ConnectionLane> getOutConnectors(Link toLink) {
-		List<ConnectionLane> allConnectors = new ArrayList<ConnectionLane>();
+	public Collection<Connector> getConnectorsToLink(Link toLink) {
+		List<Connector> allConnectors = new ArrayList<Connector>();
 		for (Lane lane : toLink.getLanes()) {
 			allConnectors.addAll(outConnectors.get(lane));
 		}
@@ -161,8 +159,8 @@ public abstract class AbstractNode<T> extends AbstractLocation<T> implements
 	}
 
 	@Override
-	public ConnectionLane getConnector(Lane fromLane, Lane toLane) {
-		for (ConnectionLane connector : inConnectors.get(fromLane)) {
+	public Connector getConnector(Lane fromLane, Lane toLane) {
+		for (Connector connector : inConnectors.get(fromLane)) {
 			if (connector.getToLane() == toLane)
 				return connector;
 		}
@@ -170,9 +168,9 @@ public abstract class AbstractNode<T> extends AbstractLocation<T> implements
 	}
 
 	@Override
-	public Collection<ConnectionLane> getConnectors(Lane fromLane, Link toLink) {
-		List<ConnectionLane> newConnectors = new ArrayList<ConnectionLane>();
-		for (ConnectionLane connector : inConnectors.get(fromLane)) {
+	public Collection<Connector> getConnectors(Lane fromLane, Link toLink) {
+		List<Connector> newConnectors = new ArrayList<Connector>();
+		for (Connector connector : inConnectors.get(fromLane)) {
 			if (connector.getToLane().getLink() == toLink)
 				newConnectors.add(connector);
 		}
@@ -180,13 +178,13 @@ public abstract class AbstractNode<T> extends AbstractLocation<T> implements
 	}
 
 	@Override
-	public void add(ConnectionLane connector) {
+	public void add(Connector connector) {
 		inConnectors.add(connector.getFromLane(), connector);
 		outConnectors.add(connector.getToLane(), connector);
 	}
 
 	@Override
-	public void remove(ConnectionLane connector) {
+	public void remove(Connector connector) {
 		inConnectors.remove(connector.getFromLane(), connector);
 		outConnectors.remove(connector.getToLane(), connector);
 	}
@@ -220,7 +218,13 @@ public abstract class AbstractNode<T> extends AbstractLocation<T> implements
 	}
 
 	@Override
-	public void onGeomUpdated() throws ModelInputException {
-		// TODO trimming lane linear geom if necessary (Coordinates.trimxxxx)
+	public void onLaneAdded(Lane lane) {
+
+	}
+
+	@Override
+	public void onLaneRemoved(int lanePosition, Lane lane) {
+		inConnectors.remove(lane);
+		outConnectors.remove(lane);
 	}
 }
