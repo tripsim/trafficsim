@@ -120,7 +120,8 @@ abstract class AbstractMicroScopicSimulating extends AbstractPlugin implements
 				AbstractMicroScopicSimulating.this.moveVehicle(environment,
 						vehicle, stream, web);
 			} catch (IllegalStateException e) {
-				logger.warn(e.getMessage());
+				logger.warn("Exception-------------------------" + e.getMessage()
+						+ "-------------------------");
 				vehicle.deactivate();
 			}
 		}
@@ -141,6 +142,7 @@ abstract class AbstractMicroScopicSimulating extends AbstractPlugin implements
 				Lane lane = Randoms.randomElement(link.getMainLanes(),
 						environment.getRandom());
 				link = environment.getNextLinkInRoute(newVehicle);
+				// move on to the link, and set the target exit link
 				newVehicle.goToNextLinkAndSetNew(link);
 				VehicleStream stream = web.getStream(lane);
 				stream.moveIn(newVehicle, null);

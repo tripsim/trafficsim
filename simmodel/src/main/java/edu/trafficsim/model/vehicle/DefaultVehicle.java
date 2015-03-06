@@ -200,13 +200,20 @@ public class DefaultVehicle extends MovingObject implements Vehicle {
 
 	@Override
 	public void goToNextLinkAndSetNew(Link nextLink) {
+		if (this.currentLink == nextLink) {
+			throw new IllegalArgumentException("cannot move from "
+					+ this.currentLink + " to " + nextLink);
+		}
 		this.currentLink = this.nextLink;
 		this.nextLink = nextLink;
 	}
 
 	@Override
 	public String toString() {
-		return "Vehicle-" + getId();
+		return "Vehicle [id=" + getId() + ", position=" + getPosition()
+				+ ", speed=" + getSpeed() + ", accel=" + getAcceleration()
+				+ ", currentLink=" + currentLink + ", nextLink=" + nextLink
+				+ "]";
 	}
 
 	@Override

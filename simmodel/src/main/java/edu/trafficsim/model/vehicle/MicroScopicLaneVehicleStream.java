@@ -69,10 +69,6 @@ public class MicroScopicLaneVehicleStream implements VehicleStream {
 				: resolveExitConnector(vehicle).getToLane();
 	}
 
-	private final Connector resolveExitConnector(Vehicle vehicle) {
-		return preferedExitConnectors.get(vehicle);
-	}
-
 	private Connector resolveEntranceConnector(Vehicle vehicle) {
 		for (Map.Entry<Connector, VehicleQueue> entry : entranceConnectorQueues
 				.entrySet()) {
@@ -92,6 +88,10 @@ public class MicroScopicLaneVehicleStream implements VehicleStream {
 		return null;
 	}
 
+	private final Connector resolveExitConnector(Vehicle vehicle) {
+		return preferedExitConnectors.get(vehicle);
+	}
+
 	private final Connector resolveAndSetPreferredConnector(Vehicle vehicle) {
 		for (Connector connector : exitConnectorQueues.keySet()) {
 			Lane toLane = connector.getToLane();
@@ -100,7 +100,8 @@ public class MicroScopicLaneVehicleStream implements VehicleStream {
 				return connector;
 			}
 		}
-		return null;
+		preferedExitConnectors.put(vehicle, exitTerminal);
+		return exitTerminal;
 	}
 
 	@Override
@@ -117,7 +118,7 @@ public class MicroScopicLaneVehicleStream implements VehicleStream {
 	}
 
 	private double getExitLength() {
-		return lane.getEndOffset();
+		return -lane.getEndOffset();
 	}
 
 	@Override
@@ -137,9 +138,9 @@ public class MicroScopicLaneVehicleStream implements VehicleStream {
 		return isEmpty(exitConnectorQueues.values());
 	}
 
-	private boolean isEmpty(Collection<VehicleQueue> queues) {
+	private static boolean isEmpty(Collection<VehicleQueue> queues) {
 		boolean result = false;
-		for (VehicleQueue queue : exitConnectorQueues.values()) {
+		for (VehicleQueue queue : queues) {
 			result = result && queue.isEmpty();
 		}
 		return result;
@@ -168,11 +169,16 @@ public class MicroScopicLaneVehicleStream implements VehicleStream {
 		return result;
 	}
 
+	private static void checkVehicle(Vehicle vehicle) {
+		if (vehicle == null) {
+			throw new IllegalStateException(
+					"Cannot execute method with null vehicle!");
+		}
+	}
+
 	@Override
 	public Vehicle getLeadingVehicle(Vehicle vehicle) {
-		if (vehicle == null) {
-			throw new IllegalStateException("vehicle cannot be null!");
-		}
+		checkVehicle(vehicle);
 		double position = vehicle.getPosition();
 		if (isInEntrance(position)) {
 			return getLeadingVehicleInEntrance(vehicle);
@@ -236,9 +242,7 @@ public class MicroScopicLaneVehicleStream implements VehicleStream {
 
 	@Override
 	public Vehicle getFollowingVehicle(Vehicle vehicle) {
-		if (vehicle == null) {
-			throw new IllegalStateException("vehicle cannot be null!");
-		}
+		checkVehicle(vehicle);
 		double position = vehicle.getPosition();
 		if (isInEntrance(position)) {
 			return getFollowingVehicleInEntrance(vehicle);
@@ -302,12 +306,12 @@ public class MicroScopicLaneVehicleStream implements VehicleStream {
 
 	@Override
 	public boolean isHead(Vehicle vehicle) {
-		return getHeadVehicle() == null ? false : getHeadVehicle() == vehicle;
+		return vehicle == null ? false : getHeadVehicle() == vehicle;
 	}
 
 	@Override
 	public boolean isTail(Vehicle vehicle) {
-		return getTailVehicle() == null ? false : getTailVehicle() == vehicle;
+		return vehicle == null ? false : getTailVehicle() == vehicle;
 	}
 
 	@Override
@@ -435,10 +439,18 @@ public class MicroScopicLaneVehicleStream implements VehicleStream {
 
 	@Override
 	public boolean updateVehiclePosition(Vehicle vehicle, double newPosition) {
+		/*****************************************
+		 * HACK always remove the vehicle from the vehicle queue, and add back
+		 * if still in queue for TreeMap ordering purposes
+		 ******************************************/
+
+		checkVehicle(vehicle);
+
 		// vehicle moving backwards
 		if (newPosition < vehicle.getPosition()) {
-			throw new IllegalStateException("Vehicle " + vehicle
-					+ " is running backwards by the algorithm!");
+			remove(vehicle);
+			throw new IllegalStateException("vehicle '" + vehicle
+					+ "' is running backwards by the algorithm!");
 		}
 
 		// check if it has enough gap in the front
@@ -446,16 +458,21 @@ public class MicroScopicLaneVehicleStream implements VehicleStream {
 		if (newPosition - vehicle.getPosition() > frontGap) {
 			// if it is head vehicle it is getting out of the path
 			if (isHead(vehicle)) {
-				logger.debug("vehicle gets out path {}!", lane);
-				vehicle.setPosition(newPosition - getPathLength());
+				logger.info("{} gets out path {}!", vehicle, lane);
 				remove(vehicle);
+				vehicle.setPosition(newPosition - getPathLength());
 				return false;
 			}
 			throw new IllegalStateException(
-					"vehicle run forwards and collide by algorithm!");
+					"vehicle rear end leading vehicle: ' " + vehicle
+							+ "' run forwards to new position " + newPosition
+							+ " and collide with '"
+							+ getLeadingVehicle(vehicle) + "'by algorithm!");
 		}
 
+		remove(vehicle);
 		vehicle.setPosition(newPosition);
+		add(vehicle, null);
 		onVehicleMoved(vehicle);
 		return true;
 	}
@@ -476,13 +493,18 @@ public class MicroScopicLaneVehicleStream implements VehicleStream {
 			Arc arc = resolveExitConnector(vehicle);
 			vehicle.onMoved(arc, position - getEntranceLength()
 					- getMainLength());
+			logger.error("{} {} {}", vehicle, arc, position
+					- getEntranceLength() - getMainLength());
+			return;
 		}
-		throw new IllegalStateException(
-				"try to update an vehicle that doesn't fit in the stream any more!");
+		throw new IllegalStateException("try to update an vehicle '" + vehicle
+				+ "' that should have gone out of the stream [length="
+				+ getPathLength() + "]!");
 	}
 
 	@Override
 	public boolean moveIn(Vehicle vehicle, Path fromPath) {
+		checkVehicle(vehicle);
 		resolveAndSetPreferredConnector(vehicle);
 		// vehicle is newly created, append to tail
 		if (vehicle.getPosition() < 0) {
@@ -500,7 +522,8 @@ public class MicroScopicLaneVehicleStream implements VehicleStream {
 			return add(vehicle, fromPath);
 		}
 		throw new IllegalStateException(
-				"Vehicle collides with the tail vehicle in the stream!");
+				"vehicle collides with the tail vehicle in the stream: "
+						+ vehicle);
 	}
 
 	// Adding from generator
@@ -519,12 +542,14 @@ public class MicroScopicLaneVehicleStream implements VehicleStream {
 
 	@Override
 	public boolean mergeIn(Vehicle vehicle, Path fromPath) {
+		checkVehicle(vehicle);
 		resolveAndSetPreferredConnector(vehicle);
 		return add(vehicle, fromPath);
 	}
 
 	@Override
 	public Path moveOrMergeOut(Vehicle vehicle) {
+		checkVehicle(vehicle);
 		remove(vehicle);
 		return lane;
 	}
@@ -598,6 +623,7 @@ public class MicroScopicLaneVehicleStream implements VehicleStream {
 
 	@Override
 	public void removeInactive(Vehicle vehicle) {
+		checkVehicle(vehicle);
 		if (!vehicle.isActive()) {
 			remove(vehicle);
 		}

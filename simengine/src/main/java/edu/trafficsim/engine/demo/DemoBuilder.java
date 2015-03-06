@@ -112,11 +112,11 @@ public class DemoBuilder {
 
 		// Nodes
 		String nodeType = typesManager.getDefaultNodeTypeName();
-		Node node1 = networkFactory.createNode(id++, nodeType, new Coordinate(
+		Node node1 = networkFactory.createNode(1l, nodeType, new Coordinate(
 				coord53596818));
-		Node node2 = networkFactory.createNode(id++, nodeType, new Coordinate(
+		Node node2 = networkFactory.createNode(2l, nodeType, new Coordinate(
 				coord1345424866));
-		Node node3 = networkFactory.createNode(id++, nodeType, new Coordinate(
+		Node node3 = networkFactory.createNode(3l, nodeType, new Coordinate(
 				coord53607075));
 		node1.setDescription("Johnson at Randall");
 		node2.setDescription("Johnson at Orchardl");
@@ -125,9 +125,9 @@ public class DemoBuilder {
 		// Node node5 = networkFactory.createNode("Johnson at Park");
 		// Links
 		String linkType = typesManager.getDefaultLinkTypeName();
-		Link link1 = networkFactory.createLink(id++, linkType, node1, node2,
+		Link link1 = networkFactory.createLink(12l, linkType, node1, node2,
 				coords1, null);
-		Link link2 = networkFactory.createLink(id++, linkType, node2, node3,
+		Link link2 = networkFactory.createLink(23l, linkType, node2, node3,
 				coords2, null);
 		link1.setDescription("Johson1");
 		link2.setDescription("Johson2");
@@ -152,10 +152,10 @@ public class DemoBuilder {
 
 		// Lanes
 
-		List<Lane> lanes1 = networkFactory.createLanes(new Long[] { id++, id++,
-				id++ }, link1, 10, -10, 4);
-		List<Lane> lanes2 = networkFactory.createLanes(new Long[] { id++, id++,
-				id++ }, link2, 10, -10, 4);
+		List<Lane> lanes1 = networkFactory.createLanes(new Long[] { 121l, 122l,
+				123l }, link1, 10, -10, 4);
+		List<Lane> lanes2 = networkFactory.createLanes(new Long[] { 231l, 232l,
+				233l }, link2, 10, -10, 4);
 		// Connectors
 		networkFactory.connect(id++, lanes1.get(0), lanes2.get(0));
 		networkFactory.connect(id++, lanes1.get(1), lanes2.get(1));

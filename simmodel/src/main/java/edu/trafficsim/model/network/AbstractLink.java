@@ -50,6 +50,8 @@ public abstract class AbstractLink extends AbstractArc implements Link {
 	public AbstractLink(long id, Node startNode, Node endNode,
 			LineString linearGeom) {
 		super(id, linearGeom);
+		this.startNode = startNode;
+		this.endNode = endNode;
 		startNode.add(this);
 		endNode.add(this);
 

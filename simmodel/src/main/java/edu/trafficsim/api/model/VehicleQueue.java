@@ -21,6 +21,11 @@ public interface VehicleQueue extends Serializable {
 
 	void remove(Vehicle vehicle);
 
+	/**
+	 * Staged vehicles is not included
+	 * 
+	 * @return
+	 */
 	Collection<Vehicle> getVehicles();
 
 	boolean contains(Vehicle vehicle);

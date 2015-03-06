@@ -80,7 +80,7 @@ public abstract class AbstractVehicleGenerating extends AbstractPlugin
 			int num = numToGenerate(vph, environment.getStepSize(),
 					environment.getRandom(), environment.getRandomGenerator());
 			if (num < 1) {
-				logger.info("no vehicles to generate at time {}",
+				logger.debug("Time {}s: no vehicles to generate at ",
 						environment.getForwardedTime());
 				return Collections.emptyList();
 			}
@@ -144,7 +144,7 @@ public abstract class AbstractVehicleGenerating extends AbstractPlugin
 
 	private void afterCreatingVehicle(SimulationEnvironment environment,
 			Vehicle vehicle) {
-		logger.info("Time: {}s -- New Vehicle: {} --> {} --> {}",
+		logger.debug("Time: {}s -- New Vehicle created: {} --> {} --> {}",
 				environment.getForwardedTime(), vehicle.getId(),
 				vehicle.getVehicleType(), vehicle.getDriverType());
 	}

@@ -97,7 +97,7 @@ public class NavigableVehicleQueue implements VehicleQueue {
 		Iterator<Vehicle> iterator = stagedVehicles.iterator();
 		while (iterator.hasNext()) {
 			Vehicle vehicle = iterator.next();
-			add(vehicle);
+			addImediately(vehicle);
 			iterator.remove();
 		}
 	}

@@ -67,7 +67,7 @@ public abstract class MovingObject extends BaseObject implements Movable, Agent 
 
 	@Override
 	public final double getPosition() {
-		return motion.getSpeed();
+		return motion.getPosition();
 	}
 
 	@Override

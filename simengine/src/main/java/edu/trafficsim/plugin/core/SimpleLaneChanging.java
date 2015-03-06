@@ -31,9 +31,8 @@ import edu.trafficsim.plugin.api.ILaneChanging;
  * 
  * @author Xuan Shi
  */
-@Component("Default Lane-changing")
-public class DefaultLaneChanging extends AbstractPlugin implements
-		ILaneChanging {
+@Component("Simple Lane-changing")
+public class SimpleLaneChanging extends AbstractPlugin implements ILaneChanging {
 
 	private static final long serialVersionUID = 1L;
 

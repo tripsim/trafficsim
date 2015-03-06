@@ -55,6 +55,8 @@ public final class SimulationJobController implements SmartLifecycle {
 
 	public void submitJob(SimulationProject project) {
 		if (!project.isReady()) {
+			logger.info("project {} is not ready for simulation, missing info",
+					project);
 			throw new IllegalStateException(
 					"Project is not ready for execution!");
 		}
@@ -66,6 +68,7 @@ public final class SimulationJobController implements SmartLifecycle {
 						+ " is already running!");
 			}
 			SimulationTask task = new SimulationTask(project);
+			logger.info("Simulation job {} submitted!", name);
 			executor.execute(task);
 			tasks.put(name, task);
 		} finally {
@@ -78,6 +81,7 @@ public final class SimulationJobController implements SmartLifecycle {
 		lock.lock();
 		try {
 			tasks.remove(simulationName);
+			logger.info("Simulation job {} finished!", simulationName);
 		} finally {
 			lock.unlock();
 		}
@@ -271,7 +275,7 @@ public final class SimulationJobController implements SmartLifecycle {
 		@Override
 		public Link getNextLinkInRoute(Vehicle vehicle) {
 			IRouting impl = getRouting(vehicle.getVehicleType());
-			Link link = vehicle.getCurrentLink();
+			Link link = vehicle.getNextLink();
 			Node destination = vehicle.getDestination();
 			if (link == null) {
 				return impl.searchNextLink(this, vehicle.getOrigin(),

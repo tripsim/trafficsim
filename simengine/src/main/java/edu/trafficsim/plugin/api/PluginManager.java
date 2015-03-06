@@ -4,11 +4,11 @@ import java.util.Set;
 
 public interface PluginManager {
 
-	static final String DEFAULT_SIMULATING = "Microscopic Simulating";
+	static final String DEFAULT_SIMULATING = "Micro Scopic Simulating";
 	static final String DEFAULT_GENERATING = "Poisson Vehicle-generating";
-	static final String DEFAULT_MOVING = "Microscopic Moving";
+	static final String DEFAULT_MOVING = "Simple Micro Scopic Moving";
 	static final String DEFAULT_CAR_FOLLOWING = "Pipes Car-following";
-	static final String DEFAULT_LANE_CHANGING = "Default Lane-changing";
+	static final String DEFAULT_LANE_CHANGING = "Simple Lane-changing";
 	static final String DEFAULT_ROUTING = "Random Routing";
 	static final String DEFAULT_VEHICLE_IMPL = "Default Vehicle";
 	static final String DEFAULT_DRIVER_IMPL = "Default Driver";

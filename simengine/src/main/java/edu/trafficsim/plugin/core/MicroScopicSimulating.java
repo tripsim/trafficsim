@@ -39,7 +39,7 @@ import edu.trafficsim.util.Timer;
  * 
  * @author Xuan Shi
  */
-@Component("Microscopic Simulating")
+@Component("Micro Scopic Simulating")
 public class MicroScopicSimulating extends AbstractMicroScopicSimulating
 		implements ISimulating {
 
@@ -73,8 +73,7 @@ public class MicroScopicSimulating extends AbstractMicroScopicSimulating
 	@Override
 	protected void collectionStatistics(SimulationEnvironment environment,
 			Vehicle vehicle) {
-		logger.info("Time: {}s: {} ", environment.getForwardedTime(),
-				vehicle.getId(), vehicle.getPosition());
+		logger.info("Time: {}s: {}", environment.getForwardedTime(), vehicle);
 		statisticsCollector.visit(environment, vehicle);
 	}
 
