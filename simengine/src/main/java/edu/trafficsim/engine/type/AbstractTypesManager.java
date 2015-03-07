@@ -184,6 +184,7 @@ abstract class AbstractTypesManager implements TypesManager {
 		if (elementTypeDo == null) {
 			logger.info("Vehicle type '{}' doesn't exists, nothing to delete!",
 					name);
+			return;
 		}
 		elementTypeDao.delete(elementTypeDo);
 	}
@@ -242,10 +243,11 @@ abstract class AbstractTypesManager implements TypesManager {
 	@Override
 	public void deleteDriverType(String name) {
 		ElementTypeDo elementTypeDo = elementTypeDao.getByName(
-				TypeCategoryDo.VEHICLE_TYPE, name);
+				TypeCategoryDo.DRIVER_TYPE, name);
 		if (elementTypeDo == null) {
 			logger.info("Driver type '{}' doesn't exists, nothing to delete!",
 					name);
+			return;
 		}
 		elementTypeDao.delete(elementTypeDo);
 	}
@@ -305,6 +307,7 @@ abstract class AbstractTypesManager implements TypesManager {
 		if (compositionDo == null) {
 			logger.info("Vehicle type '{}' doesn't exists, nothing to delete!",
 					name);
+			return;
 		}
 		compositionDao.delete(compositionDo);
 	}
@@ -364,6 +367,7 @@ abstract class AbstractTypesManager implements TypesManager {
 		if (compositionDo == null) {
 			logger.info("Driver type '{}' doesn't exists, nothing to delete!",
 					name);
+			return;
 		}
 		compositionDao.delete(compositionDo);
 	}

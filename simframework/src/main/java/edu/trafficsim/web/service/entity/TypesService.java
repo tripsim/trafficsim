@@ -85,6 +85,7 @@ public class TypesService extends EntityService {
 					+ "' already exists.");
 		}
 		type = typesFactory.createDriverType(name);
+		typesManager.saveDriverType(type);
 		return type;
 	}
 

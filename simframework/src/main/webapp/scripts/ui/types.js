@@ -75,7 +75,7 @@ jQuery(document).ready(
 			jQuery('#user-configuration').on('click',
 					'.user-configuration-vehicle-type-cancel', function() {
 						var tbody = jQuery(this).closest('tbody');
-						if (tbody.attr("data-is-new") == true)
+						if (tbody.attr("data-is-new") === 'true')
 							simwebhelper.action('types/vehicle/remove', {
 								name : tbody.attr('data-name')
 							});
@@ -136,7 +136,7 @@ jQuery(document).ready(
 			jQuery('#user-configuration').on('click',
 					'.user-configuration-driver-type-cancel', function() {
 						var tbody = jQuery(this).closest('tbody');
-						if (tbody.attr("data-is-new") == true)
+						if (tbody.attr("data-is-new") === 'true')
 							simwebhelper.action('types/driver/remove', {
 								name : tbody.attr('data-name')
 							});
