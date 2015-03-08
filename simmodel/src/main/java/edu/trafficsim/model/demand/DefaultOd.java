@@ -110,4 +110,10 @@ public class DefaultOd extends BaseObject implements Od {
 		this.driverComposition = composition;
 	}
 
+	@Override
+	public String toString() {
+		return "DefaultOd [id=" + getId() + ", originNodeId=" + originNodeId
+				+ ", destinationNodeId=" + destinationNodeId + "]";
+	}
+
 }

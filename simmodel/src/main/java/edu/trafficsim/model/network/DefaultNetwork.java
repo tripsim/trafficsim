@@ -57,8 +57,33 @@ public class DefaultNetwork extends AbstractNetwork<DefaultNetwork> implements
 	}
 
 	@Override
+	public Collection<Node> getSources(Node fromNode) {
+		// TODO implement if needed in the future
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
 	public Collection<Node> getSinks() {
 		return Collections.unmodifiableCollection(sinks);
+	}
+
+	@Override
+	public Collection<Node> getSinks(Node fromNode) {
+		return getSinks(fromNode.getDownstreams());
+
+	}
+
+	private Collection<Node> getSinks(Collection<Link> fromLinks) {
+		Set<Node> nodes = new HashSet<Node>();
+		for (Link link : fromLinks) {
+			Node node = link.getEndNode();
+			if (sinks.contains(node)) {
+				nodes.add(node);
+				continue;
+			}
+			nodes.addAll(getSinks(node.getDownstreams()));
+		}
+		return nodes;
 	}
 
 	@Override
@@ -135,4 +160,5 @@ public class DefaultNetwork extends AbstractNetwork<DefaultNetwork> implements
 			onNodeAdded(node);
 		}
 	}
+
 }

@@ -45,9 +45,15 @@ public class OdService extends EntityService {
 
 	@Autowired
 	TypesManager typesManager;
-
 	@Autowired
 	OdFactory factory;
+
+	public void addOd(OdMatrix odMatrix, Network network, Od od, Long dId,
+			String vcName, String dcName, double[] times, Integer[] vphs) {
+		saveOd(odMatrix, network, od, dId, vcName, dcName, times, vphs);
+		odMatrix.add(od);
+		odMatrix.setModified(true);
+	}
 
 	public void updateOd(OdMatrix odMatrix, Network network, Long id, Long dId,
 			String vcName, String dcName, double[] times, Integer[] vphs) {
@@ -55,6 +61,12 @@ public class OdService extends EntityService {
 		if (od == null) {
 			throw new IllegalArgumentException("od '" + id + "' doesn't exist!");
 		}
+		saveOd(odMatrix, network, od, dId, vcName, dcName, times, vphs);
+		odMatrix.setModified(true);
+	}
+
+	public void saveOd(OdMatrix odMatrix, Network network, Od od, Long dId,
+			String vcName, String dcName, double[] times, Integer[] vphs) {
 		od.setDestination(network.containsNode(dId) ? dId : null);
 		od.setVehicleComposition(typesManager.getVehicleTypeComposition(vcName));
 		od.setDriverComposition(typesManager.getDriverTypeComposition(dcName));
@@ -69,8 +81,6 @@ public class OdService extends EntityService {
 				typesManager.getDefaultVehicleTypeCompositionName(),
 				typesManager.getDefaultDriverTypeCompositionName(),
 				DEFAULT_TIME_POINTS, DEFAULT_TIME_VPH);
-		odMatrix.add(od);
-		odMatrix.setModified(true);
 		return od;
 	}
 

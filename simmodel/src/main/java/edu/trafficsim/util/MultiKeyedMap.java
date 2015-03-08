@@ -33,6 +33,10 @@ public class MultiKeyedMap<K1, K2, V> implements Serializable {
 		return set;
 	}
 
+	public boolean containsKey(K1 primaryKey, K2 secondaryKey) {
+		return map.containsKey(new Pair<K1, K2>(primaryKey, secondaryKey));
+	}
+
 	public void put(K1 primaryKey, K2 secondaryKey, V value) {
 		map.put(new Pair<K1, K2>(primaryKey, secondaryKey), value);
 	}
@@ -67,9 +71,13 @@ public class MultiKeyedMap<K1, K2, V> implements Serializable {
 		return result;
 	}
 
+	public int size() {
+		return map.size();
+	}
+
 	@Override
 	public String toString() {
-		return map.toString();
+		return String.valueOf(map);
 	}
 
 }

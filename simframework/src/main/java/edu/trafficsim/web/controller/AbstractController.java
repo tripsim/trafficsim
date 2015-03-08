@@ -25,6 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import edu.trafficsim.web.model.ActionResponse;
 
@@ -42,9 +43,9 @@ public abstract class AbstractController {
 			.getLogger(AbstractController.class);
 
 	@ExceptionHandler(RuntimeException.class)
-	public Map<String, Object> handleError(HttpServletRequest req,
-			Exception exception) {
-		logger.warn("Failure request due to {}", exception);
+	public @ResponseBody Map<String, Object> handleError(
+			HttpServletRequest req, Exception exception) {
+		logger.warn("Failure request due to {}", exception.getMessage());
 		return failureResponse(exception);
 	}
 

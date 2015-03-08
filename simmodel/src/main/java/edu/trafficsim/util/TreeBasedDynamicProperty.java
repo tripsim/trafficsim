@@ -82,6 +82,7 @@ public class TreeBasedDynamicProperty<T> implements Serializable,
 
 	@Override
 	public String toString() {
-		return properties.toString();
+		return String.valueOf(properties);
 	}
+
 }

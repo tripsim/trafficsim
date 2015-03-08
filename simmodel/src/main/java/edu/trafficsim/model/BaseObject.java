@@ -83,7 +83,7 @@ public abstract class BaseObject implements Identifiable, Comparable,
 
 	@Override
 	public String toString() {
-		return getClass().getSimpleName() + " id=" + id;
+		return getClass().getSimpleName() + " [id=" + id + "]";
 	}
 
 	@Override

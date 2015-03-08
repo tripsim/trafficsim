@@ -67,7 +67,7 @@ public class MultiKeyedValuedMap<K1, K2, V> implements Serializable {
 
 	@Override
 	public String toString() {
-		return map.toString();
+		return String.valueOf(map);
 	}
 
 }

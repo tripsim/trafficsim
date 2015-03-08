@@ -138,6 +138,6 @@ public abstract class MultiKeyedHashMappedDynamicProperty<K1, K2, V> implements
 
 	@Override
 	public String toString() {
-		return properties.toString();
+		return String.valueOf(properties);
 	}
 }

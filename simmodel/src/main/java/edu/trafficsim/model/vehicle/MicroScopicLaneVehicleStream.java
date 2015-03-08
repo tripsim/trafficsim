@@ -556,7 +556,7 @@ public class MicroScopicLaneVehicleStream implements VehicleStream {
 
 	private void addNew(Vehicle vehicle) {
 		if (!addInEntrance(vehicle, null)) {
-			this.queue.add(vehicle);
+			this.queue.addImediately(vehicle);
 		}
 	}
 

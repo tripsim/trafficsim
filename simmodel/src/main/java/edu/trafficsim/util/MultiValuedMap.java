@@ -110,7 +110,7 @@ public class MultiValuedMap<K, V> implements Serializable {
 
 	@Override
 	public String toString() {
-		return "MultiValuedMap [map=" + map + "]";
+		return String.valueOf(map);
 	}
 
 	protected Collection<V> createValueHolder() {

@@ -37,6 +37,7 @@ import edu.trafficsim.api.model.Od;
 import edu.trafficsim.api.model.OdMatrix;
 import edu.trafficsim.engine.type.TypesManager;
 import edu.trafficsim.web.Sequence;
+import edu.trafficsim.web.model.OdCandidates;
 import edu.trafficsim.web.service.entity.OdService;
 
 /**
@@ -46,13 +47,17 @@ import edu.trafficsim.web.service.entity.OdService;
  */
 @Controller
 @RequestMapping(value = "/od")
-@SessionAttributes(value = { "sequence", "network", "odMatrix" })
+@SessionAttributes(value = { "sequence", "network", "odMatrix",
+		"candidateOdMatrix" })
 public class OdController extends AbstractController {
 
 	@Autowired
 	OdService odService;
 	@Autowired
 	TypesManager typesManager;
+
+	@Autowired
+	OdCandidates candidates;
 
 	@RequestMapping(value = "/info/{id}", method = RequestMethod.GET)
 	public String odView(@PathVariable long id,
@@ -69,14 +74,18 @@ public class OdController extends AbstractController {
 			@MatrixVariable(required = false, defaultValue = "false") boolean isNew,
 			@ModelAttribute("network") Network network,
 			@ModelAttribute("odMatrix") OdMatrix odMatrix, Model model) {
+		Od od = isNew ? candidates.get(id) : odMatrix.getOd(id);
+		if (od == null) {
+			throw new IllegalArgumentException("no such od!");
+		}
 
-		Od od = odMatrix.getOd(id);
+		Node origin = network.getNode(od.getOriginNodeId());
 		// TODO make it reachable sinks
 		model.addAttribute("vehicleCompositions",
 				typesManager.getDefaultVehicleTypeComposition());
 		model.addAttribute("driverCompositions",
 				typesManager.getDefaultDriverTypeComposition());
-		model.addAttribute("destinations", network.getSinks());
+		model.addAttribute("destinations", network.getSinks(origin));
 		model.addAttribute("od", od);
 		model.addAttribute("isNew", isNew);
 		return "components/od-fragments :: form";
@@ -92,8 +101,19 @@ public class OdController extends AbstractController {
 			@RequestParam("vphs[]") Integer[] vphs,
 			@ModelAttribute("network") Network network,
 			@ModelAttribute("odMatrix") OdMatrix odMatrix) {
-		odService.updateOd(odMatrix, network, id, dId, vcName, dcName, times,
-				vphs);
+		Od od = candidates.remove(id);
+		if (od != null) {
+			try {
+				odService.addOd(odMatrix, network, od, dId, vcName, dcName,
+						times, vphs);
+			} catch (RuntimeException e) {
+				candidates.add(od);
+				throw e;
+			}
+		} else {
+			odService.updateOd(odMatrix, network, id, dId, vcName, dcName,
+					times, vphs);
+		}
 		return successResponse("Od saved.");
 	}
 
@@ -103,17 +123,17 @@ public class OdController extends AbstractController {
 			@ModelAttribute("sequence") Sequence sequence,
 			@ModelAttribute("network") Network network,
 			@ModelAttribute("odMatrix") OdMatrix odMatrix) {
-
 		Node origin = network.getNode(oid);
-		long id = odService.createOd(sequence, odMatrix, origin, null).getId();
-
-		return successResponse("New od created.", null, id);
+		Od od = odService.createOd(sequence, odMatrix, origin, null);
+		candidates.add(od);
+		return successResponse("New od created.", null, od.getId());
 	}
 
 	@RequestMapping(value = "/remove", method = RequestMethod.POST)
 	public @ResponseBody Map<String, Object> removeOd(
 			@RequestParam("id") long id,
 			@ModelAttribute("odMatrix") OdMatrix odMatrix) {
+		candidates.remove(id);
 		odService.removeOd(odMatrix, id);
 		return successResponse("Od removed.");
 	}

@@ -93,7 +93,13 @@ public class DefaultOdMatrix extends PersistedObject<DefaultOdMatrix> implements
 
 	@Override
 	public void add(Od od) {
-		ods.put(od.getOriginNodeId(), od.getDestinationNodeId(), od);
+		Long origin = od.getOriginNodeId();
+		Long destination = od.getDestinationNodeId();
+		if (ods.containsKey(origin, destination)) {
+			throw new IllegalStateException("Od from origin=" + origin
+					+ " to destination=" + destination + " already exists!");
+		}
+		ods.put(origin, destination, od);
 		odsById.put(od.getId(), od);
 		modified = true;
 	}
@@ -150,6 +156,12 @@ public class DefaultOdMatrix extends PersistedObject<DefaultOdMatrix> implements
 
 	@Override
 	public void onLinkRemoved(Link link) {
+	}
+
+	@Override
+	public String toString() {
+		return "DefaultOdMatrix [networkName=" + networkName + ", odsById="
+				+ odsById + "]";
 	}
 
 	// turn percentage

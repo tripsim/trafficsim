@@ -33,7 +33,11 @@ public interface Network extends Persistable, GeoReferenced {
 
 	Collection<Node> getSources();
 
+	Collection<Node> getSources(Node fromNode);
+
 	Collection<Node> getSinks();
+
+	Collection<Node> getSinks(Node fromNode);
 
 	Collection<Node> getNodes();
 

@@ -106,7 +106,7 @@ public class HashMappedDynamicProperty<K, V> implements Serializable,
 
 	@Override
 	public String toString() {
-		return properties.toString();
+		return String.valueOf(properties);
 	}
 
 }

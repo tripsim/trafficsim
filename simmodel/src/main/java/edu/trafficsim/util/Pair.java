@@ -81,7 +81,7 @@ public class Pair<T, S> implements Serializable, Comparable<Pair<T, S>> {
 
 	@Override
 	public String toString() {
-		return primary.toString() + "," + secondary.toString();
+		return "Pair [primary=" + primary + ", secondary=" + secondary + "]";
 	}
 
 	// TODO test its usefulness in tree map
