@@ -98,6 +98,8 @@ public class NetworkService extends EntityService {
 		Node newNode = factory.createNode(sequence.nextId(), nodeType,
 				new Coordinate(linearGeoms[0].getEndPoint().getCoordinate()));
 
+		// split the original link, adjust the original link, and return the new
+		// link
 		Link newLink = breakLink(sequence, network, odMatrix, link, newNode,
 				link.getLinkType(), linearGeoms);
 		if (link.getReverseLink() != null) {

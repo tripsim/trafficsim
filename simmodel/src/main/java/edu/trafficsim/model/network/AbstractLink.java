@@ -86,11 +86,13 @@ public abstract class AbstractLink extends AbstractArc implements Link {
 		super.setLinearGeom(linearGeom);
 		if (oldStart != null) {
 			oldStart.removeDownstream(this);
-			getStartNode().add(this);
+			this.startNode = startNode;
+			startNode.add(this);
 		}
 		if (oldEnd != null) {
 			oldEnd.removeUpstream(this);
-			getEndNode().add(this);
+			this.endNode = endNode;
+			endNode.add(this);
 		}
 	}
 
