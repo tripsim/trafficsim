@@ -27,7 +27,7 @@ public class OSMExtractorTest {
 
 	@Ignore
 	@Test
-	protected void testExtractByUrl() throws JsonParseException,
+	public void testExtractByUrl() throws JsonParseException,
 			ProtocolException, IOException, XMLStreamException {
 		String urlPre = "http://api.openstreetmap.fr/xapi?";
 		String testQuery = "way[highway=*][bbox=-89.4114,43.0707,-89.3955,43.0753]";
@@ -36,7 +36,7 @@ public class OSMExtractorTest {
 
 	@Ignore
 	@Test
-	protected void testParseXml() throws JsonParseException, IOException,
+	public void testParseXml() throws JsonParseException, IOException,
 			XMLStreamException {
 		InputStream in = DemoBuilder.class.getResourceAsStream("demo.xml");
 		@SuppressWarnings("unused")
@@ -46,7 +46,7 @@ public class OSMExtractorTest {
 
 	@Ignore
 	@Test
-	protected void testParseJson() throws JsonParseException, IOException {
+	public void testParseJson() throws JsonParseException, IOException {
 		InputStream in = DemoBuilder.class.getResourceAsStream("demo.json");
 		@SuppressWarnings("unused")
 		Highways highways = OsmParser.parseJson(in);

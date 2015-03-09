@@ -48,17 +48,37 @@ public class NetworkCreator {
 	private static final TransformCoordinateFilter filter = GeoReferencing
 			.getDefaultTransformFilter();
 
-	// TODO the osm nodes that has only two links if possible
 	public static NetworkExtractResult createNetwork(Highways highways,
 			TypesManager typesManager, NetworkFactory networkFactory,
 			String name) {
+		NetworkCreator creator = new NetworkCreator(highways, typesManager,
+				networkFactory, name);
+		return creator.create();
+	}
+
+	final TypesManager typesManager;
+	final NetworkFactory networkFactory;
+
+	final Highways highways;
+	final Network network;
+	Map<OsmNode, Node> nodes;
+	long id = DEFAULT_START_ID;
+
+	NetworkCreator(Highways highways, TypesManager typesManager,
+			NetworkFactory networkFactory, String name) {
+		this.highways = highways;
+		this.typesManager = typesManager;
+		this.networkFactory = networkFactory;
+
+		network = networkFactory.createNetwork(name);
+		nodes = new HashMap<OsmNode, Node>(highways.getOsmNodes().size());
+	}
+
+	// TODO the osm nodes that has only two links if possible
+	public NetworkExtractResult create() {
 		NetworkExtractResult result = new NetworkExtractResult();
-		long id = DEFAULT_START_ID;
 		result.setStartId(id);
 
-		Network network = networkFactory.createNetwork(name);
-		Map<OsmNode, Node> nodes = new HashMap<OsmNode, Node>(highways
-				.getOsmNodes().size());
 		for (OsmWay osmWay : highways.getOsmWays()) {
 			List<Coordinate> coords = new ArrayList<Coordinate>();
 
@@ -77,10 +97,9 @@ public class NetworkCreator {
 				// that coords, and clear the coords, make the endOsmNode as
 				// start node for next link
 				if (endOsmNode.isShared() || i == osmWay.osmNodes.size() - 1) {
-					create(network, nodes, startOsmNode, endOsmNode, osmWay,
-							coords, roadInfo, networkFactory,
+					create(startOsmNode, endOsmNode, osmWay, coords, roadInfo,
 							typesManager.getDefaultNodeTypeName(),
-							typesManager.getDefaultLinkTypeName(), id);
+							typesManager.getDefaultLinkTypeName());
 					coords.clear();
 					startOsmNode = endOsmNode;
 					coords.add(startOsmNode.asCoord());
@@ -96,35 +115,32 @@ public class NetworkCreator {
 		return result;
 	}
 
-	private static void create(Network network, Map<OsmNode, Node> nodes,
-			OsmNode startOsmNode, OsmNode endOsmNode, OsmWay osmWay,
-			List<Coordinate> coords, RoadInfo roadInfo,
-			NetworkFactory networkFactory, String nodeType, String linkType,
-			long id) {
+	private void create(OsmNode startOsmNode, OsmNode endOsmNode,
+			OsmWay osmWay, List<Coordinate> coords, RoadInfo roadInfo,
+			String nodeType, String linkType) {
 		Node startNode = nodes.get(startOsmNode);
 		if (startNode == null) {
-			startNode = createNode(startOsmNode, nodeType, networkFactory, id);
+			startNode = createNode(startOsmNode, nodeType);
 			nodes.put(startOsmNode, startNode);
 		}
 		Node endNode = nodes.get(endOsmNode);
 		if (endNode == null) {
-			endNode = createNode(endOsmNode, nodeType, networkFactory, id);
+			endNode = createNode(endOsmNode, nodeType);
 			nodes.put(endOsmNode, endNode);
 		}
 
 		Link link = createLink(osmWay, linkType, startNode, endNode, coords,
-				roadInfo, networkFactory, id);
+				roadInfo);
 		network.add(link);
 		if (!osmWay.oneway) {
-			Link reverseLink = createReverseLink(link, networkFactory, id);
+			Link reverseLink = createReverseLink(link);
 			reverseLink.setRoadInfo(roadInfo);
 			network.add(reverseLink);
 		}
 
 	}
 
-	private static Node createNode(OsmNode osmNode, String nodeType,
-			NetworkFactory networkFactory, long id) {
+	private Node createNode(OsmNode osmNode, String nodeType) {
 		String name = String.valueOf(osmNode.id);
 		for (OsmWay osmWay : osmNode.osmWays) {
 			name += " @ " + osmWay.name;
@@ -136,9 +152,8 @@ public class NetworkCreator {
 		return node;
 	}
 
-	private static Link createLink(OsmWay osmWay, String linkType,
-			Node startNode, Node endNode, List<Coordinate> coords,
-			RoadInfo roadInfo, NetworkFactory networkFactory, long id) {
+	private Link createLink(OsmWay osmWay, String linkType, Node startNode,
+			Node endNode, List<Coordinate> coords, RoadInfo roadInfo) {
 		Link link = networkFactory.createLink(id++, linkType, startNode,
 				endNode, coords.toArray(new Coordinate[0]), roadInfo);
 		link.setDescription(osmWay.name);
@@ -146,8 +161,7 @@ public class NetworkCreator {
 		return link;
 	}
 
-	private static Link createReverseLink(Link link,
-			NetworkFactory networkFactory, long id) {
+	private Link createReverseLink(Link link) {
 		Link reverseLink = networkFactory.createReverseLink(id++, link);
 		reverseLink.setDescription(String.format("%s Reversed",
 				link.getDescription()));

@@ -69,9 +69,8 @@ class OsmNetworkExtractor implements NetworkExtractor {
 
 	@Override
 	public NetworkExtractResult extract(String urlStr, String name) {
-		Highways highways;
 		try {
-			highways = parse(urlStr);
+			Highways highways = parse(urlStr);
 			return extract(highways, name);
 		} catch (IOException | XMLStreamException e) {
 			logger.error("failed to create network");
@@ -85,4 +84,25 @@ class OsmNetworkExtractor implements NetworkExtractor {
 				networkFactory, name);
 	}
 
+	@Override
+	public NetworkExtractResult extractByXml(InputStream input, String name) {
+		try {
+			Highways highways = parseXml(input);
+			return extract(highways, name);
+		} catch (IOException | XMLStreamException e) {
+			logger.error("failed to create network");
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Override
+	public NetworkExtractResult extractByJson(InputStream input, String name) {
+		try {
+			Highways highways = parseJson(input);
+			return extract(highways, name);
+		} catch (IOException e) {
+			logger.error("failed to create network");
+			throw new RuntimeException(e);
+		}
+	}
 }

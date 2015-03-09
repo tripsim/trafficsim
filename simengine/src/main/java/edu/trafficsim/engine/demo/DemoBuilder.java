@@ -34,6 +34,7 @@ import edu.trafficsim.api.model.OdMatrix;
 import edu.trafficsim.api.model.RoadInfo;
 import edu.trafficsim.api.model.TurnPercentage;
 import edu.trafficsim.api.model.VehicleClass;
+import edu.trafficsim.engine.network.NetworkExtractor;
 import edu.trafficsim.engine.network.NetworkFactory;
 import edu.trafficsim.engine.od.OdFactory;
 import edu.trafficsim.engine.simulation.SimulationProject;
@@ -56,6 +57,9 @@ public class DemoBuilder {
 	private OdMatrix odMatrix;
 
 	@Autowired
+	NetworkExtractor extractor;
+
+	@Autowired
 	private TypesManager typesManager;
 	@Autowired
 	private NetworkFactory networkFactory;
@@ -70,6 +74,12 @@ public class DemoBuilder {
 		} catch (FactoryException e) {
 		}
 		return null;
+	}
+
+	public Network getNetworkFromDemoXml() {
+		return extractor.extractByXml(
+				DemoBuilder.class.getResourceAsStream("demo.xml"), "demo xml")
+				.getNetwork();
 	}
 
 	private void manualBuild() throws FactoryException {

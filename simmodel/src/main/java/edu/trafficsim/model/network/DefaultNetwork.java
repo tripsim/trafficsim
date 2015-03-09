@@ -69,19 +69,24 @@ public class DefaultNetwork extends AbstractNetwork<DefaultNetwork> implements
 
 	@Override
 	public Collection<Node> getSinks(Node fromNode) {
-		return getSinks(fromNode.getDownstreams());
+		return getSinks(fromNode.getDownstreams(), new HashSet<Node>());
 
 	}
 
-	private Collection<Node> getSinks(Collection<Link> fromLinks) {
+	private Collection<Node> getSinks(Collection<Link> fromLinks,
+			Set<Node> visistedNodes) {
 		Set<Node> nodes = new HashSet<Node>();
 		for (Link link : fromLinks) {
 			Node node = link.getEndNode();
+			if (visistedNodes.contains(node)) {
+				continue;
+			}
+			visistedNodes.add(node);
 			if (sinks.contains(node)) {
 				nodes.add(node);
 				continue;
 			}
-			nodes.addAll(getSinks(node.getDownstreams()));
+			nodes.addAll(getSinks(node.getDownstreams(), visistedNodes));
 		}
 		return nodes;
 	}

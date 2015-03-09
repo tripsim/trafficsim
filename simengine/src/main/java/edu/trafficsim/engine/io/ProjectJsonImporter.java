@@ -201,7 +201,6 @@ final class ProjectJsonImporter {
 
 		// import ods
 		jsonNode = rootNode.path(ODMATRIX);
-		id = jsonNode.get(ID).asLong();
 		name = jsonNode.get(NAME).asText();
 		// ignore network name in file
 		// String networkName = jsonNode.get(NETWORKNAME).asText();

@@ -142,7 +142,6 @@ final class ProjectJsonExporter {
 					generator.writeFieldName(REVERSELINKID);
 					generator.writeNumber(link.getReverseLink().getId());
 				}
-				generator.writeNumber(link.getId());
 				generator.writeFieldName(STARTNODE);
 				generator.writeNumber(link.getStartNode().getId());
 				generator.writeFieldName(ENDNODE);

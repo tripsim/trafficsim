@@ -48,7 +48,7 @@ class DefaultIOSservice implements IOService {
 			return ProjectJsonImporter.importProject(in, networkFactory,
 					odFactory, typesFactory, typesManager);
 		} catch (IOException | ParseException e) {
-			logger.error("failed to import from source!");
+			logger.error("failed to import from source!", e);
 		}
 		return null;
 	}
