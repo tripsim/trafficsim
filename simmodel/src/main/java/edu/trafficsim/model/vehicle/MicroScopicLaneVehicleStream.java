@@ -147,7 +147,7 @@ public class MicroScopicLaneVehicleStream implements VehicleStream {
 	}
 
 	private boolean isInEntrance(double position) {
-		return position > 0 && position < getEntranceLength();
+		return position >= 0 && position < getEntranceLength();
 	}
 
 	private boolean isInMain(double position) {
@@ -479,6 +479,9 @@ public class MicroScopicLaneVehicleStream implements VehicleStream {
 
 	private void onVehicleMoved(Vehicle vehicle) {
 		double position = vehicle.getPosition();
+		if (position < 0) {
+			return;
+		}
 		if (isInEntrance(position)) {
 			Arc arc = resolveEntranceConnector(vehicle);
 			vehicle.onMoved(arc, arc.getLength() - getEntranceLength()
@@ -519,7 +522,11 @@ public class MicroScopicLaneVehicleStream implements VehicleStream {
 
 		Vehicle tail = getTailVehicle();
 		if (tail == null || tail.getPosition() > vehicle.getPosition()) {
-			return add(vehicle, fromPath);
+			if (add(vehicle, fromPath)) {
+				onVehicleMoved(vehicle);
+				return true;
+			}
+			return false;
 		}
 		throw new IllegalStateException(
 				"vehicle collides with the tail vehicle in the stream: "
@@ -555,8 +562,8 @@ public class MicroScopicLaneVehicleStream implements VehicleStream {
 	}
 
 	private void addNew(Vehicle vehicle) {
-		if (!addInEntrance(vehicle, null)) {
-			this.queue.addImediately(vehicle);
+		if (addInEntrance(vehicle, null, true)) {
+			onVehicleMoved(vehicle);
 		}
 	}
 
@@ -577,16 +584,24 @@ public class MicroScopicLaneVehicleStream implements VehicleStream {
 	}
 
 	private boolean addInEntrance(Vehicle vehicle, Path fromPath) {
+		return addInEntrance(vehicle, fromPath, false);
+	}
+
+	private boolean addInEntrance(Vehicle vehicle, Path fromPath,
+			boolean addImmediately) {
 		Connector connector = resolveEntranceConnector(vehicle);
 		if (connector == null) {
 			connector = resolveEntranceConnector(fromPath);
 		}
 		VehicleQueue queue = entranceConnectorQueues.get(connector);
 		if (queue != null) {
-			queue.add(vehicle);
+			if (addImmediately) {
+				queue.addImediately(vehicle);
+			} else {
+				queue.add(vehicle);
+			}
 			return true;
 		}
-		this.queue.add(vehicle);
 		return false;
 	}
 

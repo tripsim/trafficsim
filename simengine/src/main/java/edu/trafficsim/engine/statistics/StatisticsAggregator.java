@@ -105,7 +105,8 @@ final class StatisticsAggregator {
 					ls = new LinkState(snapshot.getSequence(), snapshot
 							.getLinkId()));
 		}
-		ls.update(snapshot.getVid(), snapshot.getSpeed(), snapshot.getAccel());
+		ls.update(snapshot.getVid(), snapshot.getSpeed(),
+				snapshot.getPosition());
 	}
 
 	static StatisticsFrames<NodeState> toNodeStates(
@@ -128,7 +129,8 @@ final class StatisticsAggregator {
 					ns = new NodeState(snapshot.getSequence(), snapshot
 							.getLinkId()));
 		}
-		ns.update(snapshot.getVid(), snapshot.getSpeed(), snapshot.getAccel());
+		ns.update(snapshot.getVid(), snapshot.getSpeed(),
+				snapshot.getPosition());
 	}
 
 	static List<VehicleProperty> toVehicleProperties(List<VehicleDo> vehicles) {

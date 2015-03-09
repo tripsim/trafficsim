@@ -45,6 +45,10 @@ var simwebhelper = {
 	hideIndicator : function() {
 		jQuery('#ajax-indicator').hide();
 	},
+	selectClass : function(className) {
+		jQuery(this).siblings().removeClass(className);
+		jQuery(this).addClass(className);
+	},
 	/***************************************************************************
 	 * Request (Server Interaction)
 	 **************************************************************************/
@@ -57,7 +61,18 @@ var simwebhelper = {
 				callback(str);
 		});
 	},
+	getStrWithParams : function(url, params, callback) {
+		jQuery.get(url, params, function(str) {
+			if (callback)
+				callback(str);
+		});
+	},
 	fillHtml : function(url, container) {
+		jQuery.get(url, function(str) {
+			container.html(str);
+		});
+	},
+	replaceHtml : function(url, container) {
 		jQuery.get(url, function(str) {
 			container.replaceWith(str);
 		});

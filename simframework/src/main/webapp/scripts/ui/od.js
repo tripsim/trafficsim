@@ -29,8 +29,8 @@ jQuery(document).ready(
 					'.user-configuration-od-edit',
 					function() {
 						var tr = jQuery(this).closest('tr');
-						simwebhelper.fillHtml('od/form/' + tr.attr('data-id'),
-								tr);
+						simwebhelper.replaceHtml('od/form/'
+								+ tr.attr('data-id'), tr);
 					});
 			/* remove od */
 			jQuery('#user-configuration').on('click',
@@ -58,7 +58,7 @@ jQuery(document).ready(
 								tr.remove();
 							});
 						} else {
-							simwebhelper.fillHtml('od/info/'
+							simwebhelper.replaceHtml('od/info/'
 									+ tr.attr('data-id'), tr);
 						}
 					});
@@ -116,11 +116,10 @@ jQuery(document).ready(
 								'select[name="vehicle"]').val();
 						postData.driverCompositionName = tr.find(
 								'select[name="driver"]').val();
-						simwebhelper.action('od/save', postData,
-								function() {
-									simwebhelper.fillHtml('od/info/'
-											+ postData.id, tr);
-								});
+						simwebhelper.action('od/save', postData, function() {
+							simwebhelper.replaceHtml('od/info/' + postData.id,
+									tr);
+						});
 
 					});
 			/**

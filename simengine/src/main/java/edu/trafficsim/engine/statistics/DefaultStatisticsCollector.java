@@ -49,7 +49,7 @@ class DefaultStatisticsCollector implements StatisticsCollector {
 		if (vehicle == null || !vehicle.isActive() || vehicle.getPosition() < 0) {
 			return;
 		}
-
+		
 		Snapshot snapshot = map.get(environment);
 		if (snapshot == null) {
 			snapshot = newSnapshot(environment);

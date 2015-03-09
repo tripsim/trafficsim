@@ -15,6 +15,62 @@ html, body, #map {
 }
 
 /***********************************************************
+ * User State, Menu
+ **********************************************************/
+#user-state {
+	position: absolute;
+	bottom: 20px;
+	left: 8px;
+	z-index: 10000;
+	opacity: 0.75;
+	color: #ffffff;
+}
+
+#user-state .switch {
+	width: 80px;
+	line-height: 24px;
+	background-color: #0d58a6;
+	display: inline-block;
+	text-align: center;
+	vertical-align: middle;
+	cursor: pointer;
+}
+
+#user-state .border {
+	border-right: medium double #ffffff;
+}
+
+#user-state .select {
+	background-color: #ff5600;
+}
+
+#user-state-supplementary {
+	margin-left: 20px;
+	padding: 0 4px;
+	line-height: 24px;
+	display: inline-block;
+	color: #ffffff;
+	background-color: #0d58a6;
+	opacity: 0.90;
+	text-align: center;
+	vertical-align: middle;
+	line-height: 24px;
+	text-align: center;
+}
+
+#user-state-supplementary  select {
+	width: 80px;
+}
+
+#user-state-supplementary  input {
+	width: 40px;
+}
+
+#user-state-result-simulation .button {
+	margin-left: 8px;
+}
+
+/***********************************************************
  * User Interface, Menu
  **********************************************************/
 #user-interface {
@@ -23,7 +79,6 @@ html, body, #map {
 	top: 64px;
 	left: 8px;
 	width: 180px;
-	height: 400px;
 	z-index: 20000;
 	opacity: 0.75;
 	color: #04376c;
@@ -86,7 +141,6 @@ html, body, #map {
 	width: 480px;
 	height: 200px;
 	overflow: scroll;
-	height: 200px;
 }
 
 #user-configuration-buttons {

@@ -25,7 +25,7 @@ jQuery(document).ready(
 					'click',
 					'.user-configuration-run-simulation',
 					function() {
-						simulation.clearFrames();
+						simulation.stopAnimation();
 						var tbody = jQuery(this).closest('tbody');
 						var postData = {
 							simulationName : tbody.find(

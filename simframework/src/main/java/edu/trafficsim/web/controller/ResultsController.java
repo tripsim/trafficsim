@@ -59,21 +59,33 @@ public class ResultsController extends AbstractController {
 	SimulationManager simulationManager;
 
 	@RequestMapping(value = "/view", method = RequestMethod.GET)
-	public String view(@RequestParam("simulationName") String simulationName,
+	public String view(
+			@RequestParam(value = "simulationName", required = false) String simulationName,
 			@ModelAttribute("network") Network network, Model model) {
 		List<String> simulationNames = simulationManager
 				.getSimulationNames(network.getName());
-
+		if (simulationNames.isEmpty()) {
+			return "components/empty-insert";
+		}
 		ExecutedSimulation simulation = simulationName == null ? simulationManager
 				.findLatestSimulation(network.getName()) : simulationManager
 				.findSimulation(simulationName);
-		if (simulationNames.isEmpty() || simulation == null) {
-			return "components/empty";
-		}
 
 		model.addAttribute("latestSimulation", simulation);
 		model.addAttribute("simulationNames", simulationNames);
 		return "components/results";
+	}
+
+	@RequestMapping(value = "/simulation/{simulationName}", method = RequestMethod.GET)
+	public String viewSimulation(
+			@PathVariable("simulationName") String simulationName, Model model) {
+		ExecutedSimulation simulation = simulationManager
+				.findSimulation(simulationName);
+		if (simulation == null) {
+			return "components/empty-insert";
+		}
+		model.addAttribute("latestSimulation", simulation);
+		return "components/results :: simulation";
 	}
 
 	@RequestMapping(value = "/frames/{simulationName}", method = RequestMethod.GET)

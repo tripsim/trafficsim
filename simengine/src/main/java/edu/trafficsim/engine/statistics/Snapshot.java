@@ -3,6 +3,8 @@ package edu.trafficsim.engine.statistics;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.vividsolutions.jts.geom.Coordinate;
+
 import edu.trafficsim.api.model.Vehicle;
 
 class Snapshot {
@@ -22,6 +24,9 @@ class Snapshot {
 
 	void visitVehicle(Vehicle vehicle) {
 		VehicleSnapshot s = new VehicleSnapshot(vehicle);
+		if (new Coordinate().equals(s.coord)) {
+			return;
+		}
 		vehicles.add(s);
 	}
 

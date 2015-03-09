@@ -51,4 +51,15 @@ public class ExecutedSimulation {
 		this.settings = settings;
 	}
 
+	public long getTotalFrames() {
+		return Math.round(settings.getDuration() / settings.getStepSize());
+	}
+
+	public long getDuration() {
+		return settings.getDuration();
+	}
+
+	public double getStepSize() {
+		return settings.getStepSize();
+	}
 }

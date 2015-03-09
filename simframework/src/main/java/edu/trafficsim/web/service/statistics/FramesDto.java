@@ -9,6 +9,7 @@ public class FramesDto implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	long startFrame;
+	long endFrame;
 
 	// vehicle in the format of
 	// name,width,length
@@ -18,12 +19,17 @@ public class FramesDto implements Serializable {
 	// frameId,name,x,y,angle,color
 	List<String> elements = new ArrayList<String>();
 
-	FramesDto(long startFrame) {
+	FramesDto(long startFrame, long endFrame) {
 		this.startFrame = startFrame;
+		this.endFrame = endFrame;
 	}
 
 	public long getStartFrame() {
 		return startFrame;
+	}
+
+	public long getEndFrame() {
+		return endFrame;
 	}
 
 	public List<String> getVehicles() {

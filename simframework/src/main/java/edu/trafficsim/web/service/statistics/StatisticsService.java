@@ -29,6 +29,8 @@ import org.springframework.stereotype.Service;
 import com.vividsolutions.jts.geom.Coordinate;
 
 import edu.trafficsim.engine.network.NetworkFactory;
+import edu.trafficsim.engine.simulation.ExecutedSimulation;
+import edu.trafficsim.engine.simulation.SimulationManager;
 import edu.trafficsim.engine.statistics.LinkState;
 import edu.trafficsim.engine.statistics.StatisticsFrames;
 import edu.trafficsim.engine.statistics.StatisticsManager;
@@ -47,6 +49,8 @@ import edu.trafficsim.util.WktUtils;
 public class StatisticsService {
 
 	@Autowired
+	SimulationManager simulationManager;
+	@Autowired
 	StatisticsManager manager;
 	@Autowired
 	NetworkFactory factory;
@@ -56,9 +60,16 @@ public class StatisticsService {
 	// --------------------------------------------------
 	public FramesDto getFrames(String simulationName, long startFrame,
 			long steps) {
+		ExecutedSimulation simulation = simulationManager
+				.findSimulation(simulationName);
+		if (simulation == null || simulation.getTotalFrames() < startFrame) {
+			return new FramesDto(startFrame, startFrame);
+		}
+		long endFrame = simulation.getTotalFrames() < startFrame + steps ? simulation
+				.getTotalFrames() : startFrame + steps;
 		StatisticsFrames<VehicleState> frames = manager.getVehicleStatistics(
 				simulationName, startFrame, steps);
-		FramesDto result = new FramesDto(startFrame);
+		FramesDto result = new FramesDto(startFrame, endFrame);
 		result.setElements(toFrameElements(frames));
 		result.setVehicles(toFrameVehicles(simulationName, frames.getIds()));
 		return result;
@@ -124,7 +135,10 @@ public class StatisticsService {
 		List<String> trajectories = new ArrayList<String>();
 		result.setTrajectories(trajectories);
 		for (long vid : states.getIds()) {
-			trajectories.add(toTrajectory(states.getStatesById(vid)));
+			Collection<VehicleState> vs = states.getStatesById(vid);
+			if (vs.size() > 1) {
+				trajectories.add(toTrajectory(vs));
+			}
 		}
 		return result;
 	}

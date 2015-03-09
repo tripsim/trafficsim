@@ -18,41 +18,43 @@
 jQuery(document).ready(
 		function() {
 			/*******************************************************************
-			 * Panel, User Configuration, Simulation Result
+			 * Result
 			 ******************************************************************/
-			/* start simulation */
-			jQuery('#user-configuration').on('click',
-					'.user-configuration-results-start-animation', function() {
-						simwebhelper.hidePanel();
+			jQuery('#user-state-supplementary').on(
+					'change',
+					'#user-state-result-simulation select',
+					function() {
+						var simulationName = jQuery(this).val();
+						var container = jQuery(this).siblings(
+								'#user-state-result-selected-simulation');
+						simwebhelper.replaceHtml('results/simulation/'
+								+ simulationName, container);
+					});
+			jQuery('#user-state-supplementary').on('click',
+					'#user-state-result-simulation-start-anmimation',
+					function() {
 						simulation.startAnimation();
 					});
-			/* stop simulation */
-			jQuery('#user-configuration').on('click',
-					'.user-configuration-results-stop-animation', function() {
-						simulation.stopAnimation();
-					});
-			/* draw trajectory */
-			jQuery('#user-configuration').on(
-					'click',
-					'.user-configuration-results-trajectory',
+			jQuery('#user-state-supplementary').on('click',
+					'#user-state-result-simulation-stop-anmimation',
 					function() {
 						simulation.stopAnimation();
-						simwebhelper.getStr('results/trajectory/'
-								+ jQuery(this).closest('tr').find('select')
-										.val(), function(trj) {
-							simulation.drawTrajectory(trj);
-						});
 					});
-			/* link stat plot */
-			jQuery('#user-configuration').on(
-					'click',
-					'.user-configuration-results-tsd-plot',
-					function() {
-						simulation.stopAnimation();
-						simwebhelper.getJson('results/tsd/'
-								+ jQuery(this).closest('tr').find('select')
-										.val(), function(data) {
-							simplot.plot(data);
-						});
-					});
+			/*******************************************************************
+			 * Filter result by simulation
+			 ******************************************************************/
+			simulation.getResultParams = function() {
+				var span = jQuery('#user-state-result-simulation');
+				var params = {};
+				params.simulationName = span.find(
+						'select[name="simulationName"]').val();
+				var stepSize = span.find(
+						'#user-state-result-selected-simulation').attr(
+						'data-step-size');
+				var start = span.find('input[name="fromTime"]').val();
+				var stop = span.find('input[name="toTime"]').val();
+				params.offset = parseInt(start / stepSize)
+				params.limit = parseInt(stop / stepSize) - params.offset;
+				return params;
+			}
 		});

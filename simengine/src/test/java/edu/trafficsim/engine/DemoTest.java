@@ -1,20 +1,15 @@
 package edu.trafficsim.engine;
 
-import org.junit.runner.RunWith;
 import org.opengis.referencing.FactoryException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import edu.trafficsim.engine.demo.DemoBuilder;
 import edu.trafficsim.engine.simulation.SimulationProject;
 import edu.trafficsim.engine.simulation.SimulationService;
 import edu.trafficsim.engine.statistics.StatisticsManager;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration("/simengine-test.xml")
 public class DemoTest {
 
 	public static void main(String[] args) throws FactoryException {

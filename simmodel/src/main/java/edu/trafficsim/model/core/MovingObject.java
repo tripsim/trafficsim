@@ -148,8 +148,8 @@ public abstract class MovingObject extends BaseObject implements Movable, Agent 
 	protected final Coordinate computeCoord(Arc arc, double geomPosition) {
 		try {
 			return getPosition() < 0 ? coord : Coordinates.getOffsetCoordinate(
-					arc.getCrs(), arc.getLinearGeom(), geomPosition,
-					getLateralOffset());
+					arc.getCrs(), arc.getLinearGeom(), geomPosition < 0 ? 0
+							: geomPosition, getLateralOffset());
 		} catch (Exception e) {
 			throw new RuntimeException(
 					"vehicle coordinate transformation failed!", e);

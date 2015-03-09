@@ -44,7 +44,7 @@ class SimulationDaoImpl extends AbstractDaoImpl<SimulationDo> implements
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<String> getSimulationNames(String networkName) {
-		return (List<String>) getTypeField("networkName", new BasicDBObject(
+		return (List<String>) getTypeField("name", new BasicDBObject(
 				"networkName", networkName));
 	}
 

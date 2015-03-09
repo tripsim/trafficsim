@@ -30,7 +30,7 @@ jQuery(document)
 							'.user-configuration-composition-edit',
 							function() {
 								var tr = jQuery(this).closest('tr');
-								simwebhelper.fillHtml('compositions/'
+								simwebhelper.replaceHtml('compositions/'
 										+ tr.attr('data-type') + '/form/'
 										+ tr.attr('data-name'), tr);
 							});
@@ -66,7 +66,7 @@ jQuery(document)
 												tr.remove();
 											});
 								} else {
-									simwebhelper.fillHtml('compositions/'
+									simwebhelper.replaceHtml('compositions/'
 											+ tr.attr('data-type') + '/info/'
 											+ tr.attr('data-name'), tr);
 								}
@@ -133,7 +133,7 @@ jQuery(document)
 														postData,
 														function() {
 															simwebhelper
-																	.fillHtml(
+																	.replaceHtml(
 																			'compositions/'
 																					+ tr
 																							.attr('data-type')

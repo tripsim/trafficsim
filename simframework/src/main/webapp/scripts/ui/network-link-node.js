@@ -25,7 +25,7 @@ jQuery(document).ready(
 					'.user-configuration-link-edit', function() {
 						var tbody = jQuery(this).closest('tbody');
 						var id = tbody.attr('data-id');
-						simwebhelper.fillHtml('link/form/' + id, tbody);
+						simwebhelper.replaceHtml('link/form/' + id, tbody);
 					});
 			/* remove link */
 			jQuery('#user-configuration').on(
@@ -65,7 +65,7 @@ jQuery(document).ready(
 						};
 						simwebhelper.action('link/save', postData, function(
 								data) {
-							simwebhelper.fillHtml('link/info/' + id, tbody);
+							simwebhelper.replaceHtml('link/info/' + id, tbody);
 						});
 					});
 			/* cancel edit link */
@@ -73,7 +73,7 @@ jQuery(document).ready(
 					'.user-configuration-link-cancel', function() {
 						var tbody = jQuery(this).closest('tbody');
 						var id = tbody.attr('data-id');
-						simwebhelper.fillHtml('link/info/' + id, tbody);
+						simwebhelper.replaceHtml('link/info/' + id, tbody);
 					});
 			/* create reverse link */
 			jQuery('#user-configuration').on(
@@ -101,7 +101,7 @@ jQuery(document).ready(
 					'.user-configuration-node-edit', function() {
 						var tbody = jQuery(this).closest('tbody');
 						var id = tbody.attr('data-id');
-						simwebhelper.fillHtml('node/form/' + id, tbody);
+						simwebhelper.replaceHtml('node/form/' + id, tbody);
 					});
 			/* save node */
 			jQuery('#user-configuration').on(
@@ -116,7 +116,7 @@ jQuery(document).ready(
 						};
 						simwebhelper.action('node/save', postData, function(
 								data) {
-							simwebhelper.fillHtml('node/info/' + id, tbody);
+							simwebhelper.replaceHtml('node/info/' + id, tbody);
 						});
 					});
 			/* cancel edit node */
@@ -124,6 +124,6 @@ jQuery(document).ready(
 					'.user-configuration-node-cancel', function() {
 						var tbody = jQuery(this).closest('tbody');
 						var id = tbody.attr('data-id');
-						simwebhelper.fillHtml('node/info/' + id, tbody);
+						simwebhelper.replaceHtml('node/info/' + id, tbody);
 					});
 		});

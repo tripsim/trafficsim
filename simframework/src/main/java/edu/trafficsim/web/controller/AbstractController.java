@@ -46,6 +46,7 @@ public abstract class AbstractController {
 	public @ResponseBody Map<String, Object> handleError(
 			HttpServletRequest req, Exception exception) {
 		logger.warn("Failure request due to {}", exception.getMessage());
+		logger.warn("Error -- ", exception);
 		return failureResponse(exception);
 	}
 

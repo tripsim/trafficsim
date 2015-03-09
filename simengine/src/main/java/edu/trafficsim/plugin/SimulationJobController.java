@@ -104,6 +104,8 @@ public final class SimulationJobController implements SmartLifecycle {
 			try {
 				ISimulating simulating = environment.getSimulating();
 				simulating.simulate(environment.timer, environment);
+			} catch (Exception e) {
+				logger.warn("Error -- ", e);
 			} finally {
 				unregisterTask(environment.getSimulationName());
 			}

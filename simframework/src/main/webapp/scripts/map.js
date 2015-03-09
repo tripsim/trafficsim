@@ -18,15 +18,20 @@
 var simulation = {}; // attach simulation to somewhere for navigation
 var map = {};
 
+simulation.displayResults = false;
 simulation.defaultRefreshInterval = 500;
 // {links : {linkId : feature}, lanes: {linkId:[features]}}
 simulation.network = {
 	links : {},
 	nodes : {}
 };
+simulation.animation = false;
+simulation.simulationName = null; // the simulation to request from server for
+// animation
+simulation.lastF = 0; // the last frame number requested
+simulation.loadedF = 0; // the current last frame loaded from server
 simulation.vehicles = {}; // key: vid value: vehicle
 simulation.frames = {}; // key: fid values: {vid: record}
-simulation.totalF = null;
 simulation.f = null; // current frame id
 simulation.vehicle = function(vid, width, length) {
 	this.vid = vid;
@@ -129,10 +134,13 @@ simulation.initMap = function() {
 		visibility : false
 	});
 	vehicleLayer.events.register('refresh', vehicleLayer, function() {
-		if (that.totalF == that.f) {
-			that.refreshStrategy.deactivate();
-			vehicleLayer.setVisibility(false);
+		if (that.f == that.lastF) {
+			that.stopAnimation();
+		} else if (that.loadedF - that.f < 50 && that.loadedF != that.lastF) {
+			that.loadFrames(that.loadedF + 1);
 		}
+
+		delete that.frames[that.f - 1];
 		var frame = that.frames[that.f++];
 		var features = [];
 		vehicleLayer.removeAllFeatures();
@@ -152,15 +160,18 @@ simulation.initMap = function() {
 		}
 		vehicleLayer.addFeatures(features);
 	});
-	this.drawTrajectory = function(trj) {
+	this.drawTrajectories = function(trjs) {
 		vehicleLayer.removeAllFeatures();
 		var features = [];
-		var geom = OpenLayers.Geometry.fromWKT(trj);
-		var feature = new OpenLayers.Feature.Vector(geom, {
-			trajectory : true,
-			color : 'red'
-		});
-		features.push(feature);
+		for ( var i in trjs) {
+			var trj = trjs[i];
+			var geom = OpenLayers.Geometry.fromWKT(trj);
+			var feature = new OpenLayers.Feature.Vector(geom, {
+				trajectory : true,
+				color : 'red'
+			});
+			features.push(feature);
+		}
 		vehicleLayer.addFeatures(features);
 		vehicleLayer.setVisibility(true);
 		networkLayer.setVisibility(false);
@@ -414,7 +425,6 @@ simulation.initMap = function() {
 					'featureadded',
 					networkLayer,
 					function(f) {
-						that.editLinks();
 						networkLayer.removeFeatures([ f.feature ]);
 						if (f.feature.geometry.components.length < 2) {
 							simwebhelper.feedback('needs at least two points.');
@@ -533,12 +543,11 @@ simulation.initMap = function() {
 	networkLayer.events
 			.on({
 				"featureselected" : function(e) {
-					if (e.feature.attributes['linkId'])
-						simwebhelper.getPanel('link/view/'
-								+ e.feature.attributes['linkId']);
-					else if (e.feature.attributes['nodeId'])
-						simwebhelper.getPanel('node/view/'
-								+ e.feature.attributes['nodeId']);
+					if (e.feature.attributes['linkId']) {
+						that.linkClicked(e.feature.attributes['linkId']);
+					} else if (e.feature.attributes['nodeId']) {
+						that.nodeClicked(e.feature.attributes['nodeId']);
+					}
 				},
 				"featureunselected" : function(e) {
 					simwebhelper.hidePanel();
@@ -731,20 +740,66 @@ simulation.initMap = function() {
 		selectLinkControl.deactivate();
 		selectLaneControl.activate();
 	};
+	/* link node click action */
+	this.linkClicked = function(linkId) {
+		if (this.displayResults) {
+			this.showLinkTsd(linkId);
+		} else {
+			simwebhelper.getPanel('link/view/' + linkId);
+		}
+
+	};
+	this.nodeClicked = function(nodeId) {
+		if (this.displayResults) {
+			this.showNodeTrjs(nodeId);
+		} else {
+			simwebhelper.getPanel('node/view/' + nodeId);
+		}
+	}
+	this.showNodeTrjs = function(nodeId) {
+		var params = this.getResultParams();
+		params.nodeId = nodeId;
+		simwebhelper.getStrWithParams('results/trajectories/'
+				+ params.simulationName, params, function(trjs) {
+			if (trjs.trajectories) {
+				simulation.drawTrajectories(trjs.trajectories);
+			}
+		});
+	}
+	this.showLinkTsd = function(linkId) {
+		var params = this.getResultParams();
+		params.linkId = linkId;
+		simwebhelper.getStrWithParams('results/tsd/' + params.simulationName,
+				params, function(data) {
+					if (data.serieses) {
+						simplot.plot(data.serieses);
+					}
+				});
+	}
+	/* results */
+	this.displayResult = function(state) {
+		if (state === true) {
+			this.displayResults = true;
+		} else {
+			this.displayResults = false;
+		}
+	}
 	/* load all frames */
-	this.loadFrames = function() {
-		that.totalF = 0;
-		that.vehicles = {};
-		that.frames = {};
-		jQuery.get('results/frames', function(data) {
-			var obj = eval('(' + data + ')');
-			for ( var i in obj['vehicles']) {
-				var vs = obj.vehicles[i].split(',');
+	this.loadFrames = function(start) {
+		jQuery.get('results/frames/' + that.simulationName, {
+			offset : start
+		}, function(data) {
+			if (data.startFrame == data.endFrame) {
+				that.lastF = that.loadedF;
+				return;
+			}
+			for ( var i in data['vehicles']) {
+				var vs = data.vehicles[i].split(',');
 				var v = new that.vehicle(vs[0], vs[1], vs[2]);
 				that.vehicles[v.vid] = v;
 			}
-			for ( var i in obj['elements']) {
-				var es = obj.elements[i].split(',');
+			for ( var i in data['elements']) {
+				var es = data.elements[i].split(',');
 				var v = that.vehicles[es[1]];
 				if (!v)
 					continue;
@@ -752,30 +807,41 @@ simulation.initMap = function() {
 				var frame = that.frames[es[0]];
 				if (!frame) {
 					that.frames[es[0]] = frame = [];
-					that.totalF++;
 				}
 				frame.push(e);
 			}
+			that.loadedF = data.endFrame;
 		});
 	};
 	/* clear frames */
 	this.clearFrames = function() {
-		that.stopAnimation();
+		that.simulationName = null;
+		that.lastF = 0;
+		that.loadedF = 0;
+		that.f = 0;
 		that.frames = {};
 		that.vehicles = {};
-		that.totalF = 0;
 	};
 	/* start animation */
 	this.startAnimation = function() {
-		if (!that.totalF)
-			that.loadFrames();
-		that.f = 0;
+		if (this.animation || !this.displayResults) {
+			return;
+		}
+		this.clearFrames();
+		var params = this.getResultParams();
+
+		this.simulationName = params.simulationName;
+		this.f = params.offset;
+		this.lastF = params.limit + params.offset;
+		that.loadFrames(this.f);
+
 		vehicleLayer.setVisibility(true);
 		that.refreshStrategy.activate();
 	};
 	/* stop animation */
 	this.stopAnimation = function() {
 		vehicleLayer.setVisibility(false);
-		that.refreshStrategy.deactivate();
+		this.clearFrames();
+		this.refreshStrategy.deactivate();
 	};
 };

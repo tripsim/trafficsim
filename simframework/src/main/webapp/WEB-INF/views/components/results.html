@@ -1,30 +1,13 @@
-<h2>Results</h2>
-<div id="user-configuration-buttons">
-	<span id="user-configuration-button-close"
-		class="user-configuration-results-tsd-close button">close</span>
-</div>
-<div>
-	<p>
-		<span class="user-configuration-results-start-animation button">Animate</span>
-		<span class="user-configuration-results-stop-animation button">Stop</span>
-	</p>
-	<table>
-		<tr>
-			<td>Vehicle Trajectory</td>
-			<td><th:block data-th-fragment="select(vehicleIds)">
-					<select>
-						<th:block data-th-each="id : ${vehicleIds}">
-							<option data-th-attr="value=${id}" data-th-text="${id}"></option>
-						</th:block>
-					</select>
-				</th:block></td>
-			<td><span class="user-configuration-results-trajectory button">draw</span></td>
-		</tr>
-		<tr>
-			<td>Link Time-space Diagram</td>
-			<td data-th-include="components/results :: select(${linkIds})"></td>
-			<td><span class="user-configuration-results-tsd-plot button">plot</span></td>
-		</tr>
-	</table>
-</div>
-
+<span id="user-state-result-simulation">Simulation <select
+	name="simulationName"><option
+			data-th-each="simulationName : ${simulationNames}"
+			data-th-attr="selected=${simulationName.equals(latestSimulation.name)} ? 'true' :'false', value=${simulationName}"
+			data-th-text="${simulationName}"></option></select><span
+	id="user-state-result-selected-simulation"
+	data-th-fragment="simulation"
+	data-th-attr="data-step-size=${latestSimulation.stepSize}"> from
+		<input type="text" name="fromTime" data-th-value="0" /> to <input
+		type="text" name="toTime" data-th-value="${latestSimulation.duration}" />
+</span> Animation <span id="user-state-result-simulation-start-anmimation"
+	class="button">start</span> <span
+	id="user-state-result-simulation-stop-anmimation" class="button">stop</span></span>
