@@ -48,7 +48,7 @@ public class CompositionDaoTest extends AbstractMongoTest {
 	public void testCountByType() {
 		long count = compositionDao.countByType(TypeCategoryDo.VEHICLE_TYPE,
 				vehicleType);
-		assertEquals(1, count);
+		assertEquals(2, count);
 		count = compositionDao.countByType(TypeCategoryDo.DRIVER_TYPE,
 				vehicleType);
 		assertEquals(0, count);
