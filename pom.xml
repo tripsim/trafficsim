@@ -4,7 +4,7 @@
 
 	<groupId>org.tripsim</groupId>
 	<artifactId>tripsim</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.2-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>trafficsim</name>
 
@@ -297,7 +297,7 @@
 	</dependencyManagement>
 
 	<properties>
-		<trafficsim.version>0.0.1-SNAPSHOT</trafficsim.version>
+		<trafficsim.version>0.0.2-SNAPSHOT</trafficsim.version>
 		<junit.version>4.8.1</junit.version>
 		<mockito.version>2.0.5-beta</mockito.version>
 		<slf4j.version>1.7.10</slf4j.version>
