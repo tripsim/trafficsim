@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <title>Demo</title>
 <style type="text/css">
-html,body,#map {
+html, body, #map {
 	margin: 0;
 	padding: 0;
 	width: 100%;
@@ -117,42 +117,6 @@ html,body,#map {
 				<option value="1">Lane-Changing Model</option>
 			</select>
 		</p>
-		<textarea wrap="off">
-package edu.trafficsim.model.behaviors;
-
-import edu.trafficsim.model.CarFollowingBehavior;
-import edu.trafficsim.model.Vehicle;
-import edu.trafficsim.model.roadusers.DefaultVehicle;
-
-public class DefaultCarFollowing extends AbstractBehavior<DefaultCarFollowing>
-		implements CarFollowingBehavior {
-
-	private static final long serialVersionUID = 1L;
-
-	public DefaultCarFollowing() {
-	}
-
-	public DefaultCarFollowing(String name) {
-		setName(name);
-	}
-
-	/**
-	 * Implement the car-following logic
-	 *
-	 *
-	*/
-	@Override
-	public void update(Vehicle vehicle) {
-		Vehicle leading = vehicle.getPrecedingVehicle();
-		double accerl = 0;
-		if (leading != null)
-			accerl = alpha * (leading.speed() - vehicle.speed());
-		
-		((DefaultVehicle) vehicle).acceleration(accerl);
-	}
-
-}
-		</textarea>
 	</div>
 
 

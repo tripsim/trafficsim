@@ -31,7 +31,7 @@
 	<!-- <mvc:interceptors> -->
 	<!-- <mvc:interceptor> -->
 	<!-- <mvc:mapping path="/edit/**" /> -->
-	<!-- <bean class="edu.trafficsim.web.Interceptor" /> -->
+	<!-- <bean class="org.tripsim.web.Interceptor" /> -->
 	<!-- </mvc:interceptor> -->
 	<!-- </mvc:interceptors> -->
 
@@ -69,7 +69,7 @@
 	<!-- **************************************************************** -->
 	<import resource="classpath:simengine.xml" />
 	<mvc:annotation-driven enable-matrix-variables="true" />
-	<context:component-scan base-package="edu.trafficsim.web" />
+	<context:component-scan base-package="org.tripsim.web" />
 	<context:property-placeholder location="classpath:db.local.properties" />
 
 	<!-- **************************************************************** -->

@@ -8,7 +8,7 @@
 	<import resource="classpath:db.xml" />
 
 	<context:annotation-config />
-	<context:component-scan base-package="edu.trafficsim.engine" />
-	<context:component-scan base-package="edu.trafficsim.plugin" />
+	<context:component-scan base-package="org.tripsim.engine" />
+	<context:component-scan base-package="org.tripsim.plugin" />
 
 </beans>

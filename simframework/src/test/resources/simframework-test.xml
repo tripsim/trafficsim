@@ -9,6 +9,6 @@
 	<context:property-placeholder location="classpath:db.test.properties" />
 
 	<context:annotation-config />
-	<context:component-scan base-package="edu.trafficsim.web.service" />
+	<context:component-scan base-package="org.tripsim.web.service" />
 
 </beans>

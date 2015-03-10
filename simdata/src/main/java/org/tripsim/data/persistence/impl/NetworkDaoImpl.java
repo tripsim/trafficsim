@@ -1,0 +1,41 @@
+package org.tripsim.data.persistence.impl;
+
+import java.util.Date;
+
+import org.mongodb.morphia.query.Query;
+import org.springframework.stereotype.Repository;
+import org.tripsim.data.dom.NetworkDo;
+import org.tripsim.data.persistence.NetworkDao;
+
+@Repository("network-dao")
+class NetworkDaoImpl extends AbstractDaoImpl<NetworkDo> implements NetworkDao {
+
+	@Override
+	public NetworkDo findByName(String name) {
+		return createQuery(name).get();
+	}
+
+	@Override
+	public long countByName(String name) {
+		return createQuery(name).countAll();
+	}
+
+	Query<NetworkDo> createQuery(String name) {
+		return datastore.createQuery(NetworkDo.class).field("name").equal(name);
+	}
+
+	@Override
+	public void save(NetworkDo entity) {
+		entity.setTimestamp(new Date());
+		super.save(entity);
+	}
+
+	@Override
+	public void save(Iterable<NetworkDo> entities) {
+		Date date = new Date();
+		for (NetworkDo entity : entities) {
+			entity.setTimestamp(date);
+		}
+		super.save(entities);
+	}
+}

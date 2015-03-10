@@ -2,8 +2,8 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
 	<parent>
-		<groupId>edu.trafficsim</groupId>
-		<artifactId>trafficsim</artifactId>
+		<groupId>org.tripsim</groupId>
+		<artifactId>tripsim</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
@@ -60,7 +60,7 @@
 
 		<!-- TrafficSim -->
 		<dependency>
-			<groupId>edu.trafficsim</groupId>
+			<groupId>org.tripsim</groupId>
 			<artifactId>simmodel</artifactId>
 		</dependency>
 	</dependencies>
