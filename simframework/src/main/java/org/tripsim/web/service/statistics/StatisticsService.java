@@ -21,6 +21,7 @@ package org.tripsim.web.service.statistics;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -157,14 +158,14 @@ public class StatisticsService {
 	// --------------------------------------------------
 	// Time-space diagram for each link
 	// --------------------------------------------------
-	public TsdDto getTsd(String simulationName, long linkId, long startFrame,
+	public MeasureDto getTsd(String simulationName, long linkId, long startFrame,
 			long steps) {
 		StatisticsFrames<LinkState> frames = manager.getLinkStatistics(
 				simulationName, linkId, startFrame, steps);
 		MultiKeyedMap<Long, Long, Double> data = toSeriesesData(frames
 				.getStatesById(linkId));
 		List<List<List<Number>>> serieses = toSerieses(data);
-		TsdDto result = new TsdDto(linkId, startFrame);
+		MeasureDto result = new MeasureDto(linkId, startFrame);
 		result.setSerieses(serieses);
 		return result;
 	}
@@ -209,89 +210,58 @@ public class StatisticsService {
 	}
 
 	// --------------------------------------------------
+	// Link Time-Volume diagram
+	// --------------------------------------------------
+	public MeasureDto getVolumes(String simulationName, long linkId,
+			long startFrame, long steps) {
+		StatisticsFrames<LinkState> frames = manager.getLinkStatistics(
+				simulationName, linkId, startFrame, steps);
+		Map<Long, Double> volumes = toVolume(frames.getStatesById(linkId));
+		MeasureDto result = new MeasureDto(linkId, startFrame);
+		result.setSerieses(toSerieses(volumes));
+		return result;
+	}
+
+	private Map<Long, Double> toVolume(Collection<LinkState> states) {
+		Map<Long, Double> result = new HashMap<Long, Double>();
+		for (LinkState ls : states) {
+			result.put(ls.getSequence(), ls.getVolume());
+		}
+		return result;
+	}
+
+	private List<List<List<Number>>> toSerieses(Map<Long, Double> data) {
+		List<List<List<Number>>> serieses = new ArrayList<List<List<Number>>>(1);
+		serieses.add(toSeries(data));
+		return serieses;
+	}
+
+	// --------------------------------------------------
+	// Link Time-Speed diagram
+	// --------------------------------------------------
+	public MeasureDto getAvgSpeeds(String simulationName, long linkId,
+			long startFrame, long steps) {
+		StatisticsFrames<LinkState> frames = manager.getLinkStatistics(
+				simulationName, linkId, startFrame, steps);
+		Map<Long, Double> speeds = toAvgSpeeds(frames.getStatesById(linkId));
+		MeasureDto result = new MeasureDto(linkId, startFrame);
+		result.setSerieses(toSerieses(speeds));
+		return result;
+	}
+
+	private Map<Long, Double> toAvgSpeeds(Collection<LinkState> states) {
+		Map<Long, Double> result = new HashMap<Long, Double>();
+		for (LinkState ls : states) {
+			result.put(ls.getSequence(), ls.getAvgSpeed());
+		}
+		return result;
+	}
+
+	// --------------------------------------------------
 	// Fundamental diagram for network
 	// --------------------------------------------------
 	public FdDto getFd(String simulationName, long startFrame, long steps) {
 		FdDto fd = new FdDto();
 		return fd;
 	}
-
-	// public String getTrajectory(StatisticsCollector statics,
-	// NetworkFactory factory, Long vid) {
-	// VehicleState[] vehicleStates = statics.trajectory(vid);
-	// Coordinate[] coords = new Coordinate[vehicleStates.length];
-	// for (int i = 0; i < vehicleStates.length; i++) {
-	// coords[i] = vehicleStates[i].coord;
-	// }
-	// return mapJsonService.getWkt(factory.createLineString(coords));
-	// }
-	//
-	// public String getTsdPlotData(StatisticsCollector statics, Long id) {
-	// LinkState[] linkStats = statics.linkStats(id);
-	// MultiValuedMap<Long, String> data = new MultiValuedMap<Long, String>();
-	// for (int i = 0; i < linkStats.length; i++) {
-	// for (Map.Entry<Long, Double> entry : linkStats[i].positions
-	// .entrySet()) {
-	// data.add(entry.getKey(),
-	// "[" + linkStats[i].time + "," + entry.getValue() + "]");
-	// }
-	// }
-	// StringBuffer sb = new StringBuffer();
-	// for (Long vid : data.keys()) {
-	// sb.append(data.get(vid));
-	// sb.append(",");
-	// }
-	// if (sb.length() > 0)
-	// sb.deleteCharAt(sb.length() - 1);
-	// return "[" + sb.toString() + "]";
-	// }
-	//
-	// public String getFrames(StatisticsCollector statics) {
-	// StringBuffer vehicleSb = new StringBuffer();
-	// StringBuffer frameSb = new StringBuffer();
-	//
-	// for (Map.Entry<Long, List<VehicleState>> entry : statics.trajectories()
-	// .entrySet()) {
-	//
-	// Vehicle vehicle = statics.getVehicle(entry.getKey());
-	//
-	// String name = vehicle.getName();
-	// int initFrameId = vehicle.getStartFrame();
-	//
-	// vehicleSb.append("\"");
-	// vehicleSb.append(name);
-	// vehicleSb.append(",");
-	// vehicleSb.append(vehicle.getWidth());
-	// vehicleSb.append(",");
-	// vehicleSb.append(vehicle.getLength());
-	// vehicleSb.append("\"");
-	// vehicleSb.append(",");
-	//
-	// List<VehicleState> trajectory = entry.getValue();
-	// for (int i = 0; i < trajectory.size(); i++) {
-	//
-	// frameSb.append("\"");
-	// frameSb.append(initFrameId + i);
-	// frameSb.append(",");
-	// frameSb.append(name);
-	// frameSb.append(",");
-	// frameSb.append(trajectory.get(i).coord.x);
-	// frameSb.append(",");
-	// frameSb.append(trajectory.get(i).coord.y);
-	// frameSb.append(",");
-	// frameSb.append(trajectory.get(i).angle);
-	// frameSb.append(",");
-	// String color = Colors.getVehicleColor(trajectory.get(i).speed);
-	// frameSb.append(color);
-	// frameSb.append("\"");
-	// frameSb.append(",");
-	// }
-	// }
-	// if (vehicleSb.length() > 0)
-	// vehicleSb.deleteCharAt(vehicleSb.length() - 1);
-	// if (frameSb.length() > 0)
-	// frameSb.deleteCharAt(frameSb.length() - 1);
-	// return "{vehicles:[" + vehicleSb.toString() + "], elements:["
-	// + frameSb.toString() + "]}";
-	// }
 }

@@ -38,7 +38,7 @@ import org.tripsim.web.service.statistics.FdDto;
 import org.tripsim.web.service.statistics.FramesDto;
 import org.tripsim.web.service.statistics.StatisticsService;
 import org.tripsim.web.service.statistics.TrajectoriesDto;
-import org.tripsim.web.service.statistics.TsdDto;
+import org.tripsim.web.service.statistics.MeasureDto;
 
 /**
  * 
@@ -107,12 +107,32 @@ public class ResultsController extends AbstractController {
 	}
 
 	@RequestMapping(value = "/tsd/{simulationName}", method = RequestMethod.GET)
-	public @ResponseBody TsdDto getTsd(
+	public @ResponseBody MeasureDto getTsd(
 			@PathVariable("simulationName") String simulationName,
 			@RequestParam("linkId") long linkId,
 			@RequestParam(value = "offset", required = false, defaultValue = "0") long offset,
 			@RequestParam(value = "limit", required = false, defaultValue = "1000") long limit) {
 		return statisticsService.getTsd(simulationName, linkId, offset, limit);
+	}
+
+	@RequestMapping(value = "/linkVolumes/{simulationName}", method = RequestMethod.GET)
+	public @ResponseBody MeasureDto getLinkVolumes(
+			@PathVariable("simulationName") String simulationName,
+			@RequestParam("linkId") long linkId,
+			@RequestParam(value = "offset", required = false, defaultValue = "0") long offset,
+			@RequestParam(value = "limit", required = false, defaultValue = "1000") long limit) {
+		return statisticsService.getVolumes(simulationName, linkId, offset,
+				limit);
+	}
+
+	@RequestMapping(value = "/linkSpeeds/{simulationName}", method = RequestMethod.GET)
+	public @ResponseBody MeasureDto getLinkSpeeds(
+			@PathVariable("simulationName") String simulationName,
+			@RequestParam("linkId") long linkId,
+			@RequestParam(value = "offset", required = false, defaultValue = "0") long offset,
+			@RequestParam(value = "limit", required = false, defaultValue = "1000") long limit) {
+		return statisticsService.getAvgSpeeds(simulationName, linkId, offset,
+				limit);
 	}
 
 	@RequestMapping(value = "/fd/{simulationName}", method = RequestMethod.GET)

@@ -21,7 +21,7 @@ package org.tripsim.web.service.statistics;
 import java.io.Serializable;
 import java.util.List;
 
-public class TsdDto implements Serializable {
+public class MeasureDto implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -33,7 +33,7 @@ public class TsdDto implements Serializable {
 	// a list of points [time1,position1],[time2,position2],...
 	List<List<List<Number>>> serieses;
 
-	TsdDto(long linkId, long startFrame) {
+	MeasureDto(long linkId, long startFrame) {
 		this.linkId = linkId;
 		this.startFrame = startFrame;
 	}

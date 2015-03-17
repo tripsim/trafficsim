@@ -744,7 +744,7 @@ simulation.initMap = function() {
 	/* link node click action */
 	this.linkClicked = function(linkId) {
 		if (this.displayResults) {
-			this.showLinkTsd(linkId);
+			this.showLinkResult(linkId);
 		} else {
 			simwebhelper.getPanel('link/view/' + linkId);
 		}
@@ -756,7 +756,7 @@ simulation.initMap = function() {
 		} else {
 			simwebhelper.getPanel('node/view/' + nodeId);
 		}
-	}
+	};
 	this.showNodeTrjs = function(nodeId) {
 		var params = this.getResultParams();
 		params.nodeId = nodeId;
@@ -766,7 +766,32 @@ simulation.initMap = function() {
 				simulation.drawTrajectories(trjs.trajectories);
 			}
 		});
-	}
+	};
+	this.showLinkResult = function(linkId) {
+		jQuery("<div></div>").dialog({
+			dialogClass: "dialog",
+			resizable : false,
+			height : 140,
+			modal : true,
+			buttons : {
+				"Tsd" : function() {
+					jQuery(this).dialog("destroy");
+					that.showLinkTsd(linkId);
+				},
+				"Volume" : function() {
+					jQuery(this).dialog("destroy");
+					that.showLinkVolumes(linkId);
+				},
+				"Speed" : function() {
+					jQuery(this).dialog("destroy");
+					that.showLinkSpeeds(linkId);
+				},
+				Cancel : function() {
+					jQuery(this).dialog("destroy");
+				}
+			}
+		});
+	};
 	this.showLinkTsd = function(linkId) {
 		var params = this.getResultParams();
 		params.linkId = linkId;
@@ -776,7 +801,27 @@ simulation.initMap = function() {
 						simplot.plot(data.serieses);
 					}
 				});
-	}
+	};
+	this.showLinkVolumes = function(linkId) {
+		var params = this.getResultParams();
+		params.linkId = linkId;
+		simwebhelper.getStrWithParams('results/linkVolumes/'
+				+ params.simulationName, params, function(data) {
+			if (data.serieses) {
+				simplot.plot(data.serieses);
+			}
+		});
+	};
+	this.showLinkSpeeds = function(linkId) {
+		var params = this.getResultParams();
+		params.linkId = linkId;
+		simwebhelper.getStrWithParams('results/linkSpeeds/'
+				+ params.simulationName, params, function(data) {
+			if (data.serieses) {
+				simplot.plot(data.serieses);
+			}
+		});
+	};
 	/* results */
 	this.displayResult = function(state) {
 		if (state === true) {
