@@ -30,7 +30,7 @@ import org.tripsim.data.persistence.SimulationDao;
 import com.mongodb.DuplicateKeyException;
 
 @Service("default-simulation-manager")
-public class DefaultSimulationManager implements SimulationManager {
+class DefaultSimulationManager implements SimulationManager {
 
 	private static final Logger logger = LoggerFactory
 			.getLogger(DefaultSimulationManager.class);

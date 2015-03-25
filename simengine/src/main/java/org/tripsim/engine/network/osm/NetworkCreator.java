@@ -43,7 +43,7 @@ import com.vividsolutions.jts.geom.Coordinate;
  * 
  * @author Xuan Shi
  */
-public class NetworkCreator {
+class NetworkCreator {
 
 	public static final long DEFAULT_START_ID = 1000000l;
 	private static final TransformCoordinateFilter filter = GeoReferencing

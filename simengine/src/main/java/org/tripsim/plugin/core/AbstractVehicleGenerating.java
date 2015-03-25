@@ -40,7 +40,7 @@ import org.tripsim.plugin.api.IVehicle;
 import org.tripsim.plugin.api.IVehicleGenerating;
 import org.tripsim.util.Randoms;
 
-public abstract class AbstractVehicleGenerating extends AbstractPlugin
+abstract class AbstractVehicleGenerating extends AbstractPlugin
 		implements IVehicleGenerating {
 
 	private static final long serialVersionUID = 1L;

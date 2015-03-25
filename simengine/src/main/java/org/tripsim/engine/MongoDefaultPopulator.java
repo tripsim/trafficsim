@@ -38,7 +38,7 @@ import org.tripsim.engine.type.TypesManager;
 import org.tripsim.engine.type.VehicleType;
 
 @Component
-public class MongoDefaultPopulator implements
+class MongoDefaultPopulator implements
 		ApplicationListener<ContextRefreshedEvent> {
 
 	private static final Logger logger = LoggerFactory

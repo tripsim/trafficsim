@@ -23,7 +23,7 @@ import org.tripsim.api.model.TypesComposition;
 import org.tripsim.util.WeakReferenceCache;
 
 @Service("cached-types-manager")
-public class CachedTypesManager extends AbstractTypesManager implements
+class CachedTypesManager extends AbstractTypesManager implements
 		TypesManager {
 
 	// WeakReferenceCache should be Thread-safe

@@ -38,7 +38,7 @@ import com.fasterxml.jackson.core.JsonParser;
  * 
  * @author Xuan Shi
  */
-public class OsmParser {
+class OsmParser {
 
 	public static Highways parse(URL url) throws JsonParseException,
 			ProtocolException, IOException, XMLStreamException {

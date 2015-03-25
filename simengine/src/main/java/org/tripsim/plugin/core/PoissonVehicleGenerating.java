@@ -33,7 +33,7 @@ import org.tripsim.util.Randoms;
  * @author Xuan Shi
  */
 @Component("Poisson Vehicle-generating")
-public class PoissonVehicleGenerating extends AbstractVehicleGenerating
+class PoissonVehicleGenerating extends AbstractVehicleGenerating
 		implements IVehicleGenerating {
 	private static final long serialVersionUID = 1L;
 

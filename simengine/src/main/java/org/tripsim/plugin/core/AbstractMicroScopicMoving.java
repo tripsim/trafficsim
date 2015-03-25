@@ -34,7 +34,7 @@ import org.tripsim.plugin.api.IMoving;
  * 
  * @author Xuan Shi
  */
-public abstract class AbstractMicroScopicMoving extends AbstractPlugin
+abstract class AbstractMicroScopicMoving extends AbstractPlugin
 		implements IMoving {
 	private static final long serialVersionUID = 1L;
 

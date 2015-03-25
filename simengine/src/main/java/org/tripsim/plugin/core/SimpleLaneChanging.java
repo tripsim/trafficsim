@@ -32,7 +32,7 @@ import org.tripsim.plugin.api.ILaneChanging;
  * @author Xuan Shi
  */
 @Component("Simple Lane-changing")
-public class SimpleLaneChanging extends AbstractPlugin implements ILaneChanging {
+class SimpleLaneChanging extends AbstractPlugin implements ILaneChanging {
 
 	private static final long serialVersionUID = 1L;
 

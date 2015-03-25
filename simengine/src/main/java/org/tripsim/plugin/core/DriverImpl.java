@@ -28,7 +28,7 @@ import org.tripsim.plugin.api.IDriver;
  * @author Xuan Shi
  */
 @Component("Default Driver")
-public class DriverImpl extends AbstractPlugin implements IDriver {
+class DriverImpl extends AbstractPlugin implements IDriver {
 
 	private static final long serialVersionUID = 1L;
 

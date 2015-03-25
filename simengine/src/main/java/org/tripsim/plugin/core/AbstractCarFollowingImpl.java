@@ -34,7 +34,7 @@ import org.tripsim.util.Pair;
  * 
  * @author Xuan Shi
  */
-public abstract class AbstractCarFollowingImpl extends AbstractPlugin implements
+abstract class AbstractCarFollowingImpl extends AbstractPlugin implements
 		ICarFollowing {
 	private static final long serialVersionUID = 1L;
 

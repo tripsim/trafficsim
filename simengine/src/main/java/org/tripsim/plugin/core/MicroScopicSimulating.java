@@ -40,7 +40,7 @@ import org.tripsim.util.Timer;
  * @author Xuan Shi
  */
 @Component("Micro Scopic Simulating")
-public class MicroScopicSimulating extends AbstractMicroScopicSimulating
+class MicroScopicSimulating extends AbstractMicroScopicSimulating
 		implements ISimulating {
 
 	private static final long serialVersionUID = 1L;

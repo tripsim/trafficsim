@@ -36,7 +36,7 @@ import org.tripsim.model.demand.DefaultTurnPercentage;
  * @author Xuan Shi
  */
 @Component("default-od-factory")
-public class DefaultOdFactory implements OdFactory {
+class DefaultOdFactory implements OdFactory {
 
 	private static final String DEFAULT_NAME = "Default";
 

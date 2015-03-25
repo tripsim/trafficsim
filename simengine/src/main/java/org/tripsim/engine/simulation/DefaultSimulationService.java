@@ -30,7 +30,7 @@ import org.tripsim.engine.od.OdManager;
 import org.tripsim.plugin.SimulationJobController;
 
 @Service("default-simulation-service")
-public class DefaultSimulationService implements SimulationService {
+class DefaultSimulationService implements SimulationService {
 
 	private final static Logger logger = LoggerFactory
 			.getLogger(DefaultSimulationService.class);

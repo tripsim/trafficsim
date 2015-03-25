@@ -35,7 +35,7 @@ import org.tripsim.util.Randoms;
  * @author Xuan Shi
  */
 @Component("Turn-percentage Routing")
-public class TurnPercentageRouting extends AbstractRouting {
+class TurnPercentageRouting extends AbstractRouting {
 
 	private static final long serialVersionUID = 1L;
 

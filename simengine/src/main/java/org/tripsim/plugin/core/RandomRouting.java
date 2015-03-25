@@ -26,7 +26,7 @@ import org.springframework.stereotype.Component;
  * @author Xuan Shi
  */
 @Component("Random Routing")
-public class RandomRouting extends AbstractRouting {
+class RandomRouting extends AbstractRouting {
 
 	private static final long serialVersionUID = 1L;
 

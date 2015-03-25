@@ -31,7 +31,7 @@ import com.vividsolutions.jts.geom.Coordinate;
  * 
  * @author Xuan Shi
  */
-public class Highways {
+class Highways {
 
 	private Map<Long, OsmNode> osmNodes;
 	private List<OsmWay> osmWays;

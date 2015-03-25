@@ -28,7 +28,7 @@ import org.tripsim.plugin.api.IVehicle;
  * @author Xuan Shi
  */
 @Component("Default Vehicle")
-public class VehicleImpl extends AbstractPlugin implements IVehicle {
+class VehicleImpl extends AbstractPlugin implements IVehicle {
 
 	private static final long serialVersionUID = 1L;
 

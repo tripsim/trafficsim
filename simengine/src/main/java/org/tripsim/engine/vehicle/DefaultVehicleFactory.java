@@ -40,7 +40,7 @@ import org.tripsim.util.Randoms;
  */
 @Component("default-vechile-factory")
 @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class DefaultVehicleFactory implements VehicleFactory {
+class DefaultVehicleFactory implements VehicleFactory {
 
 	@Autowired
 	private TypesManager typesManager;

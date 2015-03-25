@@ -31,7 +31,7 @@ import org.tripsim.util.Randoms;
  * 
  * @author Xuan Shi
  */
-public abstract class AbstractRouting extends AbstractPlugin implements
+abstract class AbstractRouting extends AbstractPlugin implements
 		IRouting {
 
 	private static final long serialVersionUID = 1L;
