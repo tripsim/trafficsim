@@ -259,7 +259,6 @@ class NetworkConverter {
 		private void addLane(Link link, LaneDo entity) {
 			Lane lane = factory.createLane(entity.getLaneId(), link,
 					entity.getStart(), entity.getEnd(), entity.getWidth());
-			link.add(lane);
 			lanes.put(lane.getId(), lane);
 		}
 

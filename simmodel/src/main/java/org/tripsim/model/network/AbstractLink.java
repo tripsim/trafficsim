@@ -119,6 +119,9 @@ public abstract class AbstractLink extends AbstractArc implements Link {
 
 	@Override
 	public void add(Lane lane) {
+		if (lanes.contains(lane)) {
+			return;
+		}
 		lane.setLanePosition(lanes.size());
 		lanes.add(lane);
 		onLaneAdded(lane);
