@@ -69,5 +69,6 @@ public interface Link extends Arc, LinkEditListener, Path, Environment {
 	RoadInfo getRoadInfo();
 
 	void setRoadInfo(RoadInfo roadInfo);
-
+	
+	boolean isAuxiliary();
 }

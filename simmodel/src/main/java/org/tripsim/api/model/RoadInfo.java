@@ -27,6 +27,8 @@ import org.tripsim.api.Identifiable;
  */
 public interface RoadInfo extends Identifiable {
 
+	public final static String AUX_ROAD_SUFFIX = "_link";
+
 	long getRoadId();
 
 	void setRoadId(long osmId);

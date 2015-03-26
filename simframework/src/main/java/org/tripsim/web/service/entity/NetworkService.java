@@ -213,6 +213,12 @@ public class NetworkService extends EntityService {
 		return lane;
 	}
 
+	public void addLanes(Sequence sequence, Network network, Link link, int num) {
+		while (num-- > 0) {
+			addLane(sequence, network, link);
+		}
+	}
+
 	public void removeLane(Network network, Link link, int laneId) {
 		link.remove(laneId);
 		network.setModified(true);
@@ -237,6 +243,19 @@ public class NetworkService extends EntityService {
 	public void removeConnector(Network network, Connector connector) {
 		connector.getNode().remove(connector);
 		network.setModified(true);
+	}
+
+	public void addLanes(Sequence sequence, Network network, int mainLanes,
+			int auxLanes) {
+		for (Link link : network.getLinks()) {
+			if (link.getLanes().isEmpty()) {
+				if (link.isAuxiliary()) {
+					addLanes(sequence, network, link, auxLanes);
+				} else {
+					addLanes(sequence, network, link, mainLanes);
+				}
+			}
+		}
 	}
 
 }

@@ -71,6 +71,13 @@ public class DefaultLink extends AbstractLink {
 	}
 
 	@Override
+	public boolean isAuxiliary() {
+		if (roadInfo == null || roadInfo.getHighway() == null)
+			return false;
+		return roadInfo.getHighway().endsWith(RoadInfo.AUX_ROAD_SUFFIX);
+	}
+
+	@Override
 	public Collection<Connector> getConnectors(Link destLink) {
 		List<Connector> connectors = new ArrayList<Connector>();
 		for (Lane fromLane : getLanes()) {
