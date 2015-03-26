@@ -219,8 +219,8 @@ public class NetworkService extends EntityService {
 		}
 	}
 
-	public void removeLane(Network network, Link link, int laneId) {
-		link.remove(laneId);
+	public void removeLane(Network network, Link link, int lanePosition) {
+		link.remove(lanePosition);
 		network.setModified(true);
 	}
 
@@ -245,6 +245,9 @@ public class NetworkService extends EntityService {
 		network.setModified(true);
 	}
 
+	// --------------------------------------------------
+	// Convenient methods in building network
+	// --------------------------------------------------
 	public void addLanes(Sequence sequence, Network network, int mainLanes,
 			int auxLanes) {
 		for (Link link : network.getLinks()) {
@@ -255,6 +258,51 @@ public class NetworkService extends EntityService {
 					addLanes(sequence, network, link, mainLanes);
 				}
 			}
+		}
+	}
+
+	public void connectLanes(Sequence sequence, Network network) {
+		for (Link link : network.getLinks()) {
+			if (link.getLanes().isEmpty()) {
+				continue;
+			}
+			// aux connect to aux, or outmost lane
+			for (Link downstream : link.getEndNode().getDownstreams()) {
+				connectLanes(sequence, network, link, downstream);
+			}
+		}
+	}
+
+	private void connectLanes(Sequence sequence, Network network, Link link,
+			Link downstream) {
+		if (link.isAuxiliary() || downstream.isAuxiliary()) {
+			connectFromOuter(sequence, network, link, downstream);
+		} else {
+			connectFromInner(sequence, network, link, downstream);
+		}
+	}
+
+	private void connectFromInner(Sequence sequence, Network network,
+			Link link, Link downstream) {
+		for (int i = 0; i < link.numOfLanes(); i++) {
+			Lane fromLane = link.getLane(i);
+			Lane toLane = downstream.getLane(i);
+			if (toLane == null) {
+				break;
+			}
+			connectLanes(sequence, network, fromLane, toLane);
+		}
+	}
+
+	private void connectFromOuter(Sequence sequence, Network network,
+			Link link, Link downstream) {
+		for (int i = 0; i < link.numOfLanes(); i++) {
+			Lane fromLane = link.getLane(i);
+			Lane toLane = downstream.getLaneFromOuter(i);
+			if (toLane == null) {
+				break;
+			}
+			connectLanes(sequence, network, fromLane, toLane);
 		}
 	}
 

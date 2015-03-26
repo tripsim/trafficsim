@@ -69,12 +69,12 @@ public class LaneController extends AbstractController {
 
 	@RequestMapping(value = "/info/{linkId}", method = RequestMethod.GET)
 	public String laneInfo(@PathVariable long linkId,
-			@MatrixVariable int laneId,
+			@MatrixVariable int lanePosition,
 			@ModelAttribute("network") Network network, Model model) {
 		Link link = network.getLink(linkId);
 		if (link == null)
 			return "components/empty";
-		Lane lane = link.getLane(laneId);
+		Lane lane = link.getLane(lanePosition);
 
 		model.addAttribute("lane", lane);
 		return "components/lane-fragments :: info";
@@ -83,13 +83,13 @@ public class LaneController extends AbstractController {
 	@RequestMapping(value = "/form/{linkId}", method = RequestMethod.GET)
 	public String laneForm(
 			@PathVariable long linkId,
-			@MatrixVariable int laneId,
+			@MatrixVariable int lanePosition,
 			@MatrixVariable(required = false, defaultValue = "false") boolean isNew,
 			@ModelAttribute("network") Network network, Model model) {
 		Link link = network.getLink(linkId);
 		if (link == null)
 			return "components/empty";
-		Lane lane = link.getLane(laneId);
+		Lane lane = link.getLane(lanePosition);
 
 		model.addAttribute("lane", lane);
 		model.addAttribute("isNew", isNew);
@@ -112,7 +112,7 @@ public class LaneController extends AbstractController {
 
 	@RequestMapping(value = "/removefromlink", method = RequestMethod.POST)
 	public @ResponseBody Map<String, Object> removeLane(
-			@RequestParam("laneId") int laneId,
+			@RequestParam("lanePosition") int lanePosition,
 			@RequestParam("linkId") long linkId,
 			@ModelAttribute("network") Network network) {
 
@@ -121,7 +121,7 @@ public class LaneController extends AbstractController {
 			return failureResponse("link doesn't exist.");
 		}
 
-		networkService.removeLane(network, link, laneId);
+		networkService.removeLane(network, link, lanePosition);
 
 		return laneUpdatedResponse(network, linkId);
 	}
@@ -129,7 +129,7 @@ public class LaneController extends AbstractController {
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
 	public @ResponseBody Map<String, Object> saveLane(
 			@RequestParam("linkId") long id,
-			@RequestParam("laneId") int laneId,
+			@RequestParam("lanePosition") int lanePosition,
 			@RequestParam("start") double start,
 			@RequestParam("end") double end,
 			@RequestParam("width") double width,
@@ -138,7 +138,7 @@ public class LaneController extends AbstractController {
 		if (link == null) {
 			return failureResponse("link doesn't exist.");
 		}
-		Lane lane = link.getLane(laneId);
+		Lane lane = link.getLane(lanePosition);
 		if (lane == null)
 			return failureResponse("lane doesn't exist.");
 

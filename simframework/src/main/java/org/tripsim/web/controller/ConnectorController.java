@@ -61,20 +61,20 @@ public class ConnectorController extends AbstractController {
 	@RequestMapping(value = "view/{fromLinkId}/{toLinkId}", method = RequestMethod.GET)
 	public String connectorView(
 			@PathVariable long fromLinkId,
-			@MatrixVariable(value = "laneId", pathVar = "fromLinkId") int fromLaneId,
+			@MatrixVariable(value = "lanePosition", pathVar = "fromLinkId") int fromlanePosition,
 			@PathVariable long toLinkId,
-			@MatrixVariable(value = "laneId", pathVar = "toLinkId") int toLaneId,
+			@MatrixVariable(value = "lanePosition", pathVar = "toLinkId") int tolanePosition,
 			@ModelAttribute("network") Network network, Model model) {
 		Link fromLink = network.getLink(fromLinkId);
 		if (fromLink == null)
 			return "components/empty";
-		Lane fromLane = fromLink.getLane(fromLaneId);
+		Lane fromLane = fromLink.getLane(fromlanePosition);
 		if (fromLane == null)
 			return "components/empty";
 		Link toLink = network.getLink(toLinkId);
 		if (toLink == null)
 			return "components/empty";
-		Lane toLane = toLink.getLane(toLaneId);
+		Lane toLane = toLink.getLane(tolanePosition);
 		if (toLane == null)
 			return "components/empty";
 
@@ -130,21 +130,21 @@ public class ConnectorController extends AbstractController {
 	@RequestMapping(value = "/remove", method = RequestMethod.POST)
 	public @ResponseBody Map<String, Object> removeConnector(
 			@RequestParam("fromLink") long fromLinkId,
-			@RequestParam("fromLane") int fromLaneId,
+			@RequestParam("fromLane") int fromlanePosition,
 			@RequestParam("toLink") long toLinkId,
-			@RequestParam("toLane") int toLaneId,
+			@RequestParam("toLane") int tolanePosition,
 			@ModelAttribute("network") Network network) {
 
 		Link fromLink = network.getLink(fromLinkId);
 		if (fromLink == null)
 			return failureResponse("no link.");
-		Lane fromLane = fromLink.getLane(fromLaneId);
+		Lane fromLane = fromLink.getLane(fromlanePosition);
 		if (fromLane == null)
 			return failureResponse("no lane.");
 		Link toLink = network.getLink(toLinkId);
 		if (toLink == null)
 			return failureResponse("no link.");
-		Lane toLane = toLink.getLane(toLaneId);
+		Lane toLane = toLink.getLane(tolanePosition);
 		if (toLane == null)
 			return failureResponse("no lane.");
 

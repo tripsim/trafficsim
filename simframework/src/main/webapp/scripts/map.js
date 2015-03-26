@@ -321,7 +321,7 @@ simulation.initMap = function() {
 				var geom = OpenLayers.Geometry.fromWKT(lanes[linkId][j]);
 				var feature = new OpenLayers.Feature.Vector(geom, {
 					linkId : linkId,
-					laneId : j
+					lanePosition : j
 				});
 				features.push(feature);
 			}
@@ -624,8 +624,8 @@ simulation.initMap = function() {
 						}
 						var ids = e.feature.attributes['cid'].split('-');
 						simwebhelper.getPanel('connector/view/' + ids[0]
-								+ ';laneId=' + ids[1] + '/' + ids[2]
-								+ ';laneId=' + ids[3]);
+								+ ';lanePosition=' + ids[1] + '/' + ids[2]
+								+ ';lanePosition=' + ids[3]);
 						return;
 					}
 
@@ -637,9 +637,9 @@ simulation.initMap = function() {
 							return;
 						}
 						var link1 = lanesLayer.selectedFeatures[0].attributes['linkId'];
-						var lane1 = lanesLayer.selectedFeatures[0].attributes['laneId'];
+						var lane1 = lanesLayer.selectedFeatures[0].attributes['lanePosition'];
 						var link2 = lanesLayer.selectedFeatures[1].attributes['linkId'];
-						var lane2 = lanesLayer.selectedFeatures[1].attributes['laneId'];
+						var lane2 = lanesLayer.selectedFeatures[1].attributes['lanePosition'];
 						if (link1 === link2) {
 							simwebhelper
 									.error('Cannot connect lanes on the same link.');

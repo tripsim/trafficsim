@@ -46,7 +46,7 @@ jQuery(document).ready(
 			var table = tr.closest('table');
 			var ids = tr.attr('data-id').split('-');
 			simwebhelper.action('lane/removefromlink', {
-			    laneId : ids[1],
+				lanePosition : ids[1],
 			    linkId : ids[0]
 			},
 				function(data) {
@@ -68,7 +68,7 @@ jQuery(document).ready(
 				var tr = jQuery(this).closest('tr');
 				var ids = tr.attr('data-id').split('-');
 				simwebhelper.replaceHtml('lane/form/' + ids[0]
-					+ ";laneId=" + ids[1], tr);
+					+ ";lanePosition=" + ids[1], tr);
 			    });
 	    /* cancel edit lane */
 	    jQuery('#user-configuration').on(
@@ -78,7 +78,7 @@ jQuery(document).ready(
 			var tr = jQuery(this).closest('tr');
 			var ids = tr.attr('data-id').split('-');
 			simwebhelper.replaceHtml('lane/info/' + ids[0]
-				+ ";laneId=" + ids[1], tr);
+				+ ";lanePosition=" + ids[1], tr);
 		    });
 	    /* save edit lane */
 	    jQuery('#user-configuration').on(
@@ -89,7 +89,7 @@ jQuery(document).ready(
 			var ids = tr.attr('data-id').split('-');
 			postData = {
 			    linkId : ids[0],
-			    laneId : ids[1],
+			    lanePosition : ids[1],
 			    start : tr.find('input[name="start"]').val(),
 			    end : tr.find('input[name="end"]').val(),
 			    width : tr.find('input[name="width"]').val()
@@ -97,7 +97,7 @@ jQuery(document).ready(
 			simwebhelper.action('lane/save', postData,
 				function(data) {
 				    simwebhelper.replaceHtml('lane/info/' + ids[0]
-					    + ";laneId=" + ids[1], tr);
+					    + ";lanePosition=" + ids[1], tr);
 				    simulation.reDrawLanes(data.lanes,
 					    data.connectors);
 				});

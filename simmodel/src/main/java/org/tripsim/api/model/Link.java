@@ -42,6 +42,8 @@ public interface Link extends Arc, LinkEditListener, Path, Environment {
 
 	Lane getLane(int position);
 
+	Lane getLaneFromOuter(int position);
+
 	List<Lane> getLanes();
 
 	List<Lane> getAuxiliaryLanes();
@@ -69,6 +71,6 @@ public interface Link extends Arc, LinkEditListener, Path, Environment {
 	RoadInfo getRoadInfo();
 
 	void setRoadInfo(RoadInfo roadInfo);
-	
+
 	boolean isAuxiliary();
 }

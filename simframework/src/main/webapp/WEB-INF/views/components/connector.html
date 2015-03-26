@@ -11,7 +11,7 @@
 			</tr>
 			<tr>
 				<td>From Lane</td>
-				<td data-th-text="${connector.fromLane.laneId}"></td>
+				<td data-th-text="${connector.fromLane.lanePosition}"></td>
 			</tr>
 			<tr>
 				<td>To Link</td>
@@ -19,7 +19,7 @@
 			</tr>
 			<tr>
 				<td>To Lane</td>
-				<td data-th-text="${connector.toLane.laneId}"></td>
+				<td data-th-text="${connector.toLane.lanePosition}"></td>
 			</tr>
 			<tr>
 				<td>Length</td>
@@ -27,8 +27,8 @@
 			</tr>
 			<tr>
 				<td colspan="2"><span
-					data-th-attr="data-id=${connector.fromLane.link.id} + '-' + ${connector.fromLane.laneId} + '-'
-					+ ${connector.toLane.link.id} + '-' + ${connector.toLane.laneId}"
+					data-th-attr="data-id=${connector.fromLane.link.id} + '-' + ${connector.fromLane.lanePosition} + '-'
+					+ ${connector.toLane.link.id} + '-' + ${connector.toLane.lanePosition}"
 					class="user-configuration-connector-remove button">remove
 						connection</span></td>
 			</tr>

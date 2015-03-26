@@ -116,6 +116,13 @@ public class DefaultLink extends AbstractLink {
 		return list;
 	}
 
+	@Override
+	public Lane getLaneFromOuter(int position) {
+		List<Lane> lanes = getLanes();
+		position = lanes.size() - 1 - position;
+		return lanes.isEmpty() || position < 0 ? null : lanes.get(position);
+	}
+
 	// --------------------------------------------------
 	// Path Implementation
 	// --------------------------------------------------

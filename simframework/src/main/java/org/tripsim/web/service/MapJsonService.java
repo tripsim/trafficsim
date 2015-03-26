@@ -154,7 +154,7 @@ public class MapJsonService {
 
 	/**
 	 * @param Connector
-	 * @return { fromLinkId-fromLaneId-toLinkId-toLaneId : [connector WKT
+	 * @return { fromLinkId-fromLanePosition-toLinkId-toLanePosition : [connector WKT
 	 *         Strings] }
 	 */
 	public String getConnectorJson(Connector connector) {
@@ -163,7 +163,7 @@ public class MapJsonService {
 
 	/**
 	 * @param Connector
-	 * @return { fromLinkId-fromLaneId-toLinkId-toLaneId : [connector WKT
+	 * @return { fromLinkId-fromLanePosition-toLinkId-toLanePosition : [connector WKT
 	 *         Strings] }
 	 */
 	public String getConnectorsJson(Network network, long linkId) {
@@ -189,7 +189,7 @@ public class MapJsonService {
 
 	/**
 	 * @param Connectors
-	 * @return [ fromLinkId-fromLaneId-toLinkId-toLaneId ] }
+	 * @return [ fromLinkId-fromLanePosition-toLinkId-toLanePosition ] }
 	 */
 	public String getConnectorsIdsJson(Connector... connectors) {
 		StringBuffer connectorSb = new StringBuffer();
@@ -204,7 +204,7 @@ public class MapJsonService {
 
 	/**
 	 * @param Connector
-	 * @return "fromLinkId-fromLaneId-toLinkId-toLaneId"
+	 * @return "fromLinkId-fromLanePosition-toLinkId-toLanePosition"
 	 */
 	private StringBuffer getConnectorId(Connector connector) {
 		StringBuffer connectorSb = new StringBuffer();
@@ -222,7 +222,7 @@ public class MapJsonService {
 
 	/**
 	 * @param Connector
-	 * @return fromLinkId-fromLaneId-toLinkId-toLaneId : connector WKT Strings
+	 * @return fromLinkId-fromLanePosition-toLinkId-toLanePosition : connector WKT Strings
 	 */
 	private String getConnector(Connector connector) {
 		StringBuffer connectorSb = new StringBuffer();
@@ -238,7 +238,7 @@ public class MapJsonService {
 
 	/**
 	 * @param Lane
-	 * @return fromLinkId-fromLaneId-toLinkId-toLaneId : connector WKT Strings
+	 * @return fromLinkId-fromLanePosition-toLinkId-toLanePosition : connector WKT Strings
 	 */
 	private StringBuffer getConnectors(Lane lane) {
 		StringBuffer connectorSb = new StringBuffer();

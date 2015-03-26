@@ -20,8 +20,6 @@ package org.tripsim.web.controller;
 
 import java.util.Map;
 
-import javax.ws.rs.core.Response;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -198,6 +196,14 @@ public class NetworkController extends AbstractController {
 			@ModelAttribute("sequence") Sequence sequence,
 			@ModelAttribute("network") Network network) {
 		networkService.addLanes(sequence, network, mainLanes, auxLanes);
+		return new ResponseEntity<String>(HttpStatus.OK);
+	}
+
+	@RequestMapping(value = "/connectLanes", method = RequestMethod.POST)
+	public ResponseEntity<String> connectLanes(
+			@ModelAttribute("sequence") Sequence sequence,
+			@ModelAttribute("network") Network network) {
+		networkService.connectLanes(sequence, network);
 		return new ResponseEntity<String>(HttpStatus.OK);
 	}
 }
