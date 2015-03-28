@@ -78,10 +78,9 @@ class DefaultOdManager implements OdManager {
 		return converter.toOdMatrix(odMatrix);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public List<String> getOdMatrixNames(String networkName) {
-		return (List<String>) odMatrixDao.getTypeField("name");
+		return odMatrixDao.getOdMatrixNames(networkName);
 	}
 
 }

@@ -16,19 +16,19 @@
 				<td><span>Load Network</span></td>
 				<td><select name="network"><option
 							data-th-each="name : ${networkNames}"
-							data-th-attr="value=${name}" data-th-text="${name}"></option>
+							data-th-attr="selected=${name.equals(network.name)} ? 'true' :'false', value=${name}"
+							data-th-text="${name}"></option>
 				</select></td>
-				<td><span
-					class="button user-configuration-project-load">Load</span></td>
+				<td><span class="button user-configuration-project-load">Load</span></td>
 			</tr>
 			<tr data-th-if="${!odMatrixNames.isEmpty()}">
 				<td><span>Load Od Matrix</span></td>
 				<td><select name="odMatrix"><option
 							data-th-each="name : ${odMatrixNames}"
-							data-th-attr="value=${name}" data-th-text="${name}"></option>
+							data-th-attr="selected=${name.equals(odMatrix.name)} ? 'true' :'false', value=${name}"
+							data-th-text="${name}"></option>
 				</select></td>
-				<td><span
-					class="button user-configuration-project-load">Load</span></td>
+				<td><span class="button user-configuration-project-load">Load</span></td>
 			</tr>
 			<tr
 				data-th-if="${networkNames.isEmpty() and odMatrixNames.isEmpty()}">
