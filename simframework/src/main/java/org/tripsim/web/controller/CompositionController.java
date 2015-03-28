@@ -24,16 +24,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.MatrixVariable;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.SessionAttributes;
 import org.tripsim.api.model.TypesComposition;
 import org.tripsim.engine.type.TypesManager;
-import org.tripsim.web.Sequence;
 import org.tripsim.web.service.entity.CompositionService;
 
 /**
@@ -43,7 +40,6 @@ import org.tripsim.web.service.entity.CompositionService;
  */
 @Controller
 @RequestMapping(value = "/compositions")
-@SessionAttributes(value = { "sequence", "odMatrix" })
 public class CompositionController extends AbstractController {
 
 	@Autowired
@@ -97,10 +93,9 @@ public class CompositionController extends AbstractController {
 	}
 
 	@RequestMapping(value = "/vehicle/new", method = RequestMethod.POST)
-	public @ResponseBody Map<String, Object> newVehicleComposition(
-			@ModelAttribute("sequence") Sequence sequence) {
+	public @ResponseBody Map<String, Object> newVehicleComposition() {
 		String name = compositionService.createVehicleComposition(
-				DEFAULT_NAME + sequence.nextId()).getName();
+				DEFAULT_NAME + context.getSequence().nextId()).getName();
 		return successResponse("Vehicle Composition created.", null, name);
 	}
 
@@ -147,10 +142,9 @@ public class CompositionController extends AbstractController {
 	}
 
 	@RequestMapping(value = "/driver/new", method = RequestMethod.POST)
-	public @ResponseBody Map<String, Object> newDriverComposition(
-			@ModelAttribute("sequence") Sequence sequencde) {
+	public @ResponseBody Map<String, Object> newDriverComposition() {
 		String name = compositionService.createDriverComposition(
-				DEFAULT_NAME + sequencde.nextId()).getName();
+				DEFAULT_NAME + context.getSequence().nextId()).getName();
 		return successResponse("Driver Composition created.", null, name);
 
 	}

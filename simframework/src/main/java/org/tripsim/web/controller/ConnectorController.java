@@ -24,19 +24,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.MatrixVariable;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.SessionAttributes;
 import org.tripsim.api.model.Connector;
 import org.tripsim.api.model.Lane;
 import org.tripsim.api.model.Link;
 import org.tripsim.api.model.Network;
 import org.tripsim.engine.network.NetworkFactory;
-import org.tripsim.web.Sequence;
 import org.tripsim.web.service.MapJsonService;
 import org.tripsim.web.service.entity.NetworkService;
 
@@ -47,7 +44,6 @@ import org.tripsim.web.service.entity.NetworkService;
  */
 @Controller
 @RequestMapping(value = "/connector")
-@SessionAttributes(value = { "sequence", "network" })
 public class ConnectorController extends AbstractController {
 
 	@Autowired
@@ -64,7 +60,8 @@ public class ConnectorController extends AbstractController {
 			@MatrixVariable(value = "lanePosition", pathVar = "fromLinkId") int fromlanePosition,
 			@PathVariable long toLinkId,
 			@MatrixVariable(value = "lanePosition", pathVar = "toLinkId") int tolanePosition,
-			@ModelAttribute("network") Network network, Model model) {
+			Model model) {
+		Network network = context.getNetwork();
 		Link fromLink = network.getLink(fromLinkId);
 		if (fromLink == null)
 			return "components/empty";
@@ -92,9 +89,8 @@ public class ConnectorController extends AbstractController {
 			@RequestParam("link1") long link1Id,
 			@RequestParam("lane1") int lane1Id,
 			@RequestParam("link2") long link2Id,
-			@RequestParam("lane2") int lane2Id,
-			@ModelAttribute("sequence") Sequence sequence,
-			@ModelAttribute("network") Network network) {
+			@RequestParam("lane2") int lane2Id) {
+		Network network = context.getNetwork();
 		Link link1 = network.getLink(link1Id);
 		if (link1 == null)
 			return failureResponse("no link.");
@@ -112,15 +108,15 @@ public class ConnectorController extends AbstractController {
 			if (link1.getEndNode().isConnected(lane1, lane2)) {
 				return failureResponse("already connected");
 			}
-			Connector connector = networkService.connectLanes(sequence,
-					network, lane1, lane2);
+			Connector connector = networkService.connectLanes(
+					context.getSequence(), network, lane1, lane2);
 			return connectSuccessResponse(connector, "Success 1!");
 		} else if (link1.getStartNode() == link2.getEndNode()) {
 			if (link1.getStartNode().isConnected(lane2, lane1)) {
 				return failureResponse("already connected");
 			}
-			Connector connector = networkService.connectLanes(sequence,
-					network, lane2, lane1);
+			Connector connector = networkService.connectLanes(
+					context.getSequence(), network, lane2, lane1);
 			return connectSuccessResponse(connector, "Success 2!");
 		} else {
 			return failureResponse("no connection");
@@ -132,9 +128,8 @@ public class ConnectorController extends AbstractController {
 			@RequestParam("fromLink") long fromLinkId,
 			@RequestParam("fromLane") int fromlanePosition,
 			@RequestParam("toLink") long toLinkId,
-			@RequestParam("toLane") int tolanePosition,
-			@ModelAttribute("network") Network network) {
-
+			@RequestParam("toLane") int tolanePosition) {
+		Network network = context.getNetwork();
 		Link fromLink = network.getLink(fromLinkId);
 		if (fromLink == null)
 			return failureResponse("no link.");

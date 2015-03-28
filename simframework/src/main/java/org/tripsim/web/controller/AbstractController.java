@@ -25,9 +25,11 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.tripsim.web.model.ActionResponse;
+import org.tripsim.web.session.UserContext;
 
 /**
  * 
@@ -41,6 +43,9 @@ public abstract class AbstractController {
 
 	private static final Logger logger = LoggerFactory
 			.getLogger(AbstractController.class);
+
+	@Autowired
+	UserContext context;
 
 	@ExceptionHandler(RuntimeException.class)
 	public @ResponseBody Map<String, Object> handleError(

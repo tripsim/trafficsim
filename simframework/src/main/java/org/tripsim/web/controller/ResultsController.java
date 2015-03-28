@@ -23,22 +23,20 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.SessionAttributes;
 import org.tripsim.api.model.Network;
 import org.tripsim.engine.simulation.ExecutedSimulation;
 import org.tripsim.engine.simulation.SimulationManager;
 import org.tripsim.engine.simulation.SimulationService;
 import org.tripsim.web.service.statistics.FdDto;
 import org.tripsim.web.service.statistics.FramesDto;
+import org.tripsim.web.service.statistics.MeasureDto;
 import org.tripsim.web.service.statistics.StatisticsService;
 import org.tripsim.web.service.statistics.TrajectoriesDto;
-import org.tripsim.web.service.statistics.MeasureDto;
 
 /**
  * 
@@ -47,7 +45,6 @@ import org.tripsim.web.service.statistics.MeasureDto;
  */
 @Controller
 @RequestMapping(value = "/results")
-@SessionAttributes(value = { "network" })
 public class ResultsController extends AbstractController {
 
 	@Autowired
@@ -61,7 +58,8 @@ public class ResultsController extends AbstractController {
 	@RequestMapping(value = "/view", method = RequestMethod.GET)
 	public String view(
 			@RequestParam(value = "simulationName", required = false) String simulationName,
-			@ModelAttribute("network") Network network, Model model) {
+			Model model) {
+		Network network = context.getNetwork();
 		List<String> simulationNames = simulationManager
 				.getSimulationNames(network.getName());
 		if (simulationNames.isEmpty()) {

@@ -24,18 +24,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.MatrixVariable;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.SessionAttributes;
 import org.tripsim.api.model.Lane;
 import org.tripsim.api.model.Link;
 import org.tripsim.api.model.Network;
 import org.tripsim.engine.network.NetworkFactory;
-import org.tripsim.web.Sequence;
 import org.tripsim.web.service.MapJsonService;
 import org.tripsim.web.service.entity.NetworkService;
 
@@ -46,7 +43,6 @@ import org.tripsim.web.service.entity.NetworkService;
  */
 @Controller
 @RequestMapping(value = "/lane")
-@SessionAttributes(value = { "sequence", "network" })
 public class LaneController extends AbstractController {
 
 	@Autowired
@@ -57,9 +53,8 @@ public class LaneController extends AbstractController {
 	NetworkFactory factory;
 
 	@RequestMapping(value = "/{linkId}", method = RequestMethod.GET)
-	public String lanes(@PathVariable long linkId,
-			@ModelAttribute("network") Network network, Model model) {
-		Link link = network.getLink(linkId);
+	public String lanes(@PathVariable long linkId, Model model) {
+		Link link = context.getNetwork().getLink(linkId);
 		if (link == null)
 			return "components/empty";
 
@@ -69,9 +64,8 @@ public class LaneController extends AbstractController {
 
 	@RequestMapping(value = "/info/{linkId}", method = RequestMethod.GET)
 	public String laneInfo(@PathVariable long linkId,
-			@MatrixVariable int lanePosition,
-			@ModelAttribute("network") Network network, Model model) {
-		Link link = network.getLink(linkId);
+			@MatrixVariable int lanePosition, Model model) {
+		Link link = context.getNetwork().getLink(linkId);
 		if (link == null)
 			return "components/empty";
 		Lane lane = link.getLane(lanePosition);
@@ -85,8 +79,8 @@ public class LaneController extends AbstractController {
 			@PathVariable long linkId,
 			@MatrixVariable int lanePosition,
 			@MatrixVariable(required = false, defaultValue = "false") boolean isNew,
-			@ModelAttribute("network") Network network, Model model) {
-		Link link = network.getLink(linkId);
+			Model model) {
+		Link link = context.getNetwork().getLink(linkId);
 		if (link == null)
 			return "components/empty";
 		Lane lane = link.getLane(lanePosition);
@@ -97,25 +91,22 @@ public class LaneController extends AbstractController {
 	}
 
 	@RequestMapping(value = "/addtolink", method = RequestMethod.POST)
-	public @ResponseBody Map<String, Object> addLane(
-			@RequestParam("id") long id,
-			@ModelAttribute("sequence") Sequence sequence,
-			@ModelAttribute("network") Network network) {
+	public @ResponseBody Map<String, Object> addLane(@RequestParam("id") long id) {
+		Network network = context.getNetwork();
 		Link link = network.getLink(id);
 		if (link == null) {
 			return failureResponse("link doesn't exist.");
 		}
 
-		networkService.addLane(sequence, network, link);
+		networkService.addLane(context.getSequence(), network, link);
 		return laneUpdatedResponse(network, id);
 	}
 
 	@RequestMapping(value = "/removefromlink", method = RequestMethod.POST)
 	public @ResponseBody Map<String, Object> removeLane(
 			@RequestParam("lanePosition") int lanePosition,
-			@RequestParam("linkId") long linkId,
-			@ModelAttribute("network") Network network) {
-
+			@RequestParam("linkId") long linkId) {
+		Network network = context.getNetwork();
 		Link link = network.getLink(linkId);
 		if (link == null) {
 			return failureResponse("link doesn't exist.");
@@ -131,9 +122,8 @@ public class LaneController extends AbstractController {
 			@RequestParam("linkId") long id,
 			@RequestParam("lanePosition") int lanePosition,
 			@RequestParam("start") double start,
-			@RequestParam("end") double end,
-			@RequestParam("width") double width,
-			@ModelAttribute("network") Network network) {
+			@RequestParam("end") double end, @RequestParam("width") double width) {
+		Network network = context.getNetwork();
 		Link link = network.getLink(id);
 		if (link == null) {
 			return failureResponse("link doesn't exist.");

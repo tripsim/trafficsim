@@ -24,19 +24,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.MatrixVariable;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.SessionAttributes;
 import org.tripsim.api.model.Network;
 import org.tripsim.api.model.Node;
 import org.tripsim.api.model.Od;
 import org.tripsim.api.model.OdMatrix;
 import org.tripsim.engine.type.TypesManager;
-import org.tripsim.web.Sequence;
 import org.tripsim.web.model.OdCandidates;
 import org.tripsim.web.service.entity.OdService;
 
@@ -47,8 +44,6 @@ import org.tripsim.web.service.entity.OdService;
  */
 @Controller
 @RequestMapping(value = "/od")
-@SessionAttributes(value = { "sequence", "network", "odMatrix",
-		"candidateOdMatrix" })
 public class OdController extends AbstractController {
 
 	@Autowired
@@ -60,10 +55,8 @@ public class OdController extends AbstractController {
 	OdCandidates candidates;
 
 	@RequestMapping(value = "/info/{id}", method = RequestMethod.GET)
-	public String odView(@PathVariable long id,
-			@ModelAttribute("odMatrix") OdMatrix odMatrix, Model model) {
-		Od od = odMatrix.getOd(id);
-
+	public String odView(@PathVariable long id, Model model) {
+		Od od = context.getOdMatrix().getOd(id);
 		model.addAttribute("od", od);
 		return "components/od-fragments :: info";
 	}
@@ -72,8 +65,9 @@ public class OdController extends AbstractController {
 	public String odEdit(
 			@PathVariable long id,
 			@MatrixVariable(required = false, defaultValue = "false") boolean isNew,
-			@ModelAttribute("network") Network network,
-			@ModelAttribute("odMatrix") OdMatrix odMatrix, Model model) {
+			Model model) {
+		Network network = context.getNetwork();
+		OdMatrix odMatrix = context.getOdMatrix();
 		Od od = isNew ? candidates.get(id) : odMatrix.getOd(id);
 		if (od == null) {
 			throw new IllegalArgumentException("no such od!");
@@ -98,9 +92,9 @@ public class OdController extends AbstractController {
 			@RequestParam("vehicleCompositionName") String vcName,
 			@RequestParam("driverCompositionName") String dcName,
 			@RequestParam("times[]") double[] times,
-			@RequestParam("vphs[]") Integer[] vphs,
-			@ModelAttribute("network") Network network,
-			@ModelAttribute("odMatrix") OdMatrix odMatrix) {
+			@RequestParam("vphs[]") Integer[] vphs) {
+		Network network = context.getNetwork();
+		OdMatrix odMatrix = context.getOdMatrix();
 		Od od = candidates.remove(id);
 		if (od != null) {
 			try {
@@ -119,22 +113,19 @@ public class OdController extends AbstractController {
 
 	@RequestMapping(value = "/new", method = RequestMethod.POST)
 	public @ResponseBody Map<String, Object> newOd(
-			@RequestParam("originId") long oid,
-			@ModelAttribute("sequence") Sequence sequence,
-			@ModelAttribute("network") Network network,
-			@ModelAttribute("odMatrix") OdMatrix odMatrix) {
-		Node origin = network.getNode(oid);
-		Od od = odService.createOd(sequence, odMatrix, origin, null);
+			@RequestParam("originId") long oid) {
+		Node origin = context.getNetwork().getNode(oid);
+		Od od = odService.createOd(context.getSequence(),
+				context.getOdMatrix(), origin, null);
 		candidates.add(od);
 		return successResponse("New od created.", null, od.getId());
 	}
 
 	@RequestMapping(value = "/remove", method = RequestMethod.POST)
 	public @ResponseBody Map<String, Object> removeOd(
-			@RequestParam("id") long id,
-			@ModelAttribute("odMatrix") OdMatrix odMatrix) {
+			@RequestParam("id") long id) {
 		candidates.remove(id);
-		odService.removeOd(odMatrix, id);
+		odService.removeOd(context.getOdMatrix(), id);
 		return successResponse("Od removed.");
 	}
 

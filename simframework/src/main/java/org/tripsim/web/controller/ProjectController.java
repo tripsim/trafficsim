@@ -28,12 +28,10 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.tripsim.api.model.Network;
@@ -42,8 +40,6 @@ import org.tripsim.engine.io.IOService;
 import org.tripsim.engine.network.NetworkManager;
 import org.tripsim.engine.od.OdManager;
 import org.tripsim.engine.simulation.SimulationProject;
-import org.tripsim.engine.simulation.SimulationProjectBuilder;
-import org.tripsim.engine.simulation.SimulationSettings;
 import org.tripsim.web.service.ProjectService;
 import org.tripsim.web.service.entity.OdService;
 
@@ -54,7 +50,6 @@ import org.tripsim.web.service.entity.OdService;
  */
 @Controller
 @RequestMapping(value = "/project")
-@SessionAttributes(value = { "network", "odMatrix", "settings" })
 public class ProjectController extends AbstractController {
 
 	@Autowired
@@ -70,11 +65,12 @@ public class ProjectController extends AbstractController {
 	IOService ioService;
 
 	@RequestMapping(value = "/new", method = RequestMethod.GET)
-	public String newProjectView(@ModelAttribute("network") Network network,
-			Model model) {
+	public String newProjectView(Model model) {
+		model.addAttribute("network", context.getNetwork());
+		model.addAttribute("odMatrix", context.getOdMatrix());
 		model.addAttribute("networkNames", networkManager.getNetworkNames());
 		model.addAttribute("odMatrixNames",
-				odManager.getOdMatrixNames(network.getName()));
+				odManager.getOdMatrixNames(context.getNetwork().getName()));
 		return "components/project";
 	}
 
@@ -87,10 +83,7 @@ public class ProjectController extends AbstractController {
 			if (network == null) {
 				return failureResponse("network " + name + "doesn't exists!");
 			}
-			OdMatrix odMatrix = odService.createOdMatrix(network.getName());
-
-			model.addAttribute("network", network);
-			model.addAttribute("odMatrix", odMatrix);
+			context.setNetwork(network);
 			return successResponseWithRedirect("network loaded!", "/");
 		}
 		if ("odMatrix".equals(element)) {
@@ -98,7 +91,7 @@ public class ProjectController extends AbstractController {
 			if (odMatrix == null) {
 				return failureResponse("network " + name + "doesn't exists!");
 			}
-			model.addAttribute("odMatrix", odMatrix);
+			context.setOdMatrix(odMatrix);
 			return successResponseWithRedirect("odMatrix loaded!", "/");
 		}
 		return failureResponse("unknown element to load!");
@@ -107,15 +100,15 @@ public class ProjectController extends AbstractController {
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
 	public @ResponseBody Map<String, Object> save(
 			@RequestParam("name") String name,
-			@RequestParam("element") String element,
-			@ModelAttribute("network") Network network,
-			@ModelAttribute("odMatrix") OdMatrix odMatrix, Model model) {
+			@RequestParam("element") String element, Model model) {
 		if ("network".equals(element)) {
+			Network network = context.getNetwork();
 			network.setName(name);
 			networkManager.saveNetwork(network);
 			return successResponse("network saved!");
 		}
 		if ("odMatrix".equals(element)) {
+			OdMatrix odMatrix = context.getOdMatrix();
 			odMatrix.setName(name);
 			odManager.saveOdMatrix(odMatrix);
 			return successResponse("odMatrix saved!");
@@ -124,18 +117,13 @@ public class ProjectController extends AbstractController {
 	}
 
 	@RequestMapping(value = "/export", method = RequestMethod.GET)
-	public void exportProject(@ModelAttribute("network") Network network,
-			@ModelAttribute("odMatrix") OdMatrix odMatrix,
-			@ModelAttribute("settings") SimulationSettings settings,
-			HttpServletResponse response) {
+	public void exportProject(HttpServletResponse response) {
 		response.setContentType("application/json");
 		response.setHeader("Content-Disposition",
 				"attachment; filename=\"project.json\"");
 		try {
-			ioService.exportProject(
-					new SimulationProjectBuilder().withNetwork(network)
-							.withOdMatrix(odMatrix).withSettings(settings)
-							.build(), response.getOutputStream());
+			ioService.exportProject(context.asProject(),
+					response.getOutputStream());
 		} catch (IOException e) {
 		}
 	}
@@ -149,9 +137,7 @@ public class ProjectController extends AbstractController {
 		if (!multipartFile.isEmpty()) {
 			try (InputStream in = multipartFile.getInputStream()) {
 				SimulationProject project = ioService.importProject(in);
-				model.addAttribute("network", project.getNetwork());
-				model.addAttribute("odMatrix", project.getOdMatrix());
-				model.addAttribute("settings", project.getSettings());
+				context.importProject(project);
 			} catch (IOException e) {
 			}
 		}

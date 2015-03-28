@@ -25,12 +25,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.SessionAttributes;
 import org.tripsim.api.model.Link;
 import org.tripsim.api.model.Network;
 import org.tripsim.api.model.Node;
@@ -56,7 +54,6 @@ import com.vividsolutions.jts.io.ParseException;
  */
 @Controller
 @RequestMapping(value = "/network")
-@SessionAttributes(value = { "sequence", "network", "odMatrix" })
 public class NetworkController extends AbstractController {
 
 	@Autowired
@@ -72,8 +69,9 @@ public class NetworkController extends AbstractController {
 	TypesManager typesManager;
 
 	@RequestMapping(value = "/view", method = RequestMethod.GET)
-	public String networkView(@ModelAttribute("network") Network network,
-			Model model) {
+	public String networkView(Model model) {
+		Network network = context.getNetwork();
+		model.addAttribute("network", network);
 		model.addAttribute("linkCount", network.getLinks().size());
 		model.addAttribute("nodeCount", network.getNodes().size());
 		model.addAttribute("sourceCount", network.getSources().size());
@@ -90,12 +88,11 @@ public class NetworkController extends AbstractController {
 
 	@RequestMapping(value = "/create", method = RequestMethod.POST)
 	public @ResponseBody Map<String, Object> createNetwork(
-			@ModelAttribute("sequence") Sequence sequence,
 			@RequestParam("bbox") String bbox, @RequestParam("url") String url,
 			@RequestParam("highway") String highway, Model model) {
 		try {
 			Network network = extractOsmNetworkService.createNetwork(url, bbox,
-					highway, sequence);
+					highway, context.getSequence());
 			OdMatrix odMatrix = odService.createOdMatrix(network.getName());
 			model.addAttribute("network", network);
 			model.addAttribute("odMatrix", odMatrix);
@@ -116,11 +113,10 @@ public class NetworkController extends AbstractController {
 			@RequestParam("endLink") Long endLinkId,
 			@RequestParam("startNode") Long startNodeId,
 			@RequestParam("endNode") Long endNodeId,
-			@RequestParam("linearGeom") String linearGeomWkt,
-			@ModelAttribute("sequence") Sequence sequence,
-			@ModelAttribute("network") Network network,
-			@ModelAttribute("odMatrix") OdMatrix odMatrix) {
-
+			@RequestParam("linearGeom") String linearGeomWkt) {
+		Network network = context.getNetwork();
+		OdMatrix odMatrix = context.getOdMatrix();
+		Sequence sequence = context.getSequence();
 		try {
 			CoordinateSequence points = ((LineString) WktUtils
 					.fromWKT(linearGeomWkt)).getCoordinateSequence();
@@ -190,18 +186,16 @@ public class NetworkController extends AbstractController {
 
 	@RequestMapping(value = "/addLanes", method = RequestMethod.POST)
 	public ResponseEntity<String> addLanes(@RequestParam("main") int mainLanes,
-			@RequestParam("aux") int auxLanes,
-			@ModelAttribute("sequence") Sequence sequence,
-			@ModelAttribute("network") Network network) {
-		networkService.addLanes(sequence, network, mainLanes, auxLanes);
+			@RequestParam("aux") int auxLanes) {
+		networkService.addLanes(context.getSequence(), context.getNetwork(),
+				mainLanes, auxLanes);
 		return new ResponseEntity<String>(HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "/connectLanes", method = RequestMethod.POST)
-	public ResponseEntity<String> connectLanes(
-			@ModelAttribute("sequence") Sequence sequence,
-			@ModelAttribute("network") Network network) {
-		networkService.connectLanes(sequence, network);
+	public ResponseEntity<String> connectLanes() {
+		networkService
+				.connectLanes(context.getSequence(), context.getNetwork());
 		return new ResponseEntity<String>(HttpStatus.OK);
 	}
 }

@@ -23,16 +23,11 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.SessionAttributes;
-import org.tripsim.api.model.Network;
-import org.tripsim.api.model.OdMatrix;
 import org.tripsim.engine.simulation.SimulationService;
-import org.tripsim.engine.simulation.SimulationSettings;
 import org.tripsim.util.TimeUtils;
 import org.tripsim.web.service.ProjectService;
 
@@ -43,7 +38,6 @@ import org.tripsim.web.service.ProjectService;
  */
 @Controller
 @RequestMapping(value = "/settings")
-@SessionAttributes(value = { "sequence", "network", "odMatrix", "settings" })
 public class SettingsController extends AbstractController {
 
 	@Autowired
@@ -52,10 +46,9 @@ public class SettingsController extends AbstractController {
 	SimulationService simulationService;
 
 	@RequestMapping(value = "/view", method = RequestMethod.GET)
-	public String settingsView(
-			@ModelAttribute("settings") SimulationSettings settings, Model model) {
+	public String settingsView(Model model) {
 		model.addAttribute("simulationName", newSimulationName());
-		model.addAttribute("settings", settings);
+		model.addAttribute("settings", context.getSettings());
 		return "components/settings";
 	}
 
@@ -68,14 +61,11 @@ public class SettingsController extends AbstractController {
 			@RequestParam("simulationName") String name,
 			@RequestParam("duration") int duration,
 			@RequestParam("stepSize") double stepSize,
-			@RequestParam("warmup") int warmup,
-			@RequestParam("seed") long seed,
-			@ModelAttribute("network") Network network,
-			@ModelAttribute("odMatrix") OdMatrix odMatrix,
-			@ModelAttribute("settings") SimulationSettings settings) {
-		settingsService.updateSettings(settings, duration, stepSize, warmup,
-				seed);
-		simulationService.execute(name, network, odMatrix, settings);
+			@RequestParam("warmup") int warmup, @RequestParam("seed") long seed) {
+		settingsService.updateSettings(context.getSettings(), duration,
+				stepSize, warmup, seed);
+		simulationService.execute(name, context.getNetwork(),
+				context.getOdMatrix(), context.getSettings());
 		return successResponse("Simulation started.");
 	}
 

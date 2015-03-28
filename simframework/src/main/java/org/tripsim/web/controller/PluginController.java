@@ -23,12 +23,10 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.SessionAttributes;
 import org.tripsim.engine.simulation.SimulationSettings;
 import org.tripsim.engine.type.TypesManager;
 import org.tripsim.plugin.api.PluginManager;
@@ -40,7 +38,6 @@ import org.tripsim.plugin.api.PluginManager;
  */
 @Controller
 @RequestMapping(value = "/plugin")
-@SessionAttributes(value = { "settings" })
 public class PluginController extends AbstractController {
 
 	@Autowired
@@ -49,10 +46,9 @@ public class PluginController extends AbstractController {
 	TypesManager typesManager;
 
 	@RequestMapping(value = "/manager", method = RequestMethod.GET)
-	public String managePlugins(
-			@ModelAttribute("settings") SimulationSettings settings, Model model) {
+	public String managePlugins(Model model) {
 		addModelAttribute(model);
-		model.addAttribute("settings", settings);
+		model.addAttribute("settings", context.getSettings());
 		return "components/plugin-manager";
 	}
 
@@ -60,8 +56,8 @@ public class PluginController extends AbstractController {
 	public @ResponseBody Map<String, Object> updatePluginMapping(
 			@RequestParam("pluginType") String pluginType,
 			@RequestParam("pluginName") String pluginName,
-			@RequestParam("type") String type,
-			@ModelAttribute("settings") SimulationSettings settings) {
+			@RequestParam("type") String type) {
+		SimulationSettings settings = context.getSettings();
 		String message;
 		if ("Simulating".equals(pluginType)) {
 			settings.setSimulatingType(pluginName);

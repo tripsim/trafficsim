@@ -24,18 +24,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.MatrixVariable;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.SessionAttributes;
 import org.tripsim.api.model.VehicleClass;
 import org.tripsim.engine.type.DriverType;
 import org.tripsim.engine.type.TypesManager;
 import org.tripsim.engine.type.VehicleType;
-import org.tripsim.web.Sequence;
 import org.tripsim.web.service.entity.TypesService;
 
 /**
@@ -45,7 +42,6 @@ import org.tripsim.web.service.entity.TypesService;
  */
 @Controller
 @RequestMapping(value = "/types")
-@SessionAttributes(value = { "sequence" })
 public class TypesController extends AbstractController {
 
 	private static final String DEFAULT_NAME = "Type";
@@ -74,10 +70,9 @@ public class TypesController extends AbstractController {
 	}
 
 	@RequestMapping(value = "/vehicle/new", method = RequestMethod.POST)
-	public @ResponseBody Map<String, Object> newVehicleType(
-			@ModelAttribute("sequence") org.tripsim.web.Sequence sequence) {
+	public @ResponseBody Map<String, Object> newVehicleType() {
 		VehicleType type = typesService.createVehicleType(DEFAULT_NAME
-				+ sequence.nextId(), DEFAULT_VEHICLECLASS);
+				+ context.getSequence().nextId(), DEFAULT_VEHICLECLASS);
 		return successResponse("Vehicle type created",
 				"types/vehicle/" + type.getName() + ";isNew=true");
 	}
@@ -115,11 +110,9 @@ public class TypesController extends AbstractController {
 	}
 
 	@RequestMapping(value = "/driver/new", method = RequestMethod.POST)
-	public @ResponseBody Map<String, Object> newDriverType(
-			@ModelAttribute("sequence") Sequence sequence) {
-
+	public @ResponseBody Map<String, Object> newDriverType() {
 		DriverType type = typesService.createDriverType(DEFAULT_NAME
-				+ sequence.nextId());
+				+ context.getSequence().nextId());
 		return successResponse("Driver type created",
 				"types/driver/" + type.getName() + ";isNew=true");
 	}

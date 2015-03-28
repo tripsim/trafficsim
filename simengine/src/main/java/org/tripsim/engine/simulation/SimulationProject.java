@@ -73,7 +73,7 @@ public class SimulationProject implements Serializable {
 		return network != null && odMatrix != null && settings != null
 				&& odMatrix.getNetworkName() != null
 				&& network.getName() != null
-				&& odMatrix.getNetworkName() == network.getName();
+				&& odMatrix.getNetworkName().equals(network.getName());
 	}
 
 	@Override

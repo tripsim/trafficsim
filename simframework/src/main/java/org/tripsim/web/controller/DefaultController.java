@@ -27,17 +27,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.SessionAttributes;
-import org.tripsim.api.model.Network;
-import org.tripsim.api.model.OdMatrix;
 import org.tripsim.engine.demo.DemoBuilder;
 import org.tripsim.engine.simulation.SimulationProject;
-import org.tripsim.engine.simulation.SimulationSettings;
 import org.tripsim.web.Sequence;
 import org.tripsim.web.service.MapJsonService;
-import org.tripsim.web.service.ProjectService;
-import org.tripsim.web.service.entity.NetworkService;
-import org.tripsim.web.service.entity.OdService;
 
 /**
  * 
@@ -46,23 +39,16 @@ import org.tripsim.web.service.entity.OdService;
  */
 @Controller
 @RequestMapping(value = "/")
-@SessionAttributes(value = { "sequence", "network", "odMatrix", "settings" })
 public class DefaultController extends AbstractController {
 
 	@Autowired
 	MapJsonService mapJsonService;
-	@Autowired
-	NetworkService networkService;
-	@Autowired
-	OdService odService;
-	@Autowired
-	ProjectService projectService;
 
 	@Autowired
 	DemoBuilder demoBuilder;
 
 	@RequestMapping(value = "/")
-	public String home(Model model, HttpSession session) {
+	public String home(HttpSession session) {
 		if (session.isNew()) {
 			return "redirect:/new";
 		}
@@ -71,15 +57,7 @@ public class DefaultController extends AbstractController {
 
 	@RequestMapping(value = "/new")
 	public String newProject(Model model, HttpSession session) {
-		Sequence sequence = projectService.newSequence();
-		Network network = networkService.createNetwork();
-		OdMatrix odMatrix = odService.createOdMatrix(network.getName());
-		SimulationSettings settings = projectService.newSettings();
-
-		model.addAttribute("sequence", sequence);
-		model.addAttribute("network", network);
-		model.addAttribute("odMatrix", odMatrix);
-		model.addAttribute("settings", settings);
+		context.clear();
 		return "redirect:/";
 	}
 
@@ -87,10 +65,9 @@ public class DefaultController extends AbstractController {
 	public @ResponseBody String demoNetwork(Model model)
 			throws FactoryException {
 		SimulationProject demo = demoBuilder.getDemo();
-		model.addAttribute("sequence", new Sequence(demo.getNextSeq()));
-		model.addAttribute("network", demo.getNetwork());
-		model.addAttribute("odMatrix", demo.getOdMatrix());
-		model.addAttribute("settings", projectService.newSettings());
+		context.setSequence(new Sequence(demo.getNextSeq()));
+		context.setNetwork(demo.getNetwork());
+		context.setOdMatrix(demo.getOdMatrix());
 		return mapJsonService.getNetworkJson(demo.getNetwork());
 	}
 }
