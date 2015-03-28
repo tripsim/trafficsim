@@ -17,7 +17,7 @@
  * @author Xuan Shi
  */
 var simplot = {
-	plot : function(data) {
+	plot : function(data, title) {
 		try {
 			var width = jQuery(document).width();
 			var height = jQuery(document).height();
@@ -33,7 +33,7 @@ var simplot = {
 			});
 			jQuery(document).keyup(simplot.close);
 			jQuery.jqplot('plot', data, {
-				title : 'Time Space Diagram',
+				title : title,
 				seriesDefaults : {
 					showMarker : false
 				},

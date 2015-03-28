@@ -798,7 +798,7 @@ simulation.initMap = function() {
 		simwebhelper.getStrWithParams('results/tsd/' + params.simulationName,
 				params, function(data) {
 					if (data.serieses) {
-						simplot.plot(data.serieses);
+						simplot.plot(data.serieses, 'Time Space Diagram');
 					}
 				});
 	};
@@ -808,7 +808,7 @@ simulation.initMap = function() {
 		simwebhelper.getStrWithParams('results/linkVolumes/'
 				+ params.simulationName, params, function(data) {
 			if (data.serieses) {
-				simplot.plot(data.serieses);
+				simplot.plot(data.serieses, 'Link Volumes');
 			}
 		});
 	};
@@ -818,7 +818,7 @@ simulation.initMap = function() {
 		simwebhelper.getStrWithParams('results/linkSpeeds/'
 				+ params.simulationName, params, function(data) {
 			if (data.serieses) {
-				simplot.plot(data.serieses);
+				simplot.plot(data.serieses, 'Link Avg Speeds');
 			}
 		});
 	};
