@@ -68,4 +68,6 @@ public interface Network extends Persistable, GeoReferenced {
 
 	Coordinate center();
 
+	long getHighestElementId();
+
 }

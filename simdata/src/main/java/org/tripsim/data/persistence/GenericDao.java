@@ -39,4 +39,6 @@ public interface GenericDao<E> {
 	void deleteById(ObjectId id);
 
 	List<?> getTypeField(String field);
+
+	long countFieldLike(String field, String value);
 }

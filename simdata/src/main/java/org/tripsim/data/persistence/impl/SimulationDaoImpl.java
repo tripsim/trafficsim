@@ -21,26 +21,25 @@ package org.tripsim.data.persistence.impl;
 import java.util.Date;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 import org.tripsim.data.dom.SimulationDo;
 import org.tripsim.data.persistence.SimulationDao;
 
 import com.mongodb.BasicDBObject;
+import com.mongodb.DuplicateKeyException;
 
 @Repository("simulation-dao")
 class SimulationDaoImpl extends AbstractDaoImpl<SimulationDo> implements
 		SimulationDao {
+	private static final Logger logger = LoggerFactory
+			.getLogger(SimulationDaoImpl.class);
 
 	@Override
 	public SimulationDo findByName(String name) {
 		return datastore.createQuery(SimulationDo.class).field("name")
 				.equal(name).get();
-	}
-
-	@Override
-	public long countNameLike(String name) {
-		return datastore.createQuery(SimulationDo.class).field("name")
-				.startsWith(name).countAll();
 	}
 
 	@Override
@@ -71,4 +70,21 @@ class SimulationDaoImpl extends AbstractDaoImpl<SimulationDo> implements
 				.equal(networkName).order("-timestamp").limit(1).get();
 	}
 
+	@Override
+	public String insert(SimulationDo entity) {
+		String name = entity.getName();
+		long endTime = System.currentTimeMillis() + maxRetryTime;
+		while (System.currentTimeMillis() < endTime) {
+			try {
+				save(entity);
+				return entity.getName();
+			} catch (DuplicateKeyException e) {
+				logger.info(
+						"simulationDo '{}' already exists retry inserting!",
+						entity.getName());
+				entity.setName(getUniqueValue("name", name));
+			}
+		}
+		return null;
+	}
 }

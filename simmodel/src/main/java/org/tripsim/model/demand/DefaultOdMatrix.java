@@ -67,6 +67,7 @@ public class DefaultOdMatrix extends PersistedObject<DefaultOdMatrix> implements
 		return networkName;
 	}
 
+	@Override
 	public void setNetworkName(String networkName) {
 		this.networkName = networkName;
 	}

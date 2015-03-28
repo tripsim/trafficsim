@@ -164,6 +164,8 @@ final class ProjectJsonImporter {
 		roadInfos = null;
 		lanes = null;
 
+		Map<String, String> nameToSavedNameMap = new HashMap<String, String>();
+
 		// import vehicle composition
 		jsonNode = rootNode.get(VEHICLECOMPOSITIONS);
 		for (int i = 0; i < jsonNode.size(); i++) {
@@ -179,7 +181,8 @@ final class ProjectJsonImporter {
 				dbs[j] = grandChild.get(j).asDouble();
 			TypesComposition comp = typesFactory.createTypesComposition(name,
 					vts, dbs);
-			typesManager.insertVehicleTypesComposition(comp);
+			String savedName = typesManager.insertVehicleTypesComposition(comp);
+			nameToSavedNameMap.put(name, savedName);
 		}
 
 		// import driver composition
@@ -197,7 +200,8 @@ final class ProjectJsonImporter {
 				dbs[j] = grandChild.get(j).asDouble();
 			TypesComposition comp = typesFactory.createTypesComposition(name,
 					dts, dbs);
-			typesManager.insertVehicleTypesComposition(comp);
+			String savedName = typesManager.insertDriverTypesComposition(comp);
+			nameToSavedNameMap.put(name, savedName);
 		}
 
 		// import ods
@@ -214,7 +218,9 @@ final class ProjectJsonImporter {
 			Long origin = child.get(ORIGIN).asLong();
 			Long destination = child.get(DESTINATION).asLong();
 			String vc = child.get(VEHICLECOMPOSITION).asText();
+			vc = nameToSavedNameMap.get(vc);
 			String dc = child.get(DRIVERCOMPOSITION).asText();
+			dc = nameToSavedNameMap.get(dc);
 			JsonNode grandChild = child.get(TIMES);
 			double[] times = new double[grandChild.size()];
 			for (int j = 0; j < grandChild.size(); j++)

@@ -37,4 +37,6 @@ public interface CompositionDao extends GenericDao<CompositionDo> {
 
 	long countByType(TypeCategoryDo category, String typeName);
 
+	String insert(CompositionDo entity);
+
 }

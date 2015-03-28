@@ -31,6 +31,8 @@ public interface OdMatrix extends Persistable, NetworkEditListener {
 
 	String getNetworkName();
 
+	void setNetworkName(String networkName);
+
 	Od getOd(long id);
 
 	Collection<Od> getOdsFromNode(Long nodeId);

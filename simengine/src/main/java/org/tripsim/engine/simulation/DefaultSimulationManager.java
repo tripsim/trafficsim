@@ -27,16 +27,12 @@ import org.springframework.stereotype.Service;
 import org.tripsim.data.dom.SimulationDo;
 import org.tripsim.data.persistence.SimulationDao;
 
-import com.mongodb.DuplicateKeyException;
-
 @Service("default-simulation-manager")
 class DefaultSimulationManager implements SimulationManager {
-
+	@SuppressWarnings("unused")
 	private static final Logger logger = LoggerFactory
 			.getLogger(DefaultSimulationManager.class);
 
-	private long maxRetryTime = 10000;
-	private String nameDelim = " ";
 	@Autowired
 	SimulationDao simulationDao;
 
@@ -50,24 +46,7 @@ class DefaultSimulationManager implements SimulationManager {
 			String odMatrixName, SimulationSettings settings) {
 		SimulationDo entity = SimulationSettingsConverter.toSimulationDo(
 				simulationName, networkName, odMatrixName, settings);
-
-		long endTime = System.currentTimeMillis() + maxRetryTime;
-		while (System.currentTimeMillis() < endTime) {
-			try {
-				simulationDao.save(entity);
-				return entity.getName();
-			} catch (DuplicateKeyException e) {
-				logger.info("simulation '{}' already exists retry inserting!",
-						entity.getName());
-				entity.setName(getUniqueName(simulationName));
-			}
-		}
-		return null;
-	}
-
-	private String getUniqueName(String simulationName) {
-		long count = simulationDao.countNameLike(simulationName + nameDelim);
-		return simulationName + nameDelim + "(" + (count + 1) + ")";
+		return simulationDao.insert(entity);
 	}
 
 	@Override

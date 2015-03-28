@@ -26,9 +26,9 @@ public interface SimulationDao extends GenericDao<SimulationDo> {
 
 	SimulationDo findByName(String name);
 
-	long countNameLike(String name);
-
 	List<String> getSimulationNames(String networkName);
 
 	SimulationDo findLatest(String networkName);
+
+	String insert(SimulationDo entity);
 }

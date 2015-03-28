@@ -22,6 +22,8 @@ import java.util.List;
 
 import org.bson.types.ObjectId;
 import org.mongodb.morphia.query.Query;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 import org.tripsim.data.dom.CompositionDo;
 import org.tripsim.data.dom.TypeCategoryDo;
@@ -31,10 +33,13 @@ import org.tripsim.util.StringUtils;
 import com.mongodb.BasicDBObject;
 import com.mongodb.BasicDBObjectBuilder;
 import com.mongodb.DBObject;
+import com.mongodb.DuplicateKeyException;
 
 @Repository("composition-dao")
 class CompositionDaoImpl extends AbstractDaoImpl<CompositionDo> implements
 		CompositionDao {
+	private static final Logger logger = LoggerFactory
+			.getLogger(CompositionDaoImpl.class);
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -99,5 +104,23 @@ class CompositionDaoImpl extends AbstractDaoImpl<CompositionDo> implements
 					"default composition cannot be deleted!");
 		}
 		super.deleteById(id);
+	}
+
+	@Override
+	public String insert(CompositionDo entity) {
+		String name = entity.getName();
+		long endTime = System.currentTimeMillis() + maxRetryTime;
+		while (System.currentTimeMillis() < endTime) {
+			try {
+				save(entity);
+				return entity.getName();
+			} catch (DuplicateKeyException e) {
+				logger.info(
+						"compositionDo '{}' already exists retry inserting!",
+						entity.getName());
+				entity.setName(getUniqueValue("name", name));
+			}
+		}
+		return null;
 	}
 }

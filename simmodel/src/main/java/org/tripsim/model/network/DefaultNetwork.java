@@ -171,4 +171,16 @@ public class DefaultNetwork extends AbstractNetwork<DefaultNetwork> implements
 		return "DefaultNetwork [name=" + getName() + ", numOfLinks="
 				+ links.size() + ", numOfNodes=" + nodes.size() + "]";
 	}
+
+	@Override
+	public long getHighestElementId() {
+		long result = 0;
+		for (Long id : nodes.keySet()) {
+			result = Math.max(id, result);
+		}
+		for (Long id : links.keySet()) {
+			result = Math.max(id, result);
+		}
+		return result;
+	}
 }

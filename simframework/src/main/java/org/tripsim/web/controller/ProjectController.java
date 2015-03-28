@@ -84,6 +84,7 @@ public class ProjectController extends AbstractController {
 				return failureResponse("network " + name + "doesn't exists!");
 			}
 			context.setNetwork(network);
+			context.setSequence(network.getHighestElementId());
 			return successResponseWithRedirect("network loaded!", "/");
 		}
 		if ("odMatrix".equals(element)) {
@@ -101,14 +102,15 @@ public class ProjectController extends AbstractController {
 	public @ResponseBody Map<String, Object> save(
 			@RequestParam("name") String name,
 			@RequestParam("element") String element, Model model) {
+		Network network = context.getNetwork();
+		OdMatrix odMatrix = context.getOdMatrix();
 		if ("network".equals(element)) {
-			Network network = context.getNetwork();
 			network.setName(name);
+			odMatrix.setNetworkName(name);
 			networkManager.saveNetwork(network);
 			return successResponse("network saved!");
 		}
 		if ("odMatrix".equals(element)) {
-			OdMatrix odMatrix = context.getOdMatrix();
 			odMatrix.setName(name);
 			odManager.saveOdMatrix(odMatrix);
 			return successResponse("odMatrix saved!");
@@ -131,7 +133,6 @@ public class ProjectController extends AbstractController {
 	@RequestMapping(value = "/import", method = RequestMethod.POST)
 	public String importProject(Model model, HttpServletRequest request,
 			HttpServletResponse response) {
-
 		MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
 		MultipartFile multipartFile = multipartRequest.getFile("file");
 		if (!multipartFile.isEmpty()) {

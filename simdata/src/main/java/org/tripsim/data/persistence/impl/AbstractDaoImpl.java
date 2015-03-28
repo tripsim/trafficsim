@@ -27,6 +27,7 @@ import org.bson.types.ObjectId;
 import org.mongodb.morphia.AdvancedDatastore;
 import org.mongodb.morphia.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.tripsim.data.persistence.GenericDao;
 
 import com.mongodb.DBObject;
@@ -37,6 +38,11 @@ public abstract class AbstractDaoImpl<E> implements GenericDao<E> {
 
 	@Autowired
 	AdvancedDatastore datastore;
+
+	@Value("${persistence.retry:10000}")
+	protected long maxRetryTime = 10000;
+	@Value("${persistence.unique.delim: }")
+	protected String delim = " ";
 
 	@SuppressWarnings("unchecked")
 	@PostConstruct
@@ -89,6 +95,17 @@ public abstract class AbstractDaoImpl<E> implements GenericDao<E> {
 
 	protected List<?> getTypeField(String field, DBObject query) {
 		return datastore.getCollection(persistentClass).distinct(field, query);
+	}
+
+	@Override
+	public long countFieldLike(String field, String value) {
+		return datastore.createQuery(persistentClass).field(field)
+				.startsWith(value).countAll();
+	}
+
+	protected String getUniqueValue(String field, String value) {
+		long count = countFieldLike(field, value + delim);
+		return value + delim + "(" + (count + 1) + ")";
 	}
 
 	protected Query<E> query() {

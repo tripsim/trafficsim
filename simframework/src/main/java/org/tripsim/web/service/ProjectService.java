@@ -45,4 +45,8 @@ public class ProjectService {
 	public Sequence newSequence() {
 		return new Sequence();
 	}
+
+	public Sequence newSequence(long init) {
+		return new Sequence(init);
+	}
 }

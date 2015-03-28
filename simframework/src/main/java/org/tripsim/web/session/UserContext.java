@@ -51,6 +51,10 @@ public class UserContext implements Serializable {
 		this.sequence = sequence;
 	}
 
+	public void setSequence(long init) {
+		this.sequence = projectService.newSequence(init);
+	}
+
 	public Network getNetwork() {
 		if (network == null) {
 			network = networkService.createNetwork();
@@ -92,8 +96,9 @@ public class UserContext implements Serializable {
 	}
 
 	public void importProject(SimulationProject project) {
-		this.network = project.getNetwork();
-		this.odMatrix = project.getOdMatrix();
-		this.settings = project.getSettings();
+		network = project.getNetwork();
+		odMatrix = project.getOdMatrix();
+		settings = project.getSettings();
+		setSequence(network == null ? null : network.getHighestElementId());
 	}
 }

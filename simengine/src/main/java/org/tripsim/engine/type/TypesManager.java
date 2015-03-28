@@ -93,7 +93,7 @@ public interface TypesManager {
 
 	long countCompositionWithVehicleType(String type);
 
-	void insertVehicleTypesComposition(TypesComposition typesComposition);
+	String insertVehicleTypesComposition(TypesComposition typesComposition);
 
 	void deleteVehicleTypesComposition(String name);
 
@@ -110,7 +110,7 @@ public interface TypesManager {
 
 	long countCompositionWithDriverType(String type);
 
-	void insertDriverTypesComposition(TypesComposition typesComposition);
+	String insertDriverTypesComposition(TypesComposition typesComposition);
 
 	void deleteDriverTypesComposition(String name);
 

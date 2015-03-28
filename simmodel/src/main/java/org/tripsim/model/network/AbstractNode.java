@@ -18,13 +18,13 @@
  */
 package org.tripsim.model.network;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.tripsim.api.model.Connector;
 import org.tripsim.api.model.Lane;
 import org.tripsim.api.model.Link;
@@ -42,15 +42,17 @@ import com.vividsolutions.jts.geom.Point;
  *            the generic type
  */
 public abstract class AbstractNode extends AbstractLocation implements Node {
-
 	private static final long serialVersionUID = 1L;
+
+	private final static Logger logger = LoggerFactory
+			.getLogger(AbstractNode.class);
 
 	private static final int DEFAULT_INITIAL_CONNECTOR_MAP_CAPACITY = 4;
 
 	private final Set<Link> downstreams = new HashSet<Link>();
 	private final Set<Link> upstreams = new HashSet<Link>();
 
-	// TODO may not need to maps
+	// TODO may not need maps
 	private final MultiValuedMap<Lane, Connector> inConnectors = new MultiValuedMap<Lane, Connector>(
 			DEFAULT_INITIAL_CONNECTOR_MAP_CAPACITY);
 	private final MultiValuedMap<Lane, Connector> outConnectors = new MultiValuedMap<Lane, Connector>(
@@ -125,7 +127,7 @@ public abstract class AbstractNode extends AbstractLocation implements Node {
 
 	@Override
 	public Collection<Connector> getConnectors() {
-		List<Connector> allConnectors = new ArrayList<Connector>();
+		Set<Connector> allConnectors = new HashSet<Connector>();
 		allConnectors.addAll(inConnectors.values());
 		allConnectors.addAll(outConnectors.values());
 		return Collections.unmodifiableCollection(allConnectors);
@@ -143,7 +145,7 @@ public abstract class AbstractNode extends AbstractLocation implements Node {
 
 	@Override
 	public Collection<Connector> getConnectorsFromLink(Link fromLink) {
-		List<Connector> allConnectors = new ArrayList<Connector>();
+		Set<Connector> allConnectors = new HashSet<Connector>();
 		for (Lane lane : fromLink.getLanes()) {
 			allConnectors.addAll(inConnectors.get(lane));
 		}
@@ -152,7 +154,7 @@ public abstract class AbstractNode extends AbstractLocation implements Node {
 
 	@Override
 	public Collection<Connector> getConnectorsToLink(Link toLink) {
-		List<Connector> allConnectors = new ArrayList<Connector>();
+		Set<Connector> allConnectors = new HashSet<Connector>();
 		for (Lane lane : toLink.getLanes()) {
 			allConnectors.addAll(outConnectors.get(lane));
 		}
@@ -170,7 +172,7 @@ public abstract class AbstractNode extends AbstractLocation implements Node {
 
 	@Override
 	public Collection<Connector> getConnectors(Lane fromLane, Link toLink) {
-		List<Connector> newConnectors = new ArrayList<Connector>();
+		Set<Connector> newConnectors = new HashSet<Connector>();
 		for (Connector connector : inConnectors.get(fromLane)) {
 			if (connector.getToLane().getLink() == toLink)
 				newConnectors.add(connector);
@@ -180,6 +182,11 @@ public abstract class AbstractNode extends AbstractLocation implements Node {
 
 	@Override
 	public void add(Connector connector) {
+		if (getConnector(connector.getFromLane(), connector.getToLane()) != null) {
+			logger.warn("connector from {} to {} already exists",
+					connector.getFromLane(), connector.getToLane());
+			return;
+		}
 		inConnectors.add(connector.getFromLane(), connector);
 		outConnectors.add(connector.getToLane(), connector);
 	}

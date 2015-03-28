@@ -306,10 +306,13 @@ abstract class AbstractTypesManager implements TypesManager {
 	}
 
 	@Override
-	public void insertVehicleTypesComposition(TypesComposition typesComposition) {
+	public String insertVehicleTypesComposition(
+			TypesComposition typesComposition) {
 		CompositionDo compositionDo = typesConverter.toCompositionDo(
 				typesComposition, TypeCategoryDo.VEHICLE_TYPE);
-		compositionDao.save(compositionDo);
+		String savedName = compositionDao.insert(compositionDo);
+		typesComposition.setName(savedName);
+		return savedName;
 	}
 
 	@Override
@@ -366,10 +369,12 @@ abstract class AbstractTypesManager implements TypesManager {
 	}
 
 	@Override
-	public void insertDriverTypesComposition(TypesComposition typesComposition) {
+	public String insertDriverTypesComposition(TypesComposition typesComposition) {
 		CompositionDo compositionDo = typesConverter.toCompositionDo(
 				typesComposition, TypeCategoryDo.DRIVER_TYPE);
-		compositionDao.save(compositionDo);
+		String savedName = compositionDao.insert(compositionDo);
+		typesComposition.setName(savedName);
+		return savedName;
 	}
 
 	@Override
