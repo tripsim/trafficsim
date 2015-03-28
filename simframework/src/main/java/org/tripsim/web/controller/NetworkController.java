@@ -39,11 +39,11 @@ import org.tripsim.engine.type.TypesManager;
 import org.tripsim.util.WktUtils;
 import org.tripsim.web.Sequence;
 import org.tripsim.web.service.MapJsonService;
+import org.tripsim.web.service.OsmImportService;
+import org.tripsim.web.service.OsmImportService.OsmHighwayValue;
+import org.tripsim.web.service.OsmImportService.OsmXapiUrl;
 import org.tripsim.web.service.entity.NetworkService;
 import org.tripsim.web.service.entity.OdService;
-import org.tripsim.web.service.entity.OsmImportService;
-import org.tripsim.web.service.entity.OsmImportService.OsmHighwayValue;
-import org.tripsim.web.service.entity.OsmImportService.OsmXapiUrl;
 
 import com.vividsolutions.jts.geom.CoordinateSequence;
 import com.vividsolutions.jts.geom.LineString;
@@ -96,9 +96,7 @@ public class NetworkController extends AbstractController {
 		try {
 			Network network = extractOsmNetworkService.createNetwork(url, bbox,
 					highway, sequence);
-
-			OdMatrix odMatrix = odService.createOdMatrix(sequence,
-					network.getName());
+			OdMatrix odMatrix = odService.createOdMatrix(network.getName());
 			model.addAttribute("network", network);
 			model.addAttribute("odMatrix", odMatrix);
 			return successResponse("network created", "network/view",

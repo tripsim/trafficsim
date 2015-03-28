@@ -16,7 +16,7 @@
  * 
  * @author Xuan Shi
  */
-package org.tripsim.web.service.entity;
+package org.tripsim.web.service;
 
 import java.io.IOException;
 import java.net.ProtocolException;
@@ -29,6 +29,7 @@ import org.tripsim.api.model.Network;
 import org.tripsim.engine.network.NetworkExtractResult;
 import org.tripsim.engine.network.NetworkExtractor;
 import org.tripsim.web.Sequence;
+import org.tripsim.web.service.entity.EntityService;
 
 import com.fasterxml.jackson.core.JsonParseException;
 

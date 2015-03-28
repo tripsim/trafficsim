@@ -166,4 +166,9 @@ public class DefaultNetwork extends AbstractNetwork<DefaultNetwork> implements
 		}
 	}
 
+	@Override
+	public String toString() {
+		return "DefaultNetwork [name=" + getName() + ", numOfLinks="
+				+ links.size() + ", numOfNodes=" + nodes.size() + "]";
+	}
 }

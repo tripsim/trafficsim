@@ -44,6 +44,8 @@ import org.tripsim.engine.od.OdManager;
 import org.tripsim.engine.simulation.SimulationProject;
 import org.tripsim.engine.simulation.SimulationProjectBuilder;
 import org.tripsim.engine.simulation.SimulationSettings;
+import org.tripsim.web.service.ProjectService;
+import org.tripsim.web.service.entity.OdService;
 
 /**
  * 
@@ -59,6 +61,10 @@ public class ProjectController extends AbstractController {
 	NetworkManager networkManager;
 	@Autowired
 	OdManager odManager;
+	@Autowired
+	OdService odService;
+	@Autowired
+	ProjectService projectService;
 
 	@Autowired
 	IOService ioService;
@@ -81,7 +87,10 @@ public class ProjectController extends AbstractController {
 			if (network == null) {
 				return failureResponse("network " + name + "doesn't exists!");
 			}
+			OdMatrix odMatrix = odService.createOdMatrix(network.getName());
+
 			model.addAttribute("network", network);
+			model.addAttribute("odMatrix", odMatrix);
 			return successResponseWithRedirect("network loaded!", "/");
 		}
 		if ("odMatrix".equals(element)) {

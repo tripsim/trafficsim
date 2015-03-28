@@ -11,14 +11,19 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class UrlFilter implements Filter {
+
+	private Logger logger = LoggerFactory.getLogger(UrlFilter.class);
 
 	private static final String UNCLEAN_URI_REGX = "^.*//+.*$";
 	private static final String SLASHES_REGX = "//+";
 
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
-		System.out.println("initialized url cleaning filter.");
+		logger.info("UrlFilter: initialized url cleaning filter.");
 	}
 
 	@Override

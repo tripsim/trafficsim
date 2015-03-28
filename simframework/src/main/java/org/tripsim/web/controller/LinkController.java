@@ -40,8 +40,8 @@ import org.tripsim.api.model.OdMatrix;
 import org.tripsim.engine.network.NetworkFactory;
 import org.tripsim.web.Sequence;
 import org.tripsim.web.service.MapJsonService;
+import org.tripsim.web.service.OsmImportService.OsmHighwayValue;
 import org.tripsim.web.service.entity.NetworkService;
-import org.tripsim.web.service.entity.OsmImportService.OsmHighwayValue;
 
 /**
  * 

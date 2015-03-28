@@ -76,4 +76,11 @@ public class SimulationProject implements Serializable {
 				&& odMatrix.getNetworkName() == network.getName();
 	}
 
+	@Override
+	public String toString() {
+		return "SimulationProject [simulationName=" + simulationName
+				+ ", network=" + network + ", odMatrix=" + odMatrix
+				+ ", settings=" + settings + ", nextSeq=" + nextSeq + "]";
+	}
+
 }

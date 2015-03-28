@@ -34,7 +34,7 @@ import org.tripsim.api.model.OdMatrix;
 import org.tripsim.engine.simulation.SimulationService;
 import org.tripsim.engine.simulation.SimulationSettings;
 import org.tripsim.util.TimeUtils;
-import org.tripsim.web.service.SettingsService;
+import org.tripsim.web.service.ProjectService;
 
 /**
  * 
@@ -47,7 +47,7 @@ import org.tripsim.web.service.SettingsService;
 public class SettingsController extends AbstractController {
 
 	@Autowired
-	SettingsService settingsService;
+	ProjectService settingsService;
 	@Autowired
 	SimulationService simulationService;
 

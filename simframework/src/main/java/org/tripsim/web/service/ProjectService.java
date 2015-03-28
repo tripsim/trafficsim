@@ -18,11 +18,17 @@
  */
 package org.tripsim.web.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.tripsim.engine.simulation.SimulationManager;
 import org.tripsim.engine.simulation.SimulationSettings;
+import org.tripsim.web.Sequence;
 
-@Service("settings-service")
-public class SettingsService {
+@Service("project-service")
+public class ProjectService {
+
+	@Autowired
+	SimulationManager simulationManager;
 
 	public void updateSettings(SimulationSettings settings, int duration,
 			double stepSize, int warmup, long seed) {
@@ -30,5 +36,13 @@ public class SettingsService {
 		settings.setStepSize(stepSize);
 		settings.setWarmup(warmup);
 		settings.setSeed(seed);
+	}
+
+	public SimulationSettings newSettings() {
+		return simulationManager.getDefaultSimulationSettings();
+	}
+
+	public Sequence newSequence() {
+		return new Sequence();
 	}
 }

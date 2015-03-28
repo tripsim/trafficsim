@@ -89,7 +89,7 @@ public class OdService extends EntityService {
 		odMatrix.setModified(true);
 	}
 
-	public OdMatrix createOdMatrix(Sequence sequence, String networkName) {
+	public OdMatrix createOdMatrix(String networkName) {
 		OdMatrix odMatrix = factory.createOdMatrix(DEFAULT_NAME, networkName);
 		odMatrix.setModified(true);
 		return odMatrix;

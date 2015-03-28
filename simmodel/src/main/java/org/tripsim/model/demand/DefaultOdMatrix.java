@@ -160,8 +160,8 @@ public class DefaultOdMatrix extends PersistedObject<DefaultOdMatrix> implements
 
 	@Override
 	public String toString() {
-		return "DefaultOdMatrix [networkName=" + networkName + ", odsById="
-				+ odsById + "]";
+		return "DefaultOdMatrix [name=" + getName() + ",networkName="
+				+ networkName + ", numOfOds=" + odsById.size() + "]";
 	}
 
 	// turn percentage

@@ -31,14 +31,11 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.tripsim.api.model.Network;
 import org.tripsim.api.model.OdMatrix;
 import org.tripsim.engine.demo.DemoBuilder;
-import org.tripsim.engine.network.NetworkFactory;
-import org.tripsim.engine.od.OdFactory;
-import org.tripsim.engine.simulation.SimulationManager;
 import org.tripsim.engine.simulation.SimulationProject;
 import org.tripsim.engine.simulation.SimulationSettings;
-import org.tripsim.engine.type.TypesManager;
 import org.tripsim.web.Sequence;
 import org.tripsim.web.service.MapJsonService;
+import org.tripsim.web.service.ProjectService;
 import org.tripsim.web.service.entity.NetworkService;
 import org.tripsim.web.service.entity.OdService;
 
@@ -58,15 +55,8 @@ public class DefaultController extends AbstractController {
 	NetworkService networkService;
 	@Autowired
 	OdService odService;
-
 	@Autowired
-	SimulationManager simulationManager;
-	@Autowired
-	TypesManager typesManager;
-	@Autowired
-	NetworkFactory networkFactory;
-	@Autowired
-	OdFactory odFactory;
+	ProjectService projectService;
 
 	@Autowired
 	DemoBuilder demoBuilder;
@@ -81,12 +71,10 @@ public class DefaultController extends AbstractController {
 
 	@RequestMapping(value = "/new")
 	public String newProject(Model model, HttpSession session) {
-		Sequence sequence = new Sequence();
+		Sequence sequence = projectService.newSequence();
 		Network network = networkService.createNetwork();
-		OdMatrix odMatrix = odService.createOdMatrix(sequence,
-				network.getName());
-		SimulationSettings settings = simulationManager
-				.getDefaultSimulationSettings();
+		OdMatrix odMatrix = odService.createOdMatrix(network.getName());
+		SimulationSettings settings = projectService.newSettings();
 
 		model.addAttribute("sequence", sequence);
 		model.addAttribute("network", network);
@@ -102,8 +90,7 @@ public class DefaultController extends AbstractController {
 		model.addAttribute("sequence", new Sequence(demo.getNextSeq()));
 		model.addAttribute("network", demo.getNetwork());
 		model.addAttribute("odMatrix", demo.getOdMatrix());
-		model.addAttribute("settings",
-				simulationManager.getDefaultSimulationSettings());
+		model.addAttribute("settings", projectService.newSettings());
 		return mapJsonService.getNetworkJson(demo.getNetwork());
 	}
 }

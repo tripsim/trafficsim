@@ -191,4 +191,18 @@ public class SimulationSettings {
 	public final void setDriverImplType(String vehicleType, String driverImpl) {
 		driverImpls.put(vehicleType, driverImpl);
 	}
+
+	@Override
+	public String toString() {
+		return "SimulationSettings [duration=" + duration + ", stepSize="
+				+ stepSize + ", warmup=" + warmup + ", seed=" + seed + ", sd="
+				+ sd + ", simulatingType=" + simulatingType
+				+ ", vehicleGeneratingType=" + vehicleGeneratingType
+				+ ", movingTypes=" + movingTypes + ", carFollowingTypes="
+				+ carFollowingTypes + ", laneChangingTypes="
+				+ laneChangingTypes + ", routingTypes=" + routingTypes
+				+ ", vehicleImpls=" + vehicleImpls + ", driverImpls="
+				+ driverImpls + "]";
+	}
+
 }
