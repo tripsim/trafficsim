@@ -76,9 +76,9 @@ public class OdController extends AbstractController {
 		Node origin = network.getNode(od.getOriginNodeId());
 		// TODO make it reachable sinks
 		model.addAttribute("vehicleCompositions",
-				typesManager.getDefaultVehicleTypeComposition());
+				typesManager.getVehicleTypeCompositionNames());
 		model.addAttribute("driverCompositions",
-				typesManager.getDefaultDriverTypeComposition());
+				typesManager.getDriverTypeCompositionNames());
 		model.addAttribute("destinations", network.getSinks(origin));
 		model.addAttribute("od", od);
 		model.addAttribute("isNew", isNew);

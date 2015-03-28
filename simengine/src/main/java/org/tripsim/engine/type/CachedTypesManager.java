@@ -23,8 +23,7 @@ import org.tripsim.api.model.TypesComposition;
 import org.tripsim.util.WeakReferenceCache;
 
 @Service("cached-types-manager")
-class CachedTypesManager extends AbstractTypesManager implements
-		TypesManager {
+class CachedTypesManager extends AbstractTypesManager implements TypesManager {
 
 	// WeakReferenceCache should be Thread-safe
 	WeakReferenceCache<String, LinkType> linkTypes = new WeakReferenceCache<String, LinkType>();
@@ -86,6 +85,7 @@ class CachedTypesManager extends AbstractTypesManager implements
 	public TypesComposition getVehicleTypeComposition(String name) {
 		TypesComposition compo = vehicleCompositions.get(name);
 		if (compo == null) {
+			// TODO put default one if absent!
 			vehicleCompositions.put(name,
 					compo = fetchVehicleTypeComposition(name));
 		}

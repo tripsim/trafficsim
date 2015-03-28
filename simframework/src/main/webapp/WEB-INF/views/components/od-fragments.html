@@ -46,6 +46,6 @@
 	data-th-fragment="selectComposition(current, compositions, name)"
 	data-th-attr="name=${name}">
 	<option data-th-each="composition : ${compositions}"
-		data-th-attr="selected=${current.equals(composition)} ? 'true' :'false', value=${composition.name}"
-		data-th-text="${composition.name}"></option>
+		data-th-attr="selected=${current.equals(composition)} ? 'true' :'false', value=${composition}"
+		data-th-text="${composition}"></option>
 </select>
