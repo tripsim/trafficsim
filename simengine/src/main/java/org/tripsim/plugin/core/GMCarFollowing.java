@@ -33,7 +33,7 @@ class GMCarFollowing extends AbstractCarFollowingImpl {
 	public double alpha = 0.2;
 
 	@Override
-	protected double calculateAccel(double spacing, double reactionTime,
+	protected double calculateAccel(double spacing, double tailSpacing, double reactionTime,
 			double length, double speed, double desiredSpeed, double maxAccel,
 			double maxDecel, double desiredAccel, double desiredDecel,
 			double leadLength, double leadSpeed, double stepSize) {

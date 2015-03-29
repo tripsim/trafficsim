@@ -39,14 +39,17 @@ public final class DefaultVehicleBuilder {
 	Node destination = null;
 
 	// Driver Type Properties
+	// in seconds
 	double perceptionTime = 2;
 	double reactionTime = 2;
 	double desiredHeadway = 2;
+	double desiredRearway = 2;
 
 	double desiredSpeed = 25;
 	double maxSpeed = 40;
 
 	double lookAheadDistance = 50;
+	double lookBehindDistance = 20;
 
 	public DefaultVehicleBuilder(long id, VehicleClass vehicleClass,
 			String vehicleType, String driverType) {
@@ -91,6 +94,11 @@ public final class DefaultVehicleBuilder {
 		return this;
 	}
 
+	public DefaultVehicleBuilder withDesiredRearway(double rearway) {
+		this.desiredHeadway = rearway;
+		return this;
+	}
+
 	public DefaultVehicleBuilder withDesiredSpeed(double speed) {
 		this.desiredSpeed = speed;
 		return this;
@@ -103,6 +111,11 @@ public final class DefaultVehicleBuilder {
 
 	public DefaultVehicleBuilder withLookAheadDistance(double distance) {
 		this.lookAheadDistance = distance;
+		return this;
+	}
+
+	public DefaultVehicleBuilder withLookBehindDistance(double distance) {
+		this.lookBehindDistance = distance;
 		return this;
 	}
 
@@ -125,9 +138,11 @@ public final class DefaultVehicleBuilder {
 		vehicle.setCrusingType(crusingType);
 		vehicle.setDesiredSpeed(desiredSpeed);
 		vehicle.setDesiredHeadway(desiredHeadway);
+		vehicle.setDesiredRearway(desiredRearway);
 		vehicle.setPerceptionTime(perceptionTime);
 		vehicle.setReactionTime(reactionTime);
 		vehicle.setLookAheadDistance(lookAheadDistance);
+		vehicle.setLookBehindDistance(lookBehindDistance);
 		vehicle.setOrigin(origin);
 		vehicle.setDestination(destination);
 		return vehicle;

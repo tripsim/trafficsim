@@ -34,8 +34,8 @@ import org.tripsim.plugin.api.IMoving;
  * 
  * @author Xuan Shi
  */
-abstract class AbstractMicroScopicMoving extends AbstractPlugin
-		implements IMoving {
+abstract class AbstractMicroScopicMoving extends AbstractPlugin implements
+		IMoving {
 	private static final long serialVersionUID = 1L;
 
 	private static final Logger logger = LoggerFactory
@@ -54,19 +54,12 @@ abstract class AbstractMicroScopicMoving extends AbstractPlugin
 		movingEnvironment.updatePosition();
 	}
 
-	protected class MicroscopicMovingEnvironment {
-
-		private final SimulationEnvironment environment;
-		private final Vehicle vehicle;
-		private final VehicleStream stream;
-		private final VehicleWeb web;
+	protected class MicroscopicMovingEnvironment extends
+			AbstractVehicleEnvironment {
 
 		MicroscopicMovingEnvironment(SimulationEnvironment environment,
 				Vehicle vehicle, VehicleStream stream, VehicleWeb web) {
-			this.environment = environment;
-			this.vehicle = vehicle;
-			this.stream = stream;
-			this.web = web;
+			super(environment, vehicle, stream, web);
 		}
 
 		protected void updateSpeed() {

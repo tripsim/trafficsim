@@ -18,12 +18,9 @@
  */
 package org.tripsim.plugin.core;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-import org.tripsim.api.model.Vehicle;
-import org.tripsim.api.model.VehicleStream;
-import org.tripsim.api.model.VehicleWeb;
-import org.tripsim.engine.simulation.SimulationEnvironment;
-import org.tripsim.plugin.AbstractPlugin;
 import org.tripsim.plugin.api.ILaneChanging;
 
 /**
@@ -32,18 +29,61 @@ import org.tripsim.plugin.api.ILaneChanging;
  * @author Xuan Shi
  */
 @Component("Simple Lane-changing")
-class SimpleLaneChanging extends AbstractPlugin implements ILaneChanging {
-
+public class SimpleLaneChanging extends AbstractLaneChanging implements
+		ILaneChanging {
 	private static final long serialVersionUID = 1L;
 
+	@SuppressWarnings("unused")
+	private static final Logger logger = LoggerFactory
+			.getLogger(SimpleLaneChanging.class);
+
 	@Override
-	public String getName() {
-		return "Default Lane Changing";
+	protected int calDirectionOnChangedNeeded(double desiredFrontGap,
+			double desiredRearGap, double frontGap, double rearGap,
+			boolean leftViable, double leftFrontGap, double leftRearGap,
+			boolean rightViable, double rightFrontGap, double rightRearGap) {
+		double desiredGap = desiredFrontGap + desiredRearGap;
+		double leftGap = leftFrontGap + leftRearGap;
+		double rightGap = rightFrontGap + rightRearGap;
+		if (leftViable) {
+			if (rightViable) {
+				return (int) Math.round(rightGap - leftGap);
+			}
+			return leftGap > desiredGap ? -1 : 0;
+		}
+		if (rightViable) {
+			return rightGap > desiredGap ? 1 : 0;
+		}
+		return 0;
 	}
 
 	@Override
-	public final void update(SimulationEnvironment environment,
-			Vehicle vehicle, VehicleStream stream, VehicleWeb web) {
+	protected int calDirectionOnNoChangedNeeded(double desiredFrontGap,
+			double desiredRearGap, double frontGap, double rearGap,
+			boolean leftViable, double leftFrontGap, double leftRearGap,
+			boolean rightViable, double rightFrontGap, double rightRearGap) {
+		if (frontGap > desiredFrontGap) {
+			return 0;
+		}
+		if (leftViable) {
+			if (rightViable) {
+				if (leftFrontGap > frontGap && leftRearGap > rearGap) {
+					if (rightFrontGap > frontGap && rightRearGap > rearGap) {
+						return (int) Math.round(rightFrontGap - leftFrontGap);
+					}
+					return -1;
+				}
+				if (rightFrontGap > frontGap && rightRearGap > rearGap) {
+					return 1;
+				}
+				return 0;
+			}
+			return leftFrontGap > frontGap && leftRearGap > rearGap ? -1 : 0;
+		}
+		if (rightViable) {
+			return rightFrontGap > frontGap && rightRearGap > rearGap ? 1 : 0;
+		}
+		return 0;
 	}
 
 }

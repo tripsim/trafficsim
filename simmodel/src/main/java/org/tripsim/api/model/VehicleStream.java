@@ -32,6 +32,24 @@ public interface VehicleStream extends Serializable {
 	boolean isEmpty();
 
 	/**
+	 * check if it is suitable for vehicle to reach destination from this stream
+	 * or path
+	 * 
+	 * @param vehicle
+	 * @return if its suitable
+	 */
+	boolean isViable(Vehicle vehicle);
+
+	/**
+	 * check if it is a suitable for vehicle to reach destination as a next
+	 * stream or path
+	 * 
+	 * @param vehicle
+	 * @return if its suitable
+	 */
+	boolean isViableNext(Vehicle vehicle);
+
+	/**
 	 * newly generated or added or merged vehicles after last called flush won't
 	 * be included
 	 * 
@@ -74,9 +92,17 @@ public interface VehicleStream extends Serializable {
 
 	boolean moveIn(Vehicle vehicle, Path fromPath);
 
-	boolean mergeIn(Vehicle vehicle, Path fromPath);
+	boolean mergeIn(Vehicle vehicle);
 
 	Path moveOrMergeOut(Vehicle vehicle);
+
+	Path getMergeLeftPath(Vehicle vehicle);
+
+	Path getMergeRightPath(Vehicle vehicle);
+
+	Collection<Path> getLeftDestPaths();
+
+	Collection<Path> getRightDestPaths();
 
 	void flush();
 

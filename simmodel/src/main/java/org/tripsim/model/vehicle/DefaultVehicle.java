@@ -45,9 +45,11 @@ public class DefaultVehicle extends MovingObject implements Vehicle {
 	private double maxSpeed;
 	private double desiredSpeed;
 	private double desiredHeadway;
+	private double desiredRearway;
 	private double perceptionTime;
 	private double reactionTime;
 	private double lookAheadDistance;
+	private double lookBehindDistance;
 
 	// TODO collection of last motions
 
@@ -145,6 +147,15 @@ public class DefaultVehicle extends MovingObject implements Vehicle {
 	}
 
 	@Override
+	public double getDesiredRearway() {
+		return desiredRearway;
+	}
+
+	void setDesiredRearway(double desiredRearway) {
+		this.desiredRearway = desiredRearway;
+	}
+
+	@Override
 	public double getPerceptionTime() {
 		return perceptionTime;
 	}
@@ -169,6 +180,15 @@ public class DefaultVehicle extends MovingObject implements Vehicle {
 
 	void setLookAheadDistance(double lookAheadDistance) {
 		this.lookAheadDistance = lookAheadDistance;
+	}
+
+	@Override
+	public double getLookBehindDistance() {
+		return lookBehindDistance;
+	}
+
+	void setLookBehindDistance(double lookBehindDistance) {
+		this.lookBehindDistance = lookBehindDistance;
 	}
 
 	@Override

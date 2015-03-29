@@ -28,5 +28,8 @@ public interface Path extends GeoReferenced, Environment {
 
 	LineString getLinearGeom();
 
+	Collection<? extends Path> getEntrances();
+
 	Collection<? extends Path> getExits();
+
 }

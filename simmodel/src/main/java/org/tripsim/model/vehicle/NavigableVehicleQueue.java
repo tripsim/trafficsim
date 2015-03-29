@@ -103,4 +103,10 @@ public class NavigableVehicleQueue implements VehicleQueue {
 		}
 	}
 
+	@Override
+	public String toString() {
+		return "NavigableVehicleQueue [numOfVehicles=" + vehicles.size()
+				+ ", numOfStagedVehicles=" + stagedVehicles.size() + "]";
+	}
+
 }

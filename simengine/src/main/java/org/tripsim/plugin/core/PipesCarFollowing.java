@@ -33,10 +33,11 @@ class PipesCarFollowing extends AbstractCarFollowingImpl {
 	private double baseSpeed = 4.4704d;
 
 	@Override
-	protected double calculateAccel(double spacing, double reactionTime,
-			double length, double speed, double desiredSpeed, double maxAccel,
-			double maxDecel, double desiredAccel, double desiredDecel,
-			double leadLength, double leadSpeed, double stepSize) {
+	protected double calculateAccel(double spacing, double tailSpacing,
+			double reactionTime, double length, double speed,
+			double desiredSpeed, double maxAccel, double maxDecel,
+			double desiredAccel, double desiredDecel, double leadLength,
+			double leadSpeed, double stepSize) {
 
 		// double safeSpeed = ((spacing - leadLength) / length) * baseSpeed;
 		// safeSpeed = safeSpeed > desiredSpeed ? desiredSpeed : safeSpeed;

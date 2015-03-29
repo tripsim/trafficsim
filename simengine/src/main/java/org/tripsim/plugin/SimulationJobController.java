@@ -98,7 +98,7 @@ public final class SimulationJobController implements SmartLifecycle {
 		lock.lock();
 		try {
 			tasks.remove(simulationName);
-			logger.info("Simulation job {} finished!", simulationName);
+			logger.info("Simulation job '{}' finished!", simulationName);
 		} finally {
 			lock.unlock();
 		}
@@ -309,29 +309,29 @@ public final class SimulationJobController implements SmartLifecycle {
 	@Override
 	public void start() {
 		lock.lock();
-		if (!started) {
-			try {
+		try {
+			if (!started) {
 				executor = Executors.newFixedThreadPool(1);
 				started = true;
-			} finally {
-				lock.unlock();
 			}
+		} finally {
+			lock.unlock();
 		}
 	}
 
 	@Override
 	public void stop() {
 		lock.lock();
-		if (!started) {
-			try {
+		try {
+			if (started) {
 				executor.shutdownNow();
 				logger.warn(
 						"{} simulation execution was interrupted during shutdown!",
 						tasks.size());
-			} finally {
-				started = false;
-				lock.unlock();
 			}
+		} finally {
+			started = false;
+			lock.unlock();
 		}
 	}
 

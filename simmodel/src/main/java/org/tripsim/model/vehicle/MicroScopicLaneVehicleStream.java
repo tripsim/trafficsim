@@ -21,8 +21,10 @@ package org.tripsim.model.vehicle;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,7 +48,6 @@ public class MicroScopicLaneVehicleStream implements VehicleStream {
 	private final VehicleQueue queue;
 	private final Map<Connector, VehicleQueue> entranceConnectorQueues;
 	private final Map<Connector, VehicleQueue> exitConnectorQueues;
-	private final Map<Vehicle, Connector> preferedExitConnectors;
 	private final TerminalConnector entranceTerminal;
 	private final TerminalConnector exitTerminal;
 
@@ -67,8 +68,6 @@ public class MicroScopicLaneVehicleStream implements VehicleStream {
 		for (Connector connector : lane.getOutConnectors()) {
 			exitConnectorQueues.put(connector, createQueue());
 		}
-		// Vehicle Route
-		preferedExitConnectors = new HashMap<Vehicle, Connector>();
 	}
 
 	private static final VehicleQueue createQueue() {
@@ -106,19 +105,31 @@ public class MicroScopicLaneVehicleStream implements VehicleStream {
 	}
 
 	private final Connector resolveExitConnector(Vehicle vehicle) {
-		return preferedExitConnectors.get(vehicle);
-	}
-
-	private final Connector resolveAndSetPreferredConnector(Vehicle vehicle) {
+		Connector preferredConnector = exitTerminal;
 		for (Connector connector : exitConnectorQueues.keySet()) {
 			Lane toLane = connector.getToLane();
 			if (toLane != null && toLane.getLink() == vehicle.getNextLink()) {
-				preferedExitConnectors.put(vehicle, connector);
-				return connector;
+				preferredConnector = connector;
+				break;
 			}
 		}
-		preferedExitConnectors.put(vehicle, exitTerminal);
-		return exitTerminal;
+		return preferredConnector;
+	}
+
+	@Override
+	public boolean isViable(Vehicle vehicle) {
+		if (vehicle.getNextLink() == null) {
+			return true;
+		}
+		return resolveExitConnector(vehicle) != exitTerminal;
+	}
+
+	@Override
+	public boolean isViableNext(Vehicle vehicle) {
+		if (vehicle.getNextLink() == null) {
+			return true;
+		}
+		return vehicle.getNextLink() == lane.getLink();
 	}
 
 	@Override
@@ -475,8 +486,8 @@ public class MicroScopicLaneVehicleStream implements VehicleStream {
 		if (newPosition - vehicle.getPosition() > frontGap) {
 			// if it is head vehicle it is getting out of the path
 			if (isHead(vehicle)) {
-				logger.info("{} gets out path {}!", vehicle, lane);
-				remove(vehicle);
+				logger.info("{} gets out of path {}!", vehicle, lane);
+				moveOut(vehicle);
 				vehicle.setPosition(newPosition - getPathLength());
 				return false;
 			}
@@ -525,7 +536,6 @@ public class MicroScopicLaneVehicleStream implements VehicleStream {
 	@Override
 	public boolean moveIn(Vehicle vehicle, Path fromPath) {
 		checkVehicle(vehicle);
-		resolveAndSetPreferredConnector(vehicle);
 		// vehicle is newly created, append to tail
 		if (vehicle.getPosition() < 0) {
 			appendNewToTail(vehicle);
@@ -533,7 +543,7 @@ public class MicroScopicLaneVehicleStream implements VehicleStream {
 		}
 		// vehicle is beyond path, cannot move in
 		if (vehicle.getPosition() > getPathLength()) {
-			remove(vehicle);
+			moveOut(vehicle);
 			return false;
 		}
 
@@ -557,7 +567,8 @@ public class MicroScopicLaneVehicleStream implements VehicleStream {
 		double position = 0;
 		Vehicle tail = getTailVehicle(true);
 		if (tail != null) {
-			position = tail.getPosition() - vehicle.getDesiredHeadway();
+			position = tail.getPosition() - vehicle.getDesiredHeadway()
+					* vehicle.getSpeed();
 			position = position > 0 ? 0 : position;
 		}
 		vehicle.setPosition(position);
@@ -565,17 +576,62 @@ public class MicroScopicLaneVehicleStream implements VehicleStream {
 	}
 
 	@Override
-	public boolean mergeIn(Vehicle vehicle, Path fromPath) {
+	public boolean mergeIn(Vehicle vehicle) {
 		checkVehicle(vehicle);
-		resolveAndSetPreferredConnector(vehicle);
-		return add(vehicle, fromPath);
+		if (!isInMain(vehicle.getPosition())) {
+			return false;
+		}
+		queue.add(vehicle);
+		return true;
 	}
 
 	@Override
 	public Path moveOrMergeOut(Vehicle vehicle) {
 		checkVehicle(vehicle);
-		remove(vehicle);
+		moveOut(vehicle);
 		return lane;
+	}
+
+	@Override
+	public Path getMergeLeftPath(Vehicle vehicle) {
+		Lane adjacent = LanePathGroup.getLeftAdjacent(lane);
+		return checkIfValidAdjacent(adjacent, vehicle);
+	}
+
+	@Override
+	public Path getMergeRightPath(Vehicle vehicle) {
+		Lane adjacent = LanePathGroup.getRightAdjacent(lane);
+		return checkIfValidAdjacent(adjacent, vehicle);
+	}
+
+	private Path checkIfValidAdjacent(Lane adjacent, Vehicle vehicle) {
+		if (adjacent == null || vehicle == null) {
+			return null;
+		}
+		if (!adjacent.inLane(vehicle.getPosition())) {
+			return null;
+		}
+		return adjacent;
+	}
+
+	@Override
+	public Collection<Path> getLeftDestPaths() {
+		List<Lane> lanes = LanePathGroup.getLeftLanes(lane);
+		return getDestPaths(lanes);
+	}
+
+	@Override
+	public Collection<Path> getRightDestPaths() {
+		List<Lane> lanes = LanePathGroup.getRightLanes(lane);
+		return getDestPaths(lanes);
+	}
+
+	private Set<Path> getDestPaths(List<Lane> lanes) {
+		Set<Path> paths = new HashSet<Path>();
+		for (Lane l : lanes) {
+			paths.addAll(l.getExits());
+		}
+		return paths;
 	}
 
 	private void addNew(Vehicle vehicle) {
@@ -632,6 +688,10 @@ public class MicroScopicLaneVehicleStream implements VehicleStream {
 		return false;
 	}
 
+	private void moveOut(Vehicle vehicle) {
+		remove(vehicle);
+	}
+
 	private void remove(Vehicle vehicle) {
 		for (VehicleQueue queue : getAllQueues()) {
 			queue.remove(vehicle);
@@ -657,8 +717,16 @@ public class MicroScopicLaneVehicleStream implements VehicleStream {
 	public void removeInactive(Vehicle vehicle) {
 		checkVehicle(vehicle);
 		if (!vehicle.isActive()) {
-			remove(vehicle);
+			moveOut(vehicle);
 		}
+	}
+
+	@Override
+	public String toString() {
+		return "MicroScopicLaneVehicleStream [lane=" + lane + ", queue="
+				+ queue + ", entranceConnectorQueues="
+				+ entranceConnectorQueues + ", exitConnectorQueues="
+				+ exitConnectorQueues + "]";
 	}
 
 }

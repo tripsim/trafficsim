@@ -31,6 +31,7 @@ public class DriverType extends Type {
 	double reactionTime = 2;
 
 	double desiredHeadway = 2;
+	double desiredRearway = 2;
 	double desiredSpeed = 25;
 
 	private Aggressiveness drivingAggressiveness;
@@ -62,6 +63,14 @@ public class DriverType extends Type {
 
 	public void setDesiredHeadway(double desiredHeadway) {
 		this.desiredHeadway = desiredHeadway;
+	}
+
+	public double getDesiredRearway() {
+		return desiredRearway;
+	}
+
+	public void setDesiredRearway(double desiredRearway) {
+		this.desiredRearway = desiredRearway;
 	}
 
 	public double getDesiredSpeed() {

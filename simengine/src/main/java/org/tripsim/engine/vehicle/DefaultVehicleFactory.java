@@ -65,6 +65,8 @@ class DefaultVehicleFactory implements VehicleFactory {
 				randomGenerator);
 		double desiredHeadway = random(driverType.getDesiredHeadway(), sd,
 				randomGenerator);
+		double desiredRearway = random(driverType.getDesiredRearway(), sd,
+				randomGenerator);
 		double preceptionTime = random(driverType.getPerceptionTime(), sd,
 				randomGenerator);
 		double reactionTime = random(driverType.getReactionTime(), sd,
@@ -76,6 +78,7 @@ class DefaultVehicleFactory implements VehicleFactory {
 				.withWidth(width).withLength(length).withMaxSpeed(maxSpeed)
 				.withDesiredSpeed(desiredSpeed)
 				.withDesiredHeadway(desiredHeadway)
+				.withDesiredRearway(desiredRearway)
 				.withPerceptionTime(preceptionTime)
 				.withReactionTime(reactionTime).withOrigin(origin)
 				.withDestination(destination).build();

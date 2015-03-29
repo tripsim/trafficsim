@@ -42,4 +42,9 @@ public interface Lane extends ArcSection, Path, Environment {
 
 	Collection<Connector> getInConnectors();
 
+	Collection<Lane> getDownstreamLanes();
+
+	Collection<Lane> getUpstreamLanes();
+
+	boolean inLane(double position);
 }

@@ -104,7 +104,8 @@ public abstract class AbstractLink extends AbstractArc implements Link {
 
 	@Override
 	public Lane getLane(int position) {
-		return position < numOfLanes() ? lanes.get(position) : null;
+		return position >= 0 && position < numOfLanes() ? lanes.get(position)
+				: null;
 	}
 
 	@Override

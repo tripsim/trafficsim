@@ -18,7 +18,6 @@
  */
 package org.tripsim.plugin.core;
 
-import org.tripsim.api.model.Path;
 import org.tripsim.api.model.Vehicle;
 import org.tripsim.api.model.VehicleStream;
 import org.tripsim.api.model.VehicleWeb;
@@ -46,19 +45,11 @@ abstract class AbstractCarFollowingImpl extends AbstractPlugin implements
 		carFollowingEnvironment.update();
 	}
 
-	private class CarFollowingEnvironment {
-
-		private final SimulationEnvironment environment;
-		private final Vehicle vehicle;
-		private final VehicleStream stream;
-		private final VehicleWeb web;
+	protected class CarFollowingEnvironment extends AbstractVehicleEnvironment {
 
 		CarFollowingEnvironment(SimulationEnvironment environment,
 				Vehicle vehicle, VehicleStream stream, VehicleWeb web) {
-			this.environment = environment;
-			this.vehicle = vehicle;
-			this.stream = stream;
-			this.web = web;
+			super(environment, vehicle, stream, web);
 		}
 
 		public final void update() {
@@ -74,10 +65,16 @@ abstract class AbstractCarFollowingImpl extends AbstractPlugin implements
 			double desiredAccel = iDrv.getDesiredAccel(vehicle.getSpeed(),
 					desiredSpeed);
 			double lookAheadDistance = vehicle.getLookAheadDistance();
+			double lookBehindDistance = vehicle.getLookBehindDistance();
 
-			Pair<Double, Vehicle> pair = calculateSpacing(lookAheadDistance);
+			Pair<Double, Vehicle> pair = calculateSpacing(stream.getPath(),
+					lookAheadDistance, true);
 			double spacing = pair.primary();
 			Vehicle leadingVehicle = pair.secondary();
+			pair = calculateSpacing(stream.getPath(), lookBehindDistance, false);
+			double tailSpacing = pair.primary();
+			@SuppressWarnings("unused")
+			Vehicle followingVehicle = pair.secondary();
 
 			double accel;
 			if (leadingVehicle == null) {
@@ -89,11 +86,11 @@ abstract class AbstractCarFollowingImpl extends AbstractPlugin implements
 				double maxDecel = iVeh.getMaxDecel(vehicle.getSpeed());
 				double desiredDecel = iDrv.getDesiredDecel(vehicle.getSpeed());
 
-				accel = calculateAccel(spacing, vehicle.getReactionTime(),
-						vehicle.getLength(), vehicle.getSpeed(), desiredSpeed,
-						maxAccel, maxDecel, desiredAccel, desiredDecel,
-						leadingVehicle.getLength(), leadingVehicle.getSpeed(),
-						environment.getStepSize());
+				accel = calculateAccel(spacing, tailSpacing,
+						vehicle.getReactionTime(), vehicle.getLength(),
+						vehicle.getSpeed(), desiredSpeed, maxAccel, maxDecel,
+						desiredAccel, desiredDecel, leadingVehicle.getLength(),
+						leadingVehicle.getSpeed(), environment.getStepSize());
 
 				if (accel > maxAccel) {
 					accel = maxAccel;
@@ -106,51 +103,11 @@ abstract class AbstractCarFollowingImpl extends AbstractPlugin implements
 			vehicle.setAcceleration(accel);
 		}
 
-		private Pair<Double, Vehicle> calculateSpacing(double maxSpacing) {
-			double spacing = stream.getSpacing(vehicle);
-			Vehicle leadingVehicle = stream.getLeadingVehicle(vehicle);
-			if (stream.isHead(vehicle) && spacing < maxSpacing) {
-				Pair<Double, Vehicle> pair = searchSpacing(
-						stream.getExitPath(vehicle), maxSpacing - spacing);
-				spacing += pair.primary();
-				leadingVehicle = pair.secondary();
-			}
-			return Pair.create(spacing, leadingVehicle);
-		}
-
-		// search the minimum spacing downstream current PATH
-		// assuming no lane changing
-		private Pair<Double, Vehicle> searchSpacing(Path path, double maxSpacing) {
-			if (path == null) {
-				return Pair.create(maxSpacing, (Vehicle) null);
-			}
-
-			double spacing = maxSpacing;
-			Vehicle leadingVehicle = null;
-			VehicleStream stream = web.getStream(path);
-			if (!stream.isEmpty()) {
-				spacing = stream.getSpacingToTail();
-				leadingVehicle = stream.getTailVehicle();
-			} else {
-				for (Path exit : path.getExits()) {
-					double h = stream.getPathLength();
-					Pair<Double, Vehicle> pair = searchSpacing(exit, maxSpacing
-							- h);
-					h += pair.primary();
-					if (h < spacing) {
-						spacing = h;
-						leadingVehicle = pair.secondary();
-					}
-				}
-			}
-			return Pair.create(spacing, leadingVehicle);
-		}
-
 	}
 
 	abstract protected double calculateAccel(double spacing,
-			double reactionTime, double length, double speed,
-			double desiredSpeed, double maxAccel, double maxDecel,
-			double desiredAccel, double desiredDecel, double leadLength,
-			double leadSpeed, double stepSize);
+			double tailSpacing, double reactionTime, double length,
+			double speed, double desiredSpeed, double maxAccel,
+			double maxDecel, double desiredAccel, double desiredDecel,
+			double leadLength, double leadSpeed, double stepSize);
 }

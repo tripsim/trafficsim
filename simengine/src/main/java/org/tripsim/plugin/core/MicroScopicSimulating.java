@@ -40,8 +40,8 @@ import org.tripsim.util.Timer;
  * @author Xuan Shi
  */
 @Component("Micro Scopic Simulating")
-class MicroScopicSimulating extends AbstractMicroScopicSimulating
-		implements ISimulating {
+class MicroScopicSimulating extends AbstractMicroScopicSimulating implements
+		ISimulating {
 
 	private static final long serialVersionUID = 1L;
 	private static final Logger logger = LoggerFactory
@@ -84,6 +84,11 @@ class MicroScopicSimulating extends AbstractMicroScopicSimulating
 				"Time: {}s: {} new vehicles generated at node {} to node {}",
 				environment.getForwardedTime(), newVehicles.size(),
 				od.getOriginNodeId(), od.getDestinationNodeId());
+	}
+
+	@Override
+	protected void afterSimulate(Timer timer, SimulationEnvironment environment) {
+		logger.info("******** Finished Micro Scopic Simulation ********");
 	}
 
 	@Override

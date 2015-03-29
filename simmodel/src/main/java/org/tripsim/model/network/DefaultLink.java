@@ -118,14 +118,18 @@ public class DefaultLink extends AbstractLink {
 
 	@Override
 	public Lane getLaneFromOuter(int position) {
-		List<Lane> lanes = getLanes();
-		position = lanes.size() - 1 - position;
-		return lanes.isEmpty() || position < 0 ? null : lanes.get(position);
+		position = numOfLanes() - 1 - position;
+		return getLane(position);
 	}
 
 	// --------------------------------------------------
 	// Path Implementation
 	// --------------------------------------------------
+	@Override
+	public Collection<? extends Path> getEntrances() {
+		return Collections
+				.unmodifiableCollection(getStartNode().getUpstreams());
+	}
 
 	@Override
 	public Collection<? extends Path> getExits() {

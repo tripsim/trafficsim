@@ -18,9 +18,10 @@
  */
 package org.tripsim.model.network;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.tripsim.api.model.Connector;
 import org.tripsim.api.model.Lane;
@@ -129,12 +130,36 @@ public class DefaultLane extends AbstractArcSection implements Lane {
 	}
 
 	@Override
-	public Collection<? extends Path> getExits() {
-		List<Lane> exits = new ArrayList<Lane>();
+	public Collection<Lane> getUpstreamLanes() {
+		Set<Lane> entrances = new HashSet<Lane>();
+		for (Connector connector : getInConnectors()) {
+			entrances.add(connector.getFromLane());
+		}
+		return entrances;
+	}
+
+	@Override
+	public Collection<Lane> getDownstreamLanes() {
+		Set<Lane> exits = new HashSet<Lane>();
 		for (Connector connector : getOutConnectors()) {
 			exits.add(connector.getToLane());
 		}
 		return exits;
+	}
+
+	@Override
+	public Collection<? extends Path> getEntrances() {
+		return getUpstreamLanes();
+	}
+
+	@Override
+	public Collection<? extends Path> getExits() {
+		return getDownstreamLanes();
+	}
+
+	@Override
+	public boolean inLane(double position) {
+		return position > startOffset && position < startOffset + length;
 	}
 
 }

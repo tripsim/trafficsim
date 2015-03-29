@@ -35,11 +35,15 @@ public interface Vehicle extends SimpleVehicle {
 
 	double getDesiredHeadway();
 
+	double getDesiredRearway();
+
 	double getPerceptionTime();
 
 	double getReactionTime();
 
 	double getLookAheadDistance();
+
+	double getLookBehindDistance();
 
 	Node getOrigin();
 
