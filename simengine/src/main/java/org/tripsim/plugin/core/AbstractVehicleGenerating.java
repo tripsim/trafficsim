@@ -40,13 +40,13 @@ import org.tripsim.plugin.api.IVehicle;
 import org.tripsim.plugin.api.IVehicleGenerating;
 import org.tripsim.util.Randoms;
 
-abstract class AbstractVehicleGenerating extends AbstractPlugin
-		implements IVehicleGenerating {
+abstract class AbstractVehicleGenerating extends AbstractPlugin implements
+		IVehicleGenerating {
 
 	private static final long serialVersionUID = 1L;
 
-	private static final Logger logger = LoggerFactory
-			.getLogger(AbstractVehicleGenerating.class);
+	protected static final Logger logger = LoggerFactory
+			.getLogger(IVehicleGenerating.class);
 
 	@Autowired
 	VehicleFactory vehicleFactory;
@@ -59,7 +59,10 @@ abstract class AbstractVehicleGenerating extends AbstractPlugin
 					environment, od);
 			return generatingEnvironment.generateVehicles();
 		} catch (RuntimeException e) {
-			logger.warn("No vehicle is created due to {}", e);
+			logger.warn(
+					"Simulation--{}----Time--{}----No vehicle is created due to {}",
+					environment.getSimulationName(),
+					environment.getForwardedTime(), e.getMessage());
 			return Collections.emptyList();
 		}
 	}
@@ -97,7 +100,9 @@ abstract class AbstractVehicleGenerating extends AbstractPlugin
 			int num = numToGenerate(vph, environment.getStepSize(),
 					environment.getRandom(), environment.getRandomGenerator());
 			if (num < 1) {
-				logger.debug("Time {}s: no vehicles to generate at ",
+				logger.debug(
+						"Simulation--{}----Time--{}----no vehicles to generate at ",
+						environment.getSimulationName(),
 						environment.getForwardedTime());
 				return Collections.emptyList();
 			}
@@ -161,7 +166,9 @@ abstract class AbstractVehicleGenerating extends AbstractPlugin
 
 	private void afterCreatingVehicle(SimulationEnvironment environment,
 			Vehicle vehicle) {
-		logger.debug("Time: {}s -- New Vehicle created: {} --> {} --> {}",
+		logger.debug(
+				"Simulation--{}----Time--{}----New Vehicle created: {} --> {} --> {}",
+				environment.getSimulationName(),
 				environment.getForwardedTime(), vehicle.getId(),
 				vehicle.getVehicleType(), vehicle.getDriverType());
 	}

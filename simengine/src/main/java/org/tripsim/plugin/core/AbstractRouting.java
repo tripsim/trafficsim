@@ -18,6 +18,8 @@
  */
 package org.tripsim.plugin.core;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.tripsim.api.model.Link;
 import org.tripsim.api.model.Node;
 import org.tripsim.api.model.VehicleClass;
@@ -31,10 +33,12 @@ import org.tripsim.util.Randoms;
  * 
  * @author Xuan Shi
  */
-abstract class AbstractRouting extends AbstractPlugin implements
-		IRouting {
+abstract class AbstractRouting extends AbstractPlugin implements IRouting {
 
 	private static final long serialVersionUID = 1L;
+
+	protected static final Logger logger = LoggerFactory
+			.getLogger(IRouting.class);
 
 	@Override
 	public Link searchNextLink(SimulationEnvironment environment, Node current,

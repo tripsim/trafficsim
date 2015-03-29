@@ -21,8 +21,6 @@ package org.tripsim.plugin.core;
 import java.util.Random;
 
 import org.apache.commons.math3.random.RandomGenerator;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.tripsim.plugin.api.IVehicleGenerating;
 import org.tripsim.util.Randoms;
@@ -36,10 +34,6 @@ import org.tripsim.util.Randoms;
 class PoissonVehicleGenerating extends AbstractVehicleGenerating
 		implements IVehicleGenerating {
 	private static final long serialVersionUID = 1L;
-
-	@SuppressWarnings("unused")
-	private static final Logger logger = LoggerFactory
-			.getLogger(PoissonVehicleGenerating.class);
 
 	@Override
 	public String getName() {

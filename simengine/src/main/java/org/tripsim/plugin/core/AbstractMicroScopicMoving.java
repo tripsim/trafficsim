@@ -38,8 +38,8 @@ abstract class AbstractMicroScopicMoving extends AbstractPlugin implements
 		IMoving {
 	private static final long serialVersionUID = 1L;
 
-	private static final Logger logger = LoggerFactory
-			.getLogger(AbstractMicroScopicMoving.class);
+	protected static final Logger logger = LoggerFactory
+			.getLogger(IMoving.class);
 
 	@Override
 	public final void update(SimulationEnvironment environment,
@@ -67,7 +67,10 @@ abstract class AbstractMicroScopicMoving extends AbstractPlugin implements
 					+ deltaSpeed(vehicle.getAcceleration(),
 							environment.getStepSize());
 			if (newSpeed <= 0) {
-				logger.error("Negative speed, wrong algorithm!");
+				logger.warn(
+						"Simulation--{}----Time--{}----Negative speed, wrong algorithm!----{}",
+						environment.getSimulationName(),
+						environment.getForwardedTime(), vehicle);
 				newSpeed = vehicle.getSpeed();
 			}
 			vehicle.setSpeed(newSpeed);
@@ -88,8 +91,9 @@ abstract class AbstractMicroScopicMoving extends AbstractPlugin implements
 			Path nextPath = stream.getExitPath(vehicle);
 			if (nextPath == null) {
 				logger.info(
-						"vehicle {} reached its destination, or cannot find path to destination!",
-						vehicle.getId());
+						"Simulation--{}----Time--{}----vehicle reached its destination, or cannot find path to destination!----{}",
+						environment.getSimulationName(),
+						environment.getForwardedTime(), vehicle);
 				vehicle.deactivate();
 				return;
 			}

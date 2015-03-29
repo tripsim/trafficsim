@@ -486,7 +486,7 @@ public class MicroScopicLaneVehicleStream implements VehicleStream {
 		if (newPosition - vehicle.getPosition() > frontGap) {
 			// if it is head vehicle it is getting out of the path
 			if (isHead(vehicle)) {
-				logger.info("{} gets out of path {}!", vehicle, lane);
+				logger.debug("{} gets out of path {}!", vehicle, lane);
 				moveOut(vehicle);
 				vehicle.setPosition(newPosition - getPathLength());
 				return false;
@@ -524,8 +524,6 @@ public class MicroScopicLaneVehicleStream implements VehicleStream {
 			Arc arc = resolveExitConnector(vehicle);
 			vehicle.onMoved(arc, position - getEntranceLength()
 					- getMainLength());
-			logger.error("{} {} {}", vehicle, arc, position
-					- getEntranceLength() - getMainLength());
 			return;
 		}
 		throw new IllegalStateException("try to update an vehicle '" + vehicle

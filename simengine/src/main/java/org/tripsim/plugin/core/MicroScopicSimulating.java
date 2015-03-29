@@ -20,8 +20,6 @@ package org.tripsim.plugin.core;
 
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.tripsim.api.model.Od;
@@ -44,8 +42,6 @@ class MicroScopicSimulating extends AbstractMicroScopicSimulating implements
 		ISimulating {
 
 	private static final long serialVersionUID = 1L;
-	private static final Logger logger = LoggerFactory
-			.getLogger(MicroScopicSimulating.class);
 
 	@Autowired
 	VehicleFactory vehicleFactory;
@@ -54,12 +50,22 @@ class MicroScopicSimulating extends AbstractMicroScopicSimulating implements
 
 	@Override
 	protected void beforeSimulate(Timer timer, SimulationEnvironment environ) {
-		logger.info("******** Micro Scopic Simulation ********");
-		logger.info("---- Parameters ----");
-		logger.info("Random Seed: {} ", environ.getSeed());
-		logger.info("Step Size: {}", environ.getStepSize());
-		logger.info("Duration: {}", environ.getDuration());
-		logger.info("---- Simulation ----");
+		String name = environ.getSimulationName();
+		logger.info("Simulation--{}--------Micro Scopic Simulation--------",
+				name);
+		logger.info("Simulation--{}--------Random Seed: {} ", name,
+				environ.getSeed());
+		logger.info("Simulation--{}--------Step Size: {}", name,
+				environ.getStepSize());
+		logger.info("Simulation--{}--------Duration: {}", name,
+				environ.getDuration());
+		logger.info("Simulation--{}--------Start Simulation--------", name);
+	}
+
+	@Override
+	protected void beforeEachStep(SimulationEnvironment environment) {
+		logger.debug("Simulation--{}----Time--{}----start step forward!",
+				environment.getSimulationName(), environment.getForwardedTime());
 	}
 
 	@Override
@@ -73,22 +79,27 @@ class MicroScopicSimulating extends AbstractMicroScopicSimulating implements
 	@Override
 	protected void collectionStatistics(SimulationEnvironment environment,
 			Vehicle vehicle) {
-		logger.info("Time: {}s: {}", environment.getForwardedTime(), vehicle);
+		logger.debug("Simulation--{}----Time--{}----{}",
+				environment.getSimulationName(),
+				environment.getForwardedTime(), vehicle);
 		statisticsCollector.visit(environment, vehicle);
 	}
 
 	@Override
 	protected void afterGenerateVehicles(SimulationEnvironment environment,
 			Od od, List<Vehicle> newVehicles) {
-		logger.info(
-				"Time: {}s: {} new vehicles generated at node {} to node {}",
+		logger.debug(
+				"Simulation--{}----Time--{}----{} new vehicles generated at node {} to node {}",
+				environment.getSimulationName(),
 				environment.getForwardedTime(), newVehicles.size(),
 				od.getOriginNodeId(), od.getDestinationNodeId());
 	}
 
 	@Override
 	protected void afterSimulate(Timer timer, SimulationEnvironment environment) {
-		logger.info("******** Finished Micro Scopic Simulation ********");
+		logger.info(
+				"Simulation--{}--------Finished Micro Scopic Simulation--------",
+				environment.getSimulationName());
 	}
 
 	@Override

@@ -40,10 +40,10 @@ import org.tripsim.util.Pair;
 @Component("Simple Lane-changing")
 abstract class AbstractLaneChanging extends AbstractPlugin implements
 		ILaneChanging {
-
 	private static final long serialVersionUID = 1L;
-	private static final Logger logger = LoggerFactory
-			.getLogger(AbstractLaneChanging.class);
+
+	protected static final Logger logger = LoggerFactory
+			.getLogger(ILaneChanging.class);
 
 	@Override
 	public String getName() {
@@ -75,12 +75,10 @@ abstract class AbstractLaneChanging extends AbstractPlugin implements
 			}
 
 			int changeDirection = getChangeDirection();
-			logger.info("=====lane {} with cd -- {}", stream.getPath(),
-					changeDirection);
-			if (changeDirection > 0) {
+			if (changeDirection < 0) {
 				merge(leftStream);
 			}
-			if (changeDirection < 0) {
+			if (changeDirection > 0) {
 				merge(rightStream);
 			}
 		}
@@ -139,10 +137,12 @@ abstract class AbstractLaneChanging extends AbstractPlugin implements
 			if (toStream == null) {
 				return;
 			}
-			if (toStream == stream) {
-				throw new RuntimeException("-=------");
-			}
 			if (toStream.mergeIn(vehicle)) {
+				logger.debug(
+						"Simulation--{}----Time--{}----{} moved to {} from {}",
+						environment.getSimulationName(),
+						environment.getForwardedTime(), vehicle, toStream,
+						stream);
 				stream.moveOrMergeOut(vehicle);
 			}
 		}

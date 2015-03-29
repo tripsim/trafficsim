@@ -22,8 +22,8 @@ import org.springframework.stereotype.Component;
 import org.tripsim.plugin.api.IMoving;
 
 @Component("Simple Micro Scopic Moving")
-class SimpleMicroScopicMoving extends AbstractMicroScopicMoving
-		implements IMoving {
+class SimpleMicroScopicMoving extends AbstractMicroScopicMoving implements
+		IMoving {
 
 	private static final long serialVersionUID = 1L;
 

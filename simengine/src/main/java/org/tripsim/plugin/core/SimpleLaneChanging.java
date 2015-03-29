@@ -18,8 +18,6 @@
  */
 package org.tripsim.plugin.core;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.tripsim.plugin.api.ILaneChanging;
 
@@ -32,10 +30,6 @@ import org.tripsim.plugin.api.ILaneChanging;
 public class SimpleLaneChanging extends AbstractLaneChanging implements
 		ILaneChanging {
 	private static final long serialVersionUID = 1L;
-
-	@SuppressWarnings("unused")
-	private static final Logger logger = LoggerFactory
-			.getLogger(SimpleLaneChanging.class);
 
 	@Override
 	protected int calDirectionOnChangedNeeded(double desiredFrontGap,

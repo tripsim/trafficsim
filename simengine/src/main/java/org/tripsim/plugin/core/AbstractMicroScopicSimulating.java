@@ -46,8 +46,8 @@ abstract class AbstractMicroScopicSimulating extends AbstractPlugin implements
 
 	private static final long serialVersionUID = 1L;
 
-	private static final Logger logger = LoggerFactory
-			.getLogger(AbstractMicroScopicSimulating.class);
+	protected static final Logger logger = LoggerFactory
+			.getLogger(ISimulating.class);
 
 	@Override
 	public final void simulate(Timer timer, SimulationEnvironment environment) {
@@ -69,7 +69,7 @@ abstract class AbstractMicroScopicSimulating extends AbstractPlugin implements
 
 		void simulateLoop() {
 			while (!timer.isFinished()) {
-				beforeMoveVehicles(environment);
+				beforeEachStep(environment);
 				moveVehicles();
 				afterMoveVehicles(environment);
 				generateVehicles();
@@ -137,8 +137,10 @@ abstract class AbstractMicroScopicSimulating extends AbstractPlugin implements
 				AbstractMicroScopicSimulating.this.moveVehicle(environment,
 						vehicle, stream, web);
 			} catch (IllegalStateException e) {
-				logger.warn("Exception-------------------------" + e.getMessage()
-						+ "-------------------------");
+				logger.warn(
+						"EXCEPTION========Simulation--{}----Time--{}------{}",
+						environment.getSimulationName(),
+						environment.getForwardedTime(), e.getMessage());
 				vehicle.deactivate();
 			}
 		}
@@ -171,7 +173,7 @@ abstract class AbstractMicroScopicSimulating extends AbstractPlugin implements
 	protected void beforeSimulate(Timer timer, SimulationEnvironment environment) {
 	}
 
-	protected void beforeMoveVehicles(SimulationEnvironment environment) {
+	protected void beforeEachStep(SimulationEnvironment environment) {
 	}
 
 	protected abstract void moveVehicle(SimulationEnvironment environment,
