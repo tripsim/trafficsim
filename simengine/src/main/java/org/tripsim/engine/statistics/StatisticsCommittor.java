@@ -60,7 +60,10 @@ class StatisticsCommittor implements SmartLifecycle {
 					statisticsManager.insertSnapshot(snapshot);
 				}
 			} catch (InterruptedException e) {
-				logger.info("thread committing simualtion results is interrupted");
+				logger.info(
+						"thread committing simualtion results is interrupted, {} snapshots not saved!",
+						snapshots.size());
+				Thread.interrupted();
 			}
 		}
 
@@ -88,7 +91,7 @@ class StatisticsCommittor implements SmartLifecycle {
 			if (!started) {
 				return;
 			}
-			logger.info("stopping satatistics committor thread!");
+			logger.info("stopping satatistics committor!");
 
 			executor.shutdown();
 			if (snapshots.size() > 0) {
@@ -96,26 +99,19 @@ class StatisticsCommittor implements SmartLifecycle {
 				while (snapshots.size() > 0) {
 					try {
 						if (System.currentTimeMillis() > endTime) {
-							executor.shutdownNow();
-							logger.warn(
-									"statistics committor cannot complete during shutdown waittime, {} snapshots not saved!",
-									snapshots.size());
 							break;
 						}
 						Thread.sleep(1000);
 					} catch (InterruptedException e) {
-						logger.warn(
-								"statistics committor intrupted during shutdown, {} snapshots not saved!",
-								snapshots.size());
+						logger.warn("statistics committor intrupted during shutdown");
 						break;
-					} finally {
-						executor.shutdownNow();
 					}
 				}
 			}
-
 		} finally {
+			executor.shutdownNow();
 			started = false;
+			logger.info("stopped satatistics committor!");
 			lock.unlock();
 		}
 	}
