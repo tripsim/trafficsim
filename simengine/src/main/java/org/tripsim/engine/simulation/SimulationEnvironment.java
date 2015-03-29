@@ -86,7 +86,8 @@ public interface SimulationEnvironment {
 
 	void applyMoving(Vehicle vehicle, VehicleStream stream, VehicleWeb web);
 
-	void applyLaneChanging(Vehicle vehicle, VehicleStream stream, VehicleWeb web);
+	VehicleStream applyLaneChanging(Vehicle vehicle, VehicleStream stream,
+			VehicleWeb web);
 
 	List<Vehicle> generateVehicles(Od od);
 

@@ -280,10 +280,10 @@ public final class SimulationJobController implements SmartLifecycle {
 		}
 
 		@Override
-		public void applyLaneChanging(Vehicle vehicle, VehicleStream stream,
-				VehicleWeb web) {
-			getLaneChanging(vehicle.getVehicleType()).update(this, vehicle,
-					stream, web);
+		public VehicleStream applyLaneChanging(Vehicle vehicle,
+				VehicleStream stream, VehicleWeb web) {
+			return getLaneChanging(vehicle.getVehicleType()).update(this,
+					vehicle, stream, web);
 		}
 
 		@Override

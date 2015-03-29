@@ -71,8 +71,8 @@ class MicroScopicSimulating extends AbstractMicroScopicSimulating implements
 	@Override
 	protected void moveVehicle(SimulationEnvironment environment,
 			Vehicle vehicle, VehicleStream stream, VehicleWeb web) {
+		stream = environment.applyLaneChanging(vehicle, stream, web);
 		environment.applyCarFollowing(vehicle, stream, web);
-		environment.applyLaneChanging(vehicle, stream, web);
 		environment.applyMoving(vehicle, stream, web);
 	}
 

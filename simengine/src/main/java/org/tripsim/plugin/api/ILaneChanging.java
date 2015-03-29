@@ -30,6 +30,6 @@ import org.tripsim.engine.simulation.SimulationEnvironment;
  */
 public interface ILaneChanging extends IPlugin {
 
-	void update(SimulationEnvironment environment, Vehicle vehicle,
+	VehicleStream update(SimulationEnvironment environment, Vehicle vehicle,
 			VehicleStream stream, VehicleWeb web);
 }

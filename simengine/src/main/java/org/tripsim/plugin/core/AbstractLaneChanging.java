@@ -51,11 +51,11 @@ abstract class AbstractLaneChanging extends AbstractPlugin implements
 	}
 
 	@Override
-	public final void update(SimulationEnvironment environment,
+	public final VehicleStream update(SimulationEnvironment environment,
 			Vehicle vehicle, VehicleStream stream, VehicleWeb web) {
 		LaneChangingEnvironment laneChangingEnvironment = new LaneChangingEnvironment(
 				environment, vehicle, stream, web);
-		laneChangingEnvironment.update();
+		return laneChangingEnvironment.update();
 	}
 
 	protected class LaneChangingEnvironment extends AbstractVehicleEnvironment {
@@ -69,18 +69,19 @@ abstract class AbstractLaneChanging extends AbstractPlugin implements
 			rightStream = web.getStream(stream.getMergeRightPath(vehicle));
 		}
 
-		public void update() {
+		public VehicleStream update() {
 			if (!vehicle.isActive()) {
-				return;
+				return stream;
 			}
 
 			int changeDirection = getChangeDirection();
 			if (changeDirection < 0) {
-				merge(leftStream);
+				return merge(leftStream);
 			}
 			if (changeDirection > 0) {
-				merge(rightStream);
+				return merge(rightStream);
 			}
+			return stream;
 		}
 
 		private int getChangeDirection() {
@@ -100,11 +101,11 @@ abstract class AbstractLaneChanging extends AbstractPlugin implements
 					* vehicle.getSpeed();
 
 			return currentViable ? AbstractLaneChanging.this
-					.calDirectionOnChangedNeeded(desiredFrontGap,
+					.calDirectionOnNoChangedNeeded(desiredFrontGap,
 							desiredRearGap, frontGap, rearGap, leftViable,
 							leftFrontGap, leftRearGap, rightViable,
 							rightFrontGap, rightRearGap)
-					: AbstractLaneChanging.this.calDirectionOnNoChangedNeeded(
+					: AbstractLaneChanging.this.calDirectionOnChangedNeeded(
 							desiredFrontGap, desiredRearGap, desiredFrontGap,
 							desiredRearGap, leftViable, leftFrontGap,
 							leftRearGap, rightViable, rightFrontGap,
@@ -133,18 +134,17 @@ abstract class AbstractLaneChanging extends AbstractPlugin implements
 			return false;
 		}
 
-		private void merge(VehicleStream toStream) {
-			if (toStream == null) {
-				return;
-			}
-			if (toStream.mergeIn(vehicle)) {
+		private VehicleStream merge(VehicleStream toStream) {
+			if (toStream != null && toStream.mergeIn(vehicle)) {
 				logger.debug(
 						"Simulation--{}----Time--{}----{} moved to {} from {}",
 						environment.getSimulationName(),
 						environment.getForwardedTime(), vehicle, toStream,
 						stream);
 				stream.moveOrMergeOut(vehicle);
+				return toStream;
 			}
+			return stream;
 		}
 
 	}

@@ -163,7 +163,7 @@ public abstract class MovingObject extends BaseObject implements Movable, Agent 
 		if (motion.getSpeed() > 0) {
 			this.angle = Angle.toDegrees(Angle.angle(coord, newCoord));
 		}
-		this.coord = newCoord;
+		coord = newCoord;
 		onUpdate(motion);
 	}
 
