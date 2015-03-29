@@ -29,7 +29,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.tripsim.web.model.ActionResponse;
-import org.tripsim.web.session.UserContext;
+import org.tripsim.web.session.UserContextConveniences;
 
 /**
  * 
@@ -45,7 +45,7 @@ public abstract class AbstractController {
 			.getLogger(AbstractController.class);
 
 	@Autowired
-	UserContext context;
+	UserContextConveniences context;
 
 	@ExceptionHandler(RuntimeException.class)
 	public @ResponseBody Map<String, Object> handleError(
