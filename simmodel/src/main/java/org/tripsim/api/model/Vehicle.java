@@ -45,14 +45,4 @@ public interface Vehicle extends SimpleVehicle {
 
 	double getLookBehindDistance();
 
-	Node getOrigin();
-
-	Node getDestination();
-
-	Link getCurrentLink();
-
-	Link getNextLink();
-
-	void goToNextLinkAndSetNew(Link nextLink);
-
 }

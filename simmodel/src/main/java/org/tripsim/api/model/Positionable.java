@@ -18,6 +18,8 @@
  */
 package org.tripsim.api.model;
 
+import org.tripsim.api.Environment;
+
 import com.vividsolutions.jts.geom.Coordinate;
 
 public interface Positionable {
@@ -28,6 +30,8 @@ public interface Positionable {
 	double getWidth();
 
 	double getLength();
+
+	Environment getCurrentEnvironment();
 
 	/**
 	 * 

@@ -18,10 +18,11 @@
  */
 package org.tripsim.api.model;
 
-import java.io.Serializable;
 import java.util.Collection;
 
-public interface VehicleStream extends Serializable {
+import org.tripsim.api.Environment;
+
+public interface VehicleStream extends Environment {
 
 	Path getPath();
 

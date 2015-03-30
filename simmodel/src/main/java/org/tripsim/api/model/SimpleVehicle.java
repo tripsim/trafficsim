@@ -27,4 +27,14 @@ public interface SimpleVehicle extends Movable, Agent {
 	String getDriverType();
 
 	VehicleClass getVehicleClass();
+
+	Node getOrigin();
+
+	Node getDestination();
+
+	Link getCurrentLink();
+
+	Link getNextLink();
+
+	void goToNextLinkAndSetNew(Link nextLink);
 }

@@ -18,6 +18,7 @@
  */
 package org.tripsim.model.vehicle;
 
+import org.tripsim.api.Environment;
 import org.tripsim.api.model.Link;
 import org.tripsim.api.model.Motion;
 import org.tripsim.api.model.Node;
@@ -207,6 +208,11 @@ public class DefaultVehicle extends MovingObject implements Vehicle {
 
 	void setDestination(Node destination) {
 		this.destination = destination;
+	}
+
+	@Override
+	public Environment getCurrentEnvironment() {
+		return getCurrentLink();
 	}
 
 	@Override

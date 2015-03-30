@@ -37,7 +37,8 @@ import org.tripsim.api.model.VehicleQueue;
 import org.tripsim.api.model.VehicleStream;
 import org.tripsim.model.network.TerminalConnector;
 
-public class MicroScopicLaneVehicleStream implements VehicleStream {
+public class MicroScopicLaneVehicleStream extends AbstractVehicleStream
+		implements VehicleStream {
 
 	private static final long serialVersionUID = 1L;
 

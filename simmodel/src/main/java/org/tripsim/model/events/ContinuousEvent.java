@@ -18,6 +18,7 @@
  */
 package org.tripsim.model.events;
 
+import org.tripsim.api.Environment;
 import org.tripsim.api.model.Motion;
 import org.tripsim.model.core.MovingObject;
 
@@ -43,6 +44,11 @@ public abstract class ContinuousEvent extends AbstractEvent {
 		@Override
 		protected void onUpdate(Motion motion) {
 
+		}
+
+		@Override
+		public Environment getCurrentEnvironment() {
+			return null;
 		}
 
 	}
