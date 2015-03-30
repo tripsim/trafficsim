@@ -18,12 +18,14 @@
  */
 package org.tripsim.api.model;
 
+import org.tripsim.api.Agent;
+
 
 /**
  * 
  * 
  * @author Xuan Shi
  */
-public interface Facility extends Location {
+public interface Facility extends Agent, Location {
 
 }

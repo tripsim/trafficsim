@@ -43,4 +43,18 @@ public abstract class AbstractFacility extends AbstractLocation implements
 	public void onGeomUpdated() {
 
 	}
+
+	@Override
+	public long getStartFrame() {
+		return 0;
+	}
+
+	@Override
+	public boolean isActive() {
+		return false;
+	}
+
+	@Override
+	public void deactivate() {
+	}
 }
