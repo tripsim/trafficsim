@@ -32,7 +32,7 @@ public class SimpleLaneChanging extends AbstractLaneChanging implements
 	private static final long serialVersionUID = 1L;
 
 	@Override
-	protected int calDirectionOnChangedNeeded(double desiredFrontGap,
+	protected int calDirectionOnChangeNeeded(double desiredFrontGap,
 			double desiredRearGap, double frontGap, double rearGap,
 			boolean leftViable, double leftFrontGap, double leftRearGap,
 			boolean rightViable, double rightFrontGap, double rightRearGap) {
@@ -52,7 +52,7 @@ public class SimpleLaneChanging extends AbstractLaneChanging implements
 	}
 
 	@Override
-	protected int calDirectionOnNoChangedNeeded(double desiredFrontGap,
+	protected int calDirectionOnNoChangeNeeded(double desiredFrontGap,
 			double desiredRearGap, double frontGap, double rearGap,
 			boolean leftViable, double leftFrontGap, double leftRearGap,
 			boolean rightViable, double rightFrontGap, double rightRearGap) {

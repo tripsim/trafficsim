@@ -25,8 +25,8 @@ package org.tripsim.plugin.api;
  */
 public interface IVehicle extends IPlugin {
 
-	public double getMaxAccel(double speed, double maxSpeed);
+	double getMaxAccel(double speed, double maxSpeed);
 
-	public double getMaxDecel(double speed);
+	double getMaxDecel(double speed);
 
 }

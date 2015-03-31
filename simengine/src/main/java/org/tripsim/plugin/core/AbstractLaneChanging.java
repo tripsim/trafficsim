@@ -101,11 +101,11 @@ abstract class AbstractLaneChanging extends AbstractPlugin implements
 					* vehicle.getSpeed();
 
 			return currentViable ? AbstractLaneChanging.this
-					.calDirectionOnNoChangedNeeded(desiredFrontGap,
+					.calDirectionOnNoChangeNeeded(desiredFrontGap,
 							desiredRearGap, frontGap, rearGap, leftViable,
 							leftFrontGap, leftRearGap, rightViable,
 							rightFrontGap, rightRearGap)
-					: AbstractLaneChanging.this.calDirectionOnChangedNeeded(
+					: AbstractLaneChanging.this.calDirectionOnChangeNeeded(
 							desiredFrontGap, desiredRearGap, desiredFrontGap,
 							desiredRearGap, leftViable, leftFrontGap,
 							leftRearGap, rightViable, rightFrontGap,
@@ -153,7 +153,7 @@ abstract class AbstractLaneChanging extends AbstractPlugin implements
 	 * @return 0 for not moving, positive for moving right, and negative for
 	 *         moving left
 	 */
-	abstract protected int calDirectionOnChangedNeeded(double desiredFrontGap,
+	abstract protected int calDirectionOnChangeNeeded(double desiredFrontGap,
 			double desiredRearGap, double frontGap, double rearGap,
 			boolean leftViable, double leftFrontGap, double leftRearGap,
 			boolean rightViable, double rightFrontGap, double rightRearGap);
@@ -162,7 +162,7 @@ abstract class AbstractLaneChanging extends AbstractPlugin implements
 	 * @return 0 for not moving, positive for moving right, and negative for
 	 *         moving left
 	 */
-	abstract protected int calDirectionOnNoChangedNeeded(
+	abstract protected int calDirectionOnNoChangeNeeded(
 			double desiredFrontGap, double desiredRearGap, double frontGap,
 			double rearGap, boolean leftViable, double leftFrontGap,
 			double leftRearGap, boolean rightViable, double rightFrontGap,

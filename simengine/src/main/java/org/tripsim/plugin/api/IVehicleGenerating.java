@@ -31,6 +31,6 @@ import org.tripsim.engine.simulation.SimulationEnvironment;
  */
 public interface IVehicleGenerating extends IPlugin {
 
-	public List<Vehicle> newVehicles(SimulationEnvironment environment, Od od);
+	List<Vehicle> newVehicles(SimulationEnvironment environment, Od od);
 
 }
