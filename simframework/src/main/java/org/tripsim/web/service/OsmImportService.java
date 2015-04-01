@@ -39,7 +39,7 @@ import com.fasterxml.jackson.core.JsonParseException;
  * @author Xuan Shi
  */
 @Service("osm-import-service")
-public class OsmImportService extends EntityService {
+public class OsmImportService {
 
 	// "way[highway=*][bbox=-89.4114,43.0707,-89.3955,43.0753]"
 	private static final String queryTemplate = "way[highway=%s][bbox=%s]";
