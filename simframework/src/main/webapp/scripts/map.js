@@ -832,6 +832,10 @@ simulation.initMap = function() {
 	}
 	/* load all frames */
 	this.loadFrames = function(start) {
+		if (that._loadingF == start) {
+			return;
+		}
+		that._loadingF = start;
 		jQuery.get('results/frames/' + that.simulationName, {
 			offset : start
 		}, function(data) {
@@ -857,6 +861,7 @@ simulation.initMap = function() {
 				frame.push(e);
 			}
 			that.loadedF = data.endFrame;
+			that._loadingF = null;
 		});
 	};
 	/* clear frames */
