@@ -124,7 +124,7 @@ abstract class AbstractMicroScopicSimulating extends AbstractPlugin implements
 			Collection<Vehicle> vehicles = stream.getVehicles();
 			for (Vehicle vehicle : vehicles) {
 				moveVehicle(environment, vehicle, stream, web);
-				collectionStatistics(environment, vehicle);
+				collectStatistics(environment, vehicle);
 				if (!vehicle.isActive()) {
 					stream.removeInactive(vehicle);
 				}
@@ -165,7 +165,7 @@ abstract class AbstractMicroScopicSimulating extends AbstractPlugin implements
 				newVehicle.goToNextLinkAndSetNew(link);
 				VehicleStream stream = web.getStream(lane);
 				stream.moveIn(newVehicle, null);
-				collectionStatistics(environment, newVehicle);
+				collectStatistics(environment, newVehicle);
 			}
 		}
 	}
@@ -179,7 +179,7 @@ abstract class AbstractMicroScopicSimulating extends AbstractPlugin implements
 	protected abstract void moveVehicle(SimulationEnvironment environment,
 			Vehicle vehicle, VehicleStream stream, VehicleWeb web);
 
-	protected abstract void collectionStatistics(
+	protected abstract void collectStatistics(
 			SimulationEnvironment environment, Vehicle vehicle);
 
 	protected void afterMoveVehicles(SimulationEnvironment environment) {

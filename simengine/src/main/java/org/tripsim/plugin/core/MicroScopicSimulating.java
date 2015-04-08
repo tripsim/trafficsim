@@ -77,7 +77,7 @@ class MicroScopicSimulating extends AbstractMicroScopicSimulating implements
 	}
 
 	@Override
-	protected void collectionStatistics(SimulationEnvironment environment,
+	protected void collectStatistics(SimulationEnvironment environment,
 			Vehicle vehicle) {
 		logger.debug("Simulation--{}----Time--{}----{}",
 				environment.getSimulationName(),
