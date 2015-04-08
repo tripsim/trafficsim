@@ -25,9 +25,11 @@ import org.mongodb.morphia.annotations.Index;
 import org.mongodb.morphia.annotations.Indexes;
 
 @Entity(value = "snapshots", noClassnameStored = true)
-@Indexes({ @Index(value = "simulationName"), @Index(value = "simulationName, sequence"),
-		@Index(value = "simulationName, vid"), @Index(value = "simulationName, linkId"),
-		@Index(value = "simulationName, nodeId") })
+@Indexes({ @Index(value = "simulationName"),
+		@Index(value = "simulationName, sequence"),
+		@Index(value = "simulationName, vid, sequence"),
+		@Index(value = "simulationName, linkId, sequence"),
+		@Index(value = "simulationName, nodeId, sequence") })
 public class StatisticsSnapshotDo {
 
 	@Id

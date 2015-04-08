@@ -883,8 +883,8 @@ simulation.initMap = function() {
 
 		this.simulationName = params.simulationName;
 		this.f = params.offset;
+		this.loadedF = params.offset;
 		this.lastF = params.limit + params.offset;
-		that.loadFrames(this.f);
 
 		vehicleLayer.setVisibility(true);
 		that.refreshStrategy.activate();
