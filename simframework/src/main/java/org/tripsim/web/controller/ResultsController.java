@@ -90,7 +90,7 @@ public class ResultsController extends AbstractController {
 	public @ResponseBody FramesDto getFrames(
 			@PathVariable("simulationName") String simulationName,
 			@RequestParam(value = "offset", required = false, defaultValue = "0") long offset,
-			@RequestParam(value = "limit", required = false, defaultValue = "1000") long limit) {
+			@RequestParam(value = "limit", required = false, defaultValue = "200") long limit) {
 		return statisticsService.getFrames(simulationName, offset, limit);
 	}
 
@@ -99,7 +99,7 @@ public class ResultsController extends AbstractController {
 			@PathVariable("simulationName") String simulationName,
 			@RequestParam("nodeId") long nodeId,
 			@RequestParam(value = "offset", required = false, defaultValue = "0") long offset,
-			@RequestParam(value = "limit", required = false, defaultValue = "1000") long limit) {
+			@RequestParam(value = "limit", required = false, defaultValue = "200") long limit) {
 		return statisticsService.getTrajectories(simulationName, nodeId,
 				offset, limit);
 	}
@@ -109,7 +109,7 @@ public class ResultsController extends AbstractController {
 			@PathVariable("simulationName") String simulationName,
 			@RequestParam("linkId") long linkId,
 			@RequestParam(value = "offset", required = false, defaultValue = "0") long offset,
-			@RequestParam(value = "limit", required = false, defaultValue = "1000") long limit) {
+			@RequestParam(value = "limit", required = false, defaultValue = "200") long limit) {
 		return statisticsService.getTsd(simulationName, linkId, offset, limit);
 	}
 
@@ -118,7 +118,7 @@ public class ResultsController extends AbstractController {
 			@PathVariable("simulationName") String simulationName,
 			@RequestParam("linkId") long linkId,
 			@RequestParam(value = "offset", required = false, defaultValue = "0") long offset,
-			@RequestParam(value = "limit", required = false, defaultValue = "1000") long limit) {
+			@RequestParam(value = "limit", required = false, defaultValue = "200") long limit) {
 		return statisticsService.getVolumes(simulationName, linkId, offset,
 				limit);
 	}
@@ -128,7 +128,7 @@ public class ResultsController extends AbstractController {
 			@PathVariable("simulationName") String simulationName,
 			@RequestParam("linkId") long linkId,
 			@RequestParam(value = "offset", required = false, defaultValue = "0") long offset,
-			@RequestParam(value = "limit", required = false, defaultValue = "1000") long limit) {
+			@RequestParam(value = "limit", required = false, defaultValue = "200") long limit) {
 		return statisticsService.getAvgSpeeds(simulationName, linkId, offset,
 				limit);
 	}
@@ -137,7 +137,7 @@ public class ResultsController extends AbstractController {
 	public @ResponseBody FdDto getFd(
 			@PathVariable("simulationName") String simulationName,
 			@RequestParam(value = "offset", required = false, defaultValue = "0") long offset,
-			@RequestParam(value = "limit", required = false, defaultValue = "1000") long limit) {
+			@RequestParam(value = "limit", required = false, defaultValue = "200") long limit) {
 		return statisticsService.getFd(simulationName, offset, limit);
 	}
 }
