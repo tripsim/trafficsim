@@ -93,9 +93,10 @@ public class NetworkController extends AbstractController {
 		try {
 			Network network = extractOsmNetworkService.createNetwork(url, bbox,
 					highway, context.getSequence());
-			OdMatrix odMatrix = odService.createOdMatrix(network.getName());
+			context.setNetwork(network);
+			context.setOdMatrix(null);
+			context.setSequence(network.getHighestElementId());
 			model.addAttribute("network", network);
-			model.addAttribute("odMatrix", odMatrix);
 			return successResponse("network created", "network/view",
 					mapJsonService.getNetworkJson(network));
 		} catch (Exception e) {
